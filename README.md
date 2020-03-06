@@ -1,6 +1,6 @@
 # SMITE-Optimizer
 
-A simple and lightweight program to easily change the configuration files for SMITE PC on windows.
+A simple and lightweight program to easily change the configuration files for [SMITE](https://www.smitegame.com/) PC on windows.
 
 ## LICENSE
 

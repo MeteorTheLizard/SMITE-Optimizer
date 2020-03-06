@@ -14,7 +14,7 @@ Contact: MrRangerLP@gmx.de
 
 - Head over to the [releases](https://github.com/MeteorTheLizard/SMITE-Optimizer/releases) page and download the latest corresponding .exe file for your system. If you are running a 32bit version of windows, download the 32bit version of the SMITE Optimizer. If you're using a 64bit version of windows, download the 64bit version of the SMITE Optimizer.
 
-## How to get started
+## Using the program
 
 - After having downloaded the executeable you can put it anywhere you want.
 - Launch the program. If this is your first time running the program it should now take you through the configuration discovery. Simply follow the steps provided by the program to complete this step.

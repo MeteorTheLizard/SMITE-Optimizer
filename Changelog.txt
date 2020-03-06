@@ -1,3 +1,18 @@
+Update V1.2.1 > V1.2.2
+
+New Features:
+-Texture Settings
+You can now change the Texture Quality level for each Texture group
+(World, Character, Terrain, NPC, Weapon, Vehicle, Shadows, Skybox and Effects)
+Ranging from: (Best, Very High, High, Medium, Low, Very Low, Absolute Worst, Potato, N64 Graphics, but 64 times worse) .. <Best to Worst>
+
+Bug Fix:
+-When you have the Debug Window opened, you can no longer interact with the Main Window.
+
+Help Updates:
+-Adjusted accordingly to have Information about the new Texture Settings.
+
+
 Update V1.2 > V1.2.1
 
 Integration Updates:

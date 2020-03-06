@@ -16,3 +16,8 @@ GUI Design
 Translation
 English
 -MrRangerLP
+
+---------------------------
+AutoIt v3 (v3.3.14.5)
+©1999-2018 Jonathan Bennett (All Rights Reserved)
+https://www.autoitscript.com/autoit3/docs/license.htm

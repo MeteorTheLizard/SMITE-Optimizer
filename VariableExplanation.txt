@@ -27,6 +27,29 @@ MaximumPoolSize - I done a lot of googleing and found nothing. All i know is it 
 
 
 
+Texture
+---------------------------------------------------
+
+World - World Details, such as the ground, walls, statues in Conquest, buildings etc..
+
+Character - God Details, Towers?, Fire giant, gold fury.. etc..
+
+Terrain - 2D Grass, Fire from torches, trees, etc..
+
+NPC - Minions, Jungle monsters, etc..
+
+Weapon - Character Weapons, Minion weapons, etc..
+
+Vehicle - Probably unused but included anyway.
+
+Shadows - Image based reflections, actual shadows, ambient lightning, reflections, etc..
+
+Skybox - The quality of the Sky
+
+Effects - Ability effects, projectile effects, etc..
+
+
+
 World
 ---------------------------------------------------
 

@@ -8,7 +8,7 @@ A simple and lightweight program to easily change the configuration files for [S
 
 This program is licensed under the **GNU General Public License v3.0**. [Click here for more info](https://github.com/MeteorTheLizard/SMITE-Optimizer/blob/master/LICENSE).
 
-Earlier versions than V1.2.3 do **NOT** fall under this license and therefor may not be copied, shared, modified or distributed.
+Earlier versions than V1.3 do **NOT** fall under this license and therefor may not be copied, shared, modified or distributed.
 
 Contact: MrRangerLP@gmx.de
 
@@ -39,7 +39,7 @@ Contact: MrRangerLP@gmx.de
  
 [Get AutoIt Here](https://www.autoitscript.com/site/autoit-script-editor/downloads/)
  
-If you downloaded a version earlier than **V1.2.3** you have to manually download the ResourceEx.au3 include and put it into your autoit/includes folder. After that, everything should work just fine.
+If you downloaded a version earlier than **V1.3** you have to manually download the ResourceEx.au3 include and put it into your autoit/includes folder. After that, everything should work just fine.
 
 If your version of the SMITE Optimizer came with said include, you still have to install it manually in your autoit/includes folder in order to be able to compile the executable.
  

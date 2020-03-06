@@ -1,3 +1,28 @@
+Update V1.1.8 > V1.1.9
+
+World Settings:
+-Removed bAllowFog, (As there are more variables that need to be tweaked for fog to disappear)
+-Added Fog (Conquest and other)
+ ^to disable fog. Works for Conquest (Jungle and background) and other maps with fog. (False = disabled | True = enabled)
+
+Quality Of Life:
+-Scanning for configs has been made optional. If you start the program for the first time or have reset your locations you will be prompted with a message box asking what version of SMITE you have installed. 
+If the program finds the config at the pre-defined locations you don't have to run the scan anymore. 
+However if it cannot find the configs it will still do the scan.
+-You can now close the debug GUI by simply clicking the 'x' instead of 'opening' it again. derp.
+
+Resource:
+-Edited VariableExplanation.txt (Deleted bAllowFog Explanation)
+
+Code:
+-Removed 2 includes (Smaller file size)
+
+Bugfixes:
+-Fixed label where it says that it cannot connect to the updater server. (www.reddit.com/r/SRGG > www.reddit.com/r/SMITEOptimizer)
+-Fixed weird interaction with the debug GUI and minimizing
+
+
+
 Update V1.1.7.1 > V1.1.8
 
 GUI:
@@ -17,26 +42,3 @@ Update V1.1.6 > V1.1.7.
 Bug Fixes:
 -Fixed program for 32Bit systems.
 -Fixed First-start error. (AutoIt Unknown Function Name)
-
-
-
-Update V1.1.51 > V1.1.6.
-
-On the very first start of the program, the program will scan ALL DRIVES for configs. This process can take a while.
-This is to avoid the classic "Could not find SMITE Configuration" error.
-It is literally impossible now that the program can't find configs... Unless you don't have SMITE installed. // Deleted ALL of them
-
--Added Client Settings
-
-Client Settings:
--Added "Use DirectX11".
-
-Misc:
--Moved Config Backup path from C:\Users\%%UserName%%\Documents\My Games\SMITE\BattleGame\SO Config Backup\ 
-To C:\Users\%%UserName%%\Documents\My Games\SMITE Config Backup\
--Changed Changelog window size.
--Set several label backgrounds transparent.
-
-Resource:
--Edited ProgramFunctions.txt
--Edited RestoringConfiguration.txt

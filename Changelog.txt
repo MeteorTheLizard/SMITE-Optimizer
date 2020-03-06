@@ -1,0 +1,12 @@
+Update V0.0 > V1.0, Brought to life.
+
+This program uses the engine of SRGG.
+
+
+Full list of additional features:
+
+-Automatic Updater (Toggle On/Off)
+-ChangelogView
+-CopyrightAndCreditsView
+-DonateButton
+-Configuration Restore

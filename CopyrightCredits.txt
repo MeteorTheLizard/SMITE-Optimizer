@@ -1,0 +1,18 @@
+Copyright (C) 2017 MrRangerLP - All Rights Reserved.
+
+Unauthorized copying, sharing, modifying or distributing this program in any possible way is strictly prohibited.
+
+Contact: MrRangerLP@gmx.de
+
+Credits:
+---------------------------
+
+Coding
+-MrRangerLP
+
+GUI Design
+-MrRangerLP
+
+Translation
+English
+-MrRangerLP

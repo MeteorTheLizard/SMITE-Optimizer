@@ -2,6 +2,8 @@
 
 A simple and lightweight program to easily change the configuration files for [SMITE](https://www.smitegame.com/) PC on windows.
 
+<img align="center" src="https://i.imgur.com/MHnpb0L.png" />
+
 ## License
 
 This program is licensed under the **GNU General Public License v3.0**. [Click here for more info](https://github.com/MeteorTheLizard/SMITE-Optimizer/blob/master/LICENSE).

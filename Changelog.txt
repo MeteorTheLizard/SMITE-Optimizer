@@ -1,3 +1,11 @@
+Update V1.1.7.1 > V1.1.8
+
+GUI:
+-Added Debug menu
+-Edited text "Scanning for Configs..." > "Scanning for Configs... (This can take a while)"
+
+
+
 Update V1.1.7 > V1.1.7.1
 
 -Updated the subreddit link & label

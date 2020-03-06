@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.1.7.1
+#AutoIt3Wrapper_Res_Fileversion=1.1.8.0
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=CopyrightCredits.txt, RT_RCDATA, CopyrightCreditsText, 0
@@ -879,8 +879,8 @@
 ;----------------------------------------------------------------------------
 
 Const $ProgramName = "SMITE Optimizer"
-Const $ProgramVersion = "V1.1.7.1"
-Const $ProgramVersionRE = "1.1.7.1" ;- Registry Value
+Const $ProgramVersion = "V1.1.8"
+Const $ProgramVersionRE = "1.1.8" ;- Registry Value
 
 
    ;- UPDATER
@@ -936,6 +936,7 @@ Const $ProgramVersionRE = "1.1.7.1" ;- Registry Value
 		 if $Ini = 0 Then
 			 MsgBox(0,"ERROR!","Could not connect to the Server."& @CRLF & "You can manually check for updates by visiting: www.reddit.com/r/srgg/new" & @CRLF & @CRLF & "You can also disable the automatic update check in the settings.")
 		 Else
+			Global $UpdaterVersionVar = IniRead(@TempDir & "\SMITE OptimizerVersion.ini","Version","Version","")
 			If IniRead(@TempDir & "\SMITE OptimizerVersion.ini","Version","Version","") > $ProgramVersionRE Then
 			   $DownloadLink = IniRead(@TempDir & "\SMITE OptimizerVersion.ini","Download","Download","NotFound")
 			   $UpdtMsgBox = MsgBox(4,"Information","A new version was found! (V"&IniRead(@TempDir & "\SMITE OptimizerVersion.ini","Version","Version","")&")"&@CRLF&"Update info: "&IniRead(@TempDir & "\SMITE OptimizerVersion.ini","Message","Message","")&@CRLF&"Download now?")
@@ -962,7 +963,7 @@ Global Const $FPSVarsArray[4] = ["bSmoothFrameRate","MinSmoothedFrameRate","MaxS
 Global Const $EngineVarsArray[6] = ["MaxParticleResize","MaxParticleResizeWarn","MaxParticleVertexMemory","MinimumPoolSize","MaximumPoolSize"]
 Global Const $WorldVarsArray[36] = ["StaticDecals","DynamicDecals","DecalCullDistanceScale","DynamicLights","DynamicShadows","LightEnvironmentShadows","CompositeDynamicLights","SHSecondaryLighting","DepthOfField","Bloom","bAllowLightShafts","Distortion","DropParticleDistortion","LensFlares","AllowRadialBlur","AllowSubsurfaceScattering","AllowImageReflections","bAllowHighQualityMaterials","SkeletalMeshLODBias","ParticleLODBias","DetailMode","MaxDrawDistanceScale","ShadowFilterQualityBias","MaxShadowResolution","MaxWholeSceneDominantShadowResolution","bAllowWholeSceneDominantShadows","bUseConservativeShadowBounds","bAllowRagdolling","PerfScalingBias","StaticMeshLODBias","bAllowDropShadows","AllowScreenDoorFade","AllowScreenDoorLODFading","bAllowFog","SpeedTreeWind","ShadowTexelsPerPixel"]
 Global Const $ClientVarsArray[3] = ["AllowD3D11","PreferD3D11","UseD3D11Beta"]
-Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2,$EditBoxGUIButtonHelp1 = 2, $EditBoxGUIButtonHelp2 = 2, $EditBoxGUIButtonHelp3 = 2
+Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2,$EditBoxGUIButtonHelp1 = 2, $EditBoxGUIButtonHelp2 = 2, $EditBoxGUIButtonHelp3 = 2, $DebugGUIButtonResetConfig = 2
 Global Const $ConfigBackupPath = "C:\Users\"&@UserName&"\Documents\My Games\SMITE Config Backup\"
 
 if fileExists(RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&"\BattleGame\Config\BattleEngine.ini") = 0 Then
@@ -976,14 +977,9 @@ if IsDeclared("StartupGUIMain") Then GUIDelete($StartupGUIMain)
 
 Func DrawStartupGUI()
    Global $StartupGUIMain = GUICreate($ProgramName&" "&$ProgramVersion,400,50,-1,-1)
-   Local $StartupGUIMainLabel = GUICtrlCreateLabel("Scanning for Configs...",19,7,400,50)
-	  GUICtrlSetColor(-1,0x000000)
+   Local $StartupGUIMainLabel = GUICtrlCreateLabel("Scanning for Configs... (This can take a while)",17,13,400,50)
 	  GUICtrlSetBkColor(-1,-2)
-	  GUICtrlSetFont(-1,27)
-   Local $StartupGUIMainLabel2 = GUICtrlCreateLabel("Scanning for Configs...",17,5,400,50)
-	  GUICtrlSetColor(-1,0x8A0808)
-	  GUICtrlSetBkColor(-1,-2)
-	  GUICtrlSetFont(-1,27)
+	  GUICtrlSetFont(-1,14)
 
    GUISetState()
 EndFunc
@@ -1022,6 +1018,7 @@ Func DrawMainGUI()
 
 	  Global $MenuHelp = GUICtrlCreateMenu("Help")
 		 Global $MenuHelpItem = GUICtrlCreateMenuItem("Help",$MenuHelp)
+		 Global $MenuDebugItem = GUICtrlCreateMenuItem("Debug",$MenuHelp)
 
    ;- SETTINGS GROUPS
 	  GUICtrlCreateGroup("FPS Settings",395,5,200,100)
@@ -1162,6 +1159,41 @@ Func DrawButtonsAndInputs()
 	  Next
 EndFunc
 DrawButtonsAndInputs()
+
+Func DrawDebugGUI()
+   Global $DebugGUI = GUICreate("Debug...",500,150,-1,-1,$WS_EX_TOOLWINDOW)
+   $DebugGUIConfigPathLabel = GUICtrlCreateLabel("BattleEngine: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&" + "&"\BattleGame\Config\BattleEngine.ini",10,10)
+	  GUICtrlSetBkColor(-1,-2)
+	  GUICtrlSetTip(-1,"BattleEngine: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&" + "&"\BattleGame\Config\BattleEngine.ini")
+   $DebugGUIConfigPathLabel2 = GUICtrlCreateLabel("BattleSystemSettings: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&" + "&"\BattleGame\Config\BattleSystemSettings.ini",10,25)
+	  GUICtrlSetBkColor(-1,-2)
+	  GUICtrlSetTip(-1,"BattleSystemSettings: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&" + "&"\BattleGame\Config\BattleSystemSettings.ini")
+
+   Local $IsSteamModeOn
+   if $IsSteamUser = 1 Then
+	  $IsSteamModeOn = "True"
+   Else
+	  $IsSteamModeOn = "False"
+   EndIf
+   $DebugGUISteamModeLabel = GUICtrlCreateLabel("SteamMode = "&$IsSteamModeOn,10,40)
+   GUICtrlSetBkColor(-1,-2)
+
+   if IsDeclared("UpdaterVersionVar") Then
+	  $DebugGUIUpdateVar = GUICtrlCreateLabel("Update Check:   Updater Version: "&$UpdaterVersionVar&"   Current Version: "&$ProgramVersionRE,10,55)
+	  GUICtrlSetBkColor(-1,-2)
+   Else
+	  $DebugGUIUpdateVar = GUICtrlCreateLabel("Update Check:   Updater Version: Failed to connect.   Current Version: "&$ProgramVersionRE,10,55)
+	  GUICtrlSetBkColor(-1,-2)
+   EndIf
+
+   $DebugGUICloseInfoLabel = GUICtrlCreateLabel("You can close this window by 'opening' it again, MENU > HELP > DEBUG",10,100)
+   GUICtrlSetBkColor(-1,-2)
+   GUICtrlSetColor(-1,0xFF0000)
+
+   $DebugGUIButtonResetConfig = GUICtrlCreateButton("Reset Config Paths",390,92)
+
+   GUISetState(@SW_SHOW,$DebugGUI)
+EndFunc
 
 
 ;- PROGRAM FUNCTIONS
@@ -1471,7 +1503,21 @@ While 1
 		 Case $MenuHelpItem
 			GUISetState(@SW_DISABLE,$MainGUI)
 			GUIDisplay(4)
-
+		 Case $MenuDebugItem
+			if IsDeclared("DebugGUI") = 0 or $DebugGUI = -5 Then
+			   DrawDebugGUI()
+			Elseif IsDeclared("DebugGUI") = 1 Then
+			   GUIDelete($DebugGUI)
+			   $DebugGUI = -5
+			   $DebugGUIButtonResetConfig = -5
+			EndIf
+		 Case $DebugGUIButtonResetConfig
+			Local $MsgBoxConfigReset = MsgBox(4,"Information","Are you sure you want to reset the config paths?")
+			if $MsgBoxConfigReset = 6 Then
+			   RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPath")
+			   ShellExecute(@ScriptFullPath)
+			   Exit
+			EndIf
 
 		 Case $VarsButtonArrayTemp[0]
 			if GUICtrlRead($VarsButtonArrayTemp[0]) = "TRUE" Then

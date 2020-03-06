@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.1.3.0
+#AutoIt3Wrapper_Res_Fileversion=1.1.4.0
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=CopyrightCredits.txt, RT_RCDATA, CopyrightCreditsText, 0
@@ -335,8 +335,8 @@
 ;----------------------------------------------------------------------------
 
 Const $ProgramName = "SMITE Optimizer"
-Const $ProgramVersion = "V1.1.3"
-Const $ProgramVersionRE = "1.1.3" ;- Registry Value
+Const $ProgramVersion = "V1.1.4"
+Const $ProgramVersionRE = "1.1.4" ;- Registry Value
 
 
    ;- UPDATER
@@ -595,21 +595,22 @@ DrawButtonsAndInputs()
 
 
 Func CheckConfigPath()
-   Local $PathPrefixTemp[26] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
-   For $I = 0 To 25 Step 1 ;Standard
-	  if fileExists($PathPrefixTemp[$I]&":\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") = 1 Then
+   Local $PathPrefixTemp = DriveGetDrive("fixed")
+
+   For $I = 1 To UBound($PathPrefixTemp)-1 Step 1 ;Standard
+	  if fileExists($PathPrefixTemp[$I]&"\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") = 1 Then
 		 Global $IsSteamUser = 0
-		 Global $SMITEEngineIniPath = $PathPrefixTemp[$I]&":\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
-		 Global $SMITEBattleSystemSettingsIniPath = $PathPrefixTemp[$I]&":\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
+		 Global $SMITEEngineIniPath = $PathPrefixTemp[$I]&"\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
+		 Global $SMITEBattleSystemSettingsIniPath = $PathPrefixTemp[$I]&"\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
 		 Return 0
 	  EndIf
    Next
 
-   For $I = 0 To 25 Step 1 ;OneDrive
-	  if fileExists($PathPrefixTemp[$I]&":\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") Then
+   For $I = 1 To UBound($PathPrefixTemp)-1 Step 1 ;OneDrive
+	  if fileExists($PathPrefixTemp[$I]&"\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") Then
 		 Global $IsSteamUser = 0
-		 Global $SMITEEngineIniPath = $PathPrefixTemp[$I]&":\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
-		 Global $SMITEBattleSystemSettingsIniPath = $PathPrefixTemp[$I]&":\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
+		 Global $SMITEEngineIniPath = $PathPrefixTemp[$I]&"\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
+		 Global $SMITEBattleSystemSettingsIniPath = $PathPrefixTemp[$I]&"\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
 		 Return 0
 	  EndIf
    Next

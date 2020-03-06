@@ -1,0 +1,11 @@
+This feature can be accessed through the Menu. > Settings > Restore Configuration.
+
+Everytime you hit "Apply Settings" it will make a backup of the configuration before making changes to it.
+
+The backups are saved here: C:\Users\**YourUserName**\Documents\My Games\SMITE\BattleGame\SO Config Backup\
+
+For non steam users:
+You can load saved backups. Simply select BattleEngine click on Restore, select BattleSystemSettings (with the same date&time) and hit Restore again.
+
+For steam users:
+You can load saved backups. Simply select DefaultEngine click on Restore, select DefaultSystemSettings (with the same date&time) and hit Restore again.

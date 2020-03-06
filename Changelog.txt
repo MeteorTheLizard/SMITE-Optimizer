@@ -1,12 +1,16 @@
-Update V0.0 > V1.0, Brought to life.
+Update V1.0 > V1.1.
 
-This program uses the engine of SRGG.
+Menu:
+-Added Help
 
+New features:
+-Added Tooltip for vars that are to long to be displayed entirely.
+-You can now look up what each of the variables do, Menu > Help > Help > Variable Explanation
 
-Full list of additional features:
+Help:
+-Added Program Features
+-Added Restoring Configurations
+-Added Variable Explanation
 
--Automatic Updater (Toggle On/Off)
--ChangelogView
--CopyrightAndCreditsView
--DonateButton
--Configuration Restore
+Bug fixes:
+-Fixed steam users not being able to run this program due to missing config files.

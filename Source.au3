@@ -7,10 +7,13 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.0.0.0
+#AutoIt3Wrapper_Res_Fileversion=1.1.0.0
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=CopyrightCredits.txt, RT_RCDATA, CopyrightCreditsText, 0
+#AutoIt3Wrapper_Res_File_Add=ProgramFunctions.txt, RT_RCDATA, ProgramFunctionsHelp, 0
+#AutoIt3Wrapper_Res_File_Add=RestoringConfiguration.txt, RT_RCDATA, RestoringConfigurationHelp, 0
+#AutoIt3Wrapper_Res_File_Add=VariableExplanation.txt, RT_RCDATA, VariableExplanationHelp, 0
 #AutoIt3Wrapper_Run_AU3Check=n
 #AutoIt3Wrapper_Tidy_Stop_OnError=n
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
@@ -26,8 +29,8 @@
 ;----------------------------------------------------------------------------
 
 Const $ProgramName = "SMITE Optimizer"
-Const $ProgramVersion = "V1.0"
-Const $ProgramVersionRE = "1.0" ;- Registry Value
+Const $ProgramVersion = "V1.1"
+Const $ProgramVersionRE = "1.1" ;- Registry Value
 
 
    ;- UPDATER
@@ -108,16 +111,23 @@ Const $ProgramVersionRE = "1.0" ;- Registry Value
 Const $FPSVarsArray[4] = ["bSmoothFrameRate","MinSmoothedFrameRate","MaxSmoothedFrameRate"]
 Const $EngineVarsArray[6] = ["MaxParticleResize","MaxParticleResizeWarn","MaxParticleVertexMemory","MinimumPoolSize","MaximumPoolSize"]
 Const $WorldVarsArray[36] = ["StaticDecals","DynamicDecals","DecalCullDistanceScale","DynamicLights","DynamicShadows","LightEnvironmentShadows","CompositeDynamicLights","SHSecondaryLighting","DepthOfField","Bloom","bAllowLightShafts","Distortion","DropParticleDistortion","LensFlares","AllowRadialBlur","AllowSubsurfaceScattering","AllowImageReflections","bAllowHighQualityMaterials","SkeletalMeshLODBias","ParticleLODBias","DetailMode","MaxDrawDistanceScale","ShadowFilterQualityBias","MaxShadowResolution","MaxWholeSceneDominantShadowResolution","bAllowWholeSceneDominantShadows","bUseConservativeShadowBounds","bAllowRagdolling","PerfScalingBias","StaticMeshLODBias","bAllowDropShadows","AllowScreenDoorFade","AllowScreenDoorLODFading","bAllowFog","SpeedTreeWind","ShadowTexelsPerPixel"]
+Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2,$EditBoxGUIButtonHelp1 = 2, $EditBoxGUIButtonHelp2 = 2, $EditBoxGUIButtonHelp3 = 2, $VarsLabelArray[0]
+Const $ConfigBackupPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\SO Config Backup\"
 
-Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2, $VarsLabelArray[0]
-
-if fileExists("C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") Then
+;- Check if config exists & set their path.
+if fileExists("C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") Then ;- Non-steam
+   Global $IsSteamUser = 0
    Const $SMITEEngineIniPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
    Const $SMITEBattleSystemSettingsIniPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
-   Const $ConfigBackupPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\SO Config Backup\"
-Else
-   MsgBox(0,"ERROR!","Could not find SMITE Configuration."&@CRLF&"Exiting...")
-   Exit
+Else ;Steam
+   if fileExists(RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")) = 1 Then
+	  Global $IsSteamUser = 1
+	  Const $SMITEEngineIniPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultEngine.ini"
+	  Const $SMITEBattleSystemSettingsIniPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultSystemSettings.ini"
+   Else
+	  MsgBox(0,"ERROR!","Could not find SMITE Configuration."&@CRLF&"Exiting...")
+	  Exit
+   EndIf
 EndIf
 
 
@@ -126,7 +136,11 @@ EndIf
 
 
 Func DrawMainGUI()
-   Global $MainGUI = GUICreate($ProgramName&" "&$ProgramVersion,600,420,-1,-1)
+   if $IsSteamUser = 1 Then
+	  Global $MainGUI = GUICreate($ProgramName&" "&$ProgramVersion&" Steam mode",600,420,-1,-1)
+   Else
+	  Global $MainGUI = GUICreate($ProgramName&" "&$ProgramVersion,600,420,-1,-1)
+   EndIf
 	  Global $MainGUIDisclaimerLabel = GUICtrlCreateLabel("IMPORTANT: This program does NOT interact with SMITE directly. It only edits the config which is NOT a banable offense.",5,385,600,25)
    Global $MainGUIGroup = GUICtrlCreateGroup("",5,5,590,379)
       Global $MainGUIApplySettings = GUICtrlCreateButton("Apply settings",400,348,190,30)
@@ -149,6 +163,9 @@ Func DrawMainGUI()
 
 	  Global $MenuDonate = GUICtrlCreateMenu("Donate")
 		 Global $MenuDonateItem = GUICtrlCreateMenuItem("Donate",$MenuDonate)
+
+	  Global $MenuHelp = GUICtrlCreateMenu("Help")
+		 Global $MenuHelpItem = GUICtrlCreateMenuItem("Help",$MenuHelp)
 
    ;- SETTINGS GROUPS
 	  Global $GroupFPS = GUICtrlCreateGroup("FPS Settings",395,5,200,150)
@@ -183,6 +200,15 @@ Func DrawLabels()
 		 ReDim $VarsLabelArray[UBound($VarsLabelArray) + 1]
 		 if $I > 17 Then
 			$VarsLabelArray[$I+3] = GUICtrlCreateLabel($WorldVarsArray[$I],200,20+(20*($I-18)),140,15)
+			if $I = 24 Then
+			   GUICtrlSetTip(-1,"MaxWholeSceneDominantShadowResolution")
+			EndIf
+			if $I = 25 Then
+			   GUICtrlSetTip(-1,"bAllowWholeSceneDominantShadows")
+			EndIf
+			if $I = 26 Then
+			   GUICtrlSetTip(-1,"bUseConservativeShadowBounds")
+			EndIf
 		 Else
 			$VarsLabelArray[$I+3] = GUICtrlCreateLabel($WorldVarsArray[$I],10,20+(20*$I),140,15)
 		 EndIf
@@ -347,11 +373,19 @@ Func ApplySettings()
 	  DirCreate($ConfigBackupPath)
    EndIf
 
-   FileMove($SMITEEngineIniPath,$ConfigBackupPath&"\BattleEngine "&@MON&"."&@MDAY&"."&@YEAR&" - "&@HOUR&"."&@MIN&".ini")
-   FileMove($SMITEBattleSystemSettingsIniPath,$ConfigBackupPath&"\BattleSystemSettings "&@MON&"."&@MDAY&"."&@YEAR&" - "&@HOUR&"."&@MIN&".ini")
+   if $IsSteamUser = 1 Then
+	  FileMove($SMITEEngineIniPath,$ConfigBackupPath&"\DefaultEngine "&@MON&"."&@MDAY&"."&@YEAR&" - "&@HOUR&"."&@MIN&".ini")
+	  FileMove($SMITEBattleSystemSettingsIniPath,$ConfigBackupPath&"\DefaultSystemSettings "&@MON&"."&@MDAY&"."&@YEAR&" - "&@HOUR&"."&@MIN&".ini")
 
-   _FileWriteFromArray($SMITEEngineIniPath,$SMITEEngineIniPathArray,1)
-   _FileWriteFromArray($SMITEBattleSystemSettingsIniPath,$SMITEBattleSystemSettingsIniPathArray,1)
+	  _FileWriteFromArray($SMITEEngineIniPath,$SMITEEngineIniPathArray,1)
+	  _FileWriteFromArray($SMITEBattleSystemSettingsIniPath,$SMITEBattleSystemSettingsIniPathArray,1)
+   Else
+	  FileMove($SMITEEngineIniPath,$ConfigBackupPath&"\BattleEngine "&@MON&"."&@MDAY&"."&@YEAR&" - "&@HOUR&"."&@MIN&".ini")
+	  FileMove($SMITEBattleSystemSettingsIniPath,$ConfigBackupPath&"\BattleSystemSettings "&@MON&"."&@MDAY&"."&@YEAR&" - "&@HOUR&"."&@MIN&".ini")
+
+	  _FileWriteFromArray($SMITEEngineIniPath,$SMITEEngineIniPathArray,1)
+	  _FileWriteFromArray($SMITEBattleSystemSettingsIniPath,$SMITEBattleSystemSettingsIniPathArray,1)
+   EndIf
 
    MsgBox(0,"Success!","Applied changes successfully.")
 EndFunc
@@ -383,6 +417,36 @@ Func GUIDisplay($Var)
 		 GUICtrlSetBkColor(-1,-2)
 	  GUISetState()
    EndIf
+   If $Var = 4 Then
+	  Global $EditBoxGUI = GUICreate("",400,70,-3+100,-65+150,-1,BitOr($WS_EX_TOOLWINDOW,$WS_EX_MDICHILD),$MainGUI)
+	  Global $EditBoxGUIHelpLabel = GUICtrlCreateLabel("Available help:",5,5,395,25)
+		 GUICtrlSetBkColor(-1,-2)
+		 GUICtrlSetFont(-1,15)
+
+		 Global $EditBoxGUIButtonHelp1 = GUICtrlCreateButton("Program Functions",5,30,125,35)
+		 Global $EditBoxGUIButtonHelp2 = GUICtrlCreateButton("Restoring Configurations",137,30,125,35)
+		 Global $EditBoxGUIButtonHelp3 = GUICtrlCreateButton("Variable Explanation",270,30,125,35)
+		 GUICtrlSetBkColor(-1,-2)
+	  GUISetState()
+   EndIf
+   If $Var = 5 Then
+	  Global $EditBoxGUI = GUICreate("Help - Program Functions",@DesktopWidth-400,@DesktopHeight-200,-1,-1,-1,$WS_EX_TOOLWINDOW)
+	  Global $EditBoxGUIEdit = GUICtrlCreateEdit("", 0, 0, @DesktopWidth-400, @DesktopHeight-200,BitOr(2048,$WS_HSCROLL,$WS_VSCROLL)) ;- 2048 = $ES_READONLY
+		 GUICtrlSetData(-1, _Resource_GetAsString("ProgramFunctionsHelp"))
+	  GUISetState()
+   EndIf
+   If $Var = 6 Then
+	  Global $EditBoxGUI = GUICreate("Help - Program Functions",@DesktopWidth-400,@DesktopHeight-200,-1,-1,-1,$WS_EX_TOOLWINDOW)
+	  Global $EditBoxGUIEdit = GUICtrlCreateEdit("", 0, 0, @DesktopWidth-400, @DesktopHeight-200,BitOr(2048,$WS_HSCROLL,$WS_VSCROLL)) ;- 2048 = $ES_READONLY
+		 GUICtrlSetData(-1, _Resource_GetAsString("RestoringConfigurationHelp"))
+	  GUISetState()
+   EndIf
+   If $Var = 7 Then
+	  Global $EditBoxGUI = GUICreate("Help - Program Functions",@DesktopWidth-400,@DesktopHeight-200,-1,-1,-1,$WS_EX_TOOLWINDOW)
+	  Global $EditBoxGUIEdit = GUICtrlCreateEdit("", 0, 0, @DesktopWidth-400, @DesktopHeight-200,BitOr(2048,$WS_HSCROLL,$WS_VSCROLL)) ;- 2048 = $ES_READONLY
+		 GUICtrlSetData(-1, _Resource_GetAsString("VariableExplanationHelp"))
+	  GUISetState()
+   EndIf
 EndFunc
 
 
@@ -391,6 +455,11 @@ Func CloseCGGUI()
    $EditBoxGUI = 0
    If isDeclared("EditBoxGUIButtonRestore") = 1 Then
 	  $EditBoxGUIButtonRestore = 2
+   EndIf
+   If isDeclared("EditBoxGUIButtonHelp1") = 1 Then
+	  $EditBoxGUIButtonHelp1 = 2
+	  $EditBoxGUIButtonHelp2 = 2
+	  $EditBoxGUIButtonHelp3 = 2
    EndIf
    GUISetState(@SW_ENABLE,$MainGUI)
    WinActivate($MainGUI)
@@ -443,6 +512,9 @@ While 1
 			   RegWrite("HKCU\Software\SMITE Optimizer\","UpdateCheck","REG_SZ","TRUE")
 			   MsgBox(0,"Information","Automatic update check turned on.")
 			EndIf
+		 Case $MenuHelpItem
+			GUISetState(@SW_DISABLE,$MainGUI)
+			GUIDisplay(4)
 
 
 		 Case $VarsButtonArrayTemp[0]
@@ -610,18 +682,41 @@ While 1
 			Case $GUI_EVENT_CLOSE, $MenuExit
 			   CloseCGGUI()
 			Case $EditBoxGUIButtonRestore
-			   if _GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)) <> "" Then
-				  ConsoleWrite("Bla: "&_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList))&@CRLF)
-				  if StringInStr(_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),"BattleEngine") <> 0 Then
-					 FileDelete($SMITEEngineIniPath)
-					 FileCopy($ConfigBackupPath&_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),$SMITEEngineIniPath,1)
+			   if $IsSteamUser = 1 Then
+				  if _GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)) <> "" Then
+					 if StringInStr(_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),"DefaultEngine") <> 0 Then
+						FileDelete($SMITEEngineIniPath)
+						FileCopy($ConfigBackupPath&_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),$SMITEEngineIniPath,1)
+					 EndIf
+					 if StringInStr(_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),"DefaultSystemSettings") <> 0 Then
+						FileDelete($SMITEBattleSystemSettingsIniPath)
+						FileCopy($ConfigBackupPath&_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),$SMITEBattleSystemSettingsIniPath,1)
+					 EndIf
+					 MsgBox(0,"Done","Restored successfully.")
 				  EndIf
-				  if StringInStr(_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),"BattleSystemSettings") <> 0 Then
-					 FileDelete($SMITEBattleSystemSettingsIniPath)
-					 FileCopy($ConfigBackupPath&_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),$SMITEBattleSystemSettingsIniPath,1)
+			   Else
+				  if _GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)) <> "" Then
+					 if StringInStr(_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),"BattleEngine") <> 0 Then
+						FileDelete($SMITEEngineIniPath)
+						FileCopy($ConfigBackupPath&_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),$SMITEEngineIniPath,1)
+					 EndIf
+					 if StringInStr(_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),"BattleSystemSettings") <> 0 Then
+						FileDelete($SMITEBattleSystemSettingsIniPath)
+						FileCopy($ConfigBackupPath&_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),$SMITEBattleSystemSettingsIniPath,1)
+					 EndIf
+					 MsgBox(0,"Done","Restored successfully.")
 				  EndIf
-				  MsgBox(0,"Done","Restored successfully.")
 			   EndIf
+			Case $EditBoxGUIButtonHelp1
+			   GUIDelete($EditBoxGUI)
+			   GUIDisplay(5)
+			Case $EditBoxGUIButtonHelp2
+			   GUIDelete($EditBoxGUI)
+			   GUIDisplay(6)
+			Case $EditBoxGUIButtonHelp3
+			   GUIDelete($EditBoxGUI)
+			   GUIDisplay(7)
+
 		 EndSwitch
 	  EndIf
    EndIf

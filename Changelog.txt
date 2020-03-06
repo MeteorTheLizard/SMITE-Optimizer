@@ -1,40 +1,10 @@
-Update V1.1.9 > V1.2
+Update V1.2 > V1.2.1
 
-Quality of Life:
--Overhauled the Configuration Discovery.
- ^This can be seen as a massive change as this improves the programs quality by a ton.
--Added a button to the "Restore Configuration" tab that deletes all of your old config backups.
+Integration Updates:
+-Fixed the "SMITE Config Backup" folder path being static. If you have changed the default path for your windows documents folder, the SMITE Optimizer will now use that one instead.
 
-Help updates:
--Updated the Program Functions to say SO and SMITE Optimizer Subreddit instead of SRGG and SRGG Subreddit.
- ^It will also tell you that you can press the button "Delete all backups" to delete all of your old config backups now.
--Added a line in the Variable Explanations that you can send me more accurate ones if you so desire.
+Other:
+-Removed the Donation info MessageBox and MenuItem.
 
--Fixed the program for steam users
- ^I have finally fixed the program for steam users, it should now properly optimize the game for you.
- The issue was missing variables in the games config files, if you would like to find out what variables were missing, go here: https://pastebin.com/raw/T7GDqXXV
-
-
-
-Update V1.1.8 > V1.1.9
-
-World Settings:
--Removed bAllowFog, (As there are more variables that need to be tweaked for fog to disappear)
--Added Fog (Conquest and other)
- ^to disable fog. Works for Conquest (Jungle and background) and other maps with fog. (False = disabled | True = enabled)
-
-Quality Of Life:
--Scanning for configs has been made optional. If you start the program for the first time or have reset your locations you will be prompted with a message box asking what version of SMITE you have installed. 
-If the program finds the config at the pre-defined locations you don't have to run the scan anymore. 
-However if it cannot find the configs it will still do the scan.
--You can now close the debug GUI by simply clicking the 'x' instead of 'opening' it again. derp.
-
-Resource:
--Edited VariableExplanation.txt (Deleted bAllowFog Explanation)
-
-Code:
--Removed 2 includes (Smaller file size)
-
-Bugfixes:
--Fixed label where it says that it cannot connect to the updater server. (www.reddit.com/r/SRGG > www.reddit.com/r/SMITEOptimizer)
--Fixed weird interaction with the debug GUI and minimizing
+Help Updates:
+-Reflected the static folder change in the help sections.

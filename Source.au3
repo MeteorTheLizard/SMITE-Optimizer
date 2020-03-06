@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.2.0.0
+#AutoIt3Wrapper_Res_Fileversion=1.2.1.0
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=CopyrightCredits.txt, RT_RCDATA, CopyrightCreditsText, 0
@@ -907,8 +907,8 @@
 ;----------------------------------------------------------------------------
 
 Const $ProgramName = "SMITE Optimizer"
-Const $ProgramVersion = "V1.2.0"
-Const $ProgramVersionRE = "1.2.0" ;- Registry Value
+Const $ProgramVersion = "V1.2.1"
+Const $ProgramVersionRE = "1.2.1" ;- Registry Value
 
    ;- UPDATER
    ;------------------------------------------------------------
@@ -990,19 +990,10 @@ Global Const $EngineVarsArray[6] = ["MaxParticleResize","MaxParticleResizeWarn",
 Global Const $WorldVarsArray[36] = ["StaticDecals","DynamicDecals","DecalCullDistanceScale","DynamicLights","DynamicShadows","LightEnvironmentShadows","CompositeDynamicLights","SHSecondaryLighting","DepthOfField","Bloom","bAllowLightShafts","Distortion","DropParticleDistortion","LensFlares","AllowRadialBlur","AllowSubsurfaceScattering","AllowImageReflections","bAllowHighQualityMaterials","SkeletalMeshLODBias","ParticleLODBias","DetailMode","MaxDrawDistanceScale","ShadowFilterQualityBias","MaxShadowResolution","MaxWholeSceneDominantShadowResolution","bAllowWholeSceneDominantShadows","bUseConservativeShadowBounds","bAllowRagdolling","PerfScalingBias","StaticMeshLODBias","bAllowDropShadows","AllowScreenDoorFade","AllowScreenDoorLODFading","SpeedTreeWind","ShadowTexelsPerPixel","Fog (Conquest and other)"]
 Global Const $ClientVarsArray[3] = ["AllowD3D11","PreferD3D11","UseD3D11Beta"]
 Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2,$EditBoxGUIButtonDeleteBackups = 2, $EditBoxGUIButtonHelp1 = 2, $EditBoxGUIButtonHelp2 = 2, $EditBoxGUIButtonHelp3 = 2, $DebugGUIButtonResetConfig = 2, $MainGUIDrawn = false, $RestoreGUIAlive = false
-Global Const $ConfigBackupPath = "C:\Users\"&@UserName&"\Documents\My Games\SMITE Config Backup\"
+Global Const $ConfigBackupPath = RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders","Personal")&"\My Games\SMITE Config Backup\"
 
 ;- CONFIG INIT AND CHECK
 ;----------------------------------------------------------------------------
-
-RegRead("HKCU\Software\SMITE Optimizer\","DonateInfoStatus")
-if @Error <> 0 or RegRead("HKCU\Software\SMITE Optimizer\","DonateInfoStatus") = "" Then
-   RegWrite("HKCU\Software\SMITE Optimizer\","DonateInfoStatus","REG_SZ","0")
-   RegWrite("HKCU\Software\SMITE Optimizer\","BlockDonations","REG_SZ","false")
-   Global $BlockDonations = "False"
-Else
-   Global $BlockDonations = RegRead("HKCU\Software\SMITE Optimizer\","BlockDonations")
-EndIf
 
 RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 if @Error <> 0 or RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine") = "" then
@@ -1233,7 +1224,6 @@ Func DrawMainGUI()
 
 	  Global $MenuDonate = GUICtrlCreateMenu("Donate")
 		 Global $MenuDonateItem = GUICtrlCreateMenuItem("Donate",$MenuDonate)
-		 Global $MenuBlockDonationInfo = GUICtrlCreateMenuItem("Block Donation Info",$MenuDonate)
 
 	  Global $MenuHelp = GUICtrlCreateMenu("Help")
 		 Global $MenuHelpItem = GUICtrlCreateMenuItem("Help",$MenuHelp)
@@ -1759,22 +1749,6 @@ Func ApplySettings()
 
    if fileExists($SMITEEngineIniPath) = 1 and fileExists($SMITEBattleSystemSettingsIniPath) = 1 Then
 	  MsgBox(0,"Success!","Applied changes successfully.")
-	  if RegRead("HKCU\Software\SMITE Optimizer\","DonateInfoStatus") = "0" Then
-		 RegWrite("HKCU\Software\SMITE Optimizer\","DonateInfoStatus","REG_SZ","1")
-	  ElseIf RegRead("HKCU\Software\SMITE Optimizer\","DonateInfoStatus") = "1" Then
-		 Local $MsgBox = MsgBox(1,"Information","Do you like the program?"&@CRLF&"Consider donating to help out a free-time Developer!"&@CRLF&"I would highly appreciate it! :3")
-		 if $MsgBox = 1 Then
-			ShellExecute("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG")
-		 EndIf
-		 RegWrite("HKCU\Software\SMITE Optimizer\","DonateInfoStatus","REG_SZ","2")
-	  ElseIf RegRead("HKCU\Software\SMITE Optimizer\","DonateInfoStatus") = "2" Then
-		 if $BlockDonations = "False" then
-			Local $MsgBox = MsgBox(1,"Information","Do you like the program?"&@CRLF&"Consider donating to help out a free-time Developer!"&@CRLF&"I would highly appreciate it! :3"&@CRLF&@CRLF&"You can disable this message:"&@CRLF&"Menu > Donations > Block Donation Info")
-			if $MsgBox = 1 Then
-			   ShellExecute("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG")
-			EndIf
-		 EndIf
-	  EndIf
    Else
 	  MsgBox(0,"Uh oh","Something went wrong.")
    EndIf
@@ -1920,16 +1894,6 @@ While 1
 			Else
 			   RegWrite("HKCU\Software\SMITE Optimizer\","UpdateCheck","REG_SZ","TRUE")
 			   MsgBox(0,"Information","Automatic update check turned on.")
-			EndIf
-		 Case $MenuBlockDonationInfo
-			if RegRead("HKCU\Software\SMITE Optimizer\","BlockDonations") = "True" Then
-			   RegWrite("HKCU\Software\SMITE Optimizer\","BlockDonations","REG_SZ","False")
-			   $BlockDonations = "False"
-			   MsgBox(0,"Information","Donation info will no longer be blocked.")
-			Else
-			   RegWrite("HKCU\Software\SMITE Optimizer\","BlockDonations","REG_SZ","True")
-			   $BlockDonations = "True"
-			   MsgBox(0,"Information","I can understand that you block this, i really do.")
 			EndIf
 		 Case $MenuHelpItem
 			GUISetState(@SW_DISABLE,$MainGUI)

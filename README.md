@@ -35,6 +35,12 @@ Contact: MrRangerLP@gmx.de
  
  Any kind of support is greatly appreciated!
  
+ ## Compiling the Source.au3
+ 
+If you downloaded a version earlier than **V1.2.3** you have to manually download the ResourceEx.au3 include and put it into your autoit/includes folder. After that, everything should work just fine.
+
+If your version of the SMITE Optimizer came with said include, you still have to install it manually in your autoit/includes folder in order to be able to compile the executable.
+ 
  ## FAQ (Ported from reddit /r/SMITEOptimizer)
  Q: Is it safe to use this program?
 

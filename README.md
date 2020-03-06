@@ -27,7 +27,7 @@ Contact: MrRangerLP@gmx.de
  
  ## Supporting the project
  
- If you feel generous or the need to give something in return, you can either contribute to the project by improving the code and creating **pull requests** or by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG).
+ If you feel generous or the need to give something in return, you can either contribute to the project by improving the code and creating **pull requests** or by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG), alternatively we also have a [patreon](https://www.patreon.com/SMITEOptimizer)!
  
  Any kind of support is greatly appreciated!
  

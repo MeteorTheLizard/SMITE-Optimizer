@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.1.5.0
+#AutoIt3Wrapper_Res_Fileversion=1.1.51.0
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=CopyrightCredits.txt, RT_RCDATA, CopyrightCreditsText, 0
@@ -335,8 +335,8 @@
 ;----------------------------------------------------------------------------
 
 Const $ProgramName = "SMITE Optimizer"
-Const $ProgramVersion = "V1.1.5"
-Const $ProgramVersionRE = "1.1.5" ;- Registry Value
+Const $ProgramVersion = "V1.1.51"
+Const $ProgramVersionRE = "1.1.51" ;- Registry Value
 
 
    ;- UPDATER
@@ -434,9 +434,9 @@ Func DrawMainGUI()
    Else
 	  Global $MainGUI = GUICreate($ProgramName&" "&$ProgramVersion,600,420,-1,-1)
    EndIf
-	  Global $MainGUIDisclaimerLabel = GUICtrlCreateLabel("IMPORTANT: This program does NOT interact with SMITE directly. It only edits the config which is NOT a bannable offense.",5,385,600,25)
-   Global $MainGUIGroup = GUICtrlCreateGroup("",5,5,590,379)
-      Global $MainGUIApplySettings = GUICtrlCreateButton("Apply settings",400,348,190,30)
+   GUICtrlCreateLabel("IMPORTANT: This program does NOT interact with SMITE directly. It only edits the config which is NOT a bannable offense.",5,385,600,25)
+   GUICtrlCreateGroup("",5,5,590,379)
+   Global $MainGUIApplySettings = GUICtrlCreateButton("Apply settings",400,348,190,30)
    Global $MainGUICheckboxUseRecommendedSettings = GUiCtrlCreateCheckbox("Use recommended settings",403,329,150,17)
 
    Global $CheckboxApplyFPSSettings = GUICtrlCreateCheckbox("Apply FPS settings", 400,85,105,15)
@@ -461,10 +461,10 @@ Func DrawMainGUI()
 		 Global $MenuHelpItem = GUICtrlCreateMenuItem("Help",$MenuHelp)
 
    ;- SETTINGS GROUPS
-	  Global $GroupFPS = GUICtrlCreateGroup("FPS Settings",395,5,200,100)
-	  Global $GroupEngine = GUICtrlCreateGroup("Engine Settings",395,110,200,140)
-      Global $GroupWorld = GUICtrlCreateGroup("World Settings",5,5,391,379)
-	  Global $GroupWorldMid = GUICtrlCreateGroup("",391/2,5,3,379)
+	  GUICtrlCreateGroup("FPS Settings",395,5,200,100)
+	  GUICtrlCreateGroup("Engine Settings",395,110,200,140)
+      GUICtrlCreateGroup("World Settings",5,5,391,379)
+		 GUICtrlCreateGroup("",391/2,5,3,379)
 	  For $I = 0 To 16 Step 1
 		 GUICtrlCreateGroup("",5,32+(20*$I),390,5)
 	  Next
@@ -729,7 +729,7 @@ Func ApplySettings()
    if fileExists($SMITEEngineIniPath) = 1 and fileExists($SMITEBattleSystemSettingsIniPath) = 1 Then
 	  MsgBox(0,"Success!","Applied changes successfully.")
    Else
-	  MsgBox(0,"Success!","Something went wrong.")
+	  MsgBox(0,"Uh oh","Something went wrong.")
    EndIf
 EndFunc
 

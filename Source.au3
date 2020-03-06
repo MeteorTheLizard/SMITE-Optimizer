@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.1.4.0
+#AutoIt3Wrapper_Res_Fileversion=1.1.5.0
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=CopyrightCredits.txt, RT_RCDATA, CopyrightCreditsText, 0
@@ -335,8 +335,8 @@
 ;----------------------------------------------------------------------------
 
 Const $ProgramName = "SMITE Optimizer"
-Const $ProgramVersion = "V1.1.4"
-Const $ProgramVersionRE = "1.1.4" ;- Registry Value
+Const $ProgramVersion = "V1.1.5"
+Const $ProgramVersionRE = "1.1.5" ;- Registry Value
 
 
    ;- UPDATER
@@ -417,7 +417,7 @@ Const $ProgramVersionRE = "1.1.4" ;- Registry Value
 Const $FPSVarsArray[4] = ["bSmoothFrameRate","MinSmoothedFrameRate","MaxSmoothedFrameRate"]
 Const $EngineVarsArray[6] = ["MaxParticleResize","MaxParticleResizeWarn","MaxParticleVertexMemory","MinimumPoolSize","MaximumPoolSize"]
 Const $WorldVarsArray[36] = ["StaticDecals","DynamicDecals","DecalCullDistanceScale","DynamicLights","DynamicShadows","LightEnvironmentShadows","CompositeDynamicLights","SHSecondaryLighting","DepthOfField","Bloom","bAllowLightShafts","Distortion","DropParticleDistortion","LensFlares","AllowRadialBlur","AllowSubsurfaceScattering","AllowImageReflections","bAllowHighQualityMaterials","SkeletalMeshLODBias","ParticleLODBias","DetailMode","MaxDrawDistanceScale","ShadowFilterQualityBias","MaxShadowResolution","MaxWholeSceneDominantShadowResolution","bAllowWholeSceneDominantShadows","bUseConservativeShadowBounds","bAllowRagdolling","PerfScalingBias","StaticMeshLODBias","bAllowDropShadows","AllowScreenDoorFade","AllowScreenDoorLODFading","bAllowFog","SpeedTreeWind","ShadowTexelsPerPixel"]
-Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2,$EditBoxGUIButtonHelp1 = 2, $EditBoxGUIButtonHelp2 = 2, $EditBoxGUIButtonHelp3 = 2, $VarsLabelArray[0]
+Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2,$EditBoxGUIButtonHelp1 = 2, $EditBoxGUIButtonHelp2 = 2, $EditBoxGUIButtonHelp3 = 2
 Const $ConfigBackupPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\SO Config Backup\"
 
 
@@ -439,8 +439,8 @@ Func DrawMainGUI()
       Global $MainGUIApplySettings = GUICtrlCreateButton("Apply settings",400,348,190,30)
    Global $MainGUICheckboxUseRecommendedSettings = GUiCtrlCreateCheckbox("Use recommended settings",403,329,150,17)
 
-   Global $CheckboxApplyFPSSettings = GUICtrlCreateCheckbox("Apply FPS settings", 400,135,105,15)
-   Global $CheckboxApplyEngineSettings = GUICtrlCreateCheckbox("Apply Engine Settings",400,293,135,15)
+   Global $CheckboxApplyFPSSettings = GUICtrlCreateCheckbox("Apply FPS settings", 400,85,105,15)
+   Global $CheckboxApplyEngineSettings = GUICtrlCreateCheckbox("Apply Engine Settings",400,230,135,15)
 
 
    ;- MENU
@@ -461,8 +461,8 @@ Func DrawMainGUI()
 		 Global $MenuHelpItem = GUICtrlCreateMenuItem("Help",$MenuHelp)
 
    ;- SETTINGS GROUPS
-	  Global $GroupFPS = GUICtrlCreateGroup("FPS Settings",395,5,200,150)
-	  Global $GroupEngine = GUICtrlCreateGroup("Engine Settings",395,163,200,150)
+	  Global $GroupFPS = GUICtrlCreateGroup("FPS Settings",395,5,200,100)
+	  Global $GroupEngine = GUICtrlCreateGroup("Engine Settings",395,110,200,140)
       Global $GroupWorld = GUICtrlCreateGroup("World Settings",5,5,391,379)
 	  Global $GroupWorldMid = GUICtrlCreateGroup("",391/2,5,3,379)
 	  For $I = 0 To 16 Step 1
@@ -476,23 +476,20 @@ DrawMainGUI()
 Func DrawLabels()
    ;- FPS
 	  For $I = 0 To 2 Step 1
-		 ReDim $VarsLabelArray[UBound($VarsLabelArray) + 1]
-		 $VarsLabelArray[$I] = GUICtrlCreateLabel($FPSVarsArray[$I],400,25+(20*$I),140,15)
+		 GUICtrlCreateLabel($FPSVarsArray[$I],400,25+(20*$I),140,15)
 			GUICtrlSetBkColor(-1,-2)
 	  Next
 
    ;- Engine
 	  For $I = 0 To 4 Step 1
-		 ReDim $VarsLabelArray[UBound($VarsLabelArray) + 1]
-		 $VarsLabelArray[$I+3] = GUICtrlCreateLabel($EngineVarsArray[$I],400,183+(20*$I),140,15)
+		 GUICtrlCreateLabel($EngineVarsArray[$I],400,130+(20*$I),140,15)
 			GUICtrlSetBkColor(-1,-2)
 	  Next
 
    ;- World
       For $I = 0 To 35 Step 1
-		 ReDim $VarsLabelArray[UBound($VarsLabelArray) + 1]
 		 if $I > 17 Then
-			$VarsLabelArray[$I+3] = GUICtrlCreateLabel($WorldVarsArray[$I],200,20+(20*($I-18)),140,15)
+			GUICtrlCreateLabel($WorldVarsArray[$I],200,20+(20*($I-18)),140,15)
 			if $I = 24 Then
 			   GUICtrlSetTip(-1,"MaxWholeSceneDominantShadowResolution")
 			EndIf
@@ -503,10 +500,11 @@ Func DrawLabels()
 			   GUICtrlSetTip(-1,"bUseConservativeShadowBounds")
 			EndIf
 		 Else
-			$VarsLabelArray[$I+3] = GUICtrlCreateLabel($WorldVarsArray[$I],10,20+(20*$I),140,15)
+			GUICtrlCreateLabel($WorldVarsArray[$I],10,20+(20*$I),140,15)
 		 EndIf
 			GUICtrlSetBkColor(-1,-2)
-	  Next
+		 Next
+
 EndFunc
 DrawLabels()
 
@@ -534,9 +532,15 @@ Func DrawButtonsAndInputs()
 		 For $I = 0 To 4 Step 1
 			ReDim $VarsInputArray[UBound($VarsInputArray) + 1]
 			If $I < 3 Then
-			   $VarsInputArray[$I+2] = GUICtrlCreateInput(iniRead($SMITEEngineIniPath,"Engine.Engine",$EngineVarsArray[$I],""),541,182+(20*$I),50,17,8192)
+			   $VarsInputArray[$I+2] = GUICtrlCreateInput(iniRead($SMITEEngineIniPath,"Engine.Engine",$EngineVarsArray[$I],""),541,130+(20*$I),50,17,8192)
 			Else
-			   $VarsInputArray[$I+2] = GUICtrlCreateInput(iniRead($SMITEEngineIniPath,"TextureStreaming",$EngineVarsArray[$I],""),541,182+(20*$I),50,17,8192)
+			   $VarsInputArray[$I+2] = GUICtrlCreateInput(iniRead($SMITEEngineIniPath,"TextureStreaming",$EngineVarsArray[$I],""),541,130+(20*$I),50,17,8192)
+			EndIf
+
+			if $IsSteamUser = 1 Then
+			   if $I = 2 or $I = 3 or $I = 4 Then
+				  GUICtrlSetState(-1,128)
+			   EndIf
 			EndIf
 		 Next
 
@@ -549,6 +553,12 @@ Func DrawButtonsAndInputs()
 			Else
 			   if $I = 18 or $I = 19 or $I = 20 or $I = 21 or $I = 22  or $I = 23 or $I = 24 or $I = 28 or $I = 29 or $I = 35 Then
 				  $VarsInputArray[$I+7] = GUICtrlCreateInput(iniRead($SMITEBattleSystemSettingsIniPath,"SystemSettings",$WorldVarsArray[$I],""),343,19+(20*($I-18)),50,17,8192)
+			   EndIf
+			EndIf
+
+			if $IsSteamUser = 1 Then
+			   if $I = 19 or $I = 22 Then
+				  GUICtrlSetState(-1,128)
 			   EndIf
 			EndIf
 		 Next
@@ -632,7 +642,14 @@ Func UseRecommendedSettings()
 
    ;- Inputs
 	  For $I = 0 To UBound($VarsInputArrayTemp)-1 Step 1
-		 GUICtrlSetData($VarsInputArrayTemp[$I],$ArrayInput[$I])
+		 if $IsSteamUser = 1 Then
+			if $I = 4 or $I = 5 or $I = 6 or $I = 9 or $I = 12 Then
+			Else
+			   GUICtrlSetData($VarsInputArrayTemp[$I],$ArrayInput[$I])
+			EndIf
+		 Else
+			GUICtrlSetData($VarsInputArrayTemp[$I],$ArrayInput[$I])
+		 EndIf
 	  Next
 
    ;- Buttons

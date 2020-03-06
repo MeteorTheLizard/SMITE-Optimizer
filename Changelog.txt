@@ -1,15 +1,27 @@
-Update V1.1.5 > V1.1.51.
+Update V1.1.6 > V1.1.7.
 
-Fixed Typo:
--Fixed MsgBox(0,"Success!","Something went wrong.") - - "Success!" > "Uh oh"
+Bug Fixes:
+-Fixed program for 32Bit systems.
+-Fixed First-start error. (AutoIt Unknown Function Name)
+
+
+Update V1.1.51 > V1.1.6.
+
+On the very first start of the program, the program will scan ALL DRIVES for configs. This process can take a while.
+This is to avoid the classic "Could not find SMITE Configuration" error.
+It is literally impossible now that the program can't find configs... Unless you don't have SMITE installed. // Deleted ALL of them
+
+-Added Client Settings
+
+Client Settings:
+-Added "Use DirectX11".
 
 Misc:
--Less Memory Usage.
+-Moved Config Backup path from C:\Users\%%UserName%%\Documents\My Games\SMITE\BattleGame\SO Config Backup\ 
+To C:\Users\%%UserName%%\Documents\My Games\SMITE Config Backup\
+-Changed Changelog window size.
+-Set several label backgrounds transparent.
 
-
-
-Update V1.1.4 > V1.1.5.
-
-Misc:
--Disabled inputs for ParticleLODBias, ShadowFilterQualityBias, MaxParticleVertexMemory, MinimumPoolSize and MaximumPoolSize when running in Steam Mode.
--Moved Engine Settings a bit higher
+Resource:
+-Edited ProgramFunctions.txt
+-Edited RestoringConfiguration.txt

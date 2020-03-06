@@ -1,8 +1,15 @@
+Update V1.1.7 > V1.1.7.1
+
+-Updated the subreddit link & label
+
+
+
 Update V1.1.6 > V1.1.7.
 
 Bug Fixes:
 -Fixed program for 32Bit systems.
 -Fixed First-start error. (AutoIt Unknown Function Name)
+
 
 
 Update V1.1.51 > V1.1.6.

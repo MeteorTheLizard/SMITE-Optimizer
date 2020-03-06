@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.1.7.0
+#AutoIt3Wrapper_Res_Fileversion=1.1.7.1
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=CopyrightCredits.txt, RT_RCDATA, CopyrightCreditsText, 0
@@ -879,8 +879,8 @@
 ;----------------------------------------------------------------------------
 
 Const $ProgramName = "SMITE Optimizer"
-Const $ProgramVersion = "V1.1.7"
-Const $ProgramVersionRE = "1.1.7" ;- Registry Value
+Const $ProgramVersion = "V1.1.7.1"
+Const $ProgramVersionRE = "1.1.7.1" ;- Registry Value
 
 
    ;- UPDATER
@@ -1008,7 +1008,7 @@ Func DrawMainGUI()
 
    ;- MENU
    	  Global $Menu = GUICtrlCreateMenu("SO "&$ProgramVersion)
-	  Global $MenuRedditLink = GUICtrlCreateMenuItem("Open SRGG Subreddit",$Menu)
+	  Global $MenuRedditLink = GUICtrlCreateMenuItem("Open the SO Subreddit",$Menu)
 	  Global $MenuChangelog= GUICtrlCreateMenuItem("Changelog",$Menu)
 	  Global $MenuCopyrightCredits = GUICtrlCreateMenuItem("Copyright and Credits",$Menu)
 	  Global $MenuExit = GUICtrlCreateMenuItem("Exit",$Menu)
@@ -1431,7 +1431,7 @@ While 1
 			Exit
 
 		 Case $MenuRedditLink
-			ShellExecute("http://www.reddit.com/r/SRGG/new")
+			ShellExecute("https://www.reddit.com/r/SMITEOptimizer/new")
 		 Case $MenuDonateItem
 			ShellExecute("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG")
 

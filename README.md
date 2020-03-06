@@ -44,7 +44,7 @@ Q: When i start the program windows tells me it is not safe to use.
 
 Q: My Antivirus says this program is potentially harmful or a virus.
 
-* A: A common problem with AutoIt scripts, please go [here](https://docs.google.com/forms/d/e/1FAIpQLScbpgxotYzSyGYVUS3LJP6_4mluQlXEK0VjpXglEgsHbDsMAQ/viewform) to report this problem to me. I will then get in contact with the Antivirus provider.
+* A: A common problem with AutoIt scripts, please go [here (outdated link)]() to report this problem to me. I will then get in contact with the Antivirus provider.
 
 Q: The game no longer starts after optimizing it.
 

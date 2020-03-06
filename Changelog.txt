@@ -1,3 +1,9 @@
+Update V1.1.1 > V1.1.2.
+
+OneDrive users can now use this program.
+
+
+
 Update V1.1 > V1.1.1.
 
 Misc:

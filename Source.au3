@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.1.0.0
+#AutoIt3Wrapper_Res_Fileversion=1.1.1.0
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=CopyrightCredits.txt, RT_RCDATA, CopyrightCreditsText, 0
@@ -18,19 +18,325 @@
 #AutoIt3Wrapper_Tidy_Stop_OnError=n
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
+;-- INCLUDES
+;----------------------------------------------------------------------------
+
+
+;- Array.au3
+   Func _ArrayDelete(ByRef $aArray, $vRange)
+	  If Not IsArray($aArray) Then Return SetError(1, 0, -1)
+	  Local $iDim_1 = UBound($aArray, $UBOUND_ROWS) - 1
+	  If IsArray($vRange) Then
+		If UBound($vRange, $UBOUND_DIMENSIONS) <> 1 Or UBound($vRange, $UBOUND_ROWS) < 2 Then Return SetError(4, 0, -1)
+	  Else
+		; Expand range
+		Local $iNumber, $aSplit_1, $aSplit_2
+		$vRange = StringStripWS($vRange, 8)
+		$aSplit_1 = StringSplit($vRange, ";")
+		$vRange = ""
+		For $i = 1 To $aSplit_1[0]
+			; Check for correct range syntax
+			If Not StringRegExp($aSplit_1[$i], "^\d+(-\d+)?$") Then Return SetError(3, 0, -1)
+			$aSplit_2 = StringSplit($aSplit_1[$i], "-")
+			Switch $aSplit_2[0]
+				Case 1
+					$vRange &= $aSplit_2[1] & ";"
+				Case 2
+					If Number($aSplit_2[2]) >= Number($aSplit_2[1]) Then
+						$iNumber = $aSplit_2[1] - 1
+						Do
+							$iNumber += 1
+							$vRange &= $iNumber & ";"
+						Until $iNumber = $aSplit_2[2]
+					EndIf
+			EndSwitch
+		Next
+		$vRange = StringSplit(StringTrimRight($vRange, 1), ";")
+	  EndIf
+	  If $vRange[1] < 0 Or $vRange[$vRange[0]] > $iDim_1 Then Return SetError(5, 0, -1)
+	  ; Remove rows
+	  Local $iCopyTo_Index = 0
+	  Switch UBound($aArray, $UBOUND_DIMENSIONS)
+		Case 1
+			; Loop through array flagging elements to be deleted
+			For $i = 1 To $vRange[0]
+				$aArray[$vRange[$i]] = ChrW(0xFAB1)
+			Next
+			; Now copy rows to keep to fill deleted rows
+			For $iReadFrom_Index = 0 To $iDim_1
+				If $aArray[$iReadFrom_Index] == ChrW(0xFAB1) Then
+					ContinueLoop
+				Else
+					If $iReadFrom_Index <> $iCopyTo_Index Then
+						$aArray[$iCopyTo_Index] = $aArray[$iReadFrom_Index]
+					EndIf
+					$iCopyTo_Index += 1
+				EndIf
+			Next
+			ReDim $aArray[$iDim_1 - $vRange[0] + 1]
+		Case 2
+			Local $iDim_2 = UBound($aArray, $UBOUND_COLUMNS) - 1
+			; Loop through array flagging elements to be deleted
+			For $i = 1 To $vRange[0]
+				$aArray[$vRange[$i]][0] = ChrW(0xFAB1)
+			Next
+			; Now copy rows to keep to fill deleted rows
+			For $iReadFrom_Index = 0 To $iDim_1
+				If $aArray[$iReadFrom_Index][0] == ChrW(0xFAB1) Then
+					ContinueLoop
+				Else
+					If $iReadFrom_Index <> $iCopyTo_Index Then
+						For $j = 0 To $iDim_2
+							$aArray[$iCopyTo_Index][$j] = $aArray[$iReadFrom_Index][$j]
+						Next
+					EndIf
+					$iCopyTo_Index += 1
+				EndIf
+			Next
+			ReDim $aArray[$iDim_1 - $vRange[0] + 1][$iDim_2 + 1]
+		Case Else
+			Return SetError(2, 0, False)
+	  EndSwitch
+
+	  Return UBound($aArray, $UBOUND_ROWS)
+   EndFunc
+
+;- File.au3
+   Func _FileReadToArray($sFilePath, ByRef $vReturn, $iFlags = $FRTA_COUNT, $sDelimiter = "")
+	  ; Clear the previous contents
+	  $vReturn = 0
+
+	  If $iFlags = Default Then $iFlags = $FRTA_COUNT
+	  If $sDelimiter = Default Then $sDelimiter = ""
+
+	  ; Set "array of arrays" flag
+	  Local $bExpand = True
+	  If BitAND($iFlags, $FRTA_INTARRAYS) Then
+		$bExpand = False
+		$iFlags -= $FRTA_INTARRAYS
+	  EndIf
+	  ; Set delimiter flag
+	  Local $iEntire = $STR_CHRSPLIT
+	  If BitAND($iFlags, $FRTA_ENTIRESPLIT) Then
+		$iEntire = $STR_ENTIRESPLIT
+		$iFlags -= $FRTA_ENTIRESPLIT
+	  EndIf
+	  ; Set row count and split count flags
+	  Local $iNoCount = 0
+	  If $iFlags <> $FRTA_COUNT Then
+		$iFlags = $FRTA_NOCOUNT
+		$iNoCount = $STR_NOCOUNT
+	  EndIf
+
+	  ; Check delimiter
+	  If $sDelimiter Then
+		; Read file into an array
+		Local $aLines = FileReadToArray($sFilePath)
+		If @error Then Return SetError(@error, 0, 0)
+
+		; Get first dimension and add count if required
+		Local $iDim_1 = UBound($aLines) + $iFlags
+		; Check type of return array
+		If $bExpand Then ; All lines have same number of fields
+			; Count fields in first line
+			Local $iDim_2 = UBound(StringSplit($aLines[0], $sDelimiter, $iEntire + $STR_NOCOUNT))
+			; Size array
+			Local $aTemp_Array[$iDim_1][$iDim_2]
+			; Declare the variables
+			Local $iFields, _
+					$aSplit
+			; Loop through the lines
+			For $i = 0 To $iDim_1 - $iFlags - 1
+				; Split each line as required
+				$aSplit = StringSplit($aLines[$i], $sDelimiter, $iEntire + $STR_NOCOUNT)
+				; Count the items
+				$iFields = UBound($aSplit)
+				If $iFields <> $iDim_2 Then
+					; Return error
+					Return SetError(3, 0, 0)
+				EndIf
+				; Fill this line of the array
+				For $j = 0 To $iFields - 1
+					$aTemp_Array[$i + $iFlags][$j] = $aSplit[$j]
+				Next
+			Next
+			; Check at least 2 columns
+			If $iDim_2 < 2 Then Return SetError(4, 0, 0)
+			; Set dimension count
+			If $iFlags Then
+				$aTemp_Array[0][0] = $iDim_1 - $iFlags
+				$aTemp_Array[0][1] = $iDim_2
+			EndIf
+		Else ; Create "array of arrays"
+			; Size array
+			Local $aTemp_Array[$iDim_1]
+			; Loop through the lines
+			For $i = 0 To $iDim_1 - $iFlags - 1
+				; Split each line as required
+				$aTemp_Array[$i + $iFlags] = StringSplit($aLines[$i], $sDelimiter, $iEntire + $iNoCount)
+			Next
+			; Set dimension count
+			If $iFlags Then
+				$aTemp_Array[0] = $iDim_1 - $iFlags
+			EndIf
+		EndIf
+		; Return the array
+		$vReturn = $aTemp_Array
+	  Else ; 1D
+		If $iFlags Then
+			Local $hFileOpen = FileOpen($sFilePath, $FO_READ)
+			If $hFileOpen = -1 Then Return SetError(1, 0, 0)
+			Local $sFileRead = FileRead($hFileOpen)
+			FileClose($hFileOpen)
+
+			If StringLen($sFileRead) Then
+				$vReturn = StringRegExp(@LF & $sFileRead, "(?|(\N+)\z|(\N*)(?:\R))", 3)
+				$vReturn[0] = UBound($vReturn) - 1
+			Else
+				Return SetError(2, 0, 0)
+			EndIf
+		Else
+			$vReturn = FileReadToArray($sFilePath)
+			If @error Then
+				$vReturn = 0
+				Return SetError(@error, 0, 0)
+			EndIf
+		EndIf
+
+	  EndIf
+	  Return 1
+	EndFunc
+   Func _FileWriteFromArray($sFilePath, Const ByRef $aArray, $iBase = Default, $iUBound = Default, $sDelimiter = "|")
+	  Local $iReturn = 0
+	  ; Check if we have a valid array as an input.
+	  If Not IsArray($aArray) Then Return SetError(2, 0, $iReturn)
+
+	  ; Check the number of dimensions is no greater than a 2d array.
+	  Local $iDims = UBound($aArray, $UBOUND_DIMENSIONS)
+	  If $iDims > 2 Then Return SetError(4, 0, 0)
+
+	  ; Determine last entry of the array.
+	  Local $iLast = UBound($aArray) - 1
+	  If $iUBound = Default Or $iUBound > $iLast Then $iUBound = $iLast
+	  If $iBase < 0 Or $iBase = Default Then $iBase = 0
+	  If $iBase > $iUBound Then Return SetError(5, 0, $iReturn)
+	  If $sDelimiter = Default Then $sDelimiter = "|"
+
+	  ; Open output file for overwrite by default, or use input file handle if passed.
+	  Local $hFileOpen = $sFilePath
+	  If IsString($sFilePath) Then
+		$hFileOpen = FileOpen($sFilePath, $FO_OVERWRITE)
+		If $hFileOpen = -1 Then Return SetError(1, 0, $iReturn)
+	  EndIf
+
+	  ; Write array data to file.
+	  Local $iError = 0
+	  $iReturn = 1 ; Set the return value to true.
+	  Switch $iDims
+		Case 1
+			For $i = $iBase To $iUBound
+				If Not FileWrite($hFileOpen, $aArray[$i] & @CRLF) Then
+					$iError = 3
+					$iReturn = 0
+					ExitLoop
+				EndIf
+			Next
+		Case 2
+			Local $sTemp = ""
+			For $i = $iBase To $iUBound
+				$sTemp = $aArray[$i][0]
+				For $j = 1 To UBound($aArray, $UBOUND_COLUMNS) - 1
+					$sTemp &= $sDelimiter & $aArray[$i][$j]
+				Next
+				If Not FileWrite($hFileOpen, $sTemp & @CRLF) Then
+					$iError = 3
+					$iReturn = 0
+					ExitLoop
+				EndIf
+			Next
+	  EndSwitch
+
+	  ; Close file only if specified by a string path.
+	  If IsString($sFilePath) Then FileClose($hFileOpen)
+
+	  ; Return the results.
+	  Return SetError($iError, 0, $iReturn)
+   EndFunc
+   Func _FileListToArray($sFilePath, $sFilter = "*", $iFlag = $FLTA_FILESFOLDERS, $bReturnPath = False)
+	  Local $sDelimiter = "|", $sFileList = "", $sFileName = "", $sFullPath = ""
+
+	  ; Check parameters for the Default keyword or they meet a certain criteria
+	  $sFilePath = StringRegExpReplace($sFilePath, "[\\/]+$", "") & "\" ; Ensure a single trailing backslash
+	  If $iFlag = Default Then $iFlag = $FLTA_FILESFOLDERS
+	  If $bReturnPath Then $sFullPath = $sFilePath
+	  If $sFilter = Default Then $sFilter = "*"
+
+	  ; Check if the directory exists
+	  If Not FileExists($sFilePath) Then Return SetError(1, 0, 0)
+	  If StringRegExp($sFilter, "[\\/:><\|]|(?s)^\s*$") Then Return SetError(2, 0, 0)
+	  If Not ($iFlag = 0 Or $iFlag = 1 Or $iFlag = 2) Then Return SetError(3, 0, 0)
+	  Local $hSearch = FileFindFirstFile($sFilePath & $sFilter)
+	  If @error Then Return SetError(4, 0, 0)
+	  While 1
+		$sFileName = FileFindNextFile($hSearch)
+		If @error Then ExitLoop
+		If ($iFlag + @extended = 2) Then ContinueLoop
+		$sFileList &= $sDelimiter & $sFullPath & $sFileName
+	  WEnd
+	  FileClose($hSearch)
+	  If $sFileList = "" Then Return SetError(4, 0, 0)
+	  Return StringSplit(StringTrimLeft($sFileList, 1), $sDelimiter,2)
+   EndFunc
+
+;- GuiListBox.au3
+   Func _GUICtrlListBox_GetText($hWnd, $iIndex)
+	  Local $tText = DllStructCreate("wchar Text[" & _GUICtrlListBox_GetTextLen($hWnd, $iIndex) + 1 & "]")
+	  If Not IsHWnd($hWnd) Then $hWnd = GUICtrlGetHandle($hWnd)
+	  _SendMessage($hWnd, $LB_GETTEXT, $iIndex, $tText, 0, "wparam", "struct*")
+	  Return DllStructGetData($tText, "Text")
+   EndFunc
+
+   Func _GUICtrlListBox_GetTextLen($hWnd, $iIndex)
+	  If IsHWnd($hWnd) Then
+		Return _SendMessage($hWnd, $LB_GETTEXTLEN, $iIndex)
+	  Else
+		Return GUICtrlSendMsg($hWnd, $LB_GETTEXTLEN, $iIndex, 0)
+	  EndIf
+   EndFunc
+
+   Func _GUICtrlListBox_AddString($hWnd, $sText)
+	  If Not IsString($sText) Then $sText = String($sText)
+
+	  If IsHWnd($hWnd) Then
+		 Return _SendMessage($hWnd, $LB_ADDSTRING, 0, $sText, 0, "wparam", "wstr")
+	  Else
+		 Return GUICtrlSendMsg($hWnd, $LB_ADDSTRING, 0, $sText)
+	  EndIf
+   EndFunc
+
+   Func _GUICtrlListBox_GetCurSel($hWnd)
+	  If IsHWnd($hWnd) Then
+		 Return _SendMessage($hWnd, $LB_GETCURSEL)
+	  Else
+		 Return GUICtrlSendMsg($hWnd, $LB_GETCURSEL, 0, 0)
+	  EndIf
+   EndFunc
+
+
 #include <GUIConstantsEx.au3>
-#include <WindowsConstants.au3>
 #include <ResourcesEx.au3>
-#include <Array.au3>
-#include <File.au3>
-#include <GuiListBox.au3>
+#include <ListBoxConstants.au3>
+
+
+;----------------------------------------------------------------------------
+
 
 ;-- VARIABLES
 ;----------------------------------------------------------------------------
 
 Const $ProgramName = "SMITE Optimizer"
-Const $ProgramVersion = "V1.1"
-Const $ProgramVersionRE = "1.1" ;- Registry Value
+Const $ProgramVersion = "V1.1.1"
+Const $ProgramVersionRE = "1.1.1" ;- Registry Value
 
 
    ;- UPDATER
@@ -113,6 +419,7 @@ Const $EngineVarsArray[6] = ["MaxParticleResize","MaxParticleResizeWarn","MaxPar
 Const $WorldVarsArray[36] = ["StaticDecals","DynamicDecals","DecalCullDistanceScale","DynamicLights","DynamicShadows","LightEnvironmentShadows","CompositeDynamicLights","SHSecondaryLighting","DepthOfField","Bloom","bAllowLightShafts","Distortion","DropParticleDistortion","LensFlares","AllowRadialBlur","AllowSubsurfaceScattering","AllowImageReflections","bAllowHighQualityMaterials","SkeletalMeshLODBias","ParticleLODBias","DetailMode","MaxDrawDistanceScale","ShadowFilterQualityBias","MaxShadowResolution","MaxWholeSceneDominantShadowResolution","bAllowWholeSceneDominantShadows","bUseConservativeShadowBounds","bAllowRagdolling","PerfScalingBias","StaticMeshLODBias","bAllowDropShadows","AllowScreenDoorFade","AllowScreenDoorLODFading","bAllowFog","SpeedTreeWind","ShadowTexelsPerPixel"]
 Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2,$EditBoxGUIButtonHelp1 = 2, $EditBoxGUIButtonHelp2 = 2, $EditBoxGUIButtonHelp3 = 2, $VarsLabelArray[0]
 Const $ConfigBackupPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\SO Config Backup\"
+
 
 ;- Check if config exists & set their path.
 if fileExists("C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") Then ;- Non-steam
@@ -376,23 +683,25 @@ Func ApplySettings()
    if $IsSteamUser = 1 Then
 	  FileMove($SMITEEngineIniPath,$ConfigBackupPath&"\DefaultEngine "&@MON&"."&@MDAY&"."&@YEAR&" - "&@HOUR&"."&@MIN&".ini")
 	  FileMove($SMITEBattleSystemSettingsIniPath,$ConfigBackupPath&"\DefaultSystemSettings "&@MON&"."&@MDAY&"."&@YEAR&" - "&@HOUR&"."&@MIN&".ini")
-
-	  _FileWriteFromArray($SMITEEngineIniPath,$SMITEEngineIniPathArray,1)
-	  _FileWriteFromArray($SMITEBattleSystemSettingsIniPath,$SMITEBattleSystemSettingsIniPathArray,1)
    Else
 	  FileMove($SMITEEngineIniPath,$ConfigBackupPath&"\BattleEngine "&@MON&"."&@MDAY&"."&@YEAR&" - "&@HOUR&"."&@MIN&".ini")
 	  FileMove($SMITEBattleSystemSettingsIniPath,$ConfigBackupPath&"\BattleSystemSettings "&@MON&"."&@MDAY&"."&@YEAR&" - "&@HOUR&"."&@MIN&".ini")
-
-	  _FileWriteFromArray($SMITEEngineIniPath,$SMITEEngineIniPathArray,1)
-	  _FileWriteFromArray($SMITEBattleSystemSettingsIniPath,$SMITEBattleSystemSettingsIniPathArray,1)
    EndIf
 
-   MsgBox(0,"Success!","Applied changes successfully.")
+   _FileWriteFromArray($SMITEEngineIniPath,$SMITEEngineIniPathArray,1)
+   _FileWriteFromArray($SMITEBattleSystemSettingsIniPath,$SMITEBattleSystemSettingsIniPathArray,1)
+
+   if fileExists($SMITEEngineIniPath) = 1 and fileExists($SMITEBattleSystemSettingsIniPath) = 1 Then
+	  MsgBox(0,"Success!","Applied changes successfully.")
+   Else
+	  MsgBox(0,"Success!","Something went wrong.")
+   EndIf
 EndFunc
 
 
 Func GUIDisplay($Var)
    Local $TempVar
+
    If $Var = 1 Then
 	  Global $EditBoxGUI = GUICreate("Changelog",600,420,-3,-63,-1,BitOr($WS_EX_TOOLWINDOW,$WS_EX_MDICHILD),$MainGUI)
 	  Global $EditBoxGUIEdit = GUICtrlCreateEdit("", 0, 0, 600, 400,BitOr(2048,$WS_HSCROLL,$WS_VSCROLL)) ;- 2048 = $ES_READONLY
@@ -413,7 +722,11 @@ Func GUIDisplay($Var)
 			_GUICtrlListBox_AddString ($EditBoxGUIList, $TempVar[$I])
 		 Next
 	  Global $EditBoxGUIButtonRestore = GUICtrlCreateButton("Restore",470,380,125,35)
-	  Global $EditBoxGUILabelHowTo = GUICtrlCreateLabel("Choose a date and time and restore BattleEngine and BattleSystemSettings.",5,400,450,35)
+	  if $IsSteamUser = 1 Then
+		 Global $EditBoxGUILabelHowTo = GUICtrlCreateLabel("Choose a date and time and restore DefaultEngine and DefaultSystemSettings.",5,400,450,35)
+	  Else
+		 Global $EditBoxGUILabelHowTo = GUICtrlCreateLabel("Choose a date and time and restore BattleEngine and BattleSystemSettings.",5,400,450,35)
+	  EndIf
 		 GUICtrlSetBkColor(-1,-2)
 	  GUISetState()
    EndIf
@@ -436,27 +749,29 @@ Func GUIDisplay($Var)
 	  GUISetState()
    EndIf
    If $Var = 6 Then
-	  Global $EditBoxGUI = GUICreate("Help - Program Functions",@DesktopWidth-400,@DesktopHeight-200,-1,-1,-1,$WS_EX_TOOLWINDOW)
+	  Global $EditBoxGUI = GUICreate("Help - Restoring Configuration",@DesktopWidth-400,@DesktopHeight-200,-1,-1,-1,$WS_EX_TOOLWINDOW)
 	  Global $EditBoxGUIEdit = GUICtrlCreateEdit("", 0, 0, @DesktopWidth-400, @DesktopHeight-200,BitOr(2048,$WS_HSCROLL,$WS_VSCROLL)) ;- 2048 = $ES_READONLY
 		 GUICtrlSetData(-1, _Resource_GetAsString("RestoringConfigurationHelp"))
 	  GUISetState()
    EndIf
    If $Var = 7 Then
-	  Global $EditBoxGUI = GUICreate("Help - Program Functions",@DesktopWidth-400,@DesktopHeight-200,-1,-1,-1,$WS_EX_TOOLWINDOW)
+	  Global $EditBoxGUI = GUICreate("Help - Variable Explanation",@DesktopWidth-400,@DesktopHeight-200,-1,-1,-1,$WS_EX_TOOLWINDOW)
 	  Global $EditBoxGUIEdit = GUICtrlCreateEdit("", 0, 0, @DesktopWidth-400, @DesktopHeight-200,BitOr(2048,$WS_HSCROLL,$WS_VSCROLL)) ;- 2048 = $ES_READONLY
 		 GUICtrlSetData(-1, _Resource_GetAsString("VariableExplanationHelp"))
 	  GUISetState()
    EndIf
+
+   GUICtrlCreateButton("",-5000,-5000,1,1)
+   GUICtrlSetState(-1,256)
+   WinActivate($EditBoxGUI)
 EndFunc
 
 
-Func CloseCGGUI()
+Func CloseGUIDisplay()
    GUIDelete($EditBoxGUI)
    $EditBoxGUI = 0
-   If isDeclared("EditBoxGUIButtonRestore") = 1 Then
+   If isDeclared("EditBoxGUIButtonRestore") = 1 or isDeclared("EditBoxGUIButtonHelp1") = 1 Then
 	  $EditBoxGUIButtonRestore = 2
-   EndIf
-   If isDeclared("EditBoxGUIButtonHelp1") = 1 Then
 	  $EditBoxGUIButtonHelp1 = 2
 	  $EditBoxGUIButtonHelp2 = 2
 	  $EditBoxGUIButtonHelp3 = 2
@@ -467,6 +782,7 @@ EndFunc
 
 
 ;----------------------------------------------------------------------------
+
 
 While 1
    if $EditBoxGUI = 0 Then
@@ -680,7 +996,7 @@ While 1
 	  if $EditBoxGUI <> 0 Then
 		 Switch GuiGetMsg()
 			Case $GUI_EVENT_CLOSE, $MenuExit
-			   CloseCGGUI()
+			   CloseGUIDisplay()
 			Case $EditBoxGUIButtonRestore
 			   if $IsSteamUser = 1 Then
 				  if _GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)) <> "" Then
@@ -716,9 +1032,7 @@ While 1
 			Case $EditBoxGUIButtonHelp3
 			   GUIDelete($EditBoxGUI)
 			   GUIDisplay(7)
-
 		 EndSwitch
 	  EndIf
    EndIf
-
 WEnd

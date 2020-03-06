@@ -1,3 +1,15 @@
+Update V1.1 > V1.1.1.
+
+Misc:
+-Improved performance.
+
+Bug fixes:
+-Fixed incorrectly titled Help GUI's.
+-Fixed text on the Restore Configuration GUI saying "BattleEngine" and "BattleSystemSettings" in steam mode. It will now say "DefaultEngine" and "DefaultSystemSettings"
+-When opening the Changelog, Copyright and Credits, or any of the Help windows. The text will no longer be selected.
+
+
+
 Update V1.0 > V1.1.
 
 Menu:

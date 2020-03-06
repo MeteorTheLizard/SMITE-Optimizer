@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.1.2.0
+#AutoIt3Wrapper_Res_Fileversion=1.1.3.0
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=CopyrightCredits.txt, RT_RCDATA, CopyrightCreditsText, 0
@@ -335,8 +335,8 @@
 ;----------------------------------------------------------------------------
 
 Const $ProgramName = "SMITE Optimizer"
-Const $ProgramVersion = "V1.1.2"
-Const $ProgramVersionRE = "1.1.2" ;- Registry Value
+Const $ProgramVersion = "V1.1.3"
+Const $ProgramVersionRE = "1.1.3" ;- Registry Value
 
 
    ;- UPDATER
@@ -421,27 +421,7 @@ Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2,$EditBoxGUIButtonHelp1 = 2, $Ed
 Const $ConfigBackupPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\SO Config Backup\"
 
 
-;- Check if config exists & set their path.
-if fileExists("C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") Then ;- Non-steam
-   Global $IsSteamUser = 0
-   Const $SMITEEngineIniPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
-   Const $SMITEBattleSystemSettingsIniPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
-Else ;OneDrive
-   if fileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") Then
-	  Global $IsSteamUser = 0
-	  Const $SMITEEngineIniPath = "C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
-	  Const $SMITEBattleSystemSettingsIniPath = "C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
-   Else ;Steam
-	  if fileExists(RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")) = 1 Then
-		 Global $IsSteamUser = 1
-		 Const $SMITEEngineIniPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultEngine.ini"
-		 Const $SMITEBattleSystemSettingsIniPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultSystemSettings.ini"
-	  Else
-		 MsgBox(0,"ERROR!","Could not find SMITE Configuration."&@CRLF&"Exiting...")
-		 Exit
-	  EndIf
-   EndIf
-EndIf
+CheckConfigPath()
 
 
 ;- DRAW GUI FUNCTIONS
@@ -454,7 +434,7 @@ Func DrawMainGUI()
    Else
 	  Global $MainGUI = GUICreate($ProgramName&" "&$ProgramVersion,600,420,-1,-1)
    EndIf
-	  Global $MainGUIDisclaimerLabel = GUICtrlCreateLabel("IMPORTANT: This program does NOT interact with SMITE directly. It only edits the config which is NOT a banable offense.",5,385,600,25)
+	  Global $MainGUIDisclaimerLabel = GUICtrlCreateLabel("IMPORTANT: This program does NOT interact with SMITE directly. It only edits the config which is NOT a bannable offense.",5,385,600,25)
    Global $MainGUIGroup = GUICtrlCreateGroup("",5,5,590,379)
       Global $MainGUIApplySettings = GUICtrlCreateButton("Apply settings",400,348,190,30)
    Global $MainGUICheckboxUseRecommendedSettings = GUiCtrlCreateCheckbox("Use recommended settings",403,329,150,17)
@@ -612,6 +592,37 @@ DrawButtonsAndInputs()
 
 ;- PROGRAM FUNCTIONS
 ;----------------------------------------------------------------------------
+
+
+Func CheckConfigPath()
+   Local $PathPrefixTemp[26] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+   For $I = 0 To 25 Step 1 ;Standard
+	  if fileExists($PathPrefixTemp[$I]&":\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") = 1 Then
+		 Global $IsSteamUser = 0
+		 Global $SMITEEngineIniPath = $PathPrefixTemp[$I]&":\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
+		 Global $SMITEBattleSystemSettingsIniPath = $PathPrefixTemp[$I]&":\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
+		 Return 0
+	  EndIf
+   Next
+
+   For $I = 0 To 25 Step 1 ;OneDrive
+	  if fileExists($PathPrefixTemp[$I]&":\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") Then
+		 Global $IsSteamUser = 0
+		 Global $SMITEEngineIniPath = $PathPrefixTemp[$I]&":\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
+		 Global $SMITEBattleSystemSettingsIniPath = $PathPrefixTemp[$I]&":\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
+		 Return 0
+	  EndIf
+   Next
+
+   if fileExists(RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")) = 1 Then
+	  Global $IsSteamUser = 1
+	  Global $SMITEEngineIniPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultEngine.ini"
+	  Global $SMITEBattleSystemSettingsIniPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultSystemSettings.ini"
+   Else
+	  MsgBox(0,"ERROR!","Could not find SMITE Configuration."&@CRLF&"Exiting...")
+	  Exit
+   EndIf
+EndFunc
 
 
 Func UseRecommendedSettings()

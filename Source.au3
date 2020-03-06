@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.1.9.0
+#AutoIt3Wrapper_Res_Fileversion=1.2.0.0
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=CopyrightCredits.txt, RT_RCDATA, CopyrightCreditsText, 0
@@ -17,7 +17,6 @@
 #AutoIt3Wrapper_Run_AU3Check=n
 #AutoIt3Wrapper_Tidy_Stop_OnError=n
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
-
 
 ;-- INCLUDES
 ;----------------------------------------------------------------------------
@@ -831,6 +830,43 @@
 		   __ArrayDualPivotSort($aArray, $iGreater + 1, $iPivot_Right, False)
 	   EndIf
    EndFunc
+   Func _FileWriteToLine($sFilePath, $iLine, $sText, $bOverWrite = False)
+	   If $iLine <= 0 Then Return SetError(4, 0, 0)
+	   If Not IsString($sText) Then
+		   $sText = String($sText)
+		   If $sText = "" Then Return SetError(6, 0, 0)
+	   EndIf
+	   If $bOverWrite = Default Then $bOverWrite = False
+	   If Not (IsBool($bOverWrite) Or $bOverWrite = 0 Or $bOverWrite = 1) Then Return SetError(5, 0, 0) ; For old versions.
+	   If Not FileExists($sFilePath) Then Return SetError(2, 0, 0)
+
+	   Local $aArray = FileReadToArray($sFilePath)
+	   Local $iUBound = UBound($aArray) - 1
+	   If ($iUBound + 1) < $iLine Then Return SetError(1, 0, 0)
+
+	   Local $hFileOpen = FileOpen($sFilePath, FileGetEncoding($sFilePath) + $FO_OVERWRITE)
+	   If $hFileOpen = -1 Then Return SetError(3, 0, 0)
+
+	   Local $sData = ""
+	   $iLine -= 1
+	   For $i = 0 To $iUBound
+		   If $i = $iLine Then
+			   If $bOverWrite Then
+				   If $sText Then $sData &= $sText & @CRLF
+			   Else
+				   $sData &= $sText & @CRLF & $aArray[$i] & @CRLF
+			   EndIf
+		   ElseIf $i < $iUBound Then
+			   $sData &= $aArray[$i] & @CRLF
+		   ElseIf $i = $iUBound Then
+			   $sData &= $aArray[$i]
+		   EndIf
+	   Next
+
+	   FileWrite($hFileOpen, $sData)
+	   FileClose($hFileOpen)
+	   Return 1
+   EndFunc
 
 ;- GuiListBox.au3
    Func _GUICtrlListBox_GetText($hWnd, $iIndex)
@@ -867,13 +903,12 @@
 
 ;----------------------------------------------------------------------------
 
-
 ;-- VARIABLES
 ;----------------------------------------------------------------------------
 
 Const $ProgramName = "SMITE Optimizer"
-Const $ProgramVersion = "V1.1.9"
-Const $ProgramVersionRE = "1.1.9" ;- Registry Value
+Const $ProgramVersion = "V1.2.0"
+Const $ProgramVersionRE = "1.2.0" ;- Registry Value
 
    ;- UPDATER
    ;------------------------------------------------------------
@@ -954,100 +989,220 @@ Global Const $FPSVarsArray[4] = ["bSmoothFrameRate","MinSmoothedFrameRate","MaxS
 Global Const $EngineVarsArray[6] = ["MaxParticleResize","MaxParticleResizeWarn","MaxParticleVertexMemory","MinimumPoolSize","MaximumPoolSize"]
 Global Const $WorldVarsArray[36] = ["StaticDecals","DynamicDecals","DecalCullDistanceScale","DynamicLights","DynamicShadows","LightEnvironmentShadows","CompositeDynamicLights","SHSecondaryLighting","DepthOfField","Bloom","bAllowLightShafts","Distortion","DropParticleDistortion","LensFlares","AllowRadialBlur","AllowSubsurfaceScattering","AllowImageReflections","bAllowHighQualityMaterials","SkeletalMeshLODBias","ParticleLODBias","DetailMode","MaxDrawDistanceScale","ShadowFilterQualityBias","MaxShadowResolution","MaxWholeSceneDominantShadowResolution","bAllowWholeSceneDominantShadows","bUseConservativeShadowBounds","bAllowRagdolling","PerfScalingBias","StaticMeshLODBias","bAllowDropShadows","AllowScreenDoorFade","AllowScreenDoorLODFading","SpeedTreeWind","ShadowTexelsPerPixel","Fog (Conquest and other)"]
 Global Const $ClientVarsArray[3] = ["AllowD3D11","PreferD3D11","UseD3D11Beta"]
-Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2,$EditBoxGUIButtonHelp1 = 2, $EditBoxGUIButtonHelp2 = 2, $EditBoxGUIButtonHelp3 = 2, $DebugGUIButtonResetConfig = 2
+Global $EditBoxGUI, $EditBoxGUIButtonRestore = 2,$EditBoxGUIButtonDeleteBackups = 2, $EditBoxGUIButtonHelp1 = 2, $EditBoxGUIButtonHelp2 = 2, $EditBoxGUIButtonHelp3 = 2, $DebugGUIButtonResetConfig = 2, $MainGUIDrawn = false, $RestoreGUIAlive = false
 Global Const $ConfigBackupPath = "C:\Users\"&@UserName&"\Documents\My Games\SMITE Config Backup\"
 
-CheckConfigPath()
-if IsDeclared("StartupGUIMain") Then GUIDelete($StartupGUIMain)
-
-;- DRAW GUI FUNCTIONS
+;- CONFIG INIT AND CHECK
 ;----------------------------------------------------------------------------
 
+RegRead("HKCU\Software\SMITE Optimizer\","DonateInfoStatus")
+if @Error <> 0 or RegRead("HKCU\Software\SMITE Optimizer\","DonateInfoStatus") = "" Then
+   RegWrite("HKCU\Software\SMITE Optimizer\","DonateInfoStatus","REG_SZ","0")
+   RegWrite("HKCU\Software\SMITE Optimizer\","BlockDonations","REG_SZ","false")
+   Global $BlockDonations = "False"
+Else
+   Global $BlockDonations = RegRead("HKCU\Software\SMITE Optimizer\","BlockDonations")
+EndIf
+
+RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
+if @Error <> 0 or RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine") = "" then
+   Global $TempInitGUI = GUICreate("SMITE Optimizer - Configuration Discovery",600,275,-1,-1)
+   Global $TempInitGUIInfoLabel = GUICtrlCreateLabel("Welcome, thank you for using the SMITE Optimizer! It appears that this is your first time starting this program."&@CRLF&"Please help the program discover your configuration files. You can choose the paths manually or let the program search them."&@CRLF&"Please note that, no matter what you click, the program is smart enough to handle problems, so you can't do anything wrong.",5,5,590,(13*3))
+	  GUICtrlSetBkColor(-1,-2)
+   Global $TempInitGUIButtonSelector1 = GUICtrlCreateButton("Choose paths manually",13,50,165,23)
+   Global $TempInitGUIButtonSelector2 = GUICtrlCreateButton("Non-Steam Mode",13,75,165,23)
+   Global $TempInitGUIButtonSelector3 = GUICtrlCreateButton("Steam Mode",13,100,165,23)
+   Global $TempInitGUIButtonSelector4 = GUICtrlCreateButton("Let the program search for them",13,125,165,23)
+   Global $TempInitGUILabelSelector1Info = GUICtrlCreateLabel("< Lets you choose the paths manually.",185,53,300,13)
+   Global $TempInitGUILabelSelector2Info = GUICtrlCreateLabel("< If you have SMITE installed without the use of STEAM, select this",185,53+26,375,13)
+   Global $TempInitGUILabelSelector3Info = GUICtrlCreateLabel("< If you have SMITE installed through STEAM, select this",185,104,375,13)
+   Global $TempInitGUILabelSelector4Info = GUICtrlCreateLabel("< Select this if you have no clue of what is going on",185,129,375,13)
+	  GUICtrlSetBkColor(-1,-2)
+
+   Global $TempInitGUILabelPathSelectorInfo = GUICtrlCreateLabel("Please input the paths: ",5,(175-13-5),300,13)
+   Global $TempInitGUIInputBattle = GUICtrlCreateInput("BattleEngine.ini OR DefaultEngine.ini ..",5,175,525,20,2048)
+   Global $TempInitGUIInputSystem = GUICtrlCreateInput("BattleSystemSettings.ini OR DefaultSystemSettings.ini ..",5,200,525,20,2048)
+   Global $TempInitGUIButtonBattle = GUICtrlCreateButton("Select..",530,175,70,20)
+   Global $TempInitGUIButtonSystem = GUICtrlCreateButton("Select..",530,200,70,20)
+   Global $TempInitGUIButtonDone = GUICtrlCreateButton("Done",2,223,100,50)
+
+   Global $TempInitGUILabelScan = GUICtrlCreateLabel("Scanning for Configs... (This can take a while)",115,160,400,50)
+	  GUICtrlSetBkColor(-1,-2)
+	  GUICtrlSetFont(-1,14)
+   Global $TempInitGUILabelScanInfo = GUICtrlCreateLabel("While you are waiting, why not enjoy the sunshine? .. mhm i should have guessed, there is no sun for you right now huh?"&@CRLF&"Okay, i got a better idea, i'm just gonna put my favorite poem here. 'Light and darkness, live and death, flora and fauna,"&@CRLF&"parts of reality, parts of life. To find yourself, alive.' .. Stunningly beautiful no? Well, it's not my favorite poem, it's a poem i just"&@CRLF&"came up with. If i'm being honest i'm not even sure if that classifies as a poem... But what do i know... i'm just a hobby"&@CRLF&"programmer trying to make you feel comfortable while waiting. Okay.. idk what to say anymore so i'm just gonna fill the rest with"&@CRLF&"sample text.. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore",5,190,-1,-1)
+	  GUICtrlSetBkColor(-1,-2)
+
+   GUICtrlSetState($TempInitGUILabelPathSelectorInfo,32)
+   GUICtrlSetState($TempInitGUIInputBattle,32)
+   GUICtrlSetState($TempInitGUIInputSystem,32)
+   GUICtrlSetState($TempInitGUIButtonBattle,32)
+   GUICtrlSetState($TempInitGUIButtonSystem,32)
+   GUICtrlSetState($TempInitGUIButtonDone,32)
+
+   GUICtrlSetState($TempInitGUILabelScan,32)
+   GUICtrlSetState($TempInitGUILabelScanInfo,32)
+
+   GUISetState(@SW_SHOW)
+
+   While WinGetHandle($TempInitGUI) <> 0
+	  Switch GUIGetMsg()
+		 Case -3
+			Exit
+		 Case $TempInitGUIButtonSelector1
+			GUICtrlSetState($TempInitGUILabelPathSelectorInfo,16)
+			GUICtrlSetState($TempInitGUIInputBattle,16)
+			GUICtrlSetState($TempInitGUIInputSystem,16)
+			GUICtrlSetState($TempInitGUIButtonBattle,16)
+			GUICtrlSetState($TempInitGUIButtonSystem,16)
+			GUICtrlSetState($TempInitGUIButtonDone,16)
+		 Case $TempInitGUIButtonBattle
+			Local $TempVar = FileOpenDialog("Select BattleEngine.ini OR DefaultEngine.ini",@DesktopDir,"Configuration Files (*.ini)",1)
+			if FileExists($TempVar) Then
+			   Local $SStart = StringLen($TempVar), $SEnd = 0
+			   For $I = StringLen($TempVar) To 1 Step -1
+				  if StringMid($TempVar,$I,1) == "\" Then
+					 $SEnd = $I
+					 ExitLoop
+				  EndIf
+			   Next
+
+			   if StringMid($TempVar,$SEnd+1,$SStart) = "BattleEngine.ini" or StringMid($TempVar,$SEnd+1,$SStart) = "DefaultEngine.ini" Then
+				  GUICtrlSetData($TempInitGUIInputBattle,$TempVar)
+			   Else
+				  MsgBox(0,"ERROR!","It appears you selected the wrong file.")
+			   EndIf
+			EndIf
+		 Case $TempInitGUIButtonSystem
+			Local $TempVar = FileOpenDialog("Select BattleSystemSettings.ini OR DefaultSystemSettings.ini",@DesktopDir,"Configuration Files (*.ini)",1)
+			if FileExists($TempVar) Then
+			   Local $SStart = StringLen($TempVar), $SEnd = 0
+			   For $I = StringLen($TempVar) To 1 Step -1
+				  if StringMid($TempVar,$I,1) == "\" Then
+					 $SEnd = $I
+					 ExitLoop
+				  EndIf
+			   Next
+
+			   if StringMid($TempVar,$SEnd+1,$SStart) = "BattleSystemSettings.ini" or StringMid($TempVar,$SEnd+1,$SStart) = "DefaultSystemSettings.ini" Then
+				  GUICtrlSetData($TempInitGUIInputSystem,$TempVar)
+			   Else
+				  MsgBox(0,"ERROR!","It appears you selected the wrong file.")
+			   EndIf
+			EndIf
+		 Case $TempInitGUIButtonDone
+			if FileExists(GUICtrlRead($TempInitGUIInputBattle)) and FileExists(GUICtrlRead($TempInitGUIInputSystem)) then
+			   RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ",GUICtrlRead($TempInitGUIInputBattle))
+			   RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathSystem","REG_SZ",GUICtrlRead($TempInitGUIInputSystem))
+			   GUIDelete($TempInitGUI)
+			   CheckConfigPath()
+			Else
+			   MsgBox(0,"ERROR!","Something went wrong, the paths seem to be incorrect.")
+			EndIf
+		 Case $TempInitGUIButtonSelector2
+			if FileExists("C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") and FileExists("C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") Then
+			   RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini")
+			   RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathSystem","REG_SZ","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+			   GUIDelete($TempInitGUI)
+			   CheckConfigPath()
+			Else
+			   MsgBox(0,"ERROR!","Could not find non-steam configuration files.")
+			EndIf
+		 Case $TempInitGUIButtonSelector3
+			if fileExists(RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")) = 1 Then
+			   RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ",RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultEngine.ini")
+			   RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathSystem","REG_SZ",RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultSystemSettings.ini")
+			   GUIDelete($TempInitGUI)
+			   CheckConfigPath()
+			Else
+			   MsgBox(0,"ERROR!","It seems like your game is not installed through STEAM or uses non-steam configuration files.")
+			EndIf
+		 Case $TempInitGUIButtonSelector4
+			GUICtrlSetState($TempInitGUILabelPathSelectorInfo,32)
+			GUICtrlSetState($TempInitGUIInputBattle,32)
+			GUICtrlSetState($TempInitGUIInputSystem,32)
+			GUICtrlSetState($TempInitGUIButtonBattle,32)
+			GUICtrlSetState($TempInitGUIButtonSystem,32)
+			GUICtrlSetState($TempInitGUIButtonDone,32)
+			GUICtrlSetState($TempInitGUILabelScan,16)
+			GUICtrlSetState($TempInitGUILabelScanInfo,16)
+			ScanForConfigs()
+			GUICtrlSetState($TempInitGUILabelPathSelectorInfo,16)
+			GUICtrlSetState($TempInitGUIInputBattle,16)
+			GUICtrlSetState($TempInitGUIInputSystem,16)
+			GUICtrlSetState($TempInitGUIButtonBattle,16)
+			GUICtrlSetState($TempInitGUIButtonSystem,16)
+			GUICtrlSetState($TempInitGUIButtonDone,16)
+			GUICtrlSetState($TempInitGUILabelScan,32)
+			GUICtrlSetState($TempInitGUILabelScanInfo,32)
+	  EndSwitch
+
+	  Sleep(1)
+   WEnd
+Else
+   CheckConfigPath()
+EndIf
+
 Func CheckConfigPath()
-   if fileExists(RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&"\BattleGame\Config\BattleEngine.ini") = 1 Then
-	  Global $IsSteamUser = 0
-	  Global $SMITEEngineIniPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&"\BattleGame\Config\BattleEngine.ini"
-	  Global $SMITEBattleSystemSettingsIniPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&"\BattleGame\Config\BattleSystemSettings.ini"
-	  Return 0
-   EndIf
-   if fileExists(RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&"\BattleGame\Config\DefaultEngine.ini") = 1 Then
-	  Global $IsSteamUser = 1
-	  Global $SMITEEngineIniPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&"\BattleGame\Config\DefaultEngine.ini"
-	  Global $SMITEBattleSystemSettingsIniPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&"\BattleGame\Config\DefaultSystemSettings.ini"
-	  Return 0
-   EndIf
-
-   local $GetConfigInfo = MsgBox(4,"Program requires Input","Do you have SMITE installed through Steam?")
-   Global $IsSteamUser = -1
-   if $GetConfigInfo = 6 Then
-	  if fileExists(RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")) = 1 Then
-		 Global $IsSteamUser = 1
-		 Global $SMITEEngineIniPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultEngine.ini"
-		 Global $SMITEBattleSystemSettingsIniPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultSystemSettings.ini"
-
-		 RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPath","REG_SZ",RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation"))
-		 Return 0
-	  EndIf
-   Else
-	  if FileExists("C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config") <> 0 Then
+   if fileExists(RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")) Then
+	  Local $TempVar = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
+	  Local $SStart = StringLen($TempVar), $SEnd = 0
+	  For $I = StringLen($TempVar) To 1 Step -1
+		 if StringMid($TempVar,$I,1) == "\" Then
+			$SEnd = $I
+			ExitLoop
+		 EndIf
+	  Next
+	  if StringMid($TempVar,$SEnd+1,$SStart) = "BattleEngine.ini" Then
 		 Global $IsSteamUser = 0
-		 Global $SMITEEngineIniPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
-		 Global $SMITEBattleSystemSettingsIniPath = "C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
-
-		 RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPath","REG_SZ","C:\Users\"&@UserName&"\Documents\My Games\Smite")
+	  Else
+		 Global $IsSteamUser = 1
 	  EndIf
-   EndIf
 
-   if $IsSteamUser = -1 Then
-	  MsgBox(0,"ERROR!","Could not find Configs at expected location... Starting scan")
-	  CheckConfigPath2()
+	  Global $SMITEEngineIniPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
+	  Global $SMITEBattleSystemSettingsIniPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
+	  if $MainGUIDrawn = false then
+		 DrawMainGUI()
+		 DrawLabels()
+		 DrawButtonsAndInputs()
+	  EndIf
+	  Return 0
+   Else
+	  MsgBox(0,"ERROR!","There was a problem reading the configuration files. It seems like they are invalid or do not exist anymore."&@CRLF&"Running Configuration Discovery...")
+	  RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ","")
+	  RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathSystem","REG_SZ","")
+	  ShellExecute(@ScriptFullPath)
+	  Exit
    EndIf
 EndFunc
-
-Func CheckConfigPath2()
-   DrawStartupGUI()
-
+Func ScanForConfigs()
    Local $PathPrefixTemp = DriveGetDrive("fixed")
    For $I = 1 To UBound($PathPrefixTemp)-1 Step 1 ;Scan all drives for BattleConfigs
 	  Local $TempReccurTest = _FileListToArrayRec($PathPrefixTemp[$I],"Smite",2,1,1,2)
 	  For $B = 1 To UBound($TempReccurTest)-1 Step 1
-		 if fileExists($TempReccurTest[$B]&"\BattleGame\Config\BattleEngine.ini") Then
-			Global $IsSteamUser = 0
-			Global $SMITEEngineIniPath = $TempReccurTest[$B]&"\BattleGame\Config\BattleEngine.ini"
-			Global $SMITEBattleSystemSettingsIniPath = $TempReccurTest[$B]&"\BattleGame\Config\BattleSystemSettings.ini"
-			RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPath","REG_SZ",$TempReccurTest[$B])
-			Return 0
-		 EndIf
-	  Next
-   Next
-
-   For $I = 1 To UBound($PathPrefixTemp)-1 Step 1 ;Scan all drives for DefaultConfigs
-	  Local $TempReccurTest = _FileListToArrayRec($PathPrefixTemp[$I],"Smite",2,1,1,2)
-	  For $B = 1 To UBound($TempReccurTest)-1 Step 1
-		 if fileExists($TempReccurTest[$B]&"\BattleGame\Config\DefaultEngine.ini") Then
-			Global $IsSteamUser = 1
-			Global $SMITEEngineIniPath = $TempReccurTest[$B]&"\BattleGame\Config\DefaultEngine.ini"
-			Global $SMITEBattleSystemSettingsIniPath = $TempReccurTest[$B]&"\BattleGame\Config\DefaultSystemSettings.ini"
-			RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPath","REG_SZ",$TempReccurTest[$B])
-			Return 0
+		 if fileExists($TempReccurTest[$B]&"\BattleGame\Config\BattleEngine.ini") or fileExists($TempReccurTest[$B]&"\BattleGame\Config\DefaultEngine.ini") Then
+			if fileExists($TempReccurTest[$B]&"\BattleGame\Config\BattleEngine.ini") then
+			   GUICtrlSetData($TempInitGUIInputBattle,$TempReccurTest[$B]&"\BattleGame\Config\BattleEngine.ini")
+			   GUICtrlSetData($TempInitGUIInputSystem,$TempReccurTest[$B]&"\BattleGame\Config\BattleSystemSettings.ini")
+			   Return 0
+			ElseIf fileExists($TempReccurTest[$B]&"\BattleGame\Config\DefaultEngine.ini") Then
+			   GUICtrlSetData($TempInitGUIInputBattle,$TempReccurTest[$B]&"\BattleGame\Config\DefaultEngine.ini")
+			   GUICtrlSetData($TempInitGUIInputSystem,$TempReccurTest[$B]&"\BattleGame\Config\DefaultSystemSettings.ini")
+			   Return 0
+			EndIf
 		 EndIf
 	  Next
    Next
 
    MsgBox(0,"ERROR!","Could not find SMITE Configuration."&@CRLF&"Perhaps you don't have the game installed?")
+   ShellExecute(@ScriptFullPath)
    Exit
 EndFunc
 
-Func DrawStartupGUI()
-   Global $StartupGUIMain = GUICreate($ProgramName&" "&$ProgramVersion,400,50,-1,-1)
-   Local $StartupGUIMainLabel = GUICtrlCreateLabel("Scanning for Configs... (This can take a while)",17,13,400,50)
-	  GUICtrlSetBkColor(-1,-2)
-	  GUICtrlSetFont(-1,14)
-
-   GUISetState()
-EndFunc
+;- DRAW GUI FUNCTIONS
+;----------------------------------------------------------------------------
 
 Func DrawMainGUI()
+   Global $MainGUIDrawn = true
    if $IsSteamUser = 1 Then
 	  Global $MainGUI = GUICreate($ProgramName&" "&$ProgramVersion&" Steam mode",600,420,-1,-1)
    Else
@@ -1078,6 +1233,7 @@ Func DrawMainGUI()
 
 	  Global $MenuDonate = GUICtrlCreateMenu("Donate")
 		 Global $MenuDonateItem = GUICtrlCreateMenuItem("Donate",$MenuDonate)
+		 Global $MenuBlockDonationInfo = GUICtrlCreateMenuItem("Block Donation Info",$MenuDonate)
 
 	  Global $MenuHelp = GUICtrlCreateMenu("Help")
 		 Global $MenuHelpItem = GUICtrlCreateMenuItem("Help",$MenuHelp)
@@ -1095,7 +1251,6 @@ Func DrawMainGUI()
 
    GUISetState()
 EndFunc
-DrawMainGUI()
 
 Func DrawLabels()
    ;- FPS
@@ -1129,7 +1284,6 @@ Func DrawLabels()
 			GUICtrlSetBkColor(-1,-2)
 	  Next
 EndFunc
-DrawLabels()
 
 Func DrawButtonsAndInputs()
    Global $VarsButtonArray[0], $VarsInputArray[0]
@@ -1159,12 +1313,6 @@ Func DrawButtonsAndInputs()
 			Else
 			   $VarsInputArray[$I+2] = GUICtrlCreateInput(iniRead($SMITEEngineIniPath,"TextureStreaming",$EngineVarsArray[$I],""),541,130+(20*$I),50,17,8192)
 			EndIf
-
-			if $IsSteamUser = 1 Then
-			   if $I = 2 or $I = 3 or $I = 4 Then
-				  GUICtrlSetState(-1,128)
-			   EndIf
-			EndIf
 		 Next
 
    ;- World
@@ -1176,12 +1324,6 @@ Func DrawButtonsAndInputs()
 			Else
 			   if $I = 18 or $I = 19 or $I = 20 or $I = 21 or $I = 22  or $I = 23 or $I = 24 or $I = 28 or $I = 29 or $I = 34 Then
 				  $VarsInputArray[$I+7] = GUICtrlCreateInput(iniRead($SMITEBattleSystemSettingsIniPath,"SystemSettings",$WorldVarsArray[$I],""),343,19+(20*($I-18)),50,17,8192)
-			   EndIf
-			EndIf
-
-			if $IsSteamUser = 1 Then
-			   if $I = 19 or $I = 22 Then
-				  GUICtrlSetState(-1,128)
 			   EndIf
 			EndIf
 		 Next
@@ -1220,16 +1362,24 @@ Func DrawButtonsAndInputs()
 		 EndIf
 	  Next
 EndFunc
-DrawButtonsAndInputs()
 
 Func DrawDebugGUI()
    Global $DebugGUI = GUICreate("Debug...",500,125,-1,-1,($GUI_SS_DEFAULT_GUI - $WS_MINIMIZEBOX))
-   $DebugGUIConfigPathLabel = GUICtrlCreateLabel("BattleEngine: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&" + "&"\BattleGame\Config\BattleEngine.ini",10,10)
-	  GUICtrlSetBkColor(-1,-2)
-	  GUICtrlSetTip(-1,"BattleEngine: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&" + "&"\BattleGame\Config\BattleEngine.ini")
-   $DebugGUIConfigPathLabel2 = GUICtrlCreateLabel("BattleSystemSettings: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&" + "&"\BattleGame\Config\BattleSystemSettings.ini",10,25)
-	  GUICtrlSetBkColor(-1,-2)
-	  GUICtrlSetTip(-1,"BattleSystemSettings: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPath")&" + "&"\BattleGame\Config\BattleSystemSettings.ini")
+   If $IsSteamUser = 1 Then
+	  $DebugGUIConfigPathLabel = GUICtrlCreateLabel("DefaultEngine: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine"),10,10,-1,13)
+		 GUICtrlSetBkColor(-1,-2)
+		 GUICtrlSetTip(-1,"DefaultEngine: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine"))
+	  $DebugGUIConfigPathLabel2 = GUICtrlCreateLabel("DefaultSystemSettings: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem"),10,25)
+		 GUICtrlSetBkColor(-1,-2)
+		 GUICtrlSetTip(-1,"DefaultSystemSettings: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem"))
+   Else
+	  $DebugGUIConfigPathLabel = GUICtrlCreateLabel("BattleEngine: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine"),10,10,-1,13)
+		 GUICtrlSetBkColor(-1,-2)
+		 GUICtrlSetTip(-1,"BattleEngine: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine"))
+	  $DebugGUIConfigPathLabel2 = GUICtrlCreateLabel("BattleSystemSettings: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem"),10,25)
+		 GUICtrlSetBkColor(-1,-2)
+		 GUICtrlSetTip(-1,"BattleSystemSettings: "&RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem"))
+   EndIf
 
    Local $IsSteamModeOn
    if $IsSteamUser = 1 Then
@@ -1256,20 +1406,26 @@ EndFunc
 ;- PROGRAM FUNCTIONS
 ;----------------------------------------------------------------------------
 
+Func RedrawButtonsAndInputs()
+   For $I = 0 To Ubound($VarsButtonArray)-1 Step 1
+	  GUICtrlDelete($VarsButtonArray[$I])
+   Next
+   For $I = 0 To Ubound($VarsInputArray)-1 Step 1
+	  GUICtrlDelete($VarsInputArray[$I])
+   Next
+   GUICtrlSetState($CheckboxApplyFPSSettings,4)
+   GUICtrlSetState($CheckboxApplyEngineSettings,4)
+   DrawButtonsAndInputs()
+   GUICtrlSetState($MainGUICheckboxUseRecommendedSettings,4)
+EndFunc
+
 Func UseRecommendedSettings()
    Local $ArrayInput[18] = [60,300,512,5120,900,0,0,0.4,1,10,0,0.8,1,256,256,0.2,1,0]
    Local $ArrayButton[26] = ["TRUE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","TRUE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE"]
 
    ;- Inputs
 	  For $I = 0 To UBound($VarsInputArrayTemp)-1 Step 1
-		 if $IsSteamUser = 1 Then
-			if $I = 4 or $I = 5 or $I = 6 or $I = 9 or $I = 12 Then
-			Else
-			   GUICtrlSetData($VarsInputArrayTemp[$I],$ArrayInput[$I])
-			EndIf
-		 Else
-			GUICtrlSetData($VarsInputArrayTemp[$I],$ArrayInput[$I])
-		 EndIf
+		 GUICtrlSetData($VarsInputArrayTemp[$I],$ArrayInput[$I])
 	  Next
 
    ;- Buttons
@@ -1282,6 +1438,220 @@ Func UseRecommendedSettings()
 EndFunc
 
 Func ApplySettings()
+   if $IsSteamUser = 1 Then
+	  if FileReadLine($SMITEEngineIniPath,1) <> "; SMITE Optimizer Fixed INT" Then
+		 if IniRead($SMITEEngineIniPath,"Engine.Engine","bSmoothFrameRate","ERROR") = "ERROR" Then
+			IniWrite($SMITEEngineIniPath,"Engine.Engine","bSmoothFrameRate","TRUE")
+		 EndIf
+		 if IniRead($SMITEEngineIniPath,"Engine.Engine","MinSmoothedFrameRate","ERROR") = "ERROR" Then
+			IniWrite($SMITEEngineIniPath,"Engine.Engine","MinSmoothedFrameRate","150")
+		 EndIf
+		 if IniRead($SMITEEngineIniPath,"Engine.Engine","MaxSmoothedFrameRate","ERROR") = "ERROR" Then
+			IniWrite($SMITEEngineIniPath,"Engine.Engine","MaxSmoothedFrameRate","300")
+		 EndIf
+		 if IniRead($SMITEEngineIniPath,"Engine.Engine","MaxParticleVertexMemory","ERROR") = "ERROR" Then
+			IniWrite($SMITEEngineIniPath,"Engine.Engine","MaxParticleVertexMemory","131972")
+		 EndIf
+
+		 if IniRead($SMITEEngineIniPath,"UnrealEd.EditorEngine","bSmoothFrameRate","ERROR") = "ERROR" Then
+			IniWrite($SMITEEngineIniPath,"UnrealEd.EditorEngine","bSmoothFrameRate","TRUE")
+		 EndIf
+		 if IniRead($SMITEEngineIniPath,"UnrealEd.EditorEngine","MinSmoothedFrameRate","ERROR") = "ERROR" Then
+			IniWrite($SMITEEngineIniPath,"UnrealEd.EditorEngine","MinSmoothedFrameRate","150")
+		 EndIf
+		 if IniRead($SMITEEngineIniPath,"UnrealEd.EditorEngine","MaxSmoothedFrameRate","ERROR") = "ERROR" Then
+			IniWrite($SMITEEngineIniPath,"UnrealEd.EditorEngine","MaxSmoothedFrameRate","300")
+		 EndIf
+
+		 if IniRead($SMITEEngineIniPath,"TextureStreaming","MaximumPoolSize","ERROR") = "ERROR" Then
+			IniWrite($SMITEEngineIniPath,"TextureStreaming","MaximumPoolSize","0")
+		 EndIf
+		 if IniRead($SMITEEngineIniPath,"TextureStreaming","MinimumPoolSize","ERROR") = "ERROR" Then
+			IniWrite($SMITEEngineIniPath,"TextureStreaming","MinimumPoolSize","225")
+		 EndIf
+
+		 _FileWriteToLine($SMITEEngineIniPath,1,"; SMITE Optimizer Fixed INT")
+	  EndIf
+
+	  if FileReadLine($SMITEBattleSystemSettingsIniPath,1) <> "; SMITE Optimizer Fixed INT" Then
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettings","DynamicLights","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettings","DynamicLights","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettings","CompositeDynamicLights","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettings","CompositeDynamicLights","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettings","AllowSubsurfaceScattering","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettings","AllowSubsurfaceScattering","FALSE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettings","AllowImageReflections","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettings","AllowImageReflections","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettings","ParticleLODBias","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettings","ParticleLODBias","10")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettings","ShadowFilterQualityBias","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettings","ShadowFilterQualityBias","-1")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsScreenshot","CompositeDynamicLights","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsScreenshot","CompositeDynamicLights","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsScreenshot","ShadowFilterQualityBias","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsScreenshot","ShadowFilterQualityBias","-1")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsScreenshot","MaxShadowResolution","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsScreenshot","MaxShadowResolution","256")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsScreenshot","ShadowTexelsPerPixel","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsScreenshot","ShadowTexelsPerPixel","0")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","StaticDecals","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","StaticDecals","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","DynamicDecals","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","DynamicDecals","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","DynamicLights","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","DynamicLights","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","DepthOfField","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","DepthOfField","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","Bloom","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","Bloom","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","bAllowLightShafts","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","bAllowLightShafts","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","Distortion","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","Distortion","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","DropParticleDistortion","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","DropParticleDistortion","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","AllowRadialBlur","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsMobile","AllowRadialBlur","TRUE")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsFlash","DepthOfField","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsFlash","DepthOfField","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsFlash","Bloom","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsFlash","Bloom","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsFlash","bAllowLightShafts","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsFlash","bAllowLightShafts","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsFlash","Distortion","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsFlash","Distortion","TRUE")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsSplitScreen2","bAllowLightShafts","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsSplitScreen2","bAllowLightShafts","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsSplitScreen2","DetailMode","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsSplitScreen2","DetailMode","2")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsSplitScreen2","bAllowWholeSceneDominantShadows","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsSplitScreen2","bAllowWholeSceneDominantShadows","FALSE")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone3GS","LensFlares","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone3GS","LensFlares","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone3GS","DetailMode","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone3GS","DetailMode","2")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone4","LensFlares","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone4","LensFlares","TRUE")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone4S","DynamicShadows","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone4S","DynamicShadows","FALSE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone4S","bAllowLightShafts","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone4S","bAllowLightShafts","FALSE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone4S","MaxShadowResolution","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone4S","MaxShadowResolution","256")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone5","DynamicShadows","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone5","DynamicShadows","FALSE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone5","bAllowLightShafts","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone5","bAllowLightShafts","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone5","AllowRadialBlur","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone5","AllowRadialBlur","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone5","MaxShadowResolution","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPhone5","MaxShadowResolution","256")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPodTouch4","LensFlares","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPodTouch4","LensFlares","TRUE")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPodTouch5","DynamicShadows","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPodTouch5","DynamicShadows","FALSE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPodTouch5","bAllowLightShafts","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPodTouch5","bAllowLightShafts","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPodTouch5","MaxShadowResolution","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPodTouch5","MaxShadowResolution","256")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad2","DynamicShadows","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad2","DynamicShadows","FALSE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad2","bAllowLightShafts","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad2","bAllowLightShafts","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad2","MaxShadowResolution","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad2","MaxShadowResolution","256")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad3","DynamicShadows","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad3","DynamicShadows","FALSE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad3","bAllowLightShafts","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad3","bAllowLightShafts","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad3","MaxShadowResolution","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad3","MaxShadowResolution","256")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad4","DynamicShadows","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad4","DynamicShadows","FALSE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad4","bAllowLightShafts","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad4","bAllowLightShafts","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad4","AllowRadialBlur","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad4","AllowRadialBlur","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad4","MaxShadowResolution","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPad4","MaxShadowResolution","256")
+		 EndIf
+
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPadMini","DynamicShadows","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPadMini","DynamicShadows","FALSE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPadMini","bAllowLightShafts","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPadMini","bAllowLightShafts","TRUE")
+		 EndIf
+		 if IniRead($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPadMini","MaxShadowResolution","ERROR") = "ERROR" Then
+			IniWrite($SMITEBattleSystemSettingsIniPath,"SystemSettingsIPadMini","MaxShadowResolution","256")
+		 EndIf
+
+		 _FileWriteToLine($SMITEBattleSystemSettingsIniPath,1,"; SMITE Optimizer Fixed INT")
+	  EndIf
+   EndIf
+
    Local $SMITEEngineIniPathArray, $SMITEBattleSystemSettingsIniPathArray
    _FileReadToArray($SMITEEngineIniPath,$SMITEEngineIniPathArray)
    _FileReadToArray($SMITEBattleSystemSettingsIniPath,$SMITEBattleSystemSettingsIniPathArray)
@@ -1389,9 +1759,27 @@ Func ApplySettings()
 
    if fileExists($SMITEEngineIniPath) = 1 and fileExists($SMITEBattleSystemSettingsIniPath) = 1 Then
 	  MsgBox(0,"Success!","Applied changes successfully.")
+	  if RegRead("HKCU\Software\SMITE Optimizer\","DonateInfoStatus") = "0" Then
+		 RegWrite("HKCU\Software\SMITE Optimizer\","DonateInfoStatus","REG_SZ","1")
+	  ElseIf RegRead("HKCU\Software\SMITE Optimizer\","DonateInfoStatus") = "1" Then
+		 Local $MsgBox = MsgBox(1,"Information","Do you like the program?"&@CRLF&"Consider donating to help out a free-time Developer!"&@CRLF&"I would highly appreciate it! :3")
+		 if $MsgBox = 1 Then
+			ShellExecute("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG")
+		 EndIf
+		 RegWrite("HKCU\Software\SMITE Optimizer\","DonateInfoStatus","REG_SZ","2")
+	  ElseIf RegRead("HKCU\Software\SMITE Optimizer\","DonateInfoStatus") = "2" Then
+		 if $BlockDonations = "False" then
+			Local $MsgBox = MsgBox(1,"Information","Do you like the program?"&@CRLF&"Consider donating to help out a free-time Developer!"&@CRLF&"I would highly appreciate it! :3"&@CRLF&@CRLF&"You can disable this message:"&@CRLF&"Menu > Donations > Block Donation Info")
+			if $MsgBox = 1 Then
+			   ShellExecute("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG")
+			EndIf
+		 EndIf
+	  EndIf
    Else
 	  MsgBox(0,"Uh oh","Something went wrong.")
    EndIf
+
+   RedrawButtonsAndInputs()
 EndFunc
 
 Func GUIDisplay($Var)
@@ -1410,12 +1798,14 @@ Func GUIDisplay($Var)
 	  GUISetState()
    EndIf
    If $Var = 3 Then
+	  Global $RestoreGUIAlive = true
 	  Global $EditBoxGUI = GUICreate("Restore old configs",600,420,-3,-63,-1,BitOr($WS_EX_TOOLWINDOW,$WS_EX_MDICHILD),$MainGUI)
 	  Global $EditBoxGUIList = GUICtrlCreateList("",5,5,590,380)
 		 $TempVar = _FileListToArray($ConfigBackupPath,"*",1)
 		 For $I = 0 To UBound($TempVar)-1 Step 1
 			_GUICtrlListBox_AddString ($EditBoxGUIList, $TempVar[$I])
 		 Next
+	  Global $EditBoxGUIButtonDeleteBackups = GUICtrlCreateButton("Delete all backups",5,375,125,20)
 	  Global $EditBoxGUIButtonRestore = GUICtrlCreateButton("Restore",470,380,125,35)
 	  if $IsSteamUser = 1 Then
 		 Global $EditBoxGUILabelHowTo = GUICtrlCreateLabel("Choose a date and time and restore DefaultEngine and DefaultSystemSettings.",5,400,450,35)
@@ -1467,6 +1857,7 @@ Func CloseGUIDisplay()
    GUIDelete($EditBoxGUI)
    $EditBoxGUI = 0
    If isDeclared("EditBoxGUIButtonRestore") = 1 or isDeclared("EditBoxGUIButtonHelp1") = 1 Then
+	  $EditBoxGUIButtonDeleteBackups = 2
 	  $EditBoxGUIButtonRestore = 2
 	  $EditBoxGUIButtonHelp1 = 2
 	  $EditBoxGUIButtonHelp2 = 2
@@ -1474,12 +1865,17 @@ Func CloseGUIDisplay()
    EndIf
    GUISetState(@SW_ENABLE,$MainGUI)
    WinActivate($MainGUI)
+
+   if $RestoreGUIAlive = true Then
+	  RedrawButtonsAndInputs()
+	  $RestoreGUIAlive = false
+   EndIf
 EndFunc
 
 ;----------------------------------------------------------------------------
 
 While 1
-   if $EditBoxGUI = 0 Then
+   if $EditBoxGUI = 0 and $MainGUIDrawn = true Then
 	  Switch GUIGetMsg()
 		 Case -3, $MenuExit
 			if isDeclared("DebugGUI") Then
@@ -1511,19 +1907,12 @@ While 1
 		 Case $MainGUICheckboxUseRecommendedSettings
 			if GUICtrlRead($MainGUICheckboxUseRecommendedSettings) = 1 Then
 			   UseRecommendedSettings()
-			elseif GUICtrlRead($MainGUICheckboxUseRecommendedSettings) = 4 Then
-			   For $I = 0 To Ubound($VarsButtonArray)-1 Step 1
-				  GUICtrlDelete($VarsButtonArray[$I])
-			   Next
-			   For $I = 0 To Ubound($VarsInputArray)-1 Step 1
-				  GUICtrlDelete($VarsInputArray[$I])
-			   Next
-			   GUICtrlSetState($CheckboxApplyFPSSettings,4)
-			   GUICtrlSetState($CheckboxApplyEngineSettings,4)
-			   DrawButtonsAndInputs()
+			ElseIf GUICtrlRead($MainGUICheckboxUseRecommendedSettings) = 4 Then
+			   RedrawButtonsAndInputs()
 			EndIf
 		 Case $MainGUIApplySettings
 			ApplySettings()
+			RedrawButtonsAndInputs()
 		 Case $MenuSettingsUpdateCheckOnOff
 			if RegRead("HKCU\Software\SMITE Optimizer\","UpdateCheck") = "TRUE" Then
 			   RegWrite("HKCU\Software\SMITE Optimizer\","UpdateCheck","REG_SZ","FALSE")
@@ -1531,6 +1920,16 @@ While 1
 			Else
 			   RegWrite("HKCU\Software\SMITE Optimizer\","UpdateCheck","REG_SZ","TRUE")
 			   MsgBox(0,"Information","Automatic update check turned on.")
+			EndIf
+		 Case $MenuBlockDonationInfo
+			if RegRead("HKCU\Software\SMITE Optimizer\","BlockDonations") = "True" Then
+			   RegWrite("HKCU\Software\SMITE Optimizer\","BlockDonations","REG_SZ","False")
+			   $BlockDonations = "False"
+			   MsgBox(0,"Information","Donation info will no longer be blocked.")
+			Else
+			   RegWrite("HKCU\Software\SMITE Optimizer\","BlockDonations","REG_SZ","True")
+			   $BlockDonations = "True"
+			   MsgBox(0,"Information","I can understand that you block this, i really do.")
 			EndIf
 		 Case $MenuHelpItem
 			GUISetState(@SW_DISABLE,$MainGUI)
@@ -1546,7 +1945,8 @@ While 1
 		 Case $DebugGUIButtonResetConfig
 			Local $MsgBoxConfigReset = MsgBox(4,"Information","Are you sure you want to reset the config paths?")
 			if $MsgBoxConfigReset = 6 Then
-			   RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPath")
+			   RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
+			   RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
 			   ShellExecute(@ScriptFullPath)
 			   Exit
 			EndIf
@@ -1715,6 +2115,13 @@ While 1
 		 Switch GuiGetMsg()
 			Case -3, $MenuExit
 			   CloseGUIDisplay()
+			Case $EditBoxGUIButtonDeleteBackups
+			   if MsgBox(4,"Confirm..","Are you sure you want to delete all of your config backups?") = 6 then
+				  DirRemove($ConfigBackupPath,1)
+				  DirCreate($ConfigBackupPath)
+				  CloseGUIDisplay()
+				  GUIDisplay(3)
+			   EndIf
 			Case $EditBoxGUIButtonRestore
 			   if $IsSteamUser = 1 Then
 				  if _GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)) <> "" Then
@@ -1726,7 +2133,11 @@ While 1
 						FileDelete($SMITEBattleSystemSettingsIniPath)
 						FileCopy($ConfigBackupPath&_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),$SMITEBattleSystemSettingsIniPath,1)
 					 EndIf
-					 MsgBox(0,"Done","Restored successfully.")
+					 if @Error = 0 then
+						MsgBox(0,"Done","Restored successfully.")
+					 Else
+						MsgBox(0,"Error","Looks like there was a problem.")
+					 EndIf
 				  EndIf
 			   Else
 				  if _GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)) <> "" Then
@@ -1738,7 +2149,11 @@ While 1
 						FileDelete($SMITEBattleSystemSettingsIniPath)
 						FileCopy($ConfigBackupPath&_GUICtrlListBox_GetText($EditBoxGUIList,_GUICtrlListBox_GetCurSel($EditBoxGUIList)),$SMITEBattleSystemSettingsIniPath,1)
 					 EndIf
-					 MsgBox(0,"Done","Restored successfully.")
+					 if @Error = 0 then
+						MsgBox(0,"Done","Restored successfully.")
+					 Else
+						MsgBox(0,"Error","Looks like there was a problem.")
+					 EndIf
 				  EndIf
 			   EndIf
 			Case $EditBoxGUIButtonHelp1

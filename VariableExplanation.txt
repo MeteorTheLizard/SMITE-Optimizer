@@ -99,3 +99,6 @@ AllowScreenDoorLODFading - Level of Detail for disappearing foliage.
 SpeedTreeWind - Moving trees rendered in realtime, disabling this will still render the trees but they no longer move.
 
 ShadowTexelsPerPixel - Exactly what it says, how many Shadows texels are rendered per pixel.
+
+
+IF YOU ARE INTERESTED TO PROVIDE MORE ACCURATE EXPLANATIONS OF EACH VARIABLE, SEND ME AN EMAIL: MrRangerLP@gmx.de

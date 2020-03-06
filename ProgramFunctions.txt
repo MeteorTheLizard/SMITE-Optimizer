@@ -5,9 +5,9 @@ The Menu gives you access to additional program features.
 
 Such as:
 
--Open SRGG Subreddit. (This will open the SRGG Subreddit with your default browser)
--Changelog. (This will open a new window with all the recent changes made to the program)
--Copyright and Credits. (This will open a new window with copyright notices and credits)
+-"Open the SO Subreddit" (This will open the SMITE Optimizer Subreddit with your default browser)
+-"Changelog" (This will open a new window with all the recent changes made to the program)
+-"Copyright and Credits" (This will open a new window with copyright notices and credits)
 
 -Update Check On/Off. (Turns the update check on or off)
 -Restore Configuration. (Opens a new window for the restore function)
@@ -32,3 +32,5 @@ You can load saved backups. Simply select BattleEngine click on Restore, select 
 
 For steam users:
 You can load saved backups. Simply select DefaultEngine click on Restore, select DefaultSystemSettings (with the same date&time) and hit Restore again.
+
+If required, you can press the button "Delete all backups" to delete all of your old config backups.

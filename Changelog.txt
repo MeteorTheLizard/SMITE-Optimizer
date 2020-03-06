@@ -1,3 +1,21 @@
+Update V1.1.9 > V1.2
+
+Quality of Life:
+-Overhauled the Configuration Discovery.
+ ^This can be seen as a massive change as this improves the programs quality by a ton.
+-Added a button to the "Restore Configuration" tab that deletes all of your old config backups.
+
+Help updates:
+-Updated the Program Functions to say SO and SMITE Optimizer Subreddit instead of SRGG and SRGG Subreddit.
+ ^It will also tell you that you can press the button "Delete all backups" to delete all of your old config backups now.
+-Added a line in the Variable Explanations that you can send me more accurate ones if you so desire.
+
+-Fixed the program for steam users
+ ^I have finally fixed the program for steam users, it should now properly optimize the game for you.
+ The issue was missing variables in the games config files, if you would like to find out what variables were missing, go here: https://pastebin.com/raw/T7GDqXXV
+
+
+
 Update V1.1.8 > V1.1.9
 
 World Settings:
@@ -20,25 +38,3 @@ Code:
 Bugfixes:
 -Fixed label where it says that it cannot connect to the updater server. (www.reddit.com/r/SRGG > www.reddit.com/r/SMITEOptimizer)
 -Fixed weird interaction with the debug GUI and minimizing
-
-
-
-Update V1.1.7.1 > V1.1.8
-
-GUI:
--Added Debug menu
--Edited text "Scanning for Configs..." > "Scanning for Configs... (This can take a while)"
-
-
-
-Update V1.1.7 > V1.1.7.1
-
--Updated the subreddit link & label
-
-
-
-Update V1.1.6 > V1.1.7.
-
-Bug Fixes:
--Fixed program for 32Bit systems.
--Fixed First-start error. (AutoIt Unknown Function Name)

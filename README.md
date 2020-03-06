@@ -2,7 +2,7 @@
 
 A simple and lightweight program to easily change the configuration files for [SMITE](https://www.smitegame.com/) PC on windows.
 
-## LICENSE
+## License
 
 This program is licensed under the **GNU General Public License v3.0**. [Click here for more info](https://github.com/MeteorTheLizard/SMITE-Optimizer/blob/master/LICENSE).
 
@@ -24,6 +24,12 @@ Contact: MrRangerLP@gmx.de
  
  You may create an **issue** on the [issues](https://github.com/MeteorTheLizard/SMITE-Optimizer/issues) page to report a bug.
  You may suggest features there as well.
+ 
+ ## Supporting the project
+ 
+ If you feel generous or the need to give something in return, you can either contribute to the project by improving the code and creating **pull requests** or by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG).
+ 
+ Any kind of support is greatly appreciated!
  
  ## FAQ (Ported from reddit /r/SMITEOptimizer)
  Q: Is it safe to use this program?

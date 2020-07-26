@@ -27,7 +27,7 @@ Contact: MrRangerLP@gmx.de
  You may create an **issue** on the [issues](https://github.com/MeteorTheLizard/SMITE-Optimizer/issues) page to report a bug.
  You may suggest features there as well.
  
- **Remember to describe your issue as good as you can, including screenshots or short recordings of your issue helps greatly.**
+ **Remember to describe your issue as good as you can, including screenshots or short recordings of the issue helps immensely.**
  
  ## Supporting the project
  

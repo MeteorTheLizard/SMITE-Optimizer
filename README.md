@@ -8,7 +8,7 @@ A simple and lightweight program to easily change the configuration files for [S
 
 This program is licensed under the **GNU General Public License v3.0**. [Click here for more info](https://github.com/MeteorTheLizard/SMITE-Optimizer/blob/master/LICENSE).
 
-Earlier versions than V1.3 do **NOT** fall under this license and therefor may not be copied, shared, modified or distributed.
+Only version 1.3 and above fall under this License and earlier versions of this program may therefor not be copied, shared, modified, or distributed as they are subject to Copyright.
 
 Contact: MrRangerLP@gmx.de
 

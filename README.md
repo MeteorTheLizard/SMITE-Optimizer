@@ -4,14 +4,6 @@ A simple and lightweight program to easily change the configuration files for [S
 
 <img align="center" src="https://i.imgur.com/MHnpb0L.png" />
 
-## License
-
-This program is licensed under the **GNU General Public License v3.0**. [Click here for more info](https://github.com/MeteorTheLizard/SMITE-Optimizer/blob/master/LICENSE).
-
-Only version 1.3 and above fall under this License and earlier versions of this program may therefor not be copied, shared, modified, or distributed as they are subject to Copyright.
-
-Contact: MrRangerLP@gmx.de
-
 ## How to install
 
 - Head over to the [releases](https://github.com/MeteorTheLizard/SMITE-Optimizer/releases) page and download the latest corresponding .exe file for your system. If you are running a 32bit version of windows, download the 32bit version of the SMITE Optimizer. If you're using a 64bit version of windows, download the 64bit version of the SMITE Optimizer.
@@ -34,6 +26,14 @@ Contact: MrRangerLP@gmx.de
  If you feel generous or the need to give something in return, you can either contribute to the project by improving the code and creating **pull requests** or by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG), alternatively we also have a [patreon](https://www.patreon.com/SMITEOptimizer)!
  
  Any kind of support is greatly appreciated!
+ 
+ ## License
+
+This program is licensed under the **GNU General Public License v3.0**. [Click here for more info](https://github.com/MeteorTheLizard/SMITE-Optimizer/blob/master/LICENSE).
+
+Only version 1.3 and above fall under this License and earlier versions of this program may therefor not be copied, shared, modified, or distributed as they are subject to Copyright.
+
+Contact: MrRangerLP@gmx.de
  
  ## Compiling the Source.au3
  

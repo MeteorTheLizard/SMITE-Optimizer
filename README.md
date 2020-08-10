@@ -9,6 +9,8 @@
 </p>
 
 <p align="center"> <strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>
+<p align="center"> <strong>Compatible with Windows 7, Windows 8 and Windows 10.</strong></p>
+<p align="center"> <strong>Windows XP and Windows Vista are not supported officially, but the program might work just fine.</strong></p>
 
 <h2 align="center"><strong>How to install & use the program</strong></h2>
 

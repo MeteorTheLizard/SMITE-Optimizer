@@ -28,7 +28,7 @@
 
 <br>
 
-<h2 align="center"><strong>Bug Reporting</strong></h2>
+<h2><strong>Bug Reporting</strong></h2>
  
 You may create an <strong>issue</strong> on the <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/issues">issues</a> page to report a bug.
 

@@ -8,7 +8,7 @@
  <img width="810" height="450" src="https://i.imgur.com/f4MHc3D.png" />
 </p>
 
-<p align="center"> <strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/">SMITE</a> PC on Windows.</strong></p>
+<p align="center"> <strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>
 
 ## How to install & use the program
 

@@ -1,25 +1,48 @@
-Update V1.2.1 > V1.2.2
+SMITE Optimizer Version 1.3 (Codename: "The Future is here")
 
-New Features:
--Texture Settings
-You can now change the Texture Quality level for each Texture group
-(World, Character, Terrain, NPC, Weapon, Vehicle, Shadows, Skybox and Effects)
-Ranging from: (Best, Very High, High, Medium, Low, Very Low, Absolute Worst, Potato, N64 Graphics, but 64 times worse) .. <Best to Worst>
+Compatible Operating Systems: Windows 7, Windows 8, Windows 8.1 and Windows 10.
+Please note that the program might still work perfectly fine on Windows XP and Windows Vista, however it was not tested and they won't be officially supported. Expect bugs!
 
-Bug Fix:
--When you have the Debug Window opened, you can no longer interact with the Main Window.
+Most important changes:
+The program is now open source and available on GitHub! ( https://github.com/MeteorTheLizard/SMITE-Optimizer )
+Version 1.3 and upcoming versions are licensed under the GPL-3.0 License.
+Anyone may contribute to the code-base by creating a fork of the master branch and making changes to it. Once you are done open a pull request.
+Older versions than 1.3 are available on GitHub as well. Keep in mind that these versions are licensed differently.
 
-Help Updates:
--Adjusted accordingly to have Information about the new Texture Settings.
+Since the code of every version of the SMITE Optimizer ever released is now publicly available, there is no need for security concerns anymore.
+The SMITE Optimizer always was virus-free and always will be.
 
 
-Update V1.2 > V1.2.1
+Over the past few years from the point this project initially started, I have improved immensely in terms of writing efficient, understandable, and GOOD code.
+The current state of the program and its code reflects my current coding skills, compared to V1.2.2, it is a massive difference and a re-write was desperately needed.
+A re-write was also needed not just because the code was simply bad, but because the upcoming SMITE patch (7.8) will remove an option from the configuration files (bAllowFog) as it will now be enforced to always be true due to recent changes in HiRez' Terms of Service. V1.2.2 was not made with that in mind and will stop functioning once the patch goes live.
 
-Integration Updates:
--Fixed the "SMITE Config Backup" folder path being static. If you have changed the default path for your windows documents folder, the SMITE Optimizer will now use that one instead.
+Do note that you're still allowed to tweak and make changes to the .ini (configuration files) as you please which is all this program does.
+The program is no longer capable of making changes to the (bAllowFog) variable to ensure that no one gets banned, even though re-adding that variable and changing it has no effect in-game.
 
-Other:
--Removed the Donation info MessageBox and MenuItem.
+For the past 3 weeks (It is currently the 9th of August 2020) I have been working on this re-write having spent at least 8 hours a day on it.
+It is safe to say that it was an absurd amount of work and took a lot of dedication, time, sweat, blood, and stamina.
 
-Help Updates:
--Reflected the static folder change in the help sections.
+As previously mentioned, this version is a complete re-write of the SMITE Optimizer and features an overhauled and modern UI.
+The SMITE Optimizer is now much more efficient in terms of code as well as optimizing the configuration files as I discovered new ways to efficiently optimize the game by tweaking settings.
+The program is now able to detect corrupted configuration files, being able to fix almost any error or problem by itself as well as filling in missing settings. (bAllowFog excluded.)
+The only thing it can't fix are settings that are set to malformed or incorrect values.
+
+
+List of changes:
+-Complete Code re-write.
+-New modern UI with animations!
+-Improved user-friendliness as well as making things a lot easier to understand.
+-Added Help tips for every single option that fades in when hovering over, explaining in detail what exactly it is and what effects it has on performance.
+-Simple and Advanced mode, making it easier for people that don't know anything about game development.
+-Added an animated splash-screen.
+-New update routine that is a lot more efficient.
+-Added an algorithm to find errors in the configuration files and repair them.
+-More efficient way of applying the changes.
+-More efficient and user friendly way to restore backups.
+-Updated Debug tab.
+-Updates are now downloaded and applied automatically. (To disable automatic updates you will now have to go into the debug tab)
+
+
+The program and this update is free of charge.
+If you are interested in supporting this project, please check out the "Donate" tab. Thank you!

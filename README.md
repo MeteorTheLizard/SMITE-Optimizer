@@ -1,69 +1,55 @@
-# SMITE-Optimizer
+<p align="center">
+ <img width="600" height="100" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/SO_Logo.gif">
+</p>
+<p align="center">
+ <img width="810" height="450" src="https://i.imgur.com/RiozPk0.png" />
+</p>
+<p align="center">
+ <img width="810" height="450" src="https://i.imgur.com/f4MHc3D.png" />
+</p>
 
-A simple and lightweight program to easily change the configuration files for [SMITE](https://www.smitegame.com/) PC on windows.
+<p align="center"> <strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/">SMITE</a> PC on Windows.</strong></p>
 
-<img align="center" src="https://i.imgur.com/MHnpb0L.png" />
+## How to install & use the program
 
-## How to install
+<p align="center">Download the program by heading over to the <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/releases">releases</a> page and select the latest version. If you have a 32Bit operating system, download the 32Bit version. If you have a 64Bit operating system, download the 64Bit version.</p>
 
-- Head over to the [releases](https://github.com/MeteorTheLizard/SMITE-Optimizer/releases) page and download the latest corresponding .exe file for your system. If you are running a 32bit version of windows, download the 32bit version of the SMITE Optimizer. If you're using a 64bit version of windows, download the 64bit version of the SMITE Optimizer.
+<p align="center">After you have successfully downloaded the program upon first time launching it, it is possible that Windows Smartscreen is preventing you from opening it. Click on 'More info' in the popup and then the 'Run anyway' button. The program will now launch unless your Anti-virus prevents it from doing so. After it launched successfully it will ask you where your configuration files are located. Simply follow the instructions.</p>
 
-## Using the program
+<p align="center">
+ <img width="810" height="450" src="https://i.imgur.com/gyiW11V.png" />
+</p>
 
-- After having downloaded the executeable you can put it anywhere you want.
-- Launch the program. If this is your first time running the program it should now take you through the configuration discovery. Simply follow the steps provided by the program to complete this step.
-- After the program has discovered where your games' configuration files are located, you may start changing things. If you're unsure about each individual option, it is recommended to use the recommended settings. Simply check the bottom right checkbox saying "use recommended settings" and hit "apply settings". After the program has successfully completed this step, you are good to go.
+<p align="center">Everything else was designed to be easy to understand. Simply hover over an option and a help tip will pop into view, explaining in detail what the setting does and what the recommended action is.</p>
+
+<p align="center">If you cannot be bothered to read the info for every single setting, you can press the 'Use high performance Settings' button and the program will set all options to the recommended values. After you've done that, simply hit 'Apply Changes' and the program will make changes to your configuration files, creating a backup of them before that.</p>
+
+<p align="center">If you are unhappy with the results, you can go into the "Restore configurations" tab and restore your old configuration files.</p>
  
  ## Bug Reporting
  
- You may create an **issue** on the [issues](https://github.com/MeteorTheLizard/SMITE-Optimizer/issues) page to report a bug.
- You may suggest features there as well.
+ <p align="center">You may create an <strong>issue</strong> on the <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/issues">issues</a> page to report a bug.
  
- **Remember to describe your issue as good as you can, including screenshots or short recordings of the issue helps immensely.**
- 
- ## Supporting the project
- 
- If you feel generous or the need to give something in return, you can either contribute to the project by improving the code and creating **pull requests** or by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG), alternatively we also have a [patreon](https://www.patreon.com/SMITEOptimizer)!
- 
- Any kind of support is greatly appreciated!
- 
+ <strong>Remember to describe your issue as good as you can, including screenshots or short recordings of the issue helps immensely.</strong></p>
+  
  ## License
 
-This program is licensed under the **GNU General Public License v3.0**. [Click here for more info](https://github.com/MeteorTheLizard/SMITE-Optimizer/blob/master/LICENSE).
+ <p align="center">This program is licensed under the <strong>GNU General Public License v3.0</strong>. <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/blob/master/LICENSE">Click here for more info</a>.</p>
 
-Only version 1.3 and above fall under this License and earlier versions of this program may therefor not be copied, shared, modified, or distributed as they are subject to Copyright.
+<p align="center"><strong>Earlier versions than 1.3 are subject to a different License and Copyright and may not be copied, shared, modified or distributed.</strong></p>
 
 Contact: MrRangerLP@gmx.de
  
- ## Compiling the Source.au3
- 
+ ## Contributing to the project and modifying and Compiling the Source
+  
 [Get AutoIt Here](https://www.autoitscript.com/site/autoit-script-editor/downloads/)
- 
-If you downloaded a version earlier than **V1.3** you have to manually download the ResourceEx.au3 include and put it into your autoit/includes folder. After that, everything should work just fine.
 
-If your version of the SMITE Optimizer came with said include, you still have to install it manually in your autoit/includes folder in order to be able to compile the executable.
- 
- ## FAQ (Ported from reddit /r/SMITEOptimizer)
- Q: Is it safe to use this program?
+Download the repository and make sure to put the .au3 files inside of the /Include folder into your AutoIt Include folder.
 
-* A: Yes, as stated by HiRez [here](https://www.reddit.com/r/Smite/comments/3dxx60/small_but_effective_performance_tweaksfix/cta21vi/) "You will not get banned for editing the INI's ever", and that is all this program does.
+When working on the Source.au3 make sure the /Resource folder is located in the same folder as the Source.au3
 
-Q: I used the recommended settings and the god models look weird (Thanks to /u/TheGloriousFire)
+The Program is incompatible with Virtual Machines as all file operations fail for some reason. Running it as Administrator does not fix this issue.
 
-* A: That's because **SkeletalMeshLODBias** and **StaticMeshLODBias** are not set to **0** on the recommended settings. Set both of those value to 0 to fix this.
+<strong>Remember to read the License before making changes to the Script and or publishing your changes.</strong>
 
-Q: A lot of particles are missing, like ability effects and so on.
-
-* A: That is a side effect, since we are limiting the particles and decals that can be displayed, i can't remember exactly what variables cause this but it is fixable.
-
-Q: When i start the program windows tells me it is not safe to use.
-
-* A: That is because the file is not signed, windows treats every unsigned .exe file from a different computer as potentially harmful. Unfortunately i do not have the ability to sign AutoIt scripts.
-
-Q: My Antivirus says this program is potentially harmful or a virus.
-
-* A: A common problem with AutoIt scripts, please go [here (outdated link)]() to report this problem to me. I will then get in contact with the Antivirus provider.
-
-Q: The game no longer starts after optimizing it.
-
-* A: Your game config files are corrupt. Open the launcher > Click on the gear > clear game settings. Start the game, close it. Re-optimize. And everything should work again. (Alternatively you can use the In-built feature to restore your configurations, however optimizations won't work)
+Anyone may contribute to the project. Once you are done making changes, fork the SMITE Optimizer repository and commit the changes you've made. Once done, open a pull request. [Pull Request documentation](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)

@@ -10,7 +10,7 @@
 
 <p align="center"> <strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>
 
-## How to install & use the program
+<h2 align="center"><strong>How to install & use the program</strong></h2>
 
 <p align="center">Download the program by heading over to the <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/releases">releases</a> page and select the latest version. If you have a 32Bit operating system, download the 32Bit version. If you have a 64Bit operating system, download the 64Bit version.</p>
 
@@ -25,18 +25,20 @@
 <p align="center">If you cannot be bothered to read the info for every single setting, you can press the 'Use high performance Settings' button and the program will set all options to the recommended values. After you've done that, simply hit 'Apply Changes' and the program will make changes to your configuration files, creating a backup of them before that.</p>
 
 <p align="center">If you are unhappy with the results, you can go into the "Restore configurations" tab and restore your old configuration files.</p>
+
+<br>
+
+<h2 align="center"><strong>Bug Reporting</strong></h2>
  
- ## Bug Reporting
- 
- <p align="center">You may create an <strong>issue</strong> on the <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/issues">issues</a> page to report a bug.
- 
- <strong>Remember to describe your issue as good as you can, including screenshots or short recordings of the issue helps immensely.</strong></p>
+You may create an <strong>issue</strong> on the <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/issues">issues</a> page to report a bug.
+
+<strong>Remember to describe your issue as good as you can, including screenshots or short recordings of the issue helps immensely.</strong>
   
  ## License
 
- <p align="center">This program is licensed under the <strong>GNU General Public License v3.0</strong>. <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/blob/master/LICENSE">Click here for more info</a>.</p>
+This program is licensed under the <strong>GNU General Public License v3.0</strong>. <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/blob/master/LICENSE">Click here for more info</a>
 
-<p align="center"><strong>Earlier versions than 1.3 are subject to a different License and Copyright and may not be copied, shared, modified or distributed.</strong></p>
+<strong>Earlier versions than 1.3 are subject to a different License and Copyright and may not be copied, shared, modified or distributed.</strong>
 
 Contact: MrRangerLP@gmx.de
  

@@ -2,10 +2,10 @@
  <img width="600" height="100" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/SO_Logo.gif">
 </p>
 <p align="center">
- <img width="810" height="450" src="https://i.imgur.com/RiozPk0.png" />
+ <img width="810" height="450" src="https://i.imgur.com/gnBxSsj.png" />
 </p>
 <p align="center">
- <img width="810" height="450" src="https://i.imgur.com/f4MHc3D.png" />
+ <img width="810" height="450" src="https://i.imgur.com/EJjBJwB.png" />
 </p>
 
 <p align="center"> <strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>
@@ -19,7 +19,7 @@
 <p align="center">After you have successfully downloaded the program upon first time launching it, it is possible that Windows Smartscreen is preventing you from opening it. Click on 'More info' in the popup and then the 'Run anyway' button. The program will now launch unless your Anti-virus prevents it from doing so. After it launched successfully it will ask you where your configuration files are located. Simply follow the instructions.</p>
 
 <p align="center">
- <img width="810" height="450" src="https://i.imgur.com/gyiW11V.png" />
+ <img width="810" height="450" src="https://i.imgur.com/sHvDEw4.png" />
 </p>
 
 <p align="center">Everything else was designed to be easy to understand. Simply hover over an option and a help tip will pop into view, explaining in detail what the setting does and what the recommended action is.</p>

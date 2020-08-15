@@ -6,8 +6,11 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.0.0
+#AutoIt3Wrapper_Res_Fileversion=1.3.1.0
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
+
+#AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
 
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\SMITEOptimizerIcon.jpg, RT_RCDATA, SMITEOptimizerIcon, 0
@@ -68,7 +71,7 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\PatreonBtnInActive.jpg, RT_RCDATA, PatreonBtnInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\PayPalBtnActive.jpg, RT_RCDATA, PayPalBtnActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\PayPalBtnInActive.jpg, RT_RCDATA, PayPalBtnInActive, 0
-#AutoIt3Wrapper_Res_File_Add=Resource\ReportABugFooter.jpg, RT_RCDATA, ReportABugFooter, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\DebugFooter.jpg, RT_RCDATA, DebugFooter, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\RestoreConfigsIconActive.jpg, RT_RCDATA, RestoreConfigsIconActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\RestoreConfigsIconInActive.jpg, RT_RCDATA, RestoreConfigsIconInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\SO_Logo.jpg, RT_RCDATA, SO_Logo, 0
@@ -130,7 +133,7 @@
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 ;- Notes:
-;- Last error code: "009" - Next: "010"
+;- Last error code: "011" - Next: "012"
 ;- This program appears to be incompatible with Virtual Machines as any file operations fail.
 
 #NoTrayIcon
@@ -182,7 +185,7 @@ Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
-Global Const $ProgramVersion = "1.3"
+Global Const $ProgramVersion = "1.3.1"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -191,6 +194,20 @@ Global Const $MinWidth = 810
 Global Const $MinHeight = 450
 Global Const $sEmpty = "" ;- Optimizations. Instead of creating a new Object over and over again, we point to this instead. (Much faster) DO NOTE CHANGE THIS! IT WILL BREAK THE SCRIPT!
 Global Const $ChangelogText = _Resource_GetAsString("ChangelogText")
+Local $LoadFont = _Resource_LoadFont("MainFont")
+If @Error and @Compiled Then
+	MsgBox(0,"Error!","Critical error while loading the fonts! Code: 010")
+	Exit
+EndIf
+Local $LoadFont = _Resource_LoadFont("MenuFont")
+If @Error and @Compiled Then
+	MsgBox(0,"Error!","Critical error while loading the fonts! Code: 011")
+	Exit
+EndIf
+
+;- You are required to install the fonts in order to be able to see them when not having the script in a compiled state!
+Global Const $MainFontName = "Monofonto"
+Global Const $MenuFontName = "Kirsty Rg"
 
 Global $MenuSelected = 1
 Global $MainGUIMaximizedState = False
@@ -1236,6 +1253,7 @@ Global Const $TextureQualityHive[9][8][4] = _
 Func GUICtrlCreateLabelTransparentBG($Text,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style = Default)
 	Local $Label = GUICtrlCreateLabel($Text,$X,$Y,$Size_X,$Size_Y,$Style)
 		GUICtrlSetBkColor(-1,$GUI_BKCOLOR_TRANSPARENT) ;- Transparent background.
+		GUICtrlSetFont(-1,Default,Default,Default,$MainFontName)
 
 	Return $Label
 EndFunc
@@ -1307,9 +1325,9 @@ Func DrawMainGUI()
 		Global $MainGUIMenuTitleIcon = GUICtrlCreatePic($sEmpty,18,9,16,16)
 			LoadImageResource($MainGUIMenuTitleIcon,$MainResourcePath & "SMITEOptimizerIcon.jpg","SMITEOptimizerIcon")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIMenuTitle = GUICtrlCreateLabelTransparentBG($ProgramName,50,9,122,15)
+		Global $MainGUIMenuTitle = GUICtrlCreateLabelTransparentBG($ProgramName,50,9,130,15)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-			GUICtrlSetFont(-1,9)
+			GUICtrlSetFont(-1,9,Default,Default,$MainFontName)
 
 		Global $MainGUIButtonClose = GUICtrlCreatePic($sEmpty,$MinWidth-34,0,34,34)
 			LoadImageResource($MainGUIButtonClose,$MainResourcePath & "CloseNoActivate.jpg","CloseNoActivate")
@@ -1330,14 +1348,14 @@ Func DrawMainGUI()
 		If $ProgramState <> $sEmpty Then $Text = $ProgramState
 
 		Global $MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("("&$Text&" mode)",-1000,18,-1,14,$SS_RIGHT)
-			Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelProgramState)[2]
-			GUICtrlSetPos(-1,$MinWidth - $Width - 105,18,$Width,14)
+			Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelProgramState)[2] + 25
+			GUICtrlSetPos(-1,$MinWidth - $Width - 102,18,$Width,14)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
 		Local $Text = "v"&$ProgramVersion
 		If $UpdateAvailable Then $Text = "(Update Available) v"&$ProgramVersion
 		Global $MainGUILabelVersion = GUICtrlCreateLabelTransparentBG($Text,-1000,4,-1,14,$SS_RIGHT)
-			Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelVersion)[2]
+			Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelVersion)[2] + 25
 			GUICtrlSetPos(-1,$MinWidth - $Width - 105,4,$Width,14)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
@@ -1421,10 +1439,10 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 	;- ----- ----- ----- ----- -----
 
 	;-- Home (Config Discovery)
-		Global $MainGUIHomeLabelWelcome = GUICtrlCreateLabelTransparentBG("Welcome! Thank you for choosing the SMITE Optimizer!",110,65,645,30)
+		Global $MainGUIHomeLabelWelcome = GUICtrlCreateLabelTransparentBG("Welcome! Thank you for choosing the SMITE Optimizer!",93,65,700,30)
 			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,20,500)
-		Global $MainGUIHomeLabelGetStarted = GUICtrlCreateLabelTransparentBG("Please select which Game Launcher you used to install SMITE on your System.",243,100,700,30)
+			GUICtrlSetFont(-1,20,500,Default,$MainFontName)
+		Global $MainGUIHomeLabelGetStarted = GUICtrlCreateLabelTransparentBG("Please select which Game Launcher you used to install SMITE on your System.",205,100,700,30)
 			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 		Global $MainGUIHomePicBtnSteam = GUICtrlCreatePic($sEmpty,110,150,300,100)
 			LoadImageResource($MainGUIHomePicBtnSteam,$MainResourcePath & "SteamBtnInActive.jpg","SteamBtnInActive")
@@ -1445,7 +1463,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetColor(-1,0xFFFFFF)
 		Global $MainGUIHomeLabelLogoCopyright = GUICtrlCreateLabelTransparentBG("Logos shown are subject to Copyright and are Trademarked by their respective companies and were used under the 'Fair Use' agreement.",5,430,850,16)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,9,500)
+			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
 
 
 	;-- Home (Simple and Advanced mode)
@@ -1460,14 +1478,14 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetOnEvent($MainGUIHomeSwitchModeSimple,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			If $ProgramHomeState = "Simple" Then GUICtrlSetState(-1,$GUI_CHECKED)
-		Global $MainGUIHomeLabelModeSimple = GUICtrlCreateLabelTransparentBG("Simple",27,404,30,13)
+		Global $MainGUIHomeLabelModeSimple = GUICtrlCreateLabelTransparentBG("Simple",27,403,-1,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSwitchModeAdvanced = GUICtrlCreateRadio($sEmpty,10,422,13,13)
 			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
 			GUICtrlSetOnEvent($MainGUIHomeSwitchModeAdvanced,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			If $ProgramHomeState = "Advanced" Then GUICtrlSetState(-1,$GUI_CHECKED)
-		Global $MainGUIHomeLabelModeAdvanced = GUICtrlCreateLabelTransparentBG("Advanced",27,422,50,13)
+		Global $MainGUIHomeLabelModeAdvanced = GUICtrlCreateLabelTransparentBG("Advanced",27,422,-1,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 		Global $MainGUIHomeButtonUseMaxPerformance = GUICtrlCreateButton("Use high performance Settings",157,401,200,35)
 			GUICtrlSetOnEvent($MainGUIHomeButtonUseMaxPerformance,"ButtonPressLogic")
@@ -1479,7 +1497,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetOnEvent($MainGUIHomeCheckboxDisplayHints,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetState(-1,$ProgramHomeHelpState)
-		Global $MainGUIHomeLabelDisplayHints = GUICtrlCreateLabelTransparentBG("Show help",178,384,60,13)
+		Global $MainGUIHomeLabelDisplayHints = GUICtrlCreateLabelTransparentBG("Show Help",178,384,-1,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 
 
@@ -1600,15 +1618,15 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetData(-1,"0|1|2")
 		Global $MainGUIHomeSimpleCheckboxVSync = GUICtrlCreateCheckboxTransparentBG(595,84,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeSimpleLabelVSync = GUICtrlCreateLabelTransparentBG("Use Vertical Synchronisation",613,88,200,13)
+		Global $MainGUIHomeSimpleLabelVSync = GUICtrlCreateLabelTransparentBG("Use Vertical Synchronisation",613,88,235,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleCheckboxRagdollPhysics = GUICtrlCreateCheckboxTransparentBG(595,104,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeSimpleLabelRagdollPhysics = GUICtrlCreateLabelTransparentBG("Use Ragdoll Physics",613,108,200,13)
+		Global $MainGUIHomeSimpleLabelRagdollPhysics = GUICtrlCreateLabelTransparentBG("Use Ragdoll Physics",613,108,235,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleCheckboxDirectX11 = GUICtrlCreateCheckboxTransparentBG(595,124,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeSimpleLabelDirectX11 = GUICtrlCreateLabelTransparentBG("Use DirectX11",613,128,200,13)
+		Global $MainGUIHomeSimpleLabelDirectX11 = GUICtrlCreateLabelTransparentBG("Use DirectX11",613,128,235,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
 			;- Windows versions older than WIN_7 do not support DirectX11.
@@ -1618,27 +1636,27 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 
 		Global $MainGUIHomeSimpleCheckboxBloom = GUICtrlCreateCheckboxTransparentBG(595,152,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeSimpleLabelBloom  = GUICtrlCreateLabelTransparentBG("Bloom",613,156,200,13)
+		Global $MainGUIHomeSimpleLabelBloom  = GUICtrlCreateLabelTransparentBG("Bloom",613,156,235,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleCheckboxDecals = GUICtrlCreateCheckboxTransparentBG(595,172,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeSimpleLabelDecals  = GUICtrlCreateLabelTransparentBG("Decals",613,176,200,13)
+		Global $MainGUIHomeSimpleLabelDecals  = GUICtrlCreateLabelTransparentBG("Decals",613,176,235,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleCheckboxDynamicLightShadows = GUICtrlCreateCheckboxTransparentBG(595,192,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeSimpleLabelDynamicLightShadows = GUICtrlCreateLabelTransparentBG("Dynamic Lights and Shadows",613,196,200,13)
+		Global $MainGUIHomeSimpleLabelDynamicLightShadows = GUICtrlCreateLabelTransparentBG("Dynamic Lights and Shadows",613,196,235,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleCheckboxLensflares = GUICtrlCreateCheckboxTransparentBG(595,212,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeSimpleLabelLensflares = GUICtrlCreateLabelTransparentBG("Lensflares",613,215,200,13)
+		Global $MainGUIHomeSimpleLabelLensflares = GUICtrlCreateLabelTransparentBG("Lensflares",613,216,235,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleCheckboxReflections = GUICtrlCreateCheckboxTransparentBG(595,232,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeSimpleLabelReflections = GUICtrlCreateLabelTransparentBG("Reflections",613,236,200,13)
+		Global $MainGUIHomeSimpleLabelReflections = GUICtrlCreateLabelTransparentBG("Reflections",613,236,235,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleCheckboxHighQualityMats = GUICtrlCreateCheckboxTransparentBG(595,252,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeSimpleLabelHighQualityMats = GUICtrlCreateLabelTransparentBG("Use Uncompressed Textures",613,256,200,13)
+		Global $MainGUIHomeSimpleLabelHighQualityMats = GUICtrlCreateLabelTransparentBG("Use Uncompressed Textures",613,256,235,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
 		Global $LastScreenResScaleSimple ;- Used in the main routine to determine whether it changed.
@@ -1742,7 +1760,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedLabelSpeedTreeFronds = GUICtrlCreateLabelTransparentBG("SpeedTree Fronds",473,92,140,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelSpeedTreeLODBias = GUICtrlCreateLabelTransparentBG("SpeedTree LOD Bias",455,114,140,13)
+		Global $MainGUIHomeAdvancedLabelSpeedTreeLODBias = GUICtrlCreateLabelTransparentBG("SpeedTree LOD Bias",455,116,140,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedComboSpeedTreeLODBias = GUICtrlCreateComboNoTheme($sEmpty,455,133,110,13,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -1754,7 +1772,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetData(-1,"0|1|2")
 		Global $MainGUIHomeAdvancedCheckboxVSync = GUICtrlCreateCheckboxTransparentBG(455,209,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelVSync = GUICtrlCreateLabelTransparentBG("Use Vertical Synchronisation",473,213,140,13)
+		Global $MainGUIHomeAdvancedLabelVSync = GUICtrlCreateLabelTransparentBG("Use Vertical Sync.",473,213,140,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxPhysX = GUICtrlCreateCheckboxTransparentBG(455,229,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -1784,11 +1802,11 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxUncText = GUICtrlCreateCheckboxTransparentBG(455,329,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelUncText = GUICtrlCreateLabelTransparentBG("Use Uncompressed Textures",473,333,140,13)
+		Global $MainGUIHomeAdvancedLabelUncText = GUICtrlCreateLabelTransparentBG("Use Uncompressed Textu.",473,333,140,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxLightShafts = GUICtrlCreateCheckboxTransparentBG(620,49,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelLightShafts = GUICtrlCreateLabelTransparentBG("Light Shafts",638,52,160,13)
+		Global $MainGUIHomeAdvancedLabelLightShafts = GUICtrlCreateLabelTransparentBG("Light Shafts",638,53,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxFogVolumes = GUICtrlCreateCheckboxTransparentBG(620,69,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -1796,55 +1814,55 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxDistortion = GUICtrlCreateCheckboxTransparentBG(620,89,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelDistortion = GUICtrlCreateLabelTransparentBG("Distortion",638,92,160,13)
+		Global $MainGUIHomeAdvancedLabelDistortion = GUICtrlCreateLabelTransparentBG("Distortion",638,93,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxFilteredDistortion = GUICtrlCreateCheckboxTransparentBG(620,109,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelFilteredDistortion = GUICtrlCreateLabelTransparentBG("Filtered Distortion",638,112,160,13)
+		Global $MainGUIHomeAdvancedLabelFilteredDistortion = GUICtrlCreateLabelTransparentBG("Filtered Distortion",638,113,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxDropShadows = GUICtrlCreateCheckboxTransparentBG(620,129,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelDropShadows = GUICtrlCreateLabelTransparentBG("Drop Shadows",638,132,160,13)
+		Global $MainGUIHomeAdvancedLabelDropShadows = GUICtrlCreateLabelTransparentBG("Drop Shadows",638,133,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxWholeSceneShadows = GUICtrlCreateCheckboxTransparentBG(620,149,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelWholeSceneShadows = GUICtrlCreateLabelTransparentBG("Whole Scene Dominant Shadows",638,152,160,13)
+		Global $MainGUIHomeAdvancedLabelWholeSceneShadows = GUICtrlCreateLabelTransparentBG("Whole Scene Dominant Shadows",638,153,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxConservShadowBounds = GUICtrlCreateCheckboxTransparentBG(620,169,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelConservShadowBounds = GUICtrlCreateLabelTransparentBG("Conservative Shadow Bounds",638,172,160,13)
+		Global $MainGUIHomeAdvancedLabelConservShadowBounds = GUICtrlCreateLabelTransparentBG("Conservative Shadow Bounds",638,173,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxLightEnvShadows = GUICtrlCreateCheckboxTransparentBG(620,189,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelLightEnvShadows = GUICtrlCreateLabelTransparentBG("Light Environment Shadows",638,192,160,13)
+		Global $MainGUIHomeAdvancedLabelLightEnvShadows = GUICtrlCreateLabelTransparentBG("Light Environment Shadows",638,193,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxStaticDecals = GUICtrlCreateCheckboxTransparentBG(620,209,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelStaticDecals = GUICtrlCreateLabelTransparentBG("Static Decals",638,212,160,13)
+		Global $MainGUIHomeAdvancedLabelStaticDecals = GUICtrlCreateLabelTransparentBG("Static Decals",638,213,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxDynamicDecals = GUICtrlCreateCheckboxTransparentBG(620,229,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelDynamicDecals = GUICtrlCreateLabelTransparentBG("Dynamic Decals",638,232,160,13)
+		Global $MainGUIHomeAdvancedLabelDynamicDecals = GUICtrlCreateLabelTransparentBG("Dynamic Decals",638,233,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxUnbatchedDecals = GUICtrlCreateCheckboxTransparentBG(620,249,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelUnbatchedDecals = GUICtrlCreateLabelTransparentBG("Unbatched Decals",638,252,160,13)
+		Global $MainGUIHomeAdvancedLabelUnbatchedDecals = GUICtrlCreateLabelTransparentBG("Unbatched Decals",638,253,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxDynamicLights = GUICtrlCreateCheckboxTransparentBG(620,269,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelDynamicLights = GUICtrlCreateLabelTransparentBG("Dynamic Lights",638,272,160,13)
+		Global $MainGUIHomeAdvancedLabelDynamicLights = GUICtrlCreateLabelTransparentBG("Dynamic Lights",638,273,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxCompDynamicLights = GUICtrlCreateCheckboxTransparentBG(620,289,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelCompDynamicLights = GUICtrlCreateLabelTransparentBG("Composite Dynamic Lights",638,292,160,13)
+		Global $MainGUIHomeAdvancedLabelCompDynamicLights = GUICtrlCreateLabelTransparentBG("Composite Dynamic Lights",638,293,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxSHSecondaryLighting = GUICtrlCreateCheckboxTransparentBG(620,309,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelSHSecondaryLighting = GUICtrlCreateLabelTransparentBG("SH Secondary Lighting",638,312,160,13)
+		Global $MainGUIHomeAdvancedLabelSHSecondaryLighting = GUICtrlCreateLabelTransparentBG("SH Secondary Lighting",638,313,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxDynamicShadows = GUICtrlCreateCheckboxTransparentBG(620,329,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelDynamicShadows = GUICtrlCreateLabelTransparentBG("Dynamic Shadows",638,332,160,13)
+		Global $MainGUIHomeAdvancedLabelDynamicShadows = GUICtrlCreateLabelTransparentBG("Dynamic Shadows",638,333,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
 		Internal_LoadSettingCookies(False,False,True) ;- Load settings from cookie. (Simple and Advanced)
@@ -1893,9 +1911,9 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIRestoreConfigurationsCheckboxAskForConfirmation = GUICtrlCreateCheckboxTransparentBG(610,325,15,15)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetState(-1,$GUI_CHECKED)
-		Global $MainGUIRestoreConfigurationsLabelAskForConfirmation = GUICtrlCreateLabelTransparentBG("Ask to confirm action?",626,326,125,15)
+		Global $MainGUIRestoreConfigurationsLabelAskForConfirmation = GUICtrlCreateLabelTransparentBG("Ask to confirm action?",630,326,125,15)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-		Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"Dates shown are in the following format: DD/MM/YYYY."&@CRLF&"The other numbers are the time at which the backup was made.",57,283,400,39)
+		Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"Dates shown are in the following format: DD/MM/YYYY."&@CRLF&"The other numbers are the time at which the backup was made.",57,283,425,41)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 
 
@@ -1910,18 +1928,18 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 			GUICtrlSetOnEvent($MainGUIDonateButtonPatreon,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-		Global $MainGUIDonateLabelInfo = GUICtrlCreateLabelTransparentBG("Feeling generous? This is the place where you can show your appreciation for the project!",102,92,850,30)
+		Global $MainGUIDonateLabelInfo = GUICtrlCreateLabelTransparentBG("Feeling generous? This is the place where you can show your appreciation for the project!",74,92,850,30)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,13,500)
-		Global $MainGUIDonateLabelInfo2 = GUICtrlCreateLabelTransparentBG("Thank you for your interest in donating. Any support is always greatly appreciated! <3",118,342,850,30)
+			GUICtrlSetFont(-1,12,500,Default,$MainFontName)
+		Global $MainGUIDonateLabelInfo2 = GUICtrlCreateLabelTransparentBG("Thank you for your interest in donating. Any support is always greatly appreciated! <3",85,332,850,30)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,13,500)
+			GUICtrlSetFont(-1,12,500,Default,$MainFontName)
 		Global $MainGUIDonateLabelLogoCopyrightPatreon = GUICtrlCreateLabelTransparentBG('Patreon (C) '&$Year&' Patreon, Inc. Logo and Wordmark used with permission as defined in "Brand Guidelines".',5,412,850,16)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,10,500)
+			GUICtrlSetFont(-1,10,500,Default,$MainFontName)
 		Global $MainGUIDonateLabelLogoCopyrightPayPal = GUICtrlCreateLabelTransparentBG('PayPal (C) 1999-'&$Year&' PayPal. All Rights reserved. Logo used with permission as defined in "PayPal'&"'s trademarks"&'".',5,430,850,16)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,10,500)
+			GUICtrlSetFont(-1,10,500,Default,$MainFontName)
 
 
 	;-- Changelog
@@ -1959,58 +1977,58 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUICopyrightPicLogo = GUICtrlCreatePic($sEmpty,130,50,600,100)
 			LoadImageResource($MainGUICopyrightPicLogo,$MainResourcePath & "SO_Logo.jpg","SO_Logo")
 			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-		Global $MainGUICopyrightLabelInfo = GUICtrlCreateLabelTransparentBG("A Project brought to life by Meteor (MrRangerLP) in 2017 and still being worked on in "&$Year&".",99,160,675,18)
+		Global $MainGUICopyrightLabelInfo = GUICtrlCreateLabelTransparentBG("A Project brought to life by Meteor (MrRangerLP) in 2017 and still being worked on in "&$Year&"",69,160,730,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,13,500)
-		Global $MainGUICopyrightLabelLicense = GUICtrlCreateLabelTransparentBG('This Project is licensed under the "GNU GPL-3.0" License. Do note that only version 1.3 and above fall under this license.',77,194,710,18)
+			GUICtrlSetFont(-1,12,500,Default,$MainFontName)
+		Global $MainGUICopyrightLabelLicense = GUICtrlCreateLabelTransparentBG('This Project is licensed under the "GNU GPL-3.0" License. Do note that only version 1.3 and above fall under this license.',64,194,735,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,10,500)
-		Global $MainGUICopyrightLabelLicense2 = GUICtrlCreateLabelTransparentBG("Earlier versions are subject to Copyright (C) and may not be copied, shared, modified, or distributed.",136,213,600,18)
+			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+		Global $MainGUICopyrightLabelLicense2 = GUICtrlCreateLabelTransparentBG("Earlier versions are subject to Copyright (C) and may not be copied, shared, modified, or distributed.",124,213,615,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,10,500)
-		Global $MainGUICopyrightLabelCopyright = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.0 - 1.2.2 Copyright (C) 2019 - Mario "Meteor Thuri" Schien.',182,248,600,18)
+			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+		Global $MainGUICopyrightLabelCopyright = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.0 - 1.2.2 Copyright (C) 2019 - Mario "Meteor Thuri" Schien.',175,248,600,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,10,500)
+			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
 		Global $MainGUICopyrightLabelCopyright2 = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.3 and above Copyright (C) '&$Year&' - Mario "Meteor Thuri" Schien.',169,266,600,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,10,500)
-		Global $MainGUICopyrightLabelSMITECopyright = GUICtrlCreateLabelTransparentBG("SMITE(R), Battleground of the Gods(TM) Copyright (C) "&$Year&" Hi-Rez Studios, INC. All rights reserved.",136,284,600,18)
+			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+		Global $MainGUICopyrightLabelSMITECopyright = GUICtrlCreateLabelTransparentBG("SMITE(R), Battleground of the Gods(TM) Copyright (C) "&$Year&" Hi-Rez Studios, INC. All rights reserved.",133,284,600,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,10,500)
-		Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("Contact: MrRangerLP (at) gmx.de",100,337,250,20)
+			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+		Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("Contact: MrRangerLP (at) gmx.de",103,337,250,20)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetFont(-1,12,500)
-		Global $MainGUICopyrightPicBGLeft = GUICtrlCreatePic($sEmpty,95,361,214,50)
+			GUICtrlSetFont(-1,11,500,Default,$MainFontName)
+		Global $MainGUICopyrightPicBGLeft = GUICtrlCreatePic($sEmpty,95,361,219,50)
 			LoadImageResource($MainGUICopyrightPicBGLeft,$MainResourcePath & "CopyrightFooterBGLeft.jpg","CopyrightFooterBGLeft")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetState(-1,$GUI_DISABLE)
-		Global $MainGUICopyrightLabelVersionFooter = GUICtrlCreateLabelTransparentBG("SMITE Optimizer Version "&$ProgramVersion,100,362,250,18)
+		Global $MainGUICopyrightLabelVersionFooter = GUICtrlCreateLabelTransparentBG("SMITE Optimizer Version "&$ProgramVersion,103,362,250,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetFont(-1,12,500)
-		Global $MainGUICopyrightLabelLicenseLink = GUICtrlCreateLabelTransparentBG("License",100,386,70,24)
+			GUICtrlSetFont(-1,11,500,Default,$MainFontName)
+		Global $MainGUICopyrightLabelLicenseLink = GUICtrlCreateLabelTransparentBG("License",102,386,70,23)
 			GUICtrlSetOnEvent($MainGUICopyrightLabelLicenseLink,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetColor(-1,0x4F89EA)
-			GUICtrlSetFont(-1,15,500)
+			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 			GUICtrlSetCursor(-1,0)
-		Global $MainGUICopyrightLabelSourceLink = GUICtrlCreateLabelTransparentBG("Source",190,386,65,24)
+		Global $MainGUICopyrightLabelSourceLink = GUICtrlCreateLabelTransparentBG("Source",193,386,65,23)
 			GUICtrlSetOnEvent($MainGUICopyrightLabelSourceLink,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetColor(-1,0x4F89EA)
-			GUICtrlSetFont(-1,15,500)
+			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 			GUICtrlSetCursor(-1,0)
-		Global $MainGUICopyrightPicBGRight = GUICtrlCreatePic($sEmpty,418,361,297,50)
+		Global $MainGUICopyrightPicBGRight = GUICtrlCreatePic($sEmpty,342,361,373,50)
 			LoadImageResource($MainGUICopyrightPicBGRight,$MainResourcePath & "CopyrightFooterBGRight.jpg","CopyrightFooterBGRight")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetState(-1,$GUI_DISABLE)
-		Global $MainGUICopyrightLabelAutoItCopyright = GUICtrlCreateLabelTransparentBG("AutoIt v3 Copyright (C) 2019 AutoIt Consulting Ltd.",424,365,287,18)
+		Global $MainGUICopyrightLabelAutoItCopyright = GUICtrlCreateLabelTransparentBG("AutoIt v3 Copyright (C) 2019 AutoIt Consulting Ltd.",352,365,375,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetFont(-1,10,500)
-		Global $MainGUICopyrightLabelAutoitLicenseLink = GUICtrlCreateLabelTransparentBG("AutoIt v3 License",559,386,150,24)
+			GUICtrlSetFont(-1,10,500,Default,$MainFontName)
+		Global $MainGUICopyrightLabelAutoitLicenseLink = GUICtrlCreateLabelTransparentBG("AutoIt v3 License",537,386,170,23)
 			GUICtrlSetOnEvent($MainGUICopyrightLabelAutoitLicenseLink,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetColor(-1,0x4F89EA)
-			GUICtrlSetFont(-1,15,500)
+			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 			GUICtrlSetCursor(-1,0)
 
 
@@ -2038,15 +2056,15 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			Endif
 		EndIf
 
-		Global $MainGUIDebugPicReportABugFooter = GUICtrlCreatePic($sEmpty,60,308,360,131)
-			LoadImageResource($MainGUIDebugPicReportABugFooter,$MainResourcePath & "ReportABugFooter.jpg","ReportABugFooter")
+		Global $MainGUIDebugPicDebugFooterFooter = GUICtrlCreatePic($sEmpty,60,308,360,131)
+			LoadImageResource($MainGUIDebugPicDebugFooterFooter,$MainResourcePath & "DebugFooter.jpg","DebugFooter")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetState(-1,$GUI_DISABLE)
-		Global $MainGUIDebugLabelReportABug = GUICtrlCreateLabelTransparentBG("Report a bug",65,408,115,24)
+		Global $MainGUIDebugLabelReportABug = GUICtrlCreateLabelTransparentBG("Report a Bug",67,408,120,24)
 			GUICtrlSetOnEvent($MainGUIDebugLabelReportABug,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetColor(-1,0x4F89EA)
-			GUICtrlSetFont(-1,15,500)
+			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 			GUICtrlSetCursor(-1,0)
 		Global $MainGUIDebugEditSystemInfo = GUICtrlCreateEdit($TempN[uBound($TempN)-1]&" PID("&@AutoItPID&")"&@CRLF&@UserName&" | ( "&@OSVersion&" "&@OSArch&" )"&@CRLF&"CPU: "&$SysInfoRead&@CRLF&regRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment","NUMBER_OF_PROCESSORS")&" Thread(s) @ "&RegRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0", "~MHz")&" MHz | Architecture: "&@CPUArch&@CRLF&"RAM: "&Floor((MemGetStats()[1]/1000000))&" GB | ( "&Round((MemGetStats()[1]/1000000),2)&" GB )"&@CRLF&"GPU: "&$SysInfoOutput&@CRLF&"Mainboard: "&regRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS","BaseBoardManufacturer")&" | "&regRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS","BaseBoardProduct")&" | Last BIOS update: "&regRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS","BIOSReleaseDate"),67,311,400,94,BitOr($ES_READONLY,$ES_WANTRETURN),0)
 			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
@@ -2067,16 +2085,16 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIDebugLabelConfigBackupPath = GUICtrlCreateLabelTransparentBG("Backup Path: "&$DebugConfigBackupPath,55,120,750,35)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
-		Global $MainGUIDebugButtonResetConfigPaths = GUICtrlCreateButton("Reset Configuration Paths",646,401,150,35)
+		Global $MainGUIDebugButtonResetConfigPaths = GUICtrlCreateButton("Reset Configuration Paths",626,401,170,35)
 			GUICtrlSetOnEvent($MainGUIDebugButtonResetConfigPaths,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetBkColor(-1,0x00F)
 			GUICtrlSetColor(-1,0xFFFFFF)
-		Global $MainGUIDebugCheckboxCheckForUpdates = GUICtrlCreateCheckboxTransparentBG(648,383,13,13)
+		Global $MainGUIDebugCheckboxCheckForUpdates = GUICtrlCreateCheckboxTransparentBG(627,383,13,13)
 			GUICtrlSetOnEvent($MainGUIDebugCheckboxCheckForUpdates,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			If $CheckForUpdates = "1" Then GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_CHECKED)
-		Global $MainGUIDebugLabelCheckForUpdates = GUICtrlCreateLabelTransparentBG("Perform Automatic Updates",664,383,150,13)
+		Global $MainGUIDebugLabelCheckForUpdates = GUICtrlCreateLabelTransparentBG("Perform Automatic Updates",646,383,150,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
 		;- If there is an update available, we want to display an extra button that performs it!
@@ -2116,7 +2134,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			LoadImageResource($MainGUIMenuHoverInfo,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 			GUICtrlSetState(-1,$GUI_DISABLE)
 		Global $MainGUIMenuHoverText = GUICtrlCreateLabelTransparentBG($sEmpty,-90,-42,90,42)
-			GUICtrlSetFont(-1,25,500,0,"Helvetica")
+			GUICtrlSetFont(-1,25,500,0,$MenuFontName)
 			GUICtrlSetColor(-1,0x00)
 EndFunc
 
@@ -2568,7 +2586,7 @@ EndFunc
 		GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugLabelCheckForUpdates,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugLabelReportABug,$GUI_SHOW)
-		GUICtrlSetState($MainGUIDebugPicReportABugFooter,$GUI_SHOW)
+		GUICtrlSetState($MainGUIDebugPicDebugFooterFooter,$GUI_SHOW)
 
 		If $MainGUIDebugButtonPerformUpdate <> NULL Then GUICtrlSetState($MainGUIDebugButtonPerformUpdate,$GUI_SHOW)
 	EndFunc
@@ -2581,7 +2599,7 @@ EndFunc
 		GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugLabelCheckForUpdates,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugLabelReportABug,$GUI_HIDE)
-		GUICtrlSetState($MainGUIDebugPicReportABugFooter,$GUI_HIDE)
+		GUICtrlSetState($MainGUIDebugPicDebugFooterFooter,$GUI_HIDE)
 
 		If $MainGUIDebugButtonPerformUpdate <> NULL Then GUICtrlSetState($MainGUIDebugButtonPerformUpdate,$GUI_HIDE)
 	EndFunc
@@ -2714,11 +2732,11 @@ EndFunc
 			Local $NotificationGUILabelMessage = GUICtrlCreateLabelTransparentBG("ERROR!"&@CRLF&@CRLF&$Message,5,3,390,140)
 				GUICtrlSetOnEvent($NotificationGUILabelMessage,"HideErrorMessage")
 				GUICtrlSetColor(-1,0xF0F4F9)
-				GUICtrlSetFont(-1,10)
+				GUICtrlSetFont(-1,10,Default,Default,$MainFontName)
 			Local $NotificationGUILabelDismiss = GUICtrlCreateLabelTransparentBG("Click to dismiss",5,132,390,13)
 				GUICtrlSetOnEvent($NotificationGUILabelDismiss,"HideErrorMessage")
 				GUICtrlSetColor(-1,0xF0F4F9)
-				GUICtrlSetFont(-1,10)
+				GUICtrlSetFont(-1,10,Default,Default,$MainFontName)
 
 		GUISetState(@SW_SHOW,$NotificationGUI)
 		GUISwitch($Parent)
@@ -2865,7 +2883,7 @@ EndFunc
 						GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 					GUICtrlCreateLabelTransparentBG("More Options",50,9,75,15)
 						GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-						GUICtrlSetFont(-1,9)
+						GUICtrlSetFont(-1,9,Default,Default,$MainFontName)
 
 					Local $GUIMoreOptionsClose = GUICtrlCreatePic($sEmpty,566,0,34,34)
 						LoadImageResource($GUIMoreOptionsClose,$MainResourcePath & "CloseNoActivate.jpg","CloseNoActivate")
@@ -2955,11 +2973,11 @@ EndFunc
 												GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 											GUICtrlCreateLabelTransparentBG("Automatic search",50,9,100,15)
 												GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-												GUICtrlSetFont(-1,9)
+												GUICtrlSetFont(-1,9,Default,Default,$MainFontName)
 
 											Local $GUIMoreOptionsLabelScanState = GUICtrlCreateLabelTransparentBG($sEmpty,99,124,400,50)
 												GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-												GUICtrlSetFont(-1,20)
+												GUICtrlSetFont(-1,20,Default,Default,$MainFontName)
 
 											Local $GUIMoreOptionsClose = GUICtrlCreatePic($sEmpty,366,0,34,34)
 												LoadImageResource($GUIMoreOptionsClose,$MainResourcePath & "CloseNoActivate.jpg","CloseNoActivate")
@@ -3018,7 +3036,7 @@ EndFunc
 											EndIf
 
 											If not $ScanState Then
-												GUICtrlSetPos($GUIMoreOptionsLabelScanState,99,124,400,50)
+												GUICtrlSetPos($GUIMoreOptionsLabelScanState,82,124,400,50)
 												GUICtrlSetData($GUIMoreOptionsLabelScanState,"Indexing drive "&$FixedDrives[$DriveIndex]&":\")
 
 												If FileExists(@TempDir & "\SO_Index.bat") Then FileDelete(@TempDir & "\SO_Index.bat")
@@ -3180,8 +3198,11 @@ EndFunc
 		GUICtrlDelete($MainGUILabelProgramState) ;- Fix position and size.
 		$MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("("&$Text&" mode)",-1000,18,-1,14,$SS_RIGHT)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelProgramState)[2]
-			GUICtrlSetPos(-1,$WinWidth - $Width - 105,18,$Width,14)
+		Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelProgramState)[2] + 25
+			GUICtrlSetPos(-1,$WinWidth - $Width - 102,18,$Width,14)
+
+			Local $Text = "Discovery"
+		If $ProgramState <> $sEmpty Then $Text = $ProgramState
 
 		;- Update debug menu
 		GUICtrlSetData($MainGUIDebugLabelEngineSettings,"EngineSettings: "&$SettingsPath)
@@ -3428,8 +3449,8 @@ EndFunc
 						GUICtrlDelete($MainGUILabelProgramState) ;- Fix position and size.
 						$MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("(Discovery mode)",-1000,18,-1,14,$SS_RIGHT)
 							GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-						Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelProgramState)[2]
-							GUICtrlSetPos(-1,$WinWidth - $Width - 105,18,$Width,14)
+						Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelProgramState)[2] + 25
+							GUICtrlSetPos(-1,$WinWidth - $Width - 102,18,$Width,14)
 
 						;- Update debug menu
 						GUICtrlSetData($MainGUIDebugLabelEngineSettings,"EngineSettings: Not yet defined")
@@ -4908,11 +4929,11 @@ EndFunc
 				LoadImageResource($ProcessUIBG,$MainResourcePath & "NotificationBG.jpg","NotificationBG")
 
 			Local $ProcessUILabelMainStatus = GUICtrlCreateLabelTransparentBG("Processing..",5,0,200,30)
-				GUICtrlSetFont(-1,20,500,-1,"Helvetica")
+				GUICtrlSetFont(-1,20,500,Default,$MainFontName)
 				GUICtrlSetColor(-1,0xFFFFFF)
 
 			Local $ProcessUILabelCATC = GUICtrlCreateLabelTransparentBG("(Click to continue)",121,4,250,30)
-				GUICtrlSetFont(-1,15,500,-1,"Helvetica")
+				GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 				GUICtrlSetColor(-1,0xFFFFFF)
 				GUICtrlSetState(-1,$GUI_HIDE)
 
@@ -5234,19 +5255,19 @@ Func _FixMenuSwitch() ;- This function is used internally to handle menu hover l
 		$AnimatedLogoBool = False
 	ElseIf $LicenseLabelHoverBool Then
 		GUICtrlSetColor($MainGUICopyrightLabelLicenseLink,0x4F89EA)
-		GUICtrlSetFont($MainGUICopyrightLabelLicenseLink,15,500,0)
+		GUICtrlSetFont($MainGUICopyrightLabelLicenseLink,15,500,Default,$MainFontName)
 		$LicenseLabelHoverBool = False
 	ElseIf $SourceLabelHoverBool Then
 		GUICtrlSetColor($MainGUICopyrightLabelSourceLink,0x4F89EA)
-		GUICtrlSetFont($MainGUICopyrightLabelSourceLink,15,500,0)
+		GUICtrlSetFont($MainGUICopyrightLabelSourceLink,15,500,Default,$MainFontName)
 		$SourceLabelHoverBool = False
 	ElseIf $AutoItLicenseLabelHoverBool Then
 		GUICtrlSetColor($MainGUICopyrightLabelAutoitLicenseLink,0x4F89EA)
-		GUICtrlSetFont($MainGUICopyrightLabelAutoitLicenseLink,15,500,0)
+		GUICtrlSetFont($MainGUICopyrightLabelAutoitLicenseLink,15,500,Default,$MainFontName)
 		$AutoItLicenseLabelHoverBool = False
 	ElseIf $MainGUIDebugLabelHoverBool Then
 		GUICtrlSetColor($MainGUIDebugLabelReportABug,0x4F89EA)
-		GUICtrlSetFont($MainGUIDebugLabelReportABug,15,500,0)
+		GUICtrlSetFont($MainGUIDebugLabelReportABug,15,500,Default,$MainFontName)
 		$MainGUIDebugLabelHoverBool = False
 	ElseIf $SteamBtnHoverHideBool Then
 		LoadImageResource($MainGUIHomePicBtnSteam,$MainResourcePath & "SteamBtnInActive.jpg","SteamBtnInActive")
@@ -5516,7 +5537,7 @@ While True ;- Main program routine.
 				Case $HomeIconHover, $HomeIcon
 					If $HomeIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Home",36,100,37)
+						MenuHoverState("Home",36,92,37)
 
 						LoadImageResource($HomeIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($HomeIcon,$MainResourcePath & "HomeIconActive.jpg","HomeIconActive")
@@ -5526,7 +5547,7 @@ While True ;- Main program routine.
 				Case $RCIconHover, $RCIcon
 					If $RCIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Restore Configuration",76,327,76)
+						MenuHoverState("Restore Configuration",76,351,76)
 
 						LoadImageResource($RCIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($RCIcon,$MainResourcePath & "RestoreConfigsIconActive.jpg","RestoreConfigsIconActive")
@@ -5536,7 +5557,7 @@ While True ;- Main program routine.
 				Case $DonateIconHover, $DonateIcon
 					If $DonateIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Donate",118,117,119)
+						MenuHoverState("Donate",118,118,119)
 
 						LoadImageResource($DonateIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($DonateIcon,$MainResourcePath & "DonateIconActive.jpg","DonateIconActive")
@@ -5546,7 +5567,7 @@ While True ;- Main program routine.
 				Case $ChangelogIconHover, $ChangelogIcon
 					If $ChangelogIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Changelog",158,166,158)
+						MenuHoverState("Changelog",158,167,158)
 
 						LoadImageResource($ChangelogIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($ChangelogIcon,$MainResourcePath & "ChangelogIconActive.jpg","ChangelogIconActive")
@@ -5556,7 +5577,7 @@ While True ;- Main program routine.
 				Case $CopyrightIconHover, $CopyrightIcon
 					If $CopyrightIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Copyright",198,152,197)
+						MenuHoverState("Copyright",198,165,197)
 
 						LoadImageResource($CopyrightIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($CopyrightIcon,$MainResourcePath & "CopyrightIconActive.jpg","CopyrightIconActive")
@@ -5566,7 +5587,7 @@ While True ;- Main program routine.
 				Case $DebugIconHover, $DebugIcon
 					If $DebugIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Debug",240,109,240)
+						MenuHoverState("Debug",240,103,240)
 
 						LoadImageResource($DebugIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($DebugIcon,$MainResourcePath & "DebugIconActive.jpg","DebugIconActive")
@@ -5590,7 +5611,7 @@ While True ;- Main program routine.
 				Case $MainGUIChangelogButtonViewOnline, $MainGUIChangelogButtonViewOnlineBG
 					If $ViewOnlineChangesBtnHoverBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("View Changes Online",344,322,344)
+						MenuHoverState("View Changes Online",344,320,344)
 
 						LoadImageResource($MainGUIChangelogButtonViewOnlineBG,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($MainGUIChangelogButtonViewOnline,$MainResourcePath & "ChangelogIconActive.jpg","ChangelogIconActive")
@@ -5608,25 +5629,25 @@ While True ;- Main program routine.
 				Case $MainGUICopyrightLabelLicenseLink
 					If $LicenseLabelHoverBool = False Then
 						GUICtrlSetColor($MainGUICopyrightLabelLicenseLink,0x0645AD)
-						GUICtrlSetFont($MainGUICopyrightLabelLicenseLink,15,500,4)
+						GUICtrlSetFont($MainGUICopyrightLabelLicenseLink,15,500,4,$MainFontName)
 						$LicenseLabelHoverBool = True
 					EndIf
 				Case $MainGUICopyrightLabelSourceLink
 					If $SourceLabelHoverBool = False Then
 						GUICtrlSetColor($MainGUICopyrightLabelSourceLink,0x0645AD)
-						GUICtrlSetFont($MainGUICopyrightLabelSourceLink,15,500,4)
+						GUICtrlSetFont($MainGUICopyrightLabelSourceLink,15,500,4,$MainFontName)
 						$SourceLabelHoverBool = True
 					EndIf
 				Case $MainGUICopyrightLabelAutoitLicenseLink
 					If $AutoItLicenseLabelHoverBool = False Then
 						GUICtrlSetColor($MainGUICopyrightLabelAutoitLicenseLink,0x0645AD)
-						GUICtrlSetFont($MainGUICopyrightLabelAutoitLicenseLink,15,500,4)
+						GUICtrlSetFont($MainGUICopyrightLabelAutoitLicenseLink,15,500,4,$MainFontName)
 						$AutoItLicenseLabelHoverBool = True
 					EndIf
 				Case $MainGUIDebugLabelReportABug
 					If $MainGUIDebugLabelHoverBool = False Then
 						GUICtrlSetColor($MainGUIDebugLabelReportABug,0x0645AD)
-						GUICtrlSetFont($MainGUIDebugLabelReportABug,15,500,4)
+						GUICtrlSetFont($MainGUIDebugLabelReportABug,15,500,4,$MainFontName)
 						$MainGUIDebugLabelHoverBool = True
 					EndIf
 				Case $MainGUIHomePicBtnSteam

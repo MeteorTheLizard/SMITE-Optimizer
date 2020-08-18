@@ -5,7 +5,7 @@
  <img width="810" height="450" src="https://i.imgur.com/gnBxSsj.png" />
 </p>
 <p align="center">
- <img width="810" height="450" src="https://i.imgur.com/EJjBJwB.png" />
+ <img width="810" height="450" src="https://i.imgur.com/GQueSZF.png" />
 </p>
 
 <p align="center"> <strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>

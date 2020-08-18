@@ -6,7 +6,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.1.0
+#AutoIt3Wrapper_Res_Fileversion=1.3.1.1
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
@@ -185,7 +185,7 @@ Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
-Global Const $ProgramVersion = "1.3.1"
+Global Const $ProgramVersion = "1.3.1.1"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -1826,7 +1826,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxWholeSceneShadows = GUICtrlCreateCheckboxTransparentBG(620,149,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIHomeAdvancedLabelWholeSceneShadows = GUICtrlCreateLabelTransparentBG("Whole Scene Dominant Shadows",638,153,160,13)
+		Global $MainGUIHomeAdvancedLabelWholeSceneShadows = GUICtrlCreateLabelTransparentBG("Whole Scene Dominant Shadows",638,153,170,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedCheckboxConservShadowBounds = GUICtrlCreateCheckboxTransparentBG(620,169,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -4943,7 +4943,7 @@ EndFunc
 			Local $ProcessUILabelStatusRead = GUICtrlCreateLabelTransparentBG("[X] Reading files",5,50,200,30)
 				GUICtrlSetColor(-1,0xFF0000)
 
-			Local $ProcessUILabelStatusVerify = GUICtrlCreateLabelTransparentBG("[X] Verifying and repairing integrity",5,65,200,30)
+			Local $ProcessUILabelStatusVerify = GUICtrlCreateLabelTransparentBG("[X] Verifying and repairing integrity",5,65,250,30)
 				GUICtrlSetColor(-1,0xFF0000)
 
 			Local $ProcessUILabelStatusApply = GUICtrlCreateLabelTransparentBG("[X] Applying settings",5,80,200,30)
@@ -5450,35 +5450,35 @@ While True ;- Main program routine.
 						ElseIf InRange2D($MousePos,495,328,660,351) Then
 							DisplayHoverImage(495,328,165,23,$MainResourcePath & "HelpText/Uncompressed_Textures.jpg",145,40,345,280) ;- Use Uncompressed Textures.
 						ElseIf InRange2D($MousePos,660,48,845,71) Then
-							DisplayHoverImage(660,48,185,23,$MainResourcePath & "HelpText/Light_Shafts.jpg",310,40,345,300) ;- Light Shafts.
+							DisplayHoverImage(660,48,192,23,$MainResourcePath & "HelpText/Light_Shafts.jpg",310,40,345,300) ;- Light Shafts.
 						ElseIf InRange2D($MousePos,660,68,845,91) Then
-							DisplayHoverImage(660,68,185,23,$MainResourcePath & "HelpText/Fog_Volumes.jpg",310,40,345,300) ;- Fog Volumes.
+							DisplayHoverImage(660,68,192,23,$MainResourcePath & "HelpText/Fog_Volumes.jpg",310,40,345,300) ;- Fog Volumes.
 						ElseIf InRange2D($MousePos,660,88,845,111) Then
-							DisplayHoverImage(660,88,185,23,$MainResourcePath & "HelpText/Distortion.jpg",310,40,345,300) ;- Distortion.
+							DisplayHoverImage(660,88,192,23,$MainResourcePath & "HelpText/Distortion.jpg",310,40,345,300) ;- Distortion.
 						ElseIf InRange2D($MousePos,660,108,845,131) Then
-							DisplayHoverImage(660,108,185,23,$MainResourcePath & "HelpText/Filtered_Distortion.jpg",310,40,345,242) ;- Filtered Distortion.
+							DisplayHoverImage(660,108,192,23,$MainResourcePath & "HelpText/Filtered_Distortion.jpg",310,40,345,242) ;- Filtered Distortion.
 						ElseIf InRange2D($MousePos,660,128,845,151) Then
-							DisplayHoverImage(660,128,185,23,$MainResourcePath & "HelpText/Drop_Shadows.jpg",310,40,345,242) ;- Drop Shadows.
+							DisplayHoverImage(660,128,192,23,$MainResourcePath & "HelpText/Drop_Shadows.jpg",310,40,345,242) ;- Drop Shadows.
 						ElseIf InRange2D($MousePos,660,148,845,171) Then
-							DisplayHoverImage(660,148,185,23,$MainResourcePath & "HelpText/Dominant_Shadows.jpg",310,40,345,242) ;- Whole Scene Dominant Shadows.
+							DisplayHoverImage(660,148,192,23,$MainResourcePath & "HelpText/Dominant_Shadows.jpg",310,40,345,242) ;- Whole Scene Dominant Shadows.
 						ElseIf InRange2D($MousePos,660,168,845,191) Then
-							DisplayHoverImage(660,168,185,23,$MainResourcePath & "HelpText/Conservative_Shadow_Bounds.jpg",310,40,345,127) ;- Conservative Shadow Bounds.
+							DisplayHoverImage(660,168,192,23,$MainResourcePath & "HelpText/Conservative_Shadow_Bounds.jpg",310,40,345,127) ;- Conservative Shadow Bounds.
 						ElseIf InRange2D($MousePos,660,188,845,211) Then
-							DisplayHoverImage(660,188,185,23,$MainResourcePath & "HelpText/Light_Environment_Shadows.jpg",310,40,345,223) ;- Light Environment Shadows.
+							DisplayHoverImage(660,188,192,23,$MainResourcePath & "HelpText/Light_Environment_Shadows.jpg",310,40,345,223) ;- Light Environment Shadows.
 						ElseIf InRange2D($MousePos,660,208,845,231) Then
-							DisplayHoverImage(660,208,185,23,$MainResourcePath & "HelpText/Static_Decals.jpg",310,40,345,300) ;- Static Decals.
+							DisplayHoverImage(660,208,192,23,$MainResourcePath & "HelpText/Static_Decals.jpg",310,40,345,300) ;- Static Decals.
 						ElseIf InRange2D($MousePos,660,228,845,251) Then
-							DisplayHoverImage(660,228,185,23,$MainResourcePath & "HelpText/Dynamic_Decals.jpg",310,40,345,300) ;- Dynamic Decals.
+							DisplayHoverImage(660,228,192,23,$MainResourcePath & "HelpText/Dynamic_Decals.jpg",310,40,345,300) ;- Dynamic Decals.
 						ElseIf InRange2D($MousePos,660,248,845,271) Then
-							DisplayHoverImage(660,248,185,23,$MainResourcePath & "HelpText/Unbatched_Decals.jpg",310,40,345,127) ;- Unbatched Decals.
+							DisplayHoverImage(660,248,192,23,$MainResourcePath & "HelpText/Unbatched_Decals.jpg",310,40,345,127) ;- Unbatched Decals.
 						ElseIf InRange2D($MousePos,660,268,845,291) Then
-							DisplayHoverImage(660,268,185,23,$MainResourcePath & "HelpText/Dynamic_Lights.jpg",310,40,345,300) ;- Dynamic Lights.
+							DisplayHoverImage(660,268,192,23,$MainResourcePath & "HelpText/Dynamic_Lights.jpg",310,40,345,300) ;- Dynamic Lights.
 						ElseIf InRange2D($MousePos,660,288,845,311) Then
-							DisplayHoverImage(660,288,185,23,$MainResourcePath & "HelpText/Composite_Dynamic_Lights.jpg",310,40,345,300) ;- Composite Dynamic Lights.
+							DisplayHoverImage(660,288,192,23,$MainResourcePath & "HelpText/Composite_Dynamic_Lights.jpg",310,40,345,300) ;- Composite Dynamic Lights.
 						ElseIf InRange2D($MousePos,660,308,845,331) Then
-							DisplayHoverImage(660,308,185,23,$MainResourcePath & "HelpText/SH_Secondary_Lighting.jpg",310,40,345,223) ;- SH Secondary Lighting.
+							DisplayHoverImage(660,308,192,23,$MainResourcePath & "HelpText/SH_Secondary_Lighting.jpg",310,40,345,223) ;- SH Secondary Lighting.
 						ElseIf InRange2D($MousePos,660,328,845,351) Then
-							DisplayHoverImage(660,328,185,23,$MainResourcePath & "HelpText/Dynamic_Shadows.jpg",255,40,400,350) ;- Dynamic Shadows.
+							DisplayHoverImage(660,328,192,23,$MainResourcePath & "HelpText/Dynamic_Shadows.jpg",255,40,400,350) ;- Dynamic Shadows.
 						EndIf
 					EndIf
 				EndIf

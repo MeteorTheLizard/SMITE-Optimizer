@@ -1,3 +1,10 @@
+SMITE Optimizer Version 1.3.1.2
+Fixed discoloration of the window menu buttons (Close, Maximize, Minimize)
+
+
+
+
+
 SMITE Optimizer Version 1.3.1.1
 Fixed 'Whole Scene Dominant Shadows' label in Advanced mode being cut-off.
 Fixed 'Verifying and repairing integrity' label in the Apply changes progress window being wrapped to the next line.

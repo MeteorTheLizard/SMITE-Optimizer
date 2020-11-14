@@ -6,7 +6,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.1.1
+#AutoIt3Wrapper_Res_Fileversion=1.3.1.2
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
@@ -185,7 +185,7 @@ Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
-Global Const $ProgramVersion = "1.3.1.1"
+Global Const $ProgramVersion = "1.3.1.2"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -259,6 +259,7 @@ Global $LicenseLabelHoverBool = False
 Global $SourceLabelHoverBool = False
 Global $AutoItLicenseLabelHoverBool = False
 Global $MainGUIDebugLabelHoverBool = False
+
 ;- ----- ----- ----- ----- -----
 
 ;- Old version compat. (Remove old registry values)

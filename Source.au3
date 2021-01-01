@@ -6,27 +6,21 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.1.2
+#AutoIt3Wrapper_Res_Fileversion=1.3.1.3
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
-
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
-
 #AutoIt3Wrapper_Res_File_Add=Changelog.txt, RT_RCDATA, ChangelogText, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\SMITEOptimizerIcon.jpg, RT_RCDATA, SMITEOptimizerIcon, 0
-
 #AutoIt3Wrapper_Res_File_Add=Resource\AutoIt_License.txt, RT_RCDATA, AutoIt_License, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\GPL-3.0_License.txt, RT_RCDATA, GPL_License, 0
-
 #AutoIt3Wrapper_Res_File_Add=Resource\Win_XP.wav, SOUND, ErrorWIN_XP, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\Win7_Win8.wav, SOUND, ErrorWIN_7_8, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\Win10.wav, SOUND, ErrorWIN_10, 0
-
 #AutoIt3Wrapper_Res_File_Add=Resource\Preload.gif, RES, PreloadGIF, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\SO_Logo.gif, RES, SO_LogoGIF, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\DetailMode.gif, RES, DetailModeGIF, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Ragdoll_Physics.gif, RES, Ragdoll_PhysicsGIF, 0
-
 #AutoIt3Wrapper_Res_File_Add=Resource\ASearchBtnActive.jpg, RT_RCDATA, ASearchBtnActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\ASearchBtnInActive.jpg, RT_RCDATA, ASearchBtnInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\ChangelogIconActive.jpg, RT_RCDATA, ChangelogIconActive, 0
@@ -125,7 +119,6 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Window_Type.jpg, RT_RCDATA, Window_Type, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\World_Quality.jpg, RT_RCDATA, World_Quality, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\World_Quality_Simple.jpg, RT_RCDATA, World_Quality_Simple, 0
-
 #AutoIt3Wrapper_Run_AU3Check=n
 #AutoIt3Wrapper_Tidy_Stop_OnError=n
 #AutoIt3Wrapper_Run_Au3Stripper=y
@@ -185,7 +178,7 @@ Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
-Global Const $ProgramVersion = "1.3.1.2"
+Global Const $ProgramVersion = "1.3.1.3"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -1919,7 +1912,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 
 
 	;-- Donate
-		Local $Year = 2020
+		Local $Year = 2021
 
 		Global $MainGUIDonateButtonPaypal = GUICtrlCreatePic($sEmpty,136,168,250,110)
 			LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")

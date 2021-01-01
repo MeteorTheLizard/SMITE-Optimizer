@@ -2853,7 +2853,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.1.2"
+Global Const $ProgramVersion = "1.3.1.3"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3879,7 +3879,7 @@ Global $MainGUIRestoreConfigurationsLabelAskForConfirmation = GUICtrlCreateLabel
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"Dates shown are in the following format: DD/MM/YYYY."&@CRLF&"The other numbers are the time at which the backup was made.",57,283,425,41)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-Local $Year = 2020
+Local $Year = 2021
 Global $MainGUIDonateButtonPaypal = GUICtrlCreatePic($sEmpty,136,168,250,110)
 LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
 GUICtrlSetOnEvent($MainGUIDonateButtonPaypal,"ButtonPressLogic")

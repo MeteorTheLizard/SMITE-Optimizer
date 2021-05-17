@@ -25,8 +25,10 @@ Global Const $MB_YESNO = 4
 Global Const $IDYES = 6
 Global Const $STR_NOCASESENSEBASIC = 2
 Global Const $STR_STRIPALL = 8
+Global Const $STR_CHRSPLIT = 0
 Global Const $STR_ENTIRESPLIT = 1
 Global Const $STR_NOCOUNT = 2
+Global Const $STR_REGEXPARRAYGLOBALMATCH = 3
 Global Const $_ARRAYCONSTANT_SORTINFOSIZE = 11
 Global $__g_aArrayDisplay_SortInfo[$_ARRAYCONSTANT_SORTINFOSIZE]
 Global Const $_ARRAYCONSTANT_tagLVITEM = "struct;uint Mask;int Item;int SubItem;uint State;uint StateMask;ptr Text;int TextMax;int Image;lparam Param;" & "int Indent;int GroupID;uint Columns;ptr pColumns;ptr piColFmt;int iGroup;endstruct"
@@ -872,11 +874,16 @@ EndFunc
 Func __ArrayUnique_AutoErrFunc()
 EndFunc
 Global Const $FC_OVERWRITE = 1
+Global Const $FO_READ = 0
 Global Const $FO_OVERWRITE = 2
 Global Const $FO_CREATEPATH = 8
 Global Const $FO_BINARY = 16
 Global Const $FD_FILEMUSTEXIST = 1
 Global Const $FD_PATHMUSTEXIST = 2
+Global Const $FRTA_NOCOUNT = 0
+Global Const $FRTA_COUNT = 1
+Global Const $FRTA_INTARRAYS = 2
+Global Const $FRTA_ENTIRESPLIT = 4
 Global Const $FLTA_FILESFOLDERS = 0
 Func _FileListToArray($sFilePath, $sFilter = "*", $iFlag = $FLTA_FILESFOLDERS, $bReturnPath = False)
 Local $sDelimiter = "|", $sFileList = "", $sFileName = "", $sFullPath = ""
@@ -898,6 +905,80 @@ WEnd
 FileClose($hSearch)
 If $sFileList = "" Then Return SetError(4, 0, 0)
 Return StringSplit(StringTrimLeft($sFileList, 1), $sDelimiter)
+EndFunc
+Func _FileReadToArray($sFilePath, ByRef $vReturn, $iFlags = $FRTA_COUNT, $sDelimiter = "")
+$vReturn = 0
+If $iFlags = Default Then $iFlags = $FRTA_COUNT
+If $sDelimiter = Default Then $sDelimiter = ""
+Local $bExpand = True
+If BitAND($iFlags, $FRTA_INTARRAYS) Then
+$bExpand = False
+$iFlags -= $FRTA_INTARRAYS
+EndIf
+Local $iEntire = $STR_CHRSPLIT
+If BitAND($iFlags, $FRTA_ENTIRESPLIT) Then
+$iEntire = $STR_ENTIRESPLIT
+$iFlags -= $FRTA_ENTIRESPLIT
+EndIf
+Local $iNoCount = 0
+If $iFlags <> $FRTA_COUNT Then
+$iFlags = $FRTA_NOCOUNT
+$iNoCount = $STR_NOCOUNT
+EndIf
+If $sDelimiter Then
+Local $aLines = FileReadToArray($sFilePath)
+If @error Then Return SetError(@error, 0, 0)
+Local $iDim_1 = UBound($aLines) + $iFlags
+If $bExpand Then
+Local $iDim_2 = UBound(StringSplit($aLines[0], $sDelimiter, $iEntire + $STR_NOCOUNT))
+Local $aTemp_Array[$iDim_1][$iDim_2]
+Local $iFields, $aSplit
+For $i = 0 To $iDim_1 - $iFlags - 1
+$aSplit = StringSplit($aLines[$i], $sDelimiter, $iEntire + $STR_NOCOUNT)
+$iFields = UBound($aSplit)
+If $iFields <> $iDim_2 Then
+Return SetError(3, 0, 0)
+EndIf
+For $j = 0 To $iFields - 1
+$aTemp_Array[$i + $iFlags][$j] = $aSplit[$j]
+Next
+Next
+If $iDim_2 < 2 Then Return SetError(4, 0, 0)
+If $iFlags Then
+$aTemp_Array[0][0] = $iDim_1 - $iFlags
+$aTemp_Array[0][1] = $iDim_2
+EndIf
+Else
+Local $aTemp_Array[$iDim_1]
+For $i = 0 To $iDim_1 - $iFlags - 1
+$aTemp_Array[$i + $iFlags] = StringSplit($aLines[$i], $sDelimiter, $iEntire + $iNoCount)
+Next
+If $iFlags Then
+$aTemp_Array[0] = $iDim_1 - $iFlags
+EndIf
+EndIf
+$vReturn = $aTemp_Array
+Else
+If $iFlags Then
+Local $hFileOpen = FileOpen($sFilePath, $FO_READ)
+If $hFileOpen = -1 Then Return SetError(1, 0, 0)
+Local $sFileRead = FileRead($hFileOpen)
+FileClose($hFileOpen)
+If StringLen($sFileRead) Then
+$vReturn = StringRegExp(@LF & $sFileRead, "(?|(\N+)\z|(\N*)(?:\R))", $STR_REGEXPARRAYGLOBALMATCH)
+$vReturn[0] = UBound($vReturn) - 1
+Else
+Return SetError(2, 0, 0)
+EndIf
+Else
+$vReturn = FileReadToArray($sFilePath)
+If @error Then
+$vReturn = 0
+Return SetError(@error, 0, 0)
+EndIf
+EndIf
+EndIf
+Return 1
 EndFunc
 Func _FileWriteFromArray($sFilePath, Const ByRef $aArray, $iBase = Default, $iUBound = Default, $sDelimiter = "|")
 Local $iReturn = 0
@@ -2853,7 +2934,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.1.3"
+Global Const $ProgramVersion = "1.3.1.4"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -5550,7 +5631,7 @@ EndIf
 EndIf
 Next
 ElseIf $Start = 0 Then
-For $IDK = 0 To $HiveY Step 1
+For $IDK = 0 To $HiveY - 1 Step 1
 If $Hive[$I][$IDK] = $sEmpty Then
 _ArrayInsert($FileReadArray,$IDK,$sEmpty)
 ExitLoop
@@ -6086,8 +6167,14 @@ GUICtrlSetColor($ProcessUILabelStatusBackup,0x00FF00)
 GUICtrlSetData($ProcessUILabelStatusBackup,"[✓] Creating backup")
 $PState = $PState + 1
 ElseIf $PState = 1 Then
-Local $EngineFile = FileReadToArray($SettingsPath)
-Local $SystemFile = FileReadToArray($SystemSettingsPath)
+Local $EngineFile
+Local $SystemFile
+Local $EngineFileFallback[1]
+Local $SystemFileFallback[1]
+_FileReadToArray($SettingsPath,$EngineFile,$FRTA_NOCOUNT)
+If not IsArray($EngineFile) Then $EngineFile = $EngineFileFallback
+_FileReadToArray($SystemSettingsPath,$SystemFile,$FRTA_NOCOUNT)
+If not IsArray($SystemFile) Then $SystemFile = $SystemFileFallback
 GUICtrlSetData($ProcessUIProgress,40)
 GUICtrlSetColor($ProcessUILabelStatusRead,0x00FF00)
 GUICtrlSetData($ProcessUILabelStatusRead,"[✓] Reading files")

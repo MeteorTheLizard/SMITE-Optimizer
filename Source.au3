@@ -6,7 +6,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.1.3
+#AutoIt3Wrapper_Res_Fileversion=1.3.1.4
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -178,7 +178,7 @@ Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
-Global Const $ProgramVersion = "1.3.1.3"
+Global Const $ProgramVersion = "1.3.1.4"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -4082,7 +4082,7 @@ EndFunc
 					EndIf
 				Next
 			ElseIf $Start = 0 Then ;- The whole group is missing! Nani!? (So we load it from the Hive.)
-				For $IDK = 0 To $HiveY Step 1 ;- Insert the name of the group and its' keynames.
+				For $IDK = 0 To $HiveY - 1 Step 1 ;- Insert the name of the group and its' keynames.
 					If $Hive[$I][$IDK] = $sEmpty Then ;- The end of the HiveY has been reached, insert one more space and then exit the loop.
 						_ArrayInsert($FileReadArray,$IDK,$sEmpty)
 						ExitLoop
@@ -4975,8 +4975,18 @@ EndFunc
 
 				$PState = $PState + 1
 			ElseIf $PState = 1 Then ;- Read files
-				Local $EngineFile = FileReadToArray($SettingsPath)
-				Local $SystemFile = FileReadToArray($SystemSettingsPath)
+				Local $EngineFile ;- Lazyyy fixes, eh.
+				Local $SystemFile
+				Local $EngineFileFallback[1]
+				Local $SystemFileFallback[1]
+
+				_FileReadToArray($SettingsPath,$EngineFile,$FRTA_NOCOUNT)
+				If not IsArray($EngineFile) Then _
+					$EngineFile = $EngineFileFallback
+
+				_FileReadToArray($SystemSettingsPath,$SystemFile,$FRTA_NOCOUNT)
+				If not IsArray($SystemFile) Then _
+					$SystemFile = $SystemFileFallback
 
 				GUICtrlSetData($ProcessUIProgress,40)
 				GUICtrlSetColor($ProcessUILabelStatusRead,0x00FF00)

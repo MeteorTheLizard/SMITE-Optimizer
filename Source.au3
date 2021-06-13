@@ -6,7 +6,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.1.4
+#AutoIt3Wrapper_Res_Fileversion=1.3.1.5
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -157,6 +157,7 @@ EndIf
 #Include <GIFAnimation.au3>
 #Include <ResourcesEx.au3>
 #Include <WinAPISysWin.au3> ;- Required by ResourceEx.
+#Include <_Zip.au3> ;- Used for the debug dump.
 
 ;- This function either loads the Resource from the supplied path if it is valid or attempts to load it from the appended resources.
 ;- This makes it possible to see UI elements while in Development state and makes it so you don't have to compile every single time.
@@ -178,7 +179,7 @@ Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
-Global Const $ProgramVersion = "1.3.1.4"
+Global Const $ProgramVersion = "1.3.1.5"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -252,6 +253,7 @@ Global $LicenseLabelHoverBool = False
 Global $SourceLabelHoverBool = False
 Global $AutoItLicenseLabelHoverBool = False
 Global $MainGUIDebugLabelHoverBool = False
+Global $MainGUIDebugDumpInfoHoverBool = False
 
 ;- ----- ----- ----- ----- -----
 
@@ -707,14 +709,13 @@ EndFunc
 #EndRegion
 
 #Region ;- Reference Hives. (Do NOT Indent these. Compiling WILL fail due to line length limits!)
-Global Const $EngineSettingsClearHive[108][181] = [ _
+Global Const $EngineSettingsClearHive[107][181] = [ _
 	['[URL]','Protocol=unreal','Name=Player','Map=lobbymap','LocalMap=lobbymap','LocalOptions=','TransitionMap=Entry','MapExt=tgm','EXEName=unreal.exe','DebugEXEName=DEBUG-unreal.exe','SaveExt=usa','Port=7000','PeerPort=7778','GameName=Smite','GameNameShort=Smite','MenuLevel=lobbymap'], _
 	['[Engine.ScriptPackages]','EngineNativePackages=Core','EngineNativePackages=Engine','EngineNativePackages=GFxUI','EngineNativePackages=IpDrv','EngineNativePackages=GameFramework','NetNativePackages=IpDrv','NetNativePackages=WinDrv','EditorPackages=UnrealEd','ScaleformEditorPackages=GFxUIEditor','EngineNativePackages=PlatformCommon','EngineNativePackages=TgGame','NativePackages=TgClientBase','NativePackages=TgClient','NativePackages=BattleGame','NativePackages=BattleClient','EditorPackages=TgEditor','EditorPackages=BattleEditor','NonNativePackages=TgGameContent','EngineNativePackages=Vivox'], _
 	['[Engine.Engine]','NetworkDevice=PlatformCommon.PComNetDriver','FallbackNetworkDevice=IpDrv.TcpNetDriver','ConsoleClassName=Engine.Console','GameViewportClientClassName=TgClient.TgGameViewportClient','LocalPlayerClassName=Engine.LocalPlayer','DataStoreClientClassName=Engine.DataStoreClient','Language=INT','bAllowMatureLanguage=False','GameEngine=TgGame.TgGameEngine','EditorEngine=TgEditor.TgEditorEngine','UnrealEdEngine=TgEditor.TgEditorEngine','Client=WinDrv.WindowsClient','Render=Render.Render','Input=Engine.Input','Canvas=Engine.Canvas','TinyFontName=EngineFonts.TinyFont','SmallFontName=EngineFonts.SmallFont','MediumFontName=EngineFonts.SmallFont','LargeFontName=EngineFonts.SmallFont','SubtitleFontName=EngineFonts.SmallFont','WireframeMaterialName=EngineDebugMaterials.WireframeMaterial','DefaultMaterialName=EngineMaterials.DefaultMaterial','DefaultDecalMaterialName=EngineMaterials.DefaultDecalMaterial','DefaultTextureName=EngineMaterials.DefaultDiffuse','EmissiveTexturedMaterialName=EngineMaterials.EmissiveTexturedMaterial','GeomMaterialName=EngineDebugMaterials.GeomMaterial','DefaultFogVolumeMaterialName=EngineMaterials.FogVolumeMaterial','TickMaterialName=EditorMaterials.Tick_Mat','CrossMaterialName=EditorMaterials.Cross_Mat','DefaultUICaretMaterialName=EngineMaterials.BlinkingCaret','SceneCaptureReflectActorMaterialName=EngineMaterials.ScreenMaterial','SceneCaptureCubeActorMaterialName=EngineMaterials.CubeMaterial','ScreenDoorNoiseTextureName=EngineMaterials.Good64x64TilingNoiseHighFreq','ImageGrainNoiseTextureName=EngineMaterials.Good64x64TilingNoiseHighFreq','RandomAngleTextureName=EngineMaterials.RandomAngles','RandomNormalTextureName=EngineMaterials.RandomNormal2','RandomMirrorDiscTextureName=EngineMaterials.RandomMirrorDisc','WeightMapPlaceholderTextureName=EngineMaterials.WeightMapPlaceholderTexture','LightMapDensityTextureName=EngineMaterials.DefaultWhiteGrid','LightMapDensityNormalName=EngineMaterials.DefaultNormal','LevelColorationLitMaterialName=EngineDebugMaterials.LevelColorationLitMaterial','LevelColorationUnlitMaterialName=EngineDebugMaterials.LevelColorationUnlitMaterial','LightingTexelDensityName=EngineDebugMaterials.MAT_LevelColorationLitLightmapUVs','ShadedLevelColorationUnlitMaterialName=EngineDebugMaterials.ShadedLevelColorationUnlitMaterial','ShadedLevelColorationLitMaterialName=EngineDebugMaterials.ShadedLevelColorationLitMaterial','RemoveSurfaceMaterialName=EngineMaterials.RemoveSurfaceMaterial','VertexColorMaterialName=EngineDebugMaterials.VertexColorMaterial','VertexColorViewModeMaterialName_ColorOnly=EngineDebugMaterials.VertexColorViewMode_ColorOnly','VertexColorViewModeMaterialName_AlphaAsColor=EngineDebugMaterials.VertexColorViewMode_AlphaAsColor','VertexColorViewModeMaterialName_RedOnly=EngineDebugMaterials.VertexColorViewMode_RedOnly','VertexColorViewModeMaterialName_GreenOnly=EngineDebugMaterials.VertexColorViewMode_GreenOnly','VertexColorViewModeMaterialName_BlueOnly=EngineDebugMaterials.VertexColorViewMode_BlueOnly','HeatmapMaterialName=EngineDebugMaterials.HeatmapMaterial','BoneWeightMaterialName=EngineDebugMaterials.BoneWeightMaterial','TangentColorMaterialName=EngineDebugMaterials.TangentColorMaterial','MobileEmulationMasterMaterialName=MobileEngineMaterials.MobileMasterMaterial','EditorBrushMaterialName=EngineMaterials.EditorBrushMaterial','DefaultPhysMaterialName=EngineMaterials.DefaultPhysicalMaterial','LandscapeHolePhysMaterialName=EngineMaterials.LandscapeHolePhysicalMaterial','TextureStreamingBoundsMaterialName=EditorMaterials.Utilities.TextureStreamingBounds_MATInst','TerrainErrorMaterialName=EngineDebugMaterials.MaterialError_Mat','ProcBuildingSimpleMaterialName=EngineBuildings.ProcBuildingSimpleMaterial','BuildingQuadStaticMeshName=EngineBuildings.BuildingQuadMesh','ProcBuildingLODColorTexelsPerWorldUnit=0.075','ProcBuildingLODLightingTexelsPerWorldUnit=0.015','MaxProcBuildingLODColorTextureSize=1024','MaxProcBuildingLODLightingTextureSize=256','UseProcBuildingLODTextureCropping=True','ForcePowerOfTwoProcBuildingLODTextures=True','bCombineSimilarMappings=False', _
 	'MaxRMSDForCombiningMappings=6.0','ImageReflectionTextureSize=1024','TerrainMaterialMaxTextureCount=16','TerrainTessellationCheckCount=6','TerrainTessellationCheckBorder=2.0','TerrainTessellationCheckDistance=4096.0','BeginUPTryCount=200000','bStaticDecalsEnabled=True','bDynamicDecalsEnabled=True','bForceStaticTerrain=False','LightingOnlyBrightness=(R=0.3,G=0.3,B=0.3,A=1.0)','LightComplexityColors=(R=0,G=0,B=0,A=1)','LightComplexityColors=(R=0,G=255,B=0,A=1)','LightComplexityColors=(R=63,G=191,B=0,A=1)','LightComplexityColors=(R=127,G=127,B=0,A=1)','LightComplexityColors=(R=191,G=63,B=0,A=1)','LightComplexityColors=(B=0,G=0,R=255,A=1)','ShaderComplexityColors=(R=0.0,G=1.0,B=0.127,A=1.0)','ShaderComplexityColors=(R=0.0,G=1.0,B=0.0,A=1.0)','ShaderComplexityColors=(R=0.046,G=0.52,B=0.0,A=1.0)','ShaderComplexityColors=(R=0.215,G=0.215,B=0.0,A=1.0)','ShaderComplexityColors=(R=0.52,G=0.046,B=0.0,A=1.0)','ShaderComplexityColors=(R=0.7,G=0.0,B=0.0,A=1.0)','ShaderComplexityColors=(R=1.0,G=0.0,B=0.0,A=1.0)','ShaderComplexityColors=(R=1.0,G=0.0,B=0.5,A=1.0)','ShaderComplexityColors=(R=1.0,G=0.9,B=0.9,A=1.0)','MaxPixelShaderAdditiveComplexityCount=900','TimeBetweenPurgingPendingKillObjects=30.000000','MaxTimeBetweenPurgingPendingKillObjects=30.000000','GarbageCollectionDelayMinimumMemoryMB=512','bUseTextureStreaming=True','bUseBackgroundLevelStreaming=True','bSubtitlesEnabled=True','bSubtitlesForcedOff=False','ScoutClassName=TgGame.TgAIScout','DefaultPostProcessName=TgPostProcess.PostProcess.PP_Hit','DefaultUIScenePostProcessName=EngineMaterials.DefaultUIPostProcess','ThumbnailSkeletalMeshPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','ThumbnailParticleSystemPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','ThumbnailMaterialPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','DefaultSoundName=EngineSounds.WhiteNoise','bOnScreenKismetWarnings=False','bEnableKismetLogging=False','bUseRecastNavMesh=True','bAllowDebugViewmodesOnConsoles=False','CameraRotationThreshold=45.0','CameraTranslationThreshold=10000','PrimitiveProbablyVisibleTime=8.0','PercentUnoccludedRequeries=0.125','MaxOcclusionPixelsFraction=0.1','MinTextureDensity=0.0','IdealTextureDensity=13.0','MaxTextureDensity=55.0','MinLightMapDensity=0.0','IdealLightMapDensity=0.05','MaxLightMapDensity=0.2','RenderLightMapDensityGrayscaleScale=1.0','RenderLightMapDensityColorScale=1.0','bRenderLightMapDensityGrayscale=False','LightMapDensityVertexMappedColor=(R=0.65,G=0.65,B=0.25,A=1.0)','LightMapDensitySelectedColor=(R=1.0,G=0.2,B=1.0,A=1.0)','bDisablePhysXHardwareSupport=True','DemoRecordingDevice=Engine.DemoRecDriver','bPauseOnLossOfFocus=False','MaxFluidNumVerts=1048576','FluidSimulationTimeLimit=30.0','MaxParticleResize=1024','MaxParticleResizeWarn=10240','bCheckParticleRenderSize=True','MaxParticleVertexMemory=131972','NetClientTicksPerSecond=200','MaxTrackedOcclusionIncrement=0.10','TrackedOcclusionStepSize=0.10','MipFadeInSpeed0=0.3','MipFadeOutSpeed0=0.1','MipFadeInSpeed1=2.0','MipFadeOutSpeed1=1.0','StatColorMappings=(StatName="AverageFPS",ColorMap=((In=15.0,Out=(R=255)),(In=30,Out=(R=255,G=255)),(In=45.0,Out=(G=255))))','StatColorMappings=(StatName="Frametime",ColorMap=((In=1.0,Out=(G=255)),(In=25.0,Out=(G=255)),(In=29.0,Out=(R=255,G=255)),(In=33.0,Out=(R=255))))','StatColorMappings=(StatName="Streaming fudge factor",ColorMap=((In=0.0,Out=(G=255)),(In=1.0,Out=(G=255)),(In=2.5,Out=(R=255,G=255)),(In=5.0,Out=(R=255)),(In=10.0,Out=(R=255))))','PhysXGpuHeapSize=32','PhysXMeshCacheSize=8','bShouldGenerateSimpleLightmaps=False','bUseNormalMapsForSimpleLightMaps=True','bSmoothFrameRate=True','MinSmoothedFrameRate=22','MaxSmoothedFrameRate=62','bCheckForMultiplePawnsSpawnedInAFrame=False','NumPawnsAllowedToBeSpawnedInAFrame=2','DefaultSelectedMaterialColor=(R=0.04,G=0.02,B=0.24,A=1.0)','DefaultHoveredMaterialColor=(R=0.02,G=0.02,B=0.02,A=1.0)','bEnableOnScreenDebugMessages=False','AllowScreenDoorFade=True','AllowScreenDoorLODFading=False','AllowNvidiaStereo3d=False','EnableMatineePostProcessMaterialParam=False', _
 	'IgnoreSimulatedFuncWarnings=Tick','NearClipPlane=10.0','bUseStreamingPause=False','bKeepAllMaterialQualityLevelsLoaded=False','bAllowTimeLapseDriver=False','bUsePostProcessEffects=False','bRenderTerrainCollisionAsOverlay=False','TimeAsyncLoadingBlocksGarbageCollection=10.000000','AllowShadowVolumes=True','bEnableColorClear=False','UseStreaming=True','PeerNetworkDevice=PlatformCommon.PComNetDriver','bSuppressMapWarnings=True','bUseDestColorFix=True'], _
 	['[PlatformInterface]','CloudStorageInterfaceClassName=','FacebookIntegrationClassName=','InGameAdManagerClassName='], _
-	['[Engine.SeqAct_Interp]','RenderingOverrides=(bAllowAmbientOcclusion=False,bAllowDominantWholeSceneDynamicShadows=False,bAllowMotionBlurSkinning=False,bAllowTemporalAA=True,bAllowLightShafts=True)'], _
 	['[Engine.StreamingMovies]','RenderPriorityPS3=1001','SuspendGameIO=True'], _
 	['[Engine.ISVHacks]','bInitializeShadersOnDemand=False','DisableATITextureFilterOptimizationChecks=True','UseMinimalNVIDIADriverShaderOptimization=True','PumpWindowMessagesWhenRenderThreadStalled=False'], _
 	['[Engine.GameEngine]','MaxDeltaTime=0','bSmoothFrameRate=True','MinSmoothedFrameRate=22.000000','MaxSmoothedFrameRate=150.000000','bClearAnimSetLinkupCachesOnLoadMap=True','LocalPlayerClassName=TgGame.TgLocalPlayer','bUseSound=True','bUseTextureStreaming=True','bUseBackgroundLevelStreaming=True','bSubtitlesEnabled=True','bSubtitlesForcedOff=False','bForceStaticTerrain=False','bForceCPUSkinning=False','bUsePostProcessEffects=True','bOnScreenKismetWarnings=True','bEnableKismetLogging=False','bAllowMatureLanguage=False','bEnableVSMShadows=False','bEnableBranchingPCFShadows=False','bRenderTerrainCollisionAsOverlay=False','bDisablePhysXHardwareSupport=True','bPauseOnLossOfFocus=False','DefaultPostProcessName=TgPostProcess.PostProcess.PP_Hit','ThumbnailSkeletalMeshPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','ThumbnailParticleSystemPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','ThumbnailMaterialPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','DefaultUIScenePostProcessName=EngineMaterials.DefaultUIPostProcess','TimeBetweenPurgingPendingKillObjects=30.000000','TimeAsyncLoadingBlocksGarbageCollection=10.000000','MaxTimeBetweenPurgingPendingKillObjects=30.000000','ScoutClassName=Engine.Scout','ShadowFilterRadius=2.000000','DepthBias=0.012000','ModShadowFadeDistanceExponent=0.200000','CameraRotationThreshold=45.000000','CameraTranslationThreshold=1600.000000','PrimitiveProbablyVisibleTime=8.000000','PercentUnoccludedRequeries=0.125000','ShadowVolumeLightRadiusThreshold=1000.000000','ShadowVolumePrimitiveScreenSpacePercentageThreshold=0.250000','MaxParticleResize=1024','MaxParticleResizeWarn=10240','BeginUPTryCount=200000'], _
@@ -2060,9 +2061,15 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetColor(-1,0x4F89EA)
 			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 			GUICtrlSetCursor(-1,0)
+		Global $MainGUIDebugLabelCreateDebugInfo = GUICtrlCreateLabelTransparentBG("Create debug dump",212,408,178,24)
+			GUICtrlSetOnEvent($MainGUIDebugLabelCreateDebugInfo,"ButtonPressLogic")
+			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
+			GUICtrlSetColor(-1,0x4F89EA)
+			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
+			GUICtrlSetCursor(-1,0)
 		Global $MainGUIDebugEditSystemInfo = GUICtrlCreateEdit($TempN[uBound($TempN)-1]&" PID("&@AutoItPID&")"&@CRLF&@UserName&" | ( "&@OSVersion&" "&@OSArch&" )"&@CRLF&"CPU: "&$SysInfoRead&@CRLF&regRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment","NUMBER_OF_PROCESSORS")&" Thread(s) @ "&RegRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0", "~MHz")&" MHz | Architecture: "&@CPUArch&@CRLF&"RAM: "&Floor((MemGetStats()[1]/1000000))&" GB | ( "&Round((MemGetStats()[1]/1000000),2)&" GB )"&@CRLF&"GPU: "&$SysInfoOutput&@CRLF&"Mainboard: "&regRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS","BaseBoardManufacturer")&" | "&regRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS","BaseBoardProduct")&" | Last BIOS update: "&regRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS","BIOSReleaseDate"),67,311,400,94,BitOr($ES_READONLY,$ES_WANTRETURN),0)
 			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
-			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
+			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKHEIGHT)
 
 		Local $DebugEngineSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 		If @Error Then $DebugEngineSettingsPath = "Not yet defined"
@@ -2580,6 +2587,7 @@ EndFunc
 		GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugLabelCheckForUpdates,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugLabelReportABug,$GUI_SHOW)
+		GUICtrlSetState($MainGUIDebugLabelCreateDebugInfo,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugPicDebugFooterFooter,$GUI_SHOW)
 
 		If $MainGUIDebugButtonPerformUpdate <> NULL Then GUICtrlSetState($MainGUIDebugButtonPerformUpdate,$GUI_SHOW)
@@ -2593,6 +2601,7 @@ EndFunc
 		GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugLabelCheckForUpdates,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugLabelReportABug,$GUI_HIDE)
+		GUICtrlSetState($MainGUIDebugLabelCreateDebugInfo,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugPicDebugFooterFooter,$GUI_HIDE)
 
 		If $MainGUIDebugButtonPerformUpdate <> NULL Then GUICtrlSetState($MainGUIDebugButtonPerformUpdate,$GUI_HIDE)
@@ -2784,11 +2793,11 @@ EndFunc
 			Case $MainGUIHomePicBtnSteam ;- Steam button.
 
 				;- Attempt to find the files at the prioritized common location first.
-				$Found = VerifyAndStoreConfigPath("Steam","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+				$Found = VerifyAndStoreConfigPath("Steam",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
 				If not $Found Then
 
 					;- Yes, OneDrive tends to mess with these Folders on Windows 10 and causes issues!
-					$Found = VerifyAndStoreConfigPath("Steam","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+					$Found = VerifyAndStoreConfigPath("Steam","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
 					If not $Found Then
 
 						;- Attempt to use the Internal configuration files.
@@ -2799,11 +2808,11 @@ EndFunc
 			Case $MainGUIHomePicBtnEGS ;- Epic Games Store button.
 
 				;- Attempt to find the files at the prioritized common location first.
-				$Found = VerifyAndStoreConfigPath("Epic Games Store","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+				$Found = VerifyAndStoreConfigPath("Epic Games Store",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
 				If not $Found Then
 
 					;- Yes, OneDrive tends to mess with these Folders on Windows 10 and causes issues!
-					$Found = VerifyAndStoreConfigPath("Epic Games Store","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+					$Found = VerifyAndStoreConfigPath("Epic Games Store","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
 					If not $Found Then
 
 						;- Attempt to use the Internal configuration files.
@@ -2847,11 +2856,11 @@ EndFunc
 			Case $MainGUIHomePicBtnLegacy ;- Legacy button.
 
 				;- Attempt to find the files at the prioritized common location first.
-				$Found = VerifyAndStoreConfigPath("Legacy","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+				$Found = VerifyAndStoreConfigPath("Legacy",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
 				If not $Found Then
 
 					;- Yes, OneDrive tends to mess with these Folders on Windows 10 and causes issues!
-					$Found = VerifyAndStoreConfigPath("Legacy","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+					$Found = VerifyAndStoreConfigPath("Legacy","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
 					If not $Found Then DisplayErrorMessage("Could not find Configuration files for a Legacy installation. Perhaps you do not have the old and unavailable launcher?")
 				EndIf
 			Case $MainGUIHomeButtonMoreOptions ;- More Options button.
@@ -3425,6 +3434,50 @@ EndFunc
 
 				Case $MainGUIDebugLabelReportABug
 					ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer/issues")
+
+				Case $MainGUIDebugLabelCreateDebugInfo
+					Local $sDirSelect = FileSelectFolder("Choose a folder to save the debug dump into",@DesktopDir)
+					If Not @Error Then
+						DirRemove(@TempDir & "\optimizerdebugdump",$DIR_REMOVE) ;- Cleanup
+						Sleep(350) ;- Windows pls.
+
+						DirCreate(@TempDir & "\optimizerdebugdump")
+						If Not @Error Then ;- Time to retrieve information that could be useful for debugging
+
+							;- Retrieve the info in the system information box
+								FileWrite(@TempDir & "\optimizerdebugdump\systeminfobox.txt",GUICtrlRead($MainGUIDebugEditSystemInfo))
+
+							;- Retrieve Launch.log files
+								DirCreate(@TempDir & "\optimizerdebugdump\logs\launch")
+
+								;- Copy all log files over. Copy pasta is delicious!
+								FileCopy("C:\Users\" & @UserName &"\Documents\My Games\SMITE\BattleGame\Logs\*.log",@TempDir & "\optimizerdebugdump\logs\launch\",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
+
+								;- And since OneDrive loves to move files around, we gotta look in there too! (Don't worry, it only copies the log files over, nothing else)
+								FileCopy("C:\Users\" & @UserName &"\OneDrive\Documents\My Games\SMITE\BattleGame\Logs\*.log",@TempDir & "\optimizerdebugdump\logs\launch\",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
+
+							;- Retrieve config files
+								FileCopy($SettingsPath,@TempDir & "\optimizerdebugdump\config\EngineSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH)) ;- BattleEngine.ini or DefaultEngine.in
+								FileCopy($SystemSettingsPath,@TempDir & "\optimizerdebugdump\config\SystemSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH)) ;- BattleSystemSettings.ini or DefaultSystemSettings.ini
+
+							;- Retrieve EAC logs
+								FileCopy("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat\*.log",@TempDir & "\optimizerdebugdump\logs\*.log",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
+								FileCopy("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat\140\*.log",@TempDir & "\optimizerdebugdump\logs\*.log",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
+
+							;- Create dxdiag.txt
+								ShellExecute("dxdiag",'/dontskip /whql:off /t "' & @TempDir & '\optimizerdebugdump\dxdiag.txt"')
+								While ProcessExists("dxdiag.exe") ;- The program has to wait for that to finish, using Run() won't make a difference as the command line comes back immediately.
+
+								WEnd
+
+							local $file_Zip = _Zip_Create($sDirSelect & "\SMITE_Optimizer_Debug.zip",1)
+								_Zip_AddItem($file_Zip,@TempDir & "\optimizerdebugdump\")
+
+							DirRemove(@TempDir & "\optimizerdebugdump",$DIR_REMOVE) ;- Cleanup
+
+							MsgBox(0,"Success","Debug dump successfully created!")
+						EndIf
+					EndIf
 
 				Case $MainGUIDebugButtonResetConfigPaths
 					GUISetState(@SW_DISABLE,$MainGUI)
@@ -5273,6 +5326,10 @@ Func _FixMenuSwitch() ;- This function is used internally to handle menu hover l
 		GUICtrlSetColor($MainGUIDebugLabelReportABug,0x4F89EA)
 		GUICtrlSetFont($MainGUIDebugLabelReportABug,15,500,Default,$MainFontName)
 		$MainGUIDebugLabelHoverBool = False
+	ElseIf $MainGUIDebugDumpInfoHoverBool Then
+		GUICtrlSetColor($MainGUIDebugLabelCreateDebugInfo,0x4F89EA)
+		GUICtrlSetFont($MainGUIDebugLabelCreateDebugInfo,15,500,Default,$MainFontName)
+		$MainGUIDebugDumpInfoHoverBool = False
 	ElseIf $SteamBtnHoverHideBool Then
 		LoadImageResource($MainGUIHomePicBtnSteam,$MainResourcePath & "SteamBtnInActive.jpg","SteamBtnInActive")
 		$SteamBtnHoverHideBool = False
@@ -5653,6 +5710,12 @@ While True ;- Main program routine.
 						GUICtrlSetColor($MainGUIDebugLabelReportABug,0x0645AD)
 						GUICtrlSetFont($MainGUIDebugLabelReportABug,15,500,4,$MainFontName)
 						$MainGUIDebugLabelHoverBool = True
+					EndIf
+				Case $MainGUIDebugLabelCreateDebugInfo
+					If $MainGUIDebugDumpInfoHoverBool = False Then
+						GUICtrlSetColor($MainGUIDebugLabelCreateDebugInfo,0x0645AD)
+						GUICtrlSetFont($MainGUIDebugLabelCreateDebugInfo,15,500,4,$MainFontName)
+						$MainGUIDebugDumpInfoHoverBool = True
 					EndIf
 				Case $MainGUIHomePicBtnSteam
 					If $SteamBtnHoverHideBool = False and $NotificationGUI == NULL Then

@@ -1,3 +1,17 @@
+SMITE Optimizer Version 1.3.1.5
+Potentially fixed a crashing issue on launch when in Steam Mode.
+> https://github.com/MeteorTheLizard/SMITE-Optimizer/issues/8#issuecomment-860125326
+
+Fixed the system information box in the debug tab not resizing properly.
+Added a label button to the debug tab that retrieves useful debugging information, this should help with future issues.
+Added support for custom document folder paths to the config discovery process.
+Fixed invalid file exist checks for OneDrive specific configuration discovery methods.
+(When OneDrive is installed, the configuration files may be stored inside of the OneDrive folder which causes problems, the check for the files whether they exist or not was erroneous but is now fixed.)
+
+
+
+
+
 SMITE Optimizer Version 1.3.1.4
 Fixed a bug with the file integrity check routine that caused the program to crash when trying to apply changes to empty files. The program is supposed to add everything that is missing which can be EVERYTHING if the file is empty.
 

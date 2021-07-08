@@ -6,7 +6,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.1.5
+#AutoIt3Wrapper_Res_Fileversion=1.3.1.51
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -179,7 +179,7 @@ Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
-Global Const $ProgramVersion = "1.3.1.5"
+Global Const $ProgramVersion = "1.3.1.51"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -625,15 +625,15 @@ EndFunc
 	Global $UpdateAvailable = False ;- Used when automatic updates are disabled.
 	If $CheckForUpdates = "1" Then SplashScreenWriteStatus(25,"Checking for Updates") ;- Update Splash-Screen.
 
-	;- We have to use _INetGetSource from Inet.au3 to prevent downloading from cache / clearing the cache once we are done.
-	;- The Flag '$INET_FORCERELOAD' does not work. This issue was present in previous versions of the SMITE Optimizer as well.
-
-	Local $UpdateGet = _INetGetSource("https://meteorthelizard.github.io/SMITE-Optimizer-Update/index.html",True) ;- Try to get the Update.ini from GitHub.
-	If @Error Then $UpdateGet = _INetGetSource("https://pastebin.com/raw/SXnHTU9H",True) ;- Try to get the Update.ini from Pastebin.
+	Local $UpdateGet = InetRead("https://meteorthelizard.github.io/SMITE-Optimizer-Update/index.html",BitOr($INET_FORCERELOAD,$INET_FORCEBYPASS)) ;- Try to get the Update.ini from GitHub.
+	If @Error Then $UpdateGet = InetRead("https://pastebin.com/raw/SXnHTU9H",BitOr($INET_FORCERELOAD,$INET_FORCEBYPASS)) ;- Try to get the Update.ini from Pastebin.
 	If @Error Then
 		MsgBox($MB_OK,"Error","Could not connect to the Update Servers.")
 		WinActivate($SplashScreenGUI) ;- Get focus again after closing messagebox.
 	Else
+
+		$UpdateGet = BinaryToString($UpdateGet) ;- Convert binary information into a readable string for the IniMem_Read functions
+
 		Local $RemoteVersion = _IniMem_Read($UpdateGet,"Version","Version",$ProgramVersion)
 		Local $RemoteDownload32 = _IniMem_Read($UpdateGet,"Download","Download32","")
 		Local $RemoteDownload64 = _IniMem_Read($UpdateGet,"Download","Download64","")

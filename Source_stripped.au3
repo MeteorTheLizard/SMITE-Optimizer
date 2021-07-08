@@ -1478,13 +1478,8 @@ Return 1
 EndFunc
 Global Const $INET_FORCERELOAD = 1
 Global Const $INET_IGNORESSL = 2
+Global Const $INET_FORCEBYPASS = 16
 Global Const $INET_DOWNLOADBACKGROUND = 1
-Func _INetGetSource($sURL, $bString = True)
-Local $sString = InetRead($sURL, $INET_FORCERELOAD)
-Local $iError = @error, $iExtended = @extended
-If $bString = Default Or $bString Then $sString = BinaryToString($sString)
-Return SetError($iError, $iExtended, $sString)
-EndFunc
 Global Const $hGIFDLL__KERNEL32 = DllOpen("kernel32.dll")
 Global Const $hGIFDLL__USER32 = DllOpen("user32.dll")
 Global Const $hGIFDLL__GDI32 = DllOpen("gdi32.dll")
@@ -3128,7 +3123,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.1.5"
+Global Const $ProgramVersion = "1.3.1.51"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3482,12 +3477,13 @@ Return $s_default
 EndFunc
 Global $UpdateAvailable = False
 If $CheckForUpdates = "1" Then SplashScreenWriteStatus(25,"Checking for Updates")
-Local $UpdateGet = _INetGetSource("https://meteorthelizard.github.io/SMITE-Optimizer-Update/index.html",True)
-If @Error Then $UpdateGet = _INetGetSource("https://pastebin.com/raw/SXnHTU9H",True)
+Local $UpdateGet = InetRead("https://meteorthelizard.github.io/SMITE-Optimizer-Update/index.html",BitOr($INET_FORCERELOAD,$INET_FORCEBYPASS))
+If @Error Then $UpdateGet = InetRead("https://pastebin.com/raw/SXnHTU9H",BitOr($INET_FORCERELOAD,$INET_FORCEBYPASS))
 If @Error Then
 MsgBox($MB_OK,"Error","Could not connect to the Update Servers.")
 WinActivate($SplashScreenGUI)
 Else
+$UpdateGet = BinaryToString($UpdateGet)
 Local $RemoteVersion = _IniMem_Read($UpdateGet,"Version","Version",$ProgramVersion)
 Local $RemoteDownload32 = _IniMem_Read($UpdateGet,"Download","Download32","")
 Local $RemoteDownload64 = _IniMem_Read($UpdateGet,"Download","Download64","")

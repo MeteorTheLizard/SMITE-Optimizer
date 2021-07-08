@@ -1,3 +1,12 @@
+SMITE Optimizer Version 1.3.1.51
+> Made some Improvements to the automatic updater.
+Whenever the program was launched, the update information was downloaded from the internet (github or pastebin).
+However, that information was then cached out of my control and whenever the program was launched again, instead of downloading the information fresh from the internet, it loaded the information from cache which was causing problems. The cached information was usually deleted on a proper shutdown of the system but due to Windows 10 not actually shutting down on a shut down, this cache was never reset until windows 10 did a full shutdown. (I'm so tired of windows, ngl.), this issue is now fixed.
+
+
+
+
+
 SMITE Optimizer Version 1.3.1.5
 Potentially fixed a crashing issue on launch when in Steam Mode.
 > https://github.com/MeteorTheLizard/SMITE-Optimizer/issues/8#issuecomment-860125326

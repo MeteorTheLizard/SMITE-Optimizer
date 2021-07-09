@@ -1478,7 +1478,6 @@ Return 1
 EndFunc
 Global Const $INET_FORCERELOAD = 1
 Global Const $INET_IGNORESSL = 2
-Global Const $INET_FORCEBYPASS = 16
 Global Const $INET_DOWNLOADBACKGROUND = 1
 Global Const $hGIFDLL__KERNEL32 = DllOpen("kernel32.dll")
 Global Const $hGIFDLL__USER32 = DllOpen("user32.dll")
@@ -3123,7 +3122,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.1.51"
+Global Const $ProgramVersion = "1.3.1.52"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3477,12 +3476,28 @@ Return $s_default
 EndFunc
 Global $UpdateAvailable = False
 If $CheckForUpdates = "1" Then SplashScreenWriteStatus(25,"Checking for Updates")
-Local $UpdateGet = InetRead("https://meteorthelizard.github.io/SMITE-Optimizer-Update/index.html",BitOr($INET_FORCERELOAD,$INET_FORCEBYPASS))
-If @Error Then $UpdateGet = InetRead("https://pastebin.com/raw/SXnHTU9H",BitOr($INET_FORCERELOAD,$INET_FORCEBYPASS))
-If @Error Then
-MsgBox($MB_OK,"Error","Could not connect to the Update Servers.")
+Local $agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0"
+Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
+$oHTTP.Open("GET","https://meteorthelizard.github.io/SMITE-Optimizer-Update/",False)
+$oHTTP.setRequestHeader("User-Agent",$agent)
+$oHTTP.Option(4) = 13056
+$oHTTP.Send()
+Local $UpdateGet = $oHTTP.ResponseText
+$oHTTP = NULL
+If not $UpdateGet Then
+Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
+$oHTTP.Open("GET","https://pastebin.com/raw/SXnHTU9H",False)
+$oHTTP.setRequestHeader("User-Agent",$agent)
+$oHTTP.Option(4) = 13056
+$oHTTP.Send()
+$UpdateGet = $oHTTP.ResponseText
+$oHTTP = NULL
+If not $UpdateGet Then
+MsgBox($MB_OK,"Error","Could not connect to the update servers.")
 WinActivate($SplashScreenGUI)
-Else
+EndIf
+EndIf
+If $UpdateGet Then
 $UpdateGet = BinaryToString($UpdateGet)
 Local $RemoteVersion = _IniMem_Read($UpdateGet,"Version","Version",$ProgramVersion)
 Local $RemoteDownload32 = _IniMem_Read($UpdateGet,"Download","Download32","")
@@ -3499,26 +3514,27 @@ $ForceUpdate = True
 EndIf
 If $CheckForUpdates = "1" or $ForceUpdate Then
 RegDelete("HKCU\Software\SMITE Optimizer\","DebugForceUpdate")
-SplashScreenWriteStatus(0,"Downloading Update (0%)")
+SplashScreenWriteStatus(0,"Preparing to download an update..")
 Local $NewFileSize, $NewFile
 If @AutoItX64 = 1 Then
-$NewFileSize = INetGetSize($RemoteDownload64,@TempDir & "/SO_UpdatedVer.exe")
+$NewFileSize = INetGetSize($RemoteDownload64,$INET_FORCERELOAD)
 $NewFile = INetGet($RemoteDownload64,@TempDir & "/SO_UpdatedVer.exe",BitOr($INET_FORCERELOAD,$INET_IGNORESSL),$INET_DOWNLOADBACKGROUND)
 Else
-$NewFileSize = INetGetSize($RemoteDownload32,@TempDir & "/SO_UpdatedVer.exe")
+$NewFileSize = INetGetSize($RemoteDownload32,$INET_FORCERELOAD)
 $NewFile = INetGet($RemoteDownload32,@TempDir & "/SO_UpdatedVer.exe",BitOr($INET_FORCERELOAD,$INET_IGNORESSL),$INET_DOWNLOADBACKGROUND)
 EndIf
-Local $TotalSize = Round($NewFileSize / 1024)
 Local $LastPercent = 0
+Local $Percent = 0
 Do
-Local $Bytes = Round(INetGetInfo($NewFile,0))
-Local $Percent = Round($TotalSize / $NewFileSize * 100000)
+Local $Bytes = INetGetInfo($NewFile,0)
+$Percent = Floor((100 / $NewFileSize) * $Bytes)
 If $Percent <> $LastPercent Then
-SplashScreenWriteStatus(0,"Downloading Update ("&$Percent&"%)")
+SplashScreenWriteStatus($Percent,"Downloading Update ( "&$Percent&"% - " & Floor($Bytes/1024) & " / " & Floor($NewFileSize/1024) & " KB. )")
 $LastPercent = $Percent
 EndIf
 Sleep(10)
 Until INetGetInfo($NewFile,2)
+INetClose($NewFile)
 If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then
 FileWrite(@TempDir & "\SO_Update.bat","CHCP 65001"&@CRLF&"@echo off"&@CRLF&"Cls"&@CRLF&"timeout /t 0.5 /nobreak"&@CRLF&'del "'&@ScriptFullPath&'" /f /q'&@CRLF&'copy /Y "'&@TempDir & '\SO_UpdatedVer.exe"'&' "'&@ScriptFullPath&'" >nul'&@CRLF&'start "" "'&@ScriptFullPath&'"'&@CRLF&'del "'&@TempDir & "\SO_Update.bat"&'" /f /q'&@CRLF&"Exit")
 If FileExists(@TempDir & "\SO_Update.bat") Then

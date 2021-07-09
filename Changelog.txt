@@ -1,3 +1,12 @@
+SMITE Optimizer Version 1.3.1.52
+> Made even more improvments to the update routine.
+The progress display is now fixed, no idea how I messed that up so badly. (Also made it display more information)
+The update.ini it downloads from GitHub or Pastebin is now 100% guaranteed to be up-to-date.
+
+
+
+
+
 SMITE Optimizer Version 1.3.1.51
 > Made some Improvements to the automatic updater.
 Whenever the program was launched, the update information was downloaded from the internet (github or pastebin).

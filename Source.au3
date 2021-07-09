@@ -6,7 +6,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.1.51
+#AutoIt3Wrapper_Res_Fileversion=1.3.1.52
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -179,7 +179,7 @@ Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
-Global Const $ProgramVersion = "1.3.1.51"
+Global Const $ProgramVersion = "1.3.1.52"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -625,12 +625,39 @@ EndFunc
 	Global $UpdateAvailable = False ;- Used when automatic updates are disabled.
 	If $CheckForUpdates = "1" Then SplashScreenWriteStatus(25,"Checking for Updates") ;- Update Splash-Screen.
 
-	Local $UpdateGet = InetRead("https://meteorthelizard.github.io/SMITE-Optimizer-Update/index.html",BitOr($INET_FORCERELOAD,$INET_FORCEBYPASS)) ;- Try to get the Update.ini from GitHub.
-	If @Error Then $UpdateGet = InetRead("https://pastebin.com/raw/SXnHTU9H",BitOr($INET_FORCERELOAD,$INET_FORCEBYPASS)) ;- Try to get the Update.ini from Pastebin.
-	If @Error Then
-		MsgBox($MB_OK,"Error","Could not connect to the Update Servers.")
-		WinActivate($SplashScreenGUI) ;- Get focus again after closing messagebox.
-	Else
+
+	;- This method guarantees an up-to-date update file.
+	Local $agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0" ;- Outdated.
+
+	Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1") ;- Load info from GitHub
+		$oHTTP.Open("GET","https://meteorthelizard.github.io/SMITE-Optimizer-Update/",False)
+		$oHTTP.setRequestHeader("User-Agent",$agent)
+		$oHTTP.Option(4) = 13056
+		$oHTTP.Send()
+
+		Local $UpdateGet = $oHTTP.ResponseText
+
+		$oHTTP = NULL ;- Destroy the object (Clear memory)
+
+	If not $UpdateGet Then ;- GitHub failed so we now try the pastebin backup
+		Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
+			$oHTTP.Open("GET","https://pastebin.com/raw/SXnHTU9H",False)
+			$oHTTP.setRequestHeader("User-Agent",$agent)
+			$oHTTP.Option(4) = 13056
+			$oHTTP.Send()
+
+			$UpdateGet = $oHTTP.ResponseText
+
+			$oHTTP = NULL ;- Destroy the object (Clear memory)
+
+		If not $UpdateGet Then
+			MsgBox($MB_OK,"Error","Could not connect to the update servers.")
+			WinActivate($SplashScreenGUI) ;- Get focus again after closing messagebox.
+		EndIf
+	EndIf
+
+
+	If $UpdateGet Then
 
 		$UpdateGet = BinaryToString($UpdateGet) ;- Convert binary information into a readable string for the IniMem_Read functions
 
@@ -656,33 +683,34 @@ EndFunc
 				;- (This happens when the user clicks the "Perform Update" button on the debug screen)
 				RegDelete("HKCU\Software\SMITE Optimizer\","DebugForceUpdate")
 
-				SplashScreenWriteStatus(0,"Downloading Update (0%)") ;- Update Splash-Screen.
+				SplashScreenWriteStatus(0,"Preparing to download an update..") ;- Update Splash-Screen.
 
 				Local $NewFileSize, $NewFile
 
 				If @AutoItX64 = 1 Then
-					$NewFileSize = INetGetSize($RemoteDownload64,@TempDir & "/SO_UpdatedVer.exe")
+					$NewFileSize = INetGetSize($RemoteDownload64,$INET_FORCERELOAD)
 					$NewFile = INetGet($RemoteDownload64,@TempDir & "/SO_UpdatedVer.exe",BitOr($INET_FORCERELOAD,$INET_IGNORESSL),$INET_DOWNLOADBACKGROUND)
 				Else
-					$NewFileSize = INetGetSize($RemoteDownload32,@TempDir & "/SO_UpdatedVer.exe")
+					$NewFileSize = INetGetSize($RemoteDownload32,$INET_FORCERELOAD)
 					$NewFile = INetGet($RemoteDownload32,@TempDir & "/SO_UpdatedVer.exe",BitOr($INET_FORCERELOAD,$INET_IGNORESSL),$INET_DOWNLOADBACKGROUND)
 				EndIf
 
-				Local $TotalSize = Round($NewFileSize / 1024)
-
 				Local $LastPercent = 0
+				Local $Percent = 0
 
 				Do
-					Local $Bytes = Round(INetGetInfo($NewFile,0))
-					Local $Percent = Round($TotalSize / $NewFileSize * 100000)
+					Local $Bytes = INetGetInfo($NewFile,0)
+					$Percent = Floor((100 / $NewFileSize) * $Bytes)
 
 					If $Percent <> $LastPercent Then ;- Prevent annoying label flashing.
-						SplashScreenWriteStatus(0,"Downloading Update ("&$Percent&"%)") ;- Update Splash-Screen.
+						SplashScreenWriteStatus($Percent,"Downloading Update ( "&$Percent&"% - " & Floor($Bytes/1024) & " / " & Floor($NewFileSize/1024) & " KB. )") ;- Update Splash-Screen.
 						$LastPercent = $Percent
 					EndIf
 
 					Sleep(10)
 				Until INetGetInfo($NewFile,2) ;- Repeat until the download finished.
+
+				INetClose($NewFile) ;- Close the handle
 
 				;- Make sure the File exists before we try to do stuff.
 				If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then

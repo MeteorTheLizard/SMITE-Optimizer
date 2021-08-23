@@ -34,7 +34,7 @@
  
 You may create an <strong>issue</strong> on the <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/issues">issues</a> page to report a bug.
 
-<strong>Remember to describe your issue as good as you can, including screenshots or short recordings of the issue helps immensely.</strong>
+<strong>It is recommended to create a debug dump and attaching the output .zip file to the issue. You can create a debug dump by going into the debug tab in the SMITE Optimizer and then clicking on the "Create debug dump" text. The program will freeze while it is working.</strong>
   
  ## License
 

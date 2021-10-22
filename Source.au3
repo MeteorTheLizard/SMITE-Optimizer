@@ -1,12 +1,13 @@
 ﻿#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Icon=Resource\SMITEOptimizerIcon.ico
+#AutoIt3Wrapper_Res_Icon_Add=Resource\SmiteIcon.ico
 #AutoIt3Wrapper_Outfile=SMITE Optimizer 32Bit.exe
 #AutoIt3Wrapper_Outfile_x64=SMITE Optimizer 64Bit.exe
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.1.52
+#AutoIt3Wrapper_Res_Fileversion=1.3.2
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -25,6 +26,8 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\ASearchBtnInActive.jpg, RT_RCDATA, ASearchBtnInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\ChangelogIconActive.jpg, RT_RCDATA, ChangelogIconActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\ChangelogIconInActive.jpg, RT_RCDATA, ChangelogIconInActive, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\FixesIconActive.jpg, RT_RCDATA, FixesIconActive, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\FixesIconInActive.jpg, RT_RCDATA, FixesIconInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\CloseActivate.jpg, RT_RCDATA, CloseActivate, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\CloseNoActivate.jpg, RT_RCDATA, CloseNoActivate, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\CopyrightFooterBGLeft.jpg, RT_RCDATA, CopyrightFooterBGLeft, 0
@@ -74,6 +77,7 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\TopBar.jpg, RT_RCDATA, TopBar, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Anisotropic_Filtering.jpg, RT_RCDATA, Anisotropic_Filtering, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Anti_Aliasing.jpg, RT_RCDATA, Anti_Aliasing, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Audio_Channels.jpg, RT_RCDATA, Audio_Channels, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Bloom.jpg, RT_RCDATA, Bloom, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Character_Quality.jpg, RT_RCDATA, Character_Quality, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Character_Quality_Simple.jpg, RT_RCDATA, Character_Quality_Simple, 0
@@ -82,6 +86,7 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Decals_Simple.jpg, RT_RCDATA, Decals_Simple, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Desired_FPS.jpg, RT_RCDATA, Desired_FPS, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\DirectX_11.jpg, RT_RCDATA, DirectX_11, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Disable_Jumping.jpg, RT_RCDATA, Disable_Jumping, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Distortion.jpg, RT_RCDATA, Distortion, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Dominant_Shadows.jpg, RT_RCDATA, Dominant_Shadows, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Drop_Shadows.jpg, RT_RCDATA, Drop_Shadows, 0
@@ -126,8 +131,8 @@
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 ;- Notes:
-;- Last error code: "011" - Next: "012"
-;- This program appears to be incompatible with Virtual Machines as any file operations fail.
+;- Last error code: "016" - Next: "017"
+;- This program appears to be incompatible with Virtual Machines as any file operations fail. ( Does not seem to be the case anymore? Testing in Win10 VM worked just fine. )
 
 #NoTrayIcon
 ;#RequireAdmin ;- This will not be needed ever. Hopefully.
@@ -179,7 +184,7 @@ Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
-Global Const $ProgramVersion = "1.3.1.52"
+Global Const $ProgramVersion = "1.3.2"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -237,6 +242,7 @@ Global $MainGUIButtonCloseBool = False ;- Main Program
 Global $MainGUIButtonMaximizeBool = False
 Global $MainGUIButtonMinimizeBool = False
 Global $HomeIconHoverHideBool = False ;- Menu
+Global $FixesIconHoverHideBool = False
 Global $RCIconHoverHideBool = False
 Global $DonateIconHoverHideBool = False
 Global $ChangelogIconHoverHideBool = False
@@ -268,16 +274,14 @@ If @Error = 0 and $Version <= "1.2.2" Then
 	RegDelete("HKCU\Software\SMITE Optimizer\","ProgramPath")
 EndIf
 
-;- Update Program Version.
-RegWrite("HKCU\Software\SMITE Optimizer\","ProgramVersion","REG_SZ",$ProgramVersion)
-If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then FileDelete(@TempDir & "/SO_UpdatedVer.exe") ;- Remove the temporary downloaded update.
-
 Global $CheckForUpdates = RegRead("HKCU\Software\SMITE Optimizer\","ConfigCheckForUpdates")
 If @Error Then $CheckForUpdates = "1"
 Global $SettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 If @Error Then $SettingsPath = $sEmpty
 Global $SystemSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
 If @Error Then $SystemSettingsPath = $sEmpty
+Global $GameSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathGame")
+If @Error Then $GameSettingsPath = $sEmpty
 Global $ProgramState = RegRead("HKCU\Software\SMITE Optimizer\","ConfigProgramState")
 If @Error Then $ProgramState = $sEmpty
 Global $ProgramHomeState = RegRead("HKCU\Software\SMITE Optimizer\","ConfigSimpleOrAdvanced")
@@ -288,15 +292,29 @@ Global $ProgramHomeHelpState = RegRead("HKCU\Software\SMITE Optimizer\","ConfigS
 If @Error Then $ProgramHomeHelpState = 1
 
 ;- The registry entries exist but at least one of the files are missing:
-If ($SettingsPath <> $sEmpty and $SystemSettingsPath <> $sEmpty) and (not FileExists($SettingsPath) or not FileExists($SystemSettingsPath)) Then
+If (($SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $GameSettingsPath = $sEmpty) or _ ;- Invalid registry entries
+	not FileExists($SettingsPath) or _ ;- EngineSettings is missing
+	not FileExists($SystemSettingsPath) or _ ;- SystemSettings is missing
+	not FileExists($GameSettingsPath)) and _ ;- GameSettings is missing
+	RegRead("HKCU\Software\SMITE Optimizer\","ProgramVersion") <> $sEmpty Then ;- Only show when it wasn't the first start
+
 	RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 	RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
+	RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathGame")
 	RegDelete("HKCU\Software\SMITE Optimizer\","ConfigProgramState")
+
 	$SettingsPath = $sEmpty
 	$SystemSettingsPath = $sEmpty
+	$GameSettingsPath = $sEmpty
+
 	$ProgramState = $sEmpty
-	MsgBox($MB_OK,"Error","Could not find file(s) at the saved location(s)"&@CRLF&"You will have to tell the program where to find them again.")
+
+	MsgBox($MB_OK,"Error","Could not find configuration files at the saved location"&@CRLF&"Please tell the program where to find them."&@CRLF&@CRLF&"If you just updated the SMITE Optimizer, this might be intentional.")
 EndIf
+
+;- Update Program Version.
+RegWrite("HKCU\Software\SMITE Optimizer\","ProgramVersion","REG_SZ",$ProgramVersion)
+If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then FileDelete(@TempDir & "/SO_UpdatedVer.exe") ;- Remove the temporary downloaded update.
 
 #Region ;- BorderLessWinUDF (Heavily Modified)
 	#include <WinAPIGDI.au3>
@@ -562,7 +580,6 @@ EndFunc
 
 #Region ;- Splash-Screen.
 	Global $SplashScreenGUI = GUICreate($ProgramName,600,125,-1,-1,$WS_POPUP)
-		GUICtrlSetBkColor(-1,0x00)
 
 		Global $SplashScreenGUIAnimation
 
@@ -893,6 +910,62 @@ Global Const $SystemSettingsClearHive[35][244] = [ _
 	['[TextureSettingsSpectator]','TEXTUREGROUP_World=(MinLODSize=128,MaxLODSize=128,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldNormalMap=(MinLODSize=128,MaxLODSize=128,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldSpecular=(MinLODSize=128,MaxLODSize=128,LODBias=2,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Character=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_CharacterNormalMap=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_CharacterSpecular=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=2048,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_VehicleNormalMap=(MinLODSize=512,MaxLODSize=2048,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=2048,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Cinematic=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Effects=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=256,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Skybox=(MinLODSize=2048,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_UI=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_UIStreamable=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=-1)','TEXTUREGROUP_Lightmap=(MinLODSize=512,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Shadowmap=(MinLODSize=512,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear,NumStreamedMips=3)','TEXTUREGROUP_RenderTarget=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_MobileFlattened=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ProcBuilding_Face=(MinLODSize=1,MaxLODSize=1024,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ProcBuilding_LightMap=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear,MipGenSettings=TMGS_Blur5)','TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_NPC=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_NPCNormalMap=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_NPCSpecular=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldDetail=(MinLODSize=128,MaxLODSize=128,LODBias=0,MinMagFilter=aniso,MipFilter=linear)'], _
 	['[IniVersion]','0=1595803092.000000','1=1595799763.000000'], _
 	['[SettingsCheck]','Initialized=True'] _
+]
+
+Global Const $GameSettingsClearHive[52][148] = [ _
+	['[Engine.GameInfo]','DefaultGame=TgClient.TgGameLaunch','DefaultServerGame=TgGame.TgGame','bAdminCanPause=false','MaxPlayers=32','GameDifficulty=4.000000','bChangeLevels=True','MaxSpectators=2','MaxIdleTime=180.000000','MaxTimeMargin=0.000000','TimeMarginSlack=1.350000','MinTimeMargin=0.000000','TotalNetBandwidth=32000','MaxDynamicBandwidth=7000','MinDynamicBandwidth=4000','PlayerControllerClassName=TgGame.TgPlayerController','bKickLiveIdlers=true','GameInfoClassAliases[0]=(ShortName="Testing", GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases[1]=(ShortName="Conquest", GameClassName="TgGame.TgGame_Battle_Conquest")','GameInfoClassAliases[2]=(ShortName="Arena", GameClassName="TgGame.TgGame_Arena")','GameInfoClassAliases[3]=(ShortName="Assault", GameClassName="TgGame.TgGame_Battle_Aram")','GameInfoClassAliases[4]=(ShortName="Siege", GameClassName="TgGame.TgGame_Battle_Conquest_Erez")','GameInfoClassAliases[5]=(ShortName="Domination", GameClassName="TgGame.TgGame_Domination")','GameInfoClassAliases[6]=(ShortName="Joust", GameClassName="TgGame.TgGame_Battle_Joust")','GameInfoClassAliases[7]=(ShortName="ArenaEscort", GameClassName="TgGame.TgGame_Arena_Escort")','GameInfoClassAliases[8]=(ShortName="ArenaCoop", GameClassName="TgGame.TgGame_Arena_Practice")','GameInfoClassAliases[9]=(ShortName="ArenaEscortCoop", GameClassName="TgGame.TgGame_Arena_Escort_Practice")','GameInfoClassAliases[10]=(ShortName="JoustCoop", GameClassName="TgGame.TgGame_Battle_Joust_Practice")','GameInfoClassAliases[11]=(ShortName="ConquestCoop", GameClassName="TgGame.TgGame_Battle_Conquest_Practice")','GameInfoClassAliases[12]=(ShortName="ArenaPractice", GameClassName="TgGame.TgGame_Arena_Practice")','GameInfoClassAliases[13]=(ShortName="ArenaEscortPractice", GameClassName="TgGame.TgGame_Arena_Escort_Practice")','GameInfoClassAliases[14]=(ShortName="JoustPractice", GameClassName="TgGame.TgGame_Battle_Joust_Practice")','GameInfoClassAliases[15]=(ShortName="ConquestPractice", GameClassName="TgGame.TgGame_Battle_Conquest_Practice")','GameInfoClassAliases[16]=(ShortName="Battle", GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases[17]=(ShortName="Basic", GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases[18]=(ShortName="Clash", GameClassName="TgGame.TgGame_Battle_Clash")','GameInfoClassAliases[19]=(ShortName="ClashCoop", GameClassName="TgGame.TgGame_Battle_Clash_Practice")','GameInfoClassAliases[20]=(ShortName="AssaultCoop", GameClassName="TgGame.TgGame_Battle_Aram_Practice")','GameInfoClassAliases[21]=(ShortName="Racer", GameClassName="TgGame.TgGame_Battle_Racer")','GameInfoClassAliases[22]=(ShortName="MMO", GameClassName="TgGame.TgGame_Battle_Adventure")','MeshId=28','ArbitrationHandshakeTimeout=0.000000','GoreLevel=0'], _
+	['[Engine.AccessControl]','IPPolicies=ACCEPT;*','bAuthenticateClients=True','bAuthenticateServer=True','bAuthenticateListenHost=True','MaxAuthRetryCount=3','AuthRetryDelay=5'], _
+	['[DefaultPlayer]','Name=Player','Team=255','DefaultCharacter=TgGame.TgCharacter'], _
+	['[Engine.HUD]','bMessageBeep=true','HudCanvasScale=0.95','ConsoleMessageCount=4','ConsoleFontSize=5','MessageFontOffset=0','bShowHUD=true','bShowDirectorInfoDebug=false','bShowDirectorInfoHUD=false','DebugDisplay=AI'], _
+	['[Engine.PlayerController]','bAimingHelp=false','InteractDistance=512','bCheckRelevancyThroughPortals=true','MaxConcurrentHearSounds=32','bLogHearSoundOverflow=FALSE','bShowKismetDrawText=True'], _
+	['[Engine.Weapon]','Priority=-1.0'], _
+	['[Engine.WorldInfo]','DefaultGravityZ=-520.0','RBPhysicsGravityScaling=2.0','MaxPhysicsSubsteps=5','SquintModeKernelSize=128.0','EmitterPoolClassPath=Engine.EmitterPool','SecondaryEmitterPoolClassPath=TgGame.TgSpecialFxEmitterPool','DecalManagerClassPath=Engine.DecalManager','FractureManagerClassPath=Engine.FractureManager','FracturedMeshWeaponDamage=1.0','ChanceOfPhysicsChunkOverride=1.0','bEnableChanceOfPhysicsChunkOverride=FALSE','FractureExplosionVelScale=1.0','DefaultAmbientZoneSettings=(bIsWorldInfo=true)','bPersistPostProcessToNextLevel=TRUE','bAllowHostMigration=FALSE','HostMigrationTimeout=15','bAllowTemporalAA=True','bNoMobileMapWarnings=True','DefaultPostProcessSettings=(Bloom_Scale=0.4,DOF_BlurKernelSize=12.0,DOF_MaxNearBlurAmount=0.0,DOF_MaxNearBlurAmount=0.0,DOF_FocusInnerRadius=2000.0,DOF_FocusDistance=0.0,)'], _
+	['[Engine.AutoTestManager]','NumMinutesPerMap=50','#CommandsToRunAtEachTravelTheWorldNode=MemLeakCheck','#CommandsToRunAtEachTravelTheWorldNode=SNAPSHOTMEMORY'], _
+	['[Engine.DecalManager]','DecalLifeSpan=30.0'], _
+	['[Engine.UIDataStore_GameResource]','ElementProviderTypes=(ProviderTag="GameTypes",ProviderClassName="Engine.UIGameInfoSummary")'], _
+	['[GameFramework.GameCheatManager]','DebugCameraControllerClassName=GameFramework.DebugCameraController'], _
+	['[GameFramework.MobileHud]','bShowMobileHud=true','bShowGameHud=false'], _
+	['[GameFramework.MobileInputZone]','RenderColor=(R=255,G=255,B=255,A=255)','InactiveAlpha=0.5','SizeX=100','SizeY=100','VertMultiplier=1.0','HorizMultiplier=1.0','bUseGentleTransitions=true','ResetCenterAfterInactivityTime=3.0','ActivateTime=0.6','DeactivateTime=0.2','TapDistanceConstraint=5','bApplyGlobalScaleToActiveSizes=true','AuthoredGlobalScale=2.0'], _
+	['[GameFramework.FrameworkGame]','RequiredMobileInputConfigs=(GroupName="DebugGroup",RequireZoneNames=("DebugStickMoveZone","DebugStickLookZone","DebugLookZone"))'], _
+	['[DebugLookZone MobileInputZone]','InputKey=MouseY','HorizontalInputKey=MouseX','TapInputKey=MOBILE_Fire','Type=ZoneType_Trackball','bRelativeSizeX=true','bRelativeSizeY=true','X=0','Y=0','SizeX=1.0','SizeY=1.0','VertMultiplier=-0.0007','HorizMultiplier=0.001','Acceleration=12.0','Smoothing=1.0','EscapeVelocityStrength=0.85','bIsInvisible=1','TapDistanceConstraint=32'], _
+	['[DebugStickMoveZone MobileInputZone]','InputKey=MOBILE_AForward','HorizontalInputKey=MOBILE_AStrafe','Type=ZoneType_Joystick','bRelativeX=true','bRelativeY=true','bRelativeSizeX=true','bRelativeSizeY=true','X=0.05','Y=-0.4','SizeX=0.1965','SizeY=1.0','bSizeYFromSizeX=true','VertMultiplier=-1.0','HorizMultiplier=1.0','bScalePawnMovement=true','RenderColor=(R=255,G=255,B=255,A=255)','InactiveAlpha=0.25','bUseGentleTransitions=true','ResetCenterAfterInactivityTime=3.0','ActivateTime=0.6','DeactivateTime=0.2','TapDistanceConstraint=5'], _
+	['[DebugStickLookZone MobileInputZone]','InputKey=MOBILE_ALookUp','HorizontalInputKey=MOBILE_ATurn','Type=ZoneType_Joystick','bRelativeX=true','bRelativeY=true','bRelativeSizeX=true','bRelativeSizeY=true','VertMultiplier=-0.5','HorizMultiplier=0.35','X=-0.2465','Y=-0.4','SizeX=0.1965','SizeY=1.0','bSizeYFromSizeX=true','RenderColor=(R=255,G=255,B=255,A=255)','InactiveAlpha=0.25','bUseGentleTransitions=true','ResetCenterAfterInactivityTime=3.0','ActivateTime=0.6','DeactivateTime=0.2','TapDistanceConstraint=5'], _
+	['[Engine.EmitterPool]','bLogPoolOverflow=true','bLogPoolOverflowList=false'], _
+	['[TgGame.TgPlayerController]','c_bAllowSpecialMaterialEffects=False','m_bContextNotifiesEnabled=true'], _
+	['[TgGame.TgSpectatorController]','m_bIgnoreCullDistanceVolumes=true','c_vMouseClickDeprojectionExtent=(X=50,Y=50,Z=50)','m_fOverviewCenterpointOffset=0.0','m_fMouseCursorVisibleTime=2.0'], _
+	['[TgGame.TgGame]','bWeaponStay=true','BotRatio=+1.0','GoalScore=0','bTournament=false','bPlayersMustBeReady=false','NetWait=5','RestartWait=30','MinNetPlayers=1','bWaitForNetPlayers=true','SpawnProtectionTime=+2.0','LateEntryLives=1','TimeLimit=0','GameDifficulty=+5.0','EndTimeDelay=4.0','GameStatsClass=TgGame.TgGameStats'], _
+	['[TgGame.TgHUD]','bCrosshairShow=false'], _
+	['[TgEditor.EdGame]','PIEPawnClass=TgPawn','PawnClass=TgGame.TgPawn_Character','m_PIEPawnMeshType=1','MeshId=2848'], _
+	['[DebugWindows]','RemoteControlX=100','RemoteControlY=100','RemoteControlWidth=200','RemoteControlHeight=300'], _
+	['[TgGame.TgSpecialFxLightManager]','c_FxLightsEnabled=true','c_FxLightsUnconstrained=false','c_FxLightsMaxActive=1','c_FxLightsMaxDying=1'], _
+	['[TgGame.TgClientSettings]','MasterVolume=0.600000','SFXVolume=1.000000','MusicVolume=0.300000','VoiceVolume=0.750000','UIScaling=1.000000','HUDScaling=1.000000','CombatTextScaling=1.800000','ChatScaling=1.000000','ShowWardPings=true','ChatFadeout=2.000000','OverlayGodName=NPN_GodName','SelectedColorBlindOption=CB_None','OverlayShowLocalPlayer=false','ColorBlindMode=false','ColorBlindModeShader=false','ColorBlindModeShaderType=1','ColorBlindModeIntensity=1.000000','DisableHelpMessages=false','AutoPurchase=true','AutoSkill=true','ShowInHandTargeting=true','VerticalTargetingPreviews=true','DisableTargetingAid=false','CastMode=CM_Default','bUseCastQueueing=false','CastQueueTime=0.000000','DisableProfanityFilter=false','PlayNowTabId=-1','ShowTeamTags=true','TeamTagFormat=0','MatchNotifierVolume=0.300000','SpectateDamage=false','SpectateHeals=false','SpectateCrits=false','SpectateGold=false','SpectateXP=false','SpectateOutlines=false','SpectateExpertMode=false','SpectateAutoSlomo=false','SpectateDefaultSkins=false','NewUserPromptTutorialMatch=true','NewUserFinished=false','ShowFriendStateNotifications=FSN_Always','ShowRentNotification=true','MasterMute=false','SFXMute=false','MusicMute=false','VoiceMute=false','MatchNotifierMute=false','AllPlayerMute=false','ChatNotifierMute=true','LicensedMusicMute=false','VendorStoreTabId=0','VendorStoreTopTier=true','MinimapOpacity=0.700000','bUseFixedPitchMode=true','FixedPitchLowerBoundDegrees=-45.000000','FixedPitchUpperBoundDegrees=-8.000000','TargetingLineStyle=TLS_None','TargetingPreviewStyle=TPS_None','TargetingReticleStyle=TRS_X','TargetingHighlightStyle=THS_Silhouette','bTargetingAlwaysShowPreview=true','LoadAssistModeSubLevel=true','bEnableHelpPopups=true','bShowManaUsage=true','VPSelection=0','TransformSettings=','TransformSettingsV2=','LandingPanelMinimized=false','NamePlateTargetingStyle=1','GodPageDisplayCard=false','bUseHudv1=true','bEnableChatTrayPopup=false','bEnableFriendsTrayPopup=false','ClientSettingsVersion=TCSV_Clan_Notification_Settings_Update','HealthBarOpacity=100','HealthBarScale=100','VivoxEnabled=true','VivoxVolume=0.500000','VivoxMute=false','VivoxMicVolume=1.000000','VivoxMicMute=false','VivoxInputType=0','VivoxInputKey=LeftControl','DisableCrossplay=false','PCInputIsKeyboard=true','ConsoleInputIsKeyboard=false','CrossplayMatchInput=false','nCachedEventActiveQuests=0','SelfMuteChat=false','SelfMuteVGS=false','PreferredControls=0','ShowClanStateNotifications=FSN_Always','bEnableChatTimestamps=false','EnableControllerFeedback=TRUE','EnableBasicAttackControllerFeedback=FALSE','DisableAimAssist=FALSE','LookSensitivity=7.000000','LookSensitivityY=7.000000','InvertY=FALSE','PlayerMute=FALSE','bJumpEnabled=true','bPublicParty=false','bOptInNewFeatures=false','bResetSensitivity=False','LookFriction=0.400000','LookFrictionY=0.500000','nSelectedPreset=4','HideOthersNamesInMatches=False','HideMyNameInMatches=False','bHideEventQuestNotice=False','bIsVsAI=False','bIsPractice=False','QueueWaitRegion=False','QueueWaitSolo=False','BotPracticeMode=False','PCInputIsGamepad=False','ConsoleInputIsGamepad=False','AutoFilter=False','ShowGameTips=False','ShowRoleGuides=False','ShowAllRecommendedBuilds=False','DisableJoystickInput=False','bAllowLogitechLedSdk=False','SpectateBottomBarSize=0','VendorStoreTypeId=0','VendorStoreTypeRecId=0','OdysseySeenFlags=0','ChestTutorialSeen=0','FavoriteGameModes=','DailyDealTracking=','LastSeenLoginBlocker=','LastSeenPatchOverview=','qwLastSeenGiftAcquisitionId=(A=0,B=0)','PlayFeaturedQueue=','LastSeen=(sStoreDeals=,sStoreChests=,sStoreGodsSkins=)','queueA=0','queueB=0','Gamma=0.000000','GammaHandheld=0.000000','BotDifficulty=0','LookAccelSpeed=3.000000','LeftDeadZone=0.300000','RightDeadZone=0.200000','RangeRotationLimitSq=0.000000','nCachedEventActiveQuestChain=0'], _
+	['[TgGame.TgGame_PointCapture]','GoalScore=400'], _
+	['[TgGame.TgGame_Domination]','GoalScore=500'], _
+	['[TgGame.TgGame_SinglePointCaptureAndHold]','GoalScore=100'], _
+	['[TgGame.TgGame_Arena]','GoalScore=500'], _
+	['[TgGame.TgGame_Arena_Practice]','GoalScore=500'], _
+	['[TgGame.TgGame_Arena_Training]','GoalScore=100','m_nScoreCap=30'], _
+	['[TgGame.TgCameraModule_SpectatorOverview]','PawnTargetSpringDamping=1.7','FreeCamSpringDamping=0.0','IgnoreSpringDistance=3000.0','FOV=55.0','ZoomIncrement=25.0','MinZoom=30.0','MaxZoom=70.0','ZoomInterpTime=3.0','fMinAutoZoomDistance=0.0','fMaxAutoZoomDistance=900.0','fMinAutoZoomFOVAngle=35.0','fMaxAutoZoomFOVAngle=50.0','fAutoZoomInSpeed=5','fAutoZoomOutSpeed=15.0','fAutoZoomInLockOutTime=2.0','fAutoZoomOutLockOutTime=2.0','fAutoZoomDetectionRadius=1400.0','bAutoZoomEnabled=false'], _
+	['[TgGame.TgCameraModule_SpectatorFreeCam]','ZoomIncrement=256','SpringAmount=10'], _
+	['[TgGame.TgControlModule_Spectator]','RotationLimit=65536','SpectatorStallZ=850.0','SpectatorMinStallZ=85.0','bIgnoreCameraHeightRestriction=false'], _
+	['[TgGame.TgControlModule_SpectatorFreeCam]','m_RotationAccelWeightPitch=5.0','m_RotationAccelWeightYaw=5.0','m_RotationDecelWeightPitch=5.0','m_RotationDecelWeightYaw=5.0'], _
+	['[TgGame.TgControlModule_TopDown]','SpectatorStallZ=850.0','SpectatorMinStallZ=350.0','DefaultStartHeight=700.0'], _
+	['[TgGame.TgControlModule_SpectatorOverview]','SpectatorStallZ=2000.0','SpectatorMinStallZ=750.0','DirectorModeSpectatorStallZ=2000.0','DirectorModeSpectatorMinStallZ=750.0'], _
+	['[TgGame.TgDemoRecSpectator]','m_fActionListenerRadius=900.0','m_fActionListenerHeight=1000.0','m_nActionListenerRatingThreshold=1','m_fAutoSlomoExpirationTime=0.75','m_nAutoSlomoSpeedIndex=1','m_nAutoSlomoNearbyPlayersNum=0','m_nSyncFrameThreshold=10','m_nSyncFrameCheckThreshold=20','m_nSyncAheadFrameThreshold=90','m_fAutoSlomoFrequency=30.0','m_bReceiveCamSync=false'], _
+	['[TgGame.TgBattleCheatManager]','DebugCameraControllerClassName=TgGame.TgDebugCameraController'], _
+	['[PlatformCommon.PComPerformanceCaptureBase]','FOV=80.0','StatsToCollect=STAT_MeshDrawCalls','StatsToCollect=STAT_StaticDrawListMeshDrawCalls','StatsToCollect=STAT_InitViewsTime','StatsToCollect=STAT_TotalSceneRenderingTime','StatsToCollect=STAT_VirtualAllocSize','StatsToCollect=STAT_StaticMeshTotalMemory','StatsToCollect=STAT_StaticMeshVertexMemory','StatsToCollect=STAT_StaticMeshIndexMemory','StatsToCollect=STAT_AnimationMemory','StatsToCollect=STAT_PixelShaderMemory','StatsToCollect=STAT_VertexShaderMemory','StatsToCollect=STAT_VertexLightingAndShadowingMemory','StatsToCollect=STAT_TextureMemory','StatsToCollect=STAT_TextureLightmapMemory','StatsToCollect=STAT_DepthDrawTime','StatsToCollect=STAT_BasePassDrawTime','StatsToCollect=STAT_TranslucencyDrawTime','StatsToCollect=STAT_ProjectedShadowDrawTime','StatsToCollect=STAT_GameEngineTick','StatsToCollect=STAT_TickTime','StatsToCollect=STAT_ParticleManagerUpdateData','StatsToCollect=STAT_UnrealScriptTime','StatsToCollect=STAT_KismetTime','StatsToCollect=STAT_RedrawViewports','StatsToCollect=STAT_AudioMemory','StatsToCollect=STAT_SkeletalMeshVertexMemory','StatsToCollect=STAT_SkeletalMeshIndexMemory','StatsToCollect=STAT_ProcessedPrimitives','StatsToCollect=STAT_DynamicPathMeshDrawCalls','Profiles=(ProfileName="Min0", ScalabilityBucket=1, ResolutionX=1366, ResolutionY=768)','Profiles=(ProfileName="Min1", ScalabilityBucket=1, ResolutionX=1366, ResolutionY=768)','Profiles=(ProfileName="Med2", ScalabilityBucket=3, ResolutionX=1600, ResolutionY=900)','Profiles=(ProfileName="Med3", ScalabilityBucket=3, ResolutionX=1600, ResolutionY=900)','Profiles=(ProfileName="Med4", ScalabilityBucket=3, ResolutionX=1600, ResolutionY=900)','Profiles=(ProfileName="Max5", ScalabilityBucket=5, ResolutionX=1920, ResolutionY=1080)','Profiles=(ProfileName="Max6", ScalabilityBucket=5, ResolutionX=1920, ResolutionY=1200)','Profiles=(ProfileName="ConsoleDev")','Profiles=(ProfileName="SmiteDev")','Profiles=(ProfileName="Xbox")','Profiles=(ProfileName="Switch")'], _
+	['[PlatformCommon.PComMcts]','AllowDefaultMapGameSoftReload=true'], _
+	['[PlatformCommon.PComOpenBroadcaster]','FacebookAppId=958422817557131','FacebookApprovedDomain=www.smitegame.com'], _
+	['[PlatformCommon.PComTrayPopup]','MatchReadyInputLightingPreset=MatchReadyTrayPopup'], _
+	['[PlatformCommon.PComInputLightingEffect]','bAllowLogitechSdk=true','Presets=(PresetName="HiRezLogo", Curve=(Points=((InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=2.0, OutVal=(R=0.0, G=0.08, B=0.39), InterpMode=CIM_CurveAuto), (InVal=2.35, OutVal=(R=1.0, G=1.0, B=1.0), InterpMode=CIM_CurveAuto), (InVal=3.3333, OutVal=(R=0.235, G=0.56, B=1.0), InterpMode=CIM_CurveAuto), (InVal=4.5, OutVal=(R=0.235, G=0.56, B=1.0), InterpMode=CIM_CurveAuto), (InVal=4.7, OutVal=(R=0.0, G=0.023, B=0.302), InterpMode=CIM_CurveAuto), (InVal=6.04, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=6.25, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto))))','Presets=(PresetName="EnabledInputEffects", BlendInTime=0.066, LoopCount=5, Curve=(Points=( (InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=1.0, G=1.0, B=1.0)), (InVal=0.3, OutVal=(R=1.0, G=1.0, B=1.0)) )))','Presets=(PresetName="MatchReadyTrayPopup", BlendInTime=0.066, LoopCount=5, Curve=(Points=( (InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=1.0, G=1.0, B=1.0)), (InVal=0.3, OutVal=(R=1.0, G=1.0, B=1.0)) )))','Presets=(PresetName="LevelUpPreset", BlendInTime=0.066, Curve=(Points=((InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.125, OutVal=(R=0.337, G=0.447, B=1.0), InterpMode=CIM_CurveAuto), (InVal=0.25, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.375, OutVal=(R=0.337, G=0.447, B=1.0), InterpMode=CIM_CurveAuto), (InVal=0.5, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.625, OutVal=(R=0.337, G=0.447, B=1.0), InterpMode=CIM_CurveAuto), (InVal=0.75, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.875, OutVal=(R=0.337, G=0.447, B=1.0), InterpMode=CIM_CurveAuto), (InVal=1.0, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto))))','Presets=(PresetName="RespawnTimerTick", BlendInTime=0.033, Curve=(Points=((InVal=0.0, OutVal=(R=1.0, G=1.0, B=1.0)), (InVal=1.5, OutVal=(R=0.0, G=0.0, B=0.0)))))','Presets=(PresetName="Death", Priority=2, BlendInTime=0.033, Curve=(Points=((InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.033, OutVal=(R=1.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.7, OutVal=(R=1.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=1.5, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto) )))','Presets=(PresetName="MatchTimerTickGreen", BlendInTime=0.033, Curve=(Points=((InVal=0.0, OutVal=(R=0.03, G=0.2, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.033, OutVal=(R=0.13, G=0.80, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.6, OutVal=(R=0.03, G=0.2, B=0.0), InterpMode=CIM_CurveAuto), (InVal=1.5, OutVal=(R=0.03, G=0.2, B=0.0), InterpMode=CIM_CurveAuto))))','Presets=(PresetName="MatchTimerTickYellow", BlendInTime=0.033, Curve=(Points=((InVal=0.0, OutVal=(R=0.25, G=0.195, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.033, OutVal=(R=1.0, G=0.78, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.6, OutVal=(R=0.25, G=0.195, B=0.0), InterpMode=CIM_CurveAuto), (InVal=1.5, OutVal=(R=0.25, G=0.195, B=0.0), InterpMode=CIM_CurveAuto))))','Presets=(PresetName="MatchTimerTickRed", BlendInTime=0.033, Curve=(Points=((InVal=0.0, OutVal=(R=0.25, G=0.025, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.033, OutVal=(R=1.0, G=0.11, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.6, OutVal=(R=0.25, G=0.025, B=0.0), InterpMode=CIM_CurveAuto), (InVal=1.5, OutVal=(R=0.25, G=0.025, B=0.0), InterpMode=CIM_CurveAuto))))', _
+	'Presets=(PresetName="TeamGoldFuryKill", Priority=1, BlendInTime=0.066, LoopCount=4, Curve=(Points=( (InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=1.0, G=0.78, B=0.0)), (InVal=0.3, OutVal=(R=1.0, G=0.78, B=0.0) ))))','Presets=(PresetName="TeamFireGiantKill", Priority=1, BlendInTime=0.066, LoopCount=2, Curve=(Points=( (InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=1.0, G=0.27, B=0.0)), (InVal=0.3, OutVal=(R=1.0, G=0.27, B=0.0)), (InVal=0.3, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.45, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.45, OutVal=(R=1.0, G=0.78, B=0.0)), (InVal=0.6, OutVal=(R=1.0, G=0.78, B=0.0)), (InVal=0.6, OutVal=(R=0.0, G=0.0, B=0.0)) )))','Presets=(PresetName="TeamTowerKill", Priority=1, BlendInTime=0.066, LoopCount=2, Curve=(Points=( (InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.2, G=0.26, B=0.58)), (InVal=0.3, OutVal=(R=0.2, G=0.26, B=0.58)), (InVal=0.3, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.45, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.45, OutVal=(R=1.0, G=1.0, B=1.0)), (InVal=0.6, OutVal=(R=1.0, G=1.0, B=1.0)), (InVal=0.6, OutVal=(R=0.0, G=0.0, B=0.0)) )))'], _
+	['[PlatformCommon.PComRepInfo_Game]','m_MusicThemePlayerClassName=TgGame.TgMusicThemePlayer'], _
+	['[PlatformCommon.PComConfig]','Setting=Example.EnableReferral=True'], _
+	['[TgClientBase.TgClientHUD]','MainSwfMovie=TgClient.TgGameMoviePlayer','MainSwfPath=MenuManager.MenuManager'], _
+	['[GlobalGameVars]','nConfigurableMeshID=0'], _
+	['[IniVersion]','0=1539354467.000000','1=1627406457.000000'], _
+	['[TgClientBase.TgGameLaunchBase]','LoginName=','LoginPwd=','SaveLoginName=True'], _
+	['[TgClient.TgGameLaunch]','bIsStandbyCheckingEnabled=False','GoalScore=0','MaxLives=0','TimeLimit=0','StandbyRxCheatTime=0.000000','StandbyTxCheatTime=0.000000','BadPingThreshold=0','PercentMissingForRxStandby=0.000000','PercentMissingForTxStandby=0.000000','PercentForBadPing=0.000000','JoinInProgressStandbyWaitTime=0.000000','GameInfoClassAliases=(ShortName="Testing",GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases=(ShortName="Conquest",GameClassName="TgGame.TgGame_Battle_Conquest")','GameInfoClassAliases=(ShortName="Arena",GameClassName="TgGame.TgGame_Arena")','GameInfoClassAliases=(ShortName="Assault",GameClassName="TgGame.TgGame_Battle_Aram")','GameInfoClassAliases=(ShortName="Siege",GameClassName="TgGame.TgGame_Battle_Conquest_Erez")','GameInfoClassAliases=(ShortName="Domination",GameClassName="TgGame.TgGame_Domination")','GameInfoClassAliases=(ShortName="Joust",GameClassName="TgGame.TgGame_Battle_Joust")','GameInfoClassAliases=(ShortName="ArenaEscort",GameClassName="TgGame.TgGame_Arena_Escort")','GameInfoClassAliases=(ShortName="ArenaCoop",GameClassName="TgGame.TgGame_Arena_Practice")','GameInfoClassAliases=(ShortName="ArenaEscortCoop",GameClassName="TgGame.TgGame_Arena_Escort_Practice")','GameInfoClassAliases=(ShortName="JoustCoop",GameClassName="TgGame.TgGame_Battle_Joust_Practice")','GameInfoClassAliases=(ShortName="ConquestCoop",GameClassName="TgGame.TgGame_Battle_Conquest_Practice")','GameInfoClassAliases=(ShortName="ArenaPractice",GameClassName="TgGame.TgGame_Arena_Practice")','GameInfoClassAliases=(ShortName="ArenaEscortPractice",GameClassName="TgGame.TgGame_Arena_Escort_Practice")','GameInfoClassAliases=(ShortName="JoustPractice",GameClassName="TgGame.TgGame_Battle_Joust_Practice")','GameInfoClassAliases=(ShortName="ConquestPractice",GameClassName="TgGame.TgGame_Battle_Conquest_Practice")','GameInfoClassAliases=(ShortName="Battle",GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases=(ShortName="Basic",GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases=(ShortName="Clash",GameClassName="TgGame.TgGame_Battle_Clash")','GameInfoClassAliases=(ShortName="ClashCoop",GameClassName="TgGame.TgGame_Battle_Clash_Practice")','GameInfoClassAliases=(ShortName="AssaultCoop",GameClassName="TgGame.TgGame_Battle_Aram_Practice")','GameInfoClassAliases=(ShortName="Racer",GameClassName="TgGame.TgGame_Battle_Racer")','GameInfoClassAliases=(ShortName="MMO",GameClassName="TgGame.TgGame_Battle_Adventure")','DefaultGameType=','AnimTreePoolSize=0'''] _
 ]
 
 Global Const $TextureQualityHive[9][8][4] = _
@@ -1384,7 +1457,7 @@ Func DrawMainGUI()
 
 	;-MenuRender
 	;------------------------------------------------------------------------------
-		Global $MainGUIMenuBackground = GUICtrlCreatePic($sEmpty,0,36,50,$MinHeight-204)
+		Global $MainGUIMenuBackground = GUICtrlCreatePic($sEmpty,0,36,50,$MinHeight - 164)
 			LoadImageResource($MainGUIMenuBackground,$MainResourcePath & "MenuBG.jpg","MenuBG")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetState(-1,$GUI_DISABLE)
@@ -1392,6 +1465,10 @@ Func DrawMainGUI()
 		Local $Obj = CreateMenuObject("Home")
 		Global $HomeIconHover = $Obj[0], $HomeIcon = $Obj[1], $HomeIconSelector = $Obj[2]
 			GUICtrlSetState($HomeIconSelector,$GUI_SHOW)
+
+		Local $Obj = CreateMenuObject("Fixes")
+		Global $FixesIconHover = $Obj[0], $FixesIcon = $Obj[1], $FixesIconSelector = $Obj[2]
+			GUICtrlSetState($FixesIconSelector,$GUI_HIDE)
 
 		Local $Obj = CreateMenuObject("RestoreConfigs")
 		Global $RCIconHover = $Obj[0], $RCIcon = $Obj[1], $RCIconSelector = $Obj[2]
@@ -1895,6 +1972,34 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		GUICtrlSetData($MainGUIHomeAdvancedInputScreenResScale,GUICtrlRead($MainGUIHomeAdvancedSliderScreenResScale)&"%") ;- Set the initial percentage.
 
 
+	;-- Fixes
+		Global $MainGUIFixesLabelMaxFPS = GUICtrlCreateLabelTransparentBG("Desired FPS (Uncap)",80,64,200,13)
+			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+		Global $MainGUIFixesInputMaxFPS = GUICtrlCreateInput("150",80,78,190,21) ;- Defaults to 150 FPS since it should not store settings in the fixes tab
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+			GUICtrlSetLimit(-1,3) ;- Going higher than 999 FPS is not recommended. Ever.
+
+		Global $MainGUIFixesLabelAudioFix = GUICtrlCreateLabelTransparentBG("Audio Channels",80,104,200,13)
+			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+		Global $MainGUIFixesComboAudioFix = GUICtrlCreateComboNoTheme("32",80,118,190,21,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
+			GUICtrlSetData(-1,"64|128|256|512")
+			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+
+		Global $MainGUIFixesCheckboxDisableJump = GUICtrlCreateCheckboxTransparentBG(80,154,15,21)
+			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+		Global $MainGUIFixesLabelDisableJump = GUICtrlCreateLabelTransparentBG("Disable Jumping",98,158,140,13)
+			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+
+		Global $MainGUIFixesButtonInstallLegacy = GUICtrlCreateButton("Install Legacy Launcher",541,401,150,35)
+			GUICtrlSetOnEvent($MainGUIFixesButtonInstallLegacy,"ButtonPressLogic")
+			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+
+		Global $MainGUIFixesButtonApply = GUICtrlCreateButton("Apply Fixes",696,401,100,35)
+			GUICtrlSetOnEvent($MainGUIFixesButtonApply,"ButtonPressLogic")
+			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+
+
 	;-- Restore Configurations
 		Global $MainGUIRestoreConfigurationsListFiles = GUICtrlCreateList($sEmpty,57,43,746,239,BitOR($WS_BORDER,$WS_VSCROLL,$LBS_NOINTEGRALHEIGHT))
 			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
@@ -1969,11 +2074,11 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIChangelogRichEdit = GUICtrlCreateEdit($ChangelogText,55,41,$MinWidth-60,$MinHeight-46,BitOr($ES_READONLY,$WS_VSCROLL))
 			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM)
-		Global $MainGUIChangelogButtonViewOnlineBG = GUICtrlCreatePic($sEmpty,2,344,48,40)
+		Global $MainGUIChangelogButtonViewOnlineBG = GUICtrlCreatePic($sEmpty,2,365,48,40)
 			LoadImageResource($MainGUIChangelogButtonViewOnlineBG,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
 			GUICtrlSetOnEvent($MainGUIChangelogButtonViewOnlineBG,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIChangelogButtonViewOnline = GUICtrlCreatePic($sEmpty,12,349,30,30)
+		Global $MainGUIChangelogButtonViewOnline = GUICtrlCreatePic($sEmpty,12,370,30,30)
 			LoadImageResource($MainGUIChangelogButtonViewOnline,$MainResourcePath & "ChangelogIconInActive.jpg","ChangelogIconInActive")
 			GUICtrlSetOnEvent($MainGUIChangelogButtonViewOnline,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -2109,9 +2214,14 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIDebugLabelSystemSettings = GUICtrlCreateLabelTransparentBG("SystemSettings: "&$DebugSystemSettingsPath,55,80,750,35)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
+		Local $DebugGameSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathGame")
+		If @Error Then $DebugGameSettingsPath = "Not yet defined"
+		Global $MainGUIDebugLabelGameSettings = GUICtrlCreateLabelTransparentBG("GameSettings: "&$DebugGameSettingsPath,55,120,750,35)
+			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+
 		Local $DebugConfigBackupPath = $ConfigBackupPath
 		If $ConfigBackupPath = $sEmpty Then $DebugConfigBackupPath = "Not yet defined"
-		Global $MainGUIDebugLabelConfigBackupPath = GUICtrlCreateLabelTransparentBG("Backup Path: "&$DebugConfigBackupPath,55,120,750,35)
+		Global $MainGUIDebugLabelConfigBackupPath = GUICtrlCreateLabelTransparentBG("Backup Path: "&$DebugConfigBackupPath,55,160,750,35)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
 		Global $MainGUIDebugButtonResetConfigPaths = GUICtrlCreateButton("Reset Configuration Paths",626,401,170,35)
@@ -2146,6 +2256,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		UnDrawMainGUIHomeConfigDiscovery()
 	EndIf
 
+	UnDrawMainGUIFixes(True)
 	UnDrawMainGUIRestoreConfigs()
 	UnDrawMainGUIDonate()
 	UnDrawMainGUIChangelog()
@@ -2165,6 +2276,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIMenuHoverText = GUICtrlCreateLabelTransparentBG($sEmpty,-90,-42,90,42)
 			GUICtrlSetFont(-1,25,500,0,$MenuFontName)
 			GUICtrlSetColor(-1,0x00)
+
 EndFunc
 
 #Region ;- Draw / UnDraw Functions (Used to 'unhide' elements and switch GUI states)
@@ -2200,6 +2312,11 @@ EndFunc
 		GUICtrlSetState($MainGUIHomeLabelModeAdvanced,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeButtonUseMaxPerformance,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeButtonRestoreDefaults,$GUI_SHOW)
+
+		;- Undo the position change that the Fixes tab does
+;~ 		GUICtrlSetPos($MainGUIHomeCheckboxDisplayHints,160,384)
+;~ 		GUICtrlSetPos($MainGUIHomeLabelDisplayHints,178,384)
+		;- ^ We can't actually do that since that causes issues when the GUI is resized! Damn.
 
 		GUICtrlSetState($MainGUIHomeCheckboxDisplayHints,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeLabelDisplayHints,$GUI_SHOW)
@@ -2510,6 +2627,49 @@ EndFunc
 		GUICtrlSetState($MainGUIHomeAdvancedLabelDynamicShadows,$GUI_HIDE)
 	EndFunc
 
+	Func DrawMainGUIFixes()
+		GUICtrlSetState($MainGUIFixesLabelMaxFPS,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesInputMaxFPS,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesLabelAudioFix,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesComboAudioFix,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesCheckboxDisableJump,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesLabelDisableJump,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_SHOW)
+
+
+		;- We use hints in these tabs, so force them to show
+
+		;- Move the Show help checkbox over the Apply Fixes button since floating stuff is unprofessional!
+;~ 		GUICtrlSetPos($MainGUIHomeCheckboxDisplayHints,697,384)
+;~ 		GUICtrlSetPos($MainGUIHomeLabelDisplayHints,715,384)
+		;- ^ We can't actually do that since that causes issues when the GUI is resized! Damn.
+
+		GUICtrlSetState($MainGUIHomeCheckboxDisplayHints,$GUI_SHOW)
+		GUICtrlSetState($MainGUIHomeLabelDisplayHints,$GUI_SHOW)
+		GUICtrlSetState($MainGUIHomeHelpBackground,$GUI_SHOW)
+		GUICtrlSetState($MainGUIHomeHelpImage,$GUI_SHOW)
+	EndFunc
+	Func UnDrawMainGUIFixes($bBool = False)
+		GUICtrlSetState($MainGUIFixesLabelMaxFPS,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesInputMaxFPS,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesLabelAudioFix,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesComboAudioFix,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesCheckboxDisableJump,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesLabelDisableJump,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_HIDE)
+
+
+		;- We use hints in these tabs, so force them to show
+		If not $bBool Then
+			GUICtrlSetState($MainGUIHomeCheckboxDisplayHints,$GUI_HIDE)
+			GUICtrlSetState($MainGUIHomeLabelDisplayHints,$GUI_HIDE)
+			GUICtrlSetState($MainGUIHomeHelpBackground,$GUI_HIDE)
+			GUICtrlSetState($MainGUIHomeHelpImage,$GUI_HIDE)
+		EndIf
+	EndFunc
+
 	Func DrawMainGUIRestoreConfigs()
 		GUICtrlSetState($MainGUIRestoreConfigurationsListFiles,$GUI_SHOW)
 		GUICtrlSetState($MainGUIRestoreConfigurationsLabelBackupPath,$GUI_SHOW)
@@ -2609,6 +2769,7 @@ EndFunc
 	Func DrawMainGUIDebug()
 		GUICtrlSetState($MainGUIDebugLabelEngineSettings,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugLabelSystemSettings,$GUI_SHOW)
+		GUICtrlSetState($MainGUIDebugLabelGameSettings,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugLabelConfigBackupPath,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugEditSystemInfo,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugButtonResetConfigPaths,$GUI_SHOW)
@@ -2623,6 +2784,7 @@ EndFunc
 	Func UnDrawMainGUIDebug()
 		GUICtrlSetState($MainGUIDebugLabelEngineSettings,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugLabelSystemSettings,$GUI_HIDE)
+		GUICtrlSetState($MainGUIDebugLabelGameSettings,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugLabelConfigBackupPath,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugEditSystemInfo,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugButtonResetConfigPaths,$GUI_HIDE)
@@ -2652,6 +2814,9 @@ EndFunc
 			GUICtrlSetState($HomeIconSelector,$GUI_HIDE)
 			UnDrawMainGUIHomeConfigDiscovery()
 			UnDrawMainGUIHome()
+		ElseIf $LastMenu = "Fixes" Then
+			GUICtrlSetState($FixesIconSelector,$GUI_HIDE)
+			UnDrawMainGUIFixes()
 		ElseIf $LastMenu = "RestoreConfigs" Then
 			GUICtrlSetState($RCIconSelector,$GUI_HIDE)
 			UnDrawMainGUIRestoreConfigs()
@@ -2679,6 +2844,11 @@ EndFunc
 				EndIf
 
 				$LastMenu = "Home"
+			Case "Fixes"
+				GUICtrlSetState($FixesIconSelector,$GUI_SHOW)
+				DrawMainGUIFixes()
+
+				$LastMenu = "Fixes"
 
 			Case "RestoreConfigs"
 				GUICtrlSetState($RCIconSelector,$GUI_SHOW)
@@ -2802,11 +2972,12 @@ EndFunc
 		Return $Ret
 	EndFunc
 
-	Func VerifyAndStoreConfigPath($State,$PathSettings,$PathSystemSettings) ;- Internal function used inside of the SetupPressLogic function. It verifies the paths supplied and mostly exists to reduce spaghetti code.
-		If FileExists($PathSettings) and FileExists($PathSystemSettings) Then
+	Func VerifyAndStoreConfigPath($State,$PathSettings,$PathSystemSettings,$PathGameSettings) ;- Internal function used inside of the SetupPressLogic function. It verifies the paths supplied and mostly exists to reduce spaghetti code.
+		If FileExists($PathSettings) and FileExists($PathSystemSettings) and FileExists($PathGameSettings) Then
 			RegWrite("HKCU\Software\SMITE Optimizer\","ConfigProgramState","REG_SZ",$State)
 			RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ",$PathSettings)
 			RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathSystem","REG_SZ",$PathSystemSettings)
+			RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathGame","REG_SZ",$PathGameSettings)
 
 			Return True
 		EndIf
@@ -2821,26 +2992,46 @@ EndFunc
 			Case $MainGUIHomePicBtnSteam ;- Steam button.
 
 				;- Attempt to find the files at the prioritized common location first.
-				$Found = VerifyAndStoreConfigPath("Steam",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+				$Found = VerifyAndStoreConfigPath("Steam", _
+					@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini", _
+					@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini", _
+					@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini")
+
 				If not $Found Then
 
 					;- Yes, OneDrive tends to mess with these Folders on Windows 10 and causes issues!
-					$Found = VerifyAndStoreConfigPath("Steam","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+					$Found = VerifyAndStoreConfigPath("Steam", _
+						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini", _
+						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini", _
+						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini")
+
 					If not $Found Then
 
 						;- Attempt to use the Internal configuration files.
-						$Found = VerifyAndStoreConfigPath("Steam",RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultEngine.ini",RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultSystemSettings.ini")
+						$Found = VerifyAndStoreConfigPath("Steam", _
+							RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultEngine.ini", _
+							RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultSystemSettings.ini", _
+							RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultGame.ini") _
+
 						If not $Found Then DisplayErrorMessage("Could not find Configuration files for a SMITE Steam installation. Perhaps it was not installed through Steam?")
 					EndIf
 				EndIf
 			Case $MainGUIHomePicBtnEGS ;- Epic Games Store button.
 
 				;- Attempt to find the files at the prioritized common location first.
-				$Found = VerifyAndStoreConfigPath("Epic Games Store",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+				$Found = VerifyAndStoreConfigPath("Epic Games Store", _
+					@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini", _
+					@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini", _
+					@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini")
+
 				If not $Found Then
 
 					;- Yes, OneDrive tends to mess with these Folders on Windows 10 and causes issues!
-					$Found = VerifyAndStoreConfigPath("Epic Games Store","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+					$Found = VerifyAndStoreConfigPath("Epic Games Store", _
+						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini", _
+						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini", _
+						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini")
+
 					If not $Found Then
 
 						;- Attempt to use the Internal configuration files.
@@ -2874,7 +3065,11 @@ EndFunc
 							Next
 
 							;- Check if the SMITE Config Folder exists.
-							If FileExists($EpicProgramData) Then $Found = VerifyAndStoreConfigPath("Epic Games Store",$EpicProgramData&"DefaultEngine.ini",$EpicProgramData&"DefaultSystemSettings.ini")
+							If FileExists($EpicProgramData) Then _
+								$Found = VerifyAndStoreConfigPath("Epic Games Store", _
+									$EpicProgramData&"DefaultEngine.ini", _
+									$EpicProgramData&"DefaultSystemSettings.ini", _
+									$EpicProgramData&"DefaultGame.ini")
 
 						;- ---------- ---------- ---------- ---------- ----------
 
@@ -2884,11 +3079,19 @@ EndFunc
 			Case $MainGUIHomePicBtnLegacy ;- Legacy button.
 
 				;- Attempt to find the files at the prioritized common location first.
-				$Found = VerifyAndStoreConfigPath("Legacy",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini",@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+				$Found = VerifyAndStoreConfigPath("Legacy", _
+					@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini", _
+					@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini", _
+					@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini")
+
 				If not $Found Then
 
 					;- Yes, OneDrive tends to mess with these Folders on Windows 10 and causes issues!
-					$Found = VerifyAndStoreConfigPath("Legacy","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini","C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini")
+					$Found = VerifyAndStoreConfigPath("Legacy", _
+						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini", _
+						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini", _
+						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini")
+
 					If not $Found Then DisplayErrorMessage("Could not find Configuration files for a Legacy installation. Perhaps you do not have the old and unavailable launcher?")
 				EndIf
 			Case $MainGUIHomeButtonMoreOptions ;- More Options button.
@@ -3094,7 +3297,7 @@ EndFunc
 
 												$ScanState = True
 											ElseIf not ProcessExists($IndexerPID) Then
-												GUICtrlSetPos($GUIMoreOptionsLabelScanState,35,124,400,50)
+												GUICtrlSetPos($GUIMoreOptionsLabelScanState,11,124,400,50)
 												GUICtrlSetData($GUIMoreOptionsLabelScanState,"Processing index of drive "&$FixedDrives[$DriveIndex]&":\")
 
 												If not FileExists(@TempDir&"\SO_Index.txt") Then
@@ -3120,21 +3323,25 @@ EndFunc
 
 												Local $SettingsEnginePath
 												Local $SettingsSystemPath
+												Local $SettingsGamePath
 
 												For $I = 0 To uBound($File) - 1 Step 1
 													If StringRight($File[$I],16) = "BattleEngine.ini" or StringRight($File[$I],17) = "DefaultEngine.ini" Then
 														$SettingsEnginePath = $File[$I]
 													ElseIf StringRight($File[$I],24) = "BattleSystemSettings.ini" or StringRight($File[$I],25) = "DefaultSystemSettings.ini" Then
 														$SettingsSystemPath = $File[$I]
+													ElseIf StringRight($File[$I],14) = "BattleGame.ini" or StringRight($File[$I],15) = "DefaultGame.ini" Then
+														$SettingsGamePath = $File[$I]
 													EndIf
 
-													If $SettingsEnginePath <> $sEmpty and $SettingsSystemPath <> $sEmpty Then ExitLoop
+													If $SettingsEnginePath <> $sEmpty and $SettingsSystemPath <> $sEmpty and $SettingsGamePath <> $sEmpty Then ExitLoop
 												Next
 
-												If $SettingsEnginePath <> $sEmpty and $SettingsSystemPath <> $sEmpty Then ;- The automatic search has found both files so we finish up and continue.
+												If $SettingsEnginePath <> $sEmpty and $SettingsSystemPath <> $sEmpty and $SettingsGamePath <> $sEmpty Then ;- The automatic search has found both files so we finish up and continue.
 													RegWrite("HKCU\Software\SMITE Optimizer\","ConfigProgramState","REG_SZ","Custom Files")
 													RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ",$SettingsEnginePath)
 													RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathSystem","REG_SZ",$SettingsSystemPath)
+													RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathGame","REG_SZ",$SettingsGamePath)
 
 													If FileExists(@TempDir & "\SO_Index.bat") Then FileDelete(@TempDir & "\SO_Index.bat")
 													If FileExists(@TempDir & "\SO_Index.txt") Then FileDelete(@TempDir & "\SO_Index.txt")
@@ -3178,15 +3385,26 @@ EndFunc
 														LoadImageResource($GUIMoreOptionsMSearch,$MainResourcePath & "MSearchBtnInActive.jpg","MSearchBtnInActive")
 														$MSearchState = False
 														DisplayErrorMessage("Invalid file selected!",$GUIMoreOptions)
-													Else ;- When both files were accepted we close the MoreOptionsGUI and continue!
-														$Found = True
+													Else
+														Local $FileGameSettings = FileOpenDialog("Please Select BattleGame.ini or DefaultGame.ini",@DesktopDir,"INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST),"BattleGame.ini")
 
-														RegWrite("HKCU\Software\SMITE Optimizer\","ConfigProgramState","REG_SZ","Custom Files")
-														RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ",$FileSettings)
-														RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathSystem","REG_SZ",$FileSystemSettings)
+														If @Error = 0 Then ;- Check whether the user picked the right game settings file.
+															If StringLower(StringRight($FileGameSettings,14)) <> "battlegame.ini" and StringLower(StringRight($FileGameSettings,15)) <> "defaultgame.ini" Then
+																LoadImageResource($GUIMoreOptionsMSearch,$MainResourcePath & "MSearchBtnInActive.jpg","MSearchBtnInActive")
+																$MSearchState = False
+																DisplayErrorMessage("Invalid file selected!",$GUIMoreOptions)
+															Else ;- When both files were accepted we close the MoreOptionsGUI and continue!
+																$Found = True
 
-														ReturnToMainGUI()
-														ExitLoop
+																RegWrite("HKCU\Software\SMITE Optimizer\","ConfigProgramState","REG_SZ","Custom Files")
+																RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ",$FileSettings)
+																RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathSystem","REG_SZ",$FileSystemSettings)
+																RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathGame","REG_SZ",$FileGameSettings)
+
+																ReturnToMainGUI()
+																ExitLoop
+															EndIf
+														EndIf
 													EndIf
 												EndIf
 											EndIf
@@ -3220,6 +3438,7 @@ EndFunc
 		$ProgramState = RegRead("HKCU\Software\SMITE Optimizer\","ConfigProgramState")
 		$SettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 		$SystemSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
+		$GameSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathGame")
 
 		Local $Text = "Discovery"
 		If $ProgramState <> $sEmpty Then $Text = $ProgramState
@@ -3238,6 +3457,7 @@ EndFunc
 		;- Update debug menu
 		GUICtrlSetData($MainGUIDebugLabelEngineSettings,"EngineSettings: "&$SettingsPath)
 		GUICtrlSetData($MainGUIDebugLabelSystemSettings,"SystemSettings: "&$SystemSettingsPath)
+		GUICtrlSetData($MainGUIDebugLabelGameSettings,"GameSettings: "&$GameSettingsPath)
 
 		UnDrawMainGUIHomeConfigDiscovery()
 		DrawMainGUIHome()
@@ -3270,33 +3490,39 @@ EndFunc
 						ToggleMenuState("Home")
 					EndIf
 
-				Case $RCIcon, $RCIconHover
+				Case $FixesIcon, $FixesIconHover
 					If $MenuSelected <> 2 Then
 						$MenuSelected = 2
+						ToggleMenuState("Fixes")
+					EndIf
+
+				Case $RCIcon, $RCIconHover
+					If $MenuSelected <> 3 Then
+						$MenuSelected = 3
 						ToggleMenuState("RestoreConfigs")
 					EndIf
 
 				Case $DonateIcon, $DonateIconHover
-					If $MenuSelected <> 3 Then
-						$MenuSelected = 3
+					If $MenuSelected <> 4 Then
+						$MenuSelected = 4
 						ToggleMenuState("Donate")
 					EndIf
 
 				Case $ChangelogIcon, $ChangelogIconHover
-					If $MenuSelected <> 4 Then
-						$MenuSelected = 4
+					If $MenuSelected <> 5 Then
+						$MenuSelected = 5
 						ToggleMenuState("Changelog")
 					EndIf
 
 				Case $CopyrightIcon, $CopyrightIconHover
-					If $MenuSelected <> 5 Then
-						$MenuSelected = 5
+					If $MenuSelected <> 6 Then
+						$MenuSelected = 6
 						ToggleMenuState("Copyright")
 					EndIf
 
 				Case $DebugIcon, $DebugIconHover
-					If $MenuSelected <> 6 Then
-						$MenuSelected = 6
+					If $MenuSelected <> 7 Then
+						$MenuSelected = 7
 						ToggleMenuState("Debug")
 					EndIf
 
@@ -3344,6 +3570,14 @@ EndFunc
 						WinMove($HoverInfoGUI,$sEmpty,-$ScrW*2,-$ScrH*2,0,0)
 						$HoverImageDrawn = False
 					EndIf
+
+
+			;- Fixes
+				Case $MainGUIFixesButtonInstallLegacy
+					Internal_InstallLegacyLauncher()
+
+				Case $MainGUIFixesButtonApply
+					Internal_ProcessRequest(True,True)
 
 
 			;- Restore Configuration
@@ -3399,8 +3633,8 @@ EndFunc
 					EndIf
 
 					If $MsgB = $IDYES Then
-						If not FileExists($ConfigBackupPath&$TPath&"\Engine.ini") or not FileExists($ConfigBackupPath&$TPath&"\SystemSettings.ini") Then
-							DisplayErrorMessage("Attempted to restore backup but it appears to be missing or corrupted! Code: 009")
+						If not FileExists($ConfigBackupPath&$TPath&"\Engine.ini") or not FileExists($ConfigBackupPath&$TPath&"\SystemSettings.ini") or not FileExists($ConfigBackupPath&$TPath&"\GameSettings.ini") Then
+							DisplayErrorMessage("Attempted to restore backup but it appears to be missing or is corrupted! Code: 009")
 							Internal_UpdateRestoreConfigList() ;- Refresh list to attempt removing missing backups. (Does not remove corrupted ones)
 						Else
 							Local $CopySucc = FileCopy($ConfigBackupPath&$TPath&"\Engine.ini",$SettingsPath,$FC_OVERWRITE)
@@ -3413,8 +3647,14 @@ EndFunc
 								If $CopySucc = 0 Then
 									DisplayErrorMessage("There was an error copying one of the files! Code: 002")
 								Else
-									DirRemove($ConfigBackupPath&$TPath,$DIR_REMOVE)
-									Internal_UpdateRestoreConfigList()
+									Local $CopySucc = FileCopy($ConfigBackupPath&$TPath&"\GameSettings.ini",$GameSettingsPath,$FC_OVERWRITE)
+
+									If $CopySucc = 0 Then
+										DisplayErrorMessage("There was an error copying one of the files! Code: 012")
+									Else
+										DirRemove($ConfigBackupPath&$TPath,$DIR_REMOVE)
+										Internal_UpdateRestoreConfigList()
+									EndIf
 								EndIf
 							EndIf
 						EndIf
@@ -3487,6 +3727,7 @@ EndFunc
 							;- Retrieve config files
 								FileCopy($SettingsPath,@TempDir & "\optimizerdebugdump\config\EngineSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH)) ;- BattleEngine.ini or DefaultEngine.in
 								FileCopy($SystemSettingsPath,@TempDir & "\optimizerdebugdump\config\SystemSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH)) ;- BattleSystemSettings.ini or DefaultSystemSettings.ini
+								FileCopy($GameSettingsPath,@TempDir & "\optimizerdebugdump\config\GameSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH)) ;- BattleGame.ini or DefaultGame.ini
 
 							;- Retrieve EAC logs
 								FileCopy("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat\*.log",@TempDir & "\optimizerdebugdump\logs\*.log",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
@@ -3514,9 +3755,13 @@ EndFunc
 					If $Msg == $IDYES Then
 						RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 						RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
+						RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathGame")
 						RegDelete("HKCU\Software\SMITE Optimizer\","ConfigProgramState")
+
 						$SettingsPath = $sEmpty
 						$SystemSettingsPath = $sEmpty
+						$GameSettingsPath = $sEmpty
+
 						$ProgramState = $sEmpty
 
 						Local $WinWidth = WinGetPos($MainGUI)[2]
@@ -3530,6 +3775,7 @@ EndFunc
 						;- Update debug menu
 						GUICtrlSetData($MainGUIDebugLabelEngineSettings,"EngineSettings: Not yet defined")
 						GUICtrlSetData($MainGUIDebugLabelSystemSettings,"SystemSettings: Not yet defined")
+						GUICtrlSetData($MainGUIDebugLabelGameSettings,"GameSettings: Not yet defined")
 
 						$MenuSelected = 1
 						ToggleMenuState("Home")
@@ -3866,7 +4112,7 @@ EndFunc
 		_ArrayDelete($FileList,0) ;- Remove the count.. smh.
 
 		For $I = uBound($FileList)-1 To 0 Step -1 ;- Make sure only valid folders are added to the list.
-			If not FileExists($ConfigBackupPath&$FileList[$I]&"/Engine.ini") or not FileExists($ConfigBackupPath&$FileList[$I]&"/Systemsettings.ini") Then
+			If not FileExists($ConfigBackupPath&$FileList[$I]&"/Engine.ini") or not FileExists($ConfigBackupPath&$FileList[$I]&"/SystemSettings.ini") or not FileExists($ConfigBackupPath&$FileList[$I]&"/GameSettings.ini") Then
 				_ArrayDelete($FileList,$I)
 			EndIf
 		Next
@@ -3893,6 +4139,9 @@ EndFunc
 		If $FileCopy = 0 Then Return False ;- If the file copy was unsuccessful, we need to abort immediately!
 
 		Local $FileCopy = FileCopy($SystemSettingsPath,$SubPath & "\SystemSettings.ini",1)
+		If $FileCopy = 0 Then Return False ;- If the file copy was unsuccessful, we need to abort immediately!
+
+		Local $FileCopy = FileCopy($GameSettingsPath,$SubPath & "\GameSettings.ini",1)
 		If $FileCopy = 0 Then Return False ;- If the file copy was unsuccessful, we need to abort immediately!
 
 		Internal_UpdateRestoreConfigList() ;- Update Restore configuration list.
@@ -4961,6 +5210,55 @@ EndFunc
 				$Array = Internal_ApplyKey($Array,"bUseLowQualMaterials=",not $UncompTextRead) ;- This is always the opposite of the Checkbox.
 
 			EndIf
+		ElseIf $State = "GameSettings" Then
+
+			;- Currently unused for the home tab
+
+		EndIf
+
+		Return $Array
+	EndFunc
+
+	Func Internal_ApplyFixes($Array,$State)
+		If $State = "EngineSettings" Then
+
+			;- FPS (Continued in SystemSettings)
+			;- ----- ----- ----- ----- -----
+
+				Local $RRead = GUICtrlRead($MainGUIFixesInputMaxFPS)
+				If $RRead < 30 Then $RRead = 30 ;- Restrict people from going lower than 30. I rather not have potatoes in my games.
+
+				$Array = Internal_ApplyKey($Array,"bSmoothFrameRate=","True")
+				$Array = Internal_ApplyKey($Array,"MinDesiredFrameRate=",$RRead/2)
+				$Array = Internal_ApplyKey($Array,"MinSmoothedFrameRate=",$RRead/2)
+				$Array = Internal_ApplyKey($Array,"MaxSmoothedFrameRate=",$RRead)
+
+			;- ----- ----- ----- ----- -----
+
+			;- Audio Channels
+				Local $RRead = GUICtrlRead($MainGUIFixesComboAudioFix)
+				If $RRead < 32 or $RRead > 512 Then ;- Better safe than sorry? Idk.
+					$RRead = 32
+				EndIf
+
+				$Array = Internal_ApplyKey($Array,"MaxChannels=",$RRead)
+
+		ElseIf $State = "SystemSettings" Then
+
+			Local $FPSRead = GUICtrlRead($MainGUIFixesInputMaxFPS) ;- FPS. (Also being applied in EngineSettings)
+			If $FPSRead < 30 Then $FPSRead = 30 ;- Restrict people from going lower than 30. I rather not have potatoes in my games.
+			$Array = Internal_ApplyKey($Array,"TargetFrameRate=",$FPSRead)
+
+		ElseIf $State = "GameSettings" Then
+
+			Local $bJumpState = GUICtrlRead($MainGUIFixesCheckboxDisableJump)
+
+			If $bJumpState = $GUI_CHECKED Then
+				$Array = Internal_ApplyKey($Array,"bJumpEnabled=","False")
+			Else
+				$Array = Internal_ApplyKey($Array,"bJumpEnabled=","True")
+			EndIf
+
 		EndIf
 
 		Return $Array
@@ -4976,7 +5274,7 @@ EndFunc
 		$ProcessingRequest = False
 	EndFunc
 
-	Func Internal_ProcessRequest($Bool = False) ;- Main settings processing handler function.
+	Func Internal_ProcessRequest($Bool = False,$FixesBool = False) ;- Main settings processing handler function.
 		If ProcessExists("smite.exe") Then ;- \/ \/ \/ \/ \/
 			DisplayErrorMessage("Cannot apply settings while SMITE is running!")
 			Return
@@ -5007,7 +5305,7 @@ EndFunc
 				GUICtrlSetFont(-1,20,500,Default,$MainFontName)
 				GUICtrlSetColor(-1,0xFFFFFF)
 
-			Local $ProcessUILabelCATC = GUICtrlCreateLabelTransparentBG("(Click to continue)",121,4,250,30)
+			Local $ProcessUILabelCATC = GUICtrlCreateLabelTransparentBG("(Click to continue)",105,4,250,30)
 				GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 				GUICtrlSetColor(-1,0xFFFFFF)
 				GUICtrlSetState(-1,$GUI_HIDE)
@@ -5058,8 +5356,10 @@ EndFunc
 			ElseIf $PState = 1 Then ;- Read files
 				Local $EngineFile ;- Lazyyy fixes, eh.
 				Local $SystemFile
+				Local $GameFile
 				Local $EngineFileFallback[1]
 				Local $SystemFileFallback[1]
+				Local $GameFileFallback[1]
 
 				_FileReadToArray($SettingsPath,$EngineFile,$FRTA_NOCOUNT)
 				If not IsArray($EngineFile) Then _
@@ -5069,6 +5369,10 @@ EndFunc
 				If not IsArray($SystemFile) Then _
 					$SystemFile = $SystemFileFallback
 
+				_FileReadToArray($GameSettingsPath,$GameFile,$FRTA_NOCOUNT)
+				If not IsArray($GameFile) Then _
+					$GameFile = $GameFileFallback
+
 				GUICtrlSetData($ProcessUIProgress,40)
 				GUICtrlSetColor($ProcessUILabelStatusRead,0x00FF00)
 				GUICtrlSetData($ProcessUILabelStatusRead,"[✓] Reading files")
@@ -5077,6 +5381,7 @@ EndFunc
 			ElseIf $PState = 2 Then ;- Verify Files
 				Local $EngineSF = Interal_VerifyAndFixConfiguration($EngineFile,$EngineSettingsClearHive)
 				Local $SystemSF = Interal_VerifyAndFixConfiguration($SystemFile,$SystemSettingsClearHive)
+				Local $GameSF = Interal_VerifyAndFixConfiguration($GameFile,$GameSettingsClearHive)
 
 				GUICtrlSetData($ProcessUIProgress,60)
 				GUICtrlSetColor($ProcessUILabelStatusVerify,0x00FF00)
@@ -5085,8 +5390,15 @@ EndFunc
 				$PState = $PState + 1
 			ElseIf $PState = 3 Then ;- Apply changes
 				If $Bool Then ;- Whether to apply settings or not
-					$EngineSF = Internal_ApplyChanges($EngineSF,"EngineSettings")
-					$SystemSF = Internal_ApplyChanges($SystemSF,"SystemSettings")
+					If Not $FixesBool Then ;- Home (Simple | Advanced)
+						$EngineSF = Internal_ApplyChanges($EngineSF,"EngineSettings")
+						$SystemSF = Internal_ApplyChanges($SystemSF,"SystemSettings")
+						$GameSF = Internal_ApplyChanges($GameSF,"GameSettings")
+					Else ;- Fixes
+						$EngineSF = Internal_ApplyFixes($EngineSF,"EngineSettings")
+						$SystemSF = Internal_ApplyFixes($SystemSF,"SystemSettings")
+						$GameSF = Internal_ApplyFixes($GameSF,"GameSettings")
+					EndIf
 
 					GUICtrlSetData($ProcessUIProgress,80)
 					GUICtrlSetColor($ProcessUILabelStatusApply,0x00FF00)
@@ -5116,6 +5428,13 @@ EndFunc
 					ExitLoop
 				EndIf
 
+				_FileWriteFromArray($GameSettingsPath,$GameSF)
+
+				If @Error <> 0 Then
+					Internal_ProcessHandleError("There was an error when writing the configuration files! Code: 013"&@CRLF&"If you are on a Virtual Machine then you're out of luck. Sorry!")
+					ExitLoop
+				EndIf
+
 				GUICtrlSetData($ProcessUIProgress,100)
 				GUICtrlSetColor($ProcessUILabelStatusSave,0x00FF00)
 				GUICtrlSetData($ProcessUILabelStatusSave,"[✓] Saving")
@@ -5142,6 +5461,131 @@ EndFunc
 				Sleep(100)
 			EndIf
 		WEnd
+	EndFunc
+
+	Func Internal_InstallLegacyLauncher()
+		If IsAdmin() == 0 Then ;- AutoIt can't elevate itself on request, possible workarounds are too crappy. Just let the user do it.
+			MsgBox($MB_OK,"Information","SMITE Optimizer needs Administrator privileges to install the Legacy Launcher.")
+
+			Return
+		EndIf
+
+		Local $bContinue = MsgBox($MB_YESNO,"Information","This feature is experimental and may not always work, especially not if there have been previous installations of the Legacy launcher on the system."&@CRLF&@CRLF&"Installation requires user input!"&@CRLF&@CRLF&"Would you like to continue?")
+
+		If $bContinue = $IDYES Then
+
+			;- Re-create the splash screen since we'll use that to display the download status
+
+			GUISwitch($MainGUI)
+				GUISetState(@SW_MINIMIZE)
+				GUISetState(@SW_DISABLE)
+
+			Global $SplashScreenGUI = GUICreate($ProgramName,600,125,-1,-1,$WS_POPUP)
+
+				Global $SplashScreenGUIAnimation
+
+				If @Compiled Then
+					$SplashScreenGUIAnimation = _GUICtrlCreateGIF(@AutoItExe,"RES;SO_LogoGIF",0,0,600,100)
+				Else
+					$SplashScreenGUIAnimation = _GUICtrlCreateGIF($MainResourcePath & "SO_Logo.gif","",0,0,600,100)
+				EndIf
+
+				Global $SplashScreenGUIProgress = GUiCtrlCreateProgress(0,100,600,25)
+					GUICtrlSetColor(-1, 0xFF0000) ;- Red progress bar!
+					DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",$sEmpty,"wstr",$sEmpty) ;- Remove Theme.
+
+				Global $SplashScreenGUILabelStatusBG = GUICtrlCreateLabelTransparentBG("Loading..",1,106,600,20,$SS_CENTER)
+				Global $SplashScreenGUILabelStatus = GUICtrlCreateLabelTransparentBG("Loading..",0,105,600,20,$SS_CENTER)
+					GUICtrlSetColor(-1,0xFFC3C3)
+
+			GUISetState(@SW_SHOWNOACTIVATE,$SplashScreenGUI) ;- Start showing the splash screen but don't take focus!
+
+			_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE)) ;- Bring window to front but don't take focus!!
+			_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_NOTOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE)) ;- Ugly hack.
+
+
+
+			;- Download the required files
+
+			SplashScreenWriteStatus(0,"Preparing to download the required Files..") ;- Update Splash-Screen.
+
+			Local $aInfo[3][4] = [ _ ;- Download info ( URL, Save Location, Error Code, Filename )
+				["https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer/master/SMITE/InstallHirezService.exe",@TempDir & "/HiService.exe","014","InstallHirezService.exe"], _
+				["https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer/master/SMITE/SetupPatcherFix.exe",@TempDir & "/HiFix.exe","015","SetupPatcherFix.exe"], _
+				["https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer/master/SMITE/UE3Redist_vs2012.exe",@TempDir & "/HiReq.exe","016","UE3Redist_vs2012.exe"] _
+			]
+
+			For $I = 0 To 2 Step 1
+				Local $NewFileSize = INetGetSize($aInfo[$I][0],$INET_FORCERELOAD)
+				Local $NewFile = INetGet($aInfo[$I][0],$aInfo[$I][1],BitOr($INET_FORCERELOAD,$INET_IGNORESSL),$INET_DOWNLOADBACKGROUND)
+
+				Local $LastPercent = 0
+				Local $Percent = 0
+
+				Do
+					Local $Bytes = INetGetInfo($NewFile,0)
+					$Percent = Floor((100 / $NewFileSize) * $Bytes)
+
+					If $Percent <> $LastPercent Then ;- Prevent annoying label flashing.
+						SplashScreenWriteStatus($Percent,"Downloading " & $aInfo[$I][3] & " ( "&$Percent&"% - " & Floor($Bytes/1024) & " / " & Floor($NewFileSize/1024) & " KB. )") ;- Update Splash-Screen.
+						$LastPercent = $Percent
+					EndIf
+
+					Sleep(10)
+				Until INetGetInfo($NewFile,2) ;- Repeat until the download finished.
+
+				INetClose($NewFile) ;- Close the handle
+
+				If not FileExists($aInfo[$I][1]) Then ;- When the file failed, display an error code
+					MsgBox($MB_OK,"Error","There was an unexpected error during the download process. Code: "&$aInfo[$I][2]&@CRLF&"GitHub may not be available right now.")
+					WinActivate($SplashScreenGUI) ;- Get focus again after closing messagebox.
+
+					ExitLoop
+				ElseIf $I = 2 Then ;- Everything downloaded, now install!
+					SplashScreenWriteStatus(100,"Installing.. InstallHirezService.exe (Requires User Input)")
+
+					;- Run everything
+					RunWait(@TempDir & "/HiService.exe")
+					SplashScreenWriteStatus(100,"Installing.. SetupPatcherFix.exe")
+					RunWait(@TempDir & "/HiFix.exe")
+					SplashScreenWriteStatus(100,"Installing.. UE3Redist_vs2012.exe (Requires User Input)")
+					RunWait(@TempDir & "/HiReq.exe")
+
+
+					;- Create a shortcut (Since otherwise we can't launch the game?)
+
+					;- Retrieve the install location of the launcher
+					Local $sRootPath = RegRead("HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{3C87E0FF-BC0A-4F5E-951B-68DC3F8DF1FC}","InstallLocation")
+
+					If FileExists($sRootPath) Then
+
+						;- Create the shortcut and give it an Icon that is inside of the SMITE Optimizer.exe
+						FileCreateShortcut($sRootPath & "/HiRezLauncherUI.exe",@DesktopDir & "/SMITE - Legacy",Default,"game=300 product=17",Default,@ScriptFullPath,Default,2)
+
+						MsgBox($MB_OK,"Information","A shortcut has been created on your Desktop!"&@CRLF&@CRLF&"When using the Legacy version of SMITE, you might have to reset the configuration paths to make the SMITE Optimizer aware of the new paths. You can do so in the Debug tab."&@CRLF&@CRLF&"Enjoy the Legacy launcher! <3")
+					Else
+						MsgBox(0,"Error","An Error occured when trying to create a shortcut for SMITE."&@CRLF&"You can manually creating a shortcut by following these steps:"&@CRLF&"Locate the HiRezLauncherUI.exe and create a shortcut to it on the Desktop, then add these parameters at the end of the destination path: game=300 product=17")
+					EndIf
+				EndIf
+			Next
+
+			Sleep(1000)
+
+			;- Cleanup
+			FileDelete(@TempDir & "/HiService.exe")
+			FileDelete(@TempDir & "/HiFix.exe")
+			FileDelete(@TempDir & "/HiReq.exe")
+
+			_GIF_ExitAnimation($SplashScreenGUIAnimation) ;- Close all handles created by the Animation thingy before deleting the GUI!
+			GUIDelete($SplashScreenGUI) ;- We are done with everything so yeet the Splash-Screen.
+			$SplashScreenGUI = NULL
+
+			GUISwitch($MainGUI)
+				GUISetState(@SW_RESTORE)
+				GUISetState(@SW_ENABLE)
+
+			WinActivate($MainGUI)
+		EndIf
 	EndFunc
 #EndRegion
 
@@ -5178,7 +5622,9 @@ EndFunc
 		If ($DisplayHoverBG = 1 and not $HoverBGDrawn) or $HoverID <> $X+$Y Then ;- This only runs when there is a change.
 			Local $XOffset
 
-			If $ProgramHomeState = "Simple" Then ;- XOffset Calculation.
+			If $MenuSelected = 2 Then ;- XOffset Calculation.
+				$XOffset = -100 + ControlGetPos($MainGUI,$sEmpty,$MainGUIFixesLabelMaxFPS)[0]
+			ElseIf $ProgramHomeState = "Simple" Then
 				$XOffset = -100 + ControlGetPos($MainGUI,$sEmpty,$MainGUIHomeSimpleComboWorldQuality)[0]
 			ElseIf $ProgramHomeState = "Advanced" Then
 				$XOffset = -100 + ControlGetPos($MainGUI,$sEmpty,$MainGUIHomeAdvancedComboWorldQuality)[0]
@@ -5192,7 +5638,9 @@ EndFunc
 			Local $WinPos = WinGetPos($MainGUI)
 			Local $XOffset
 
-			If $ProgramHomeState = "Simple" Then ;- XOffset Calculation.
+			If $MenuSelected = 2 Then ;- XOffset Calculation.
+				$XOffset = -100 + ControlGetPos($MainGUI,$sEmpty,$MainGUIFixesInputMaxFPS)[0]
+			ElseIf $ProgramHomeState = "Simple" Then
 				$XOffset = -100 + ControlGetPos($MainGUI,$sEmpty,$MainGUIHomeSimpleComboWorldQuality)[0]
 			ElseIf $ProgramHomeState = "Advanced" Then
 				$XOffset = -100 + ControlGetPos($MainGUI,$sEmpty,$MainGUIHomeAdvancedComboWorldQuality)[0]
@@ -5289,6 +5737,12 @@ Func _FixMenuSwitch() ;- This function is used internally to handle menu hover l
 		LoadImageResource($HomeIconHover,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
 		LoadImageResource($HomeIcon,$MainResourcePath & "HomeIconInactive.jpg","HomeIconInactive")
 		$HomeIconHoverHideBool = False
+	ElseIf $FixesIconHoverHideBool Then
+		UndoMenuHoverState()
+
+		LoadImageResource($FixesIconHover,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
+		LoadImageResource($FixesIcon,$MainResourcePath & "FixesIconInactive.jpg","FixesIconInactive")
+		$FixesIconHoverHideBool = False
 	ElseIf $RCIconHoverHideBool Then
 		UndoMenuHoverState()
 
@@ -5390,6 +5844,8 @@ While True ;- Main program routine.
 		Endif
 
 		If $ProgramHomeState = "Simple" Then ;- Simple mode logic
+
+			;- Check if Screenscale changed
 			Local $ReadScreenResSimple = GUICtrlRead($MainGUIHomeSimpleSliderScreenResScale)&"%"
 
 			If $ReadScreenResSimple <> $LastScreenResScaleSimple Then
@@ -5397,6 +5853,8 @@ While True ;- Main program routine.
 				$LastScreenResScaleSimple = $ReadScreenResSimple
 			EndIf
 		ElseIf $ProgramHomeState = "Advanced" Then ;- Advanced mode logic
+
+			;- Check if Screenscale changed
 			Local $ReadScreenResAdvanced = GUICtrlRead($MainGUIHomeAdvancedSliderScreenResScale)&"%"
 
 			If $ReadScreenResAdvanced <> $LastScreenResScaleAdvanced Then
@@ -5408,7 +5866,7 @@ While True ;- Main program routine.
 		;- Help tips logic
 		;------------------------------------------------------------------------------
 
-			If $ProgramHomeHelpState = 1 and $MenuSelected = 1 and not $MainGUIHomeDiscoveryDrawn Then ;- Optimizations.
+			If ($ProgramHomeHelpState = 1 and $MenuSelected = 1 and not $MainGUIHomeDiscoveryDrawn) or ($ProgramHomeHelpState = 1 and $MenuSelected == 2) Then ;- Optimizations.
 				If $JustTabbedBackIn = 0 Then $JustTabbedBackIn = 3 ;- Needs to run multiple times.
 
 				Local $MousePos = MouseGetPos()
@@ -5437,7 +5895,15 @@ While True ;- Main program routine.
 						$LastHoverID = $HoverID
 					EndIf
 
-					If $ProgramHomeState = "Simple" Then
+					If $MenuSelected == 2 Then ;- Fixes
+						If InRange2D($MousePos,120,61,320,104) Then
+							DisplayHoverImage(95,61,200,42,$MainResourcePath & "HelpText/Desired_FPS.jpg",300,40,345,238) ;- FPS.
+						ElseIf InRange2D($MousePos,120,101,320,144) Then
+							DisplayHoverImage(95,101,200,42,$MainResourcePath & "HelpText/Audio_Channels.jpg",300,40,345,317) ;- Audio Fix
+						ElseIf InRange2D($MousePos,120,153,320,176) Then
+							DisplayHoverImage(95,153,200,23,$MainResourcePath & "HelpText/Disable_Jumping.jpg",300,40,345,184) ;- Disable Jumping
+						EndIf
+					ElseIf $ProgramHomeState = "Simple" Then
 						If InRange2D($MousePos,95,71,295,114) Then
 							DisplayHoverImage(95,71,200,43,$MainResourcePath & "HelpText/World_Quality_Simple.jpg",300,40,600,350) ;- World Quality.
 						ElseIf InRange2D($MousePos,95,111,295,154) Then
@@ -5633,10 +6099,20 @@ While True ;- Main program routine.
 
 						$HomeIconHoverHideBool = True
 					EndIf
+				Case $FixesIconHover, $FixesIcon
+					If $FixesIconHoverHideBool = False Then
+						_FixMenuSwitch()
+						MenuHoverState("Fixes",76,92,77)
+
+						LoadImageResource($FixesIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
+						LoadImageResource($FixesIcon,$MainResourcePath & "FixesIconActive.jpg","FixesIconActive")
+
+						$FixesIconHoverHideBool = True
+					EndIf
 				Case $RCIconHover, $RCIcon
 					If $RCIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Restore Configuration",76,351,76)
+						MenuHoverState("Restore Configuration",116,351,117)
 
 						LoadImageResource($RCIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($RCIcon,$MainResourcePath & "RestoreConfigsIconActive.jpg","RestoreConfigsIconActive")
@@ -5646,7 +6122,7 @@ While True ;- Main program routine.
 				Case $DonateIconHover, $DonateIcon
 					If $DonateIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Donate",118,118,119)
+						MenuHoverState("Donate",158,118,159)
 
 						LoadImageResource($DonateIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($DonateIcon,$MainResourcePath & "DonateIconActive.jpg","DonateIconActive")
@@ -5656,7 +6132,7 @@ While True ;- Main program routine.
 				Case $ChangelogIconHover, $ChangelogIcon
 					If $ChangelogIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Changelog",158,167,158)
+						MenuHoverState("Changelog",198,167,199)
 
 						LoadImageResource($ChangelogIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($ChangelogIcon,$MainResourcePath & "ChangelogIconActive.jpg","ChangelogIconActive")
@@ -5666,7 +6142,7 @@ While True ;- Main program routine.
 				Case $CopyrightIconHover, $CopyrightIcon
 					If $CopyrightIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Copyright",198,165,197)
+						MenuHoverState("Copyright",238,165,239)
 
 						LoadImageResource($CopyrightIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($CopyrightIcon,$MainResourcePath & "CopyrightIconActive.jpg","CopyrightIconActive")
@@ -5676,7 +6152,7 @@ While True ;- Main program routine.
 				Case $DebugIconHover, $DebugIcon
 					If $DebugIconHoverHideBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("Debug",240,103,240)
+						MenuHoverState("Debug",280,103,281)
 
 						LoadImageResource($DebugIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($DebugIcon,$MainResourcePath & "DebugIconActive.jpg","DebugIconActive")
@@ -5700,7 +6176,7 @@ While True ;- Main program routine.
 				Case $MainGUIChangelogButtonViewOnline, $MainGUIChangelogButtonViewOnlineBG
 					If $ViewOnlineChangesBtnHoverBool = False Then
 						_FixMenuSwitch()
-						MenuHoverState("View Changes Online",344,320,344)
+						MenuHoverState("View Changes Online",365,320,367)
 
 						LoadImageResource($MainGUIChangelogButtonViewOnlineBG,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 						LoadImageResource($MainGUIChangelogButtonViewOnline,$MainResourcePath & "ChangelogIconActive.jpg","ChangelogIconActive")

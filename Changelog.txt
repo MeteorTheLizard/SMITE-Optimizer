@@ -1,59 +1,86 @@
+SMITE Optimizer Version 1.3.2
+- Added a new tab: Fixes. In this tab you can apply fixes for common issues. Applying fixes are separate from other settings, allowing you to apply them without changing other graphics settings.
+> New fix: Sounds cutting off (MaxChannels)
+> New shortcut: FPS. You can set the FPS cap in the fixes tab now so that you don't have to make changes to other settings if all you want is a higher FPS cap. (QoL)
+> New: Install Legacy Launcher Button. You heard right, the SMITE Optimizer now has a feature that allows you to install the old Legacy Launcher on your system. This feature is experimental and may not always work. Additionally, you will have to re-download the whole game through the launcher.
+> ( The downloaded files are from HiRez and are shipped to players through the Steam version ( Steam\steamapps\common\SMITE\Binaries\Redist ), they're official and 100% safe. )
+
+- Updated the Vehicle Quality help popup as this option affects the Distance Line, Reticule, and Ground Target now. (Previously: Unused) - Reported by: WarpBurger
+
+- Added the BattleGame / DefaultGame configuration files (This change requires ALL users to re-discover the configuration files)
+> This file was added as there are more useful settings inside, one of them is required for the Fixes tab.
+> Due to this file being added, previous configuration backups can no longer be restored and won't show up in the SMITE Optimizer.
+
+Misc:
+- Fixed spacing of menu item text
+- Fixed spacing of "(Click to Continue)" text when applying the changes
+- Fixed spacing of "Processing index of drive: (DriveLetter)" text when using the automatic file discovery feature
+- Fixed the spacing of the steam logo in the steam discovery button in the discovery tab
+- Updated the DevTools/FontColors.txt to include the "Really bad" color
+- Updated the Changelog.txt to fix formatting inconsistencies.
+
+
+
+
+
 SMITE Optimizer Version 1.3.1.52
-> Made even more improvments to the update routine.
-The progress display is now fixed, no idea how I messed that up so badly. (Also made it display more information)
-The update.ini it downloads from GitHub or Pastebin is now 100% guaranteed to be up-to-date.
+- Made even more improvments to the update routine.
+> The progress display is now fixed, no idea how I messed that up so badly. (Also made it display more information)
+> The update.ini it downloads from GitHub or Pastebin is now 100% guaranteed to be up-to-date.
 
 
 
 
 
 SMITE Optimizer Version 1.3.1.51
-> Made some Improvements to the automatic updater.
-Whenever the program was launched, the update information was downloaded from the internet (github or pastebin).
-However, that information was then cached out of my control and whenever the program was launched again, instead of downloading the information fresh from the internet, it loaded the information from cache which was causing problems. The cached information was usually deleted on a proper shutdown of the system but due to Windows 10 not actually shutting down on a shut down, this cache was never reset until windows 10 did a full shutdown. (I'm so tired of windows, ngl.), this issue is now fixed.
+- Made some Improvements to the automatic updater.
+> Whenever the program was launched, the update information was downloaded from the internet (github or pastebin).
+> However, that information was then cached out of my control and whenever the program was launched again, instead of downloading the information fresh from the internet, it loaded the information from cache which was causing problems.
+> The cached information was usually deleted on a proper shutdown of the system but due to Windows 10 not actually shutting down on a shut down, this cache was never reset until windows 10 did a full shutdown.
+> (I'm so tired of windows, ngl.), this issue is now fixed.
 
 
 
 
 
 SMITE Optimizer Version 1.3.1.5
-Potentially fixed a crashing issue on launch when in Steam Mode.
+- Potentially fixed a crashing issue on launch when in Steam Mode.
 > https://github.com/MeteorTheLizard/SMITE-Optimizer/issues/8#issuecomment-860125326
 
-Fixed the system information box in the debug tab not resizing properly.
-Added a label button to the debug tab that retrieves useful debugging information, this should help with future issues.
-Added support for custom document folder paths to the config discovery process.
-Fixed invalid file exist checks for OneDrive specific configuration discovery methods.
-(When OneDrive is installed, the configuration files may be stored inside of the OneDrive folder which causes problems, the check for the files whether they exist or not was erroneous but is now fixed.)
+- Fixed the system information box in the debug tab not resizing properly.
+- Added a label button to the debug tab that retrieves useful debugging information, this should help with future issues.
+- Added support for custom document folder paths to the config discovery process.
+- Fixed invalid file exist checks for OneDrive specific configuration discovery methods.
+> (When OneDrive is installed, the configuration files may be stored inside of the OneDrive folder which causes problems, the check for the files whether they exist or not was erroneous but is now fixed.)
 
 
 
 
 
 SMITE Optimizer Version 1.3.1.4
-Fixed a bug with the file integrity check routine that caused the program to crash when trying to apply changes to empty files. The program is supposed to add everything that is missing which can be EVERYTHING if the file is empty.
+- Fixed a bug with the file integrity check routine that caused the program to crash when trying to apply changes to empty files. The program is supposed to add everything that is missing which can be EVERYTHING if the file is empty.
 
 
 
 
 
 SMITE Optimizer Version 1.3.1.3
-Updated Copyright information
+- Updated Copyright information
 
 
 
 
 
 SMITE Optimizer Version 1.3.1.2
-Fixed discoloration of the window menu buttons (Close, Maximize, Minimize)
+- Fixed discoloration of the window menu buttons (Close, Maximize, Minimize)
 
 
 
 
 
 SMITE Optimizer Version 1.3.1.1
-Fixed 'Whole Scene Dominant Shadows' label in Advanced mode being cut-off.
-Fixed 'Verifying and repairing integrity' label in the Apply changes progress window being wrapped to the next line.
+- Fixed 'Whole Scene Dominant Shadows' label in Advanced mode being cut-off.
+- Fixed 'Verifying and repairing integrity' label in the Apply changes progress window being wrapped to the next line.
 
 
 
@@ -61,9 +88,9 @@ Fixed 'Verifying and repairing integrity' label in the Apply changes progress wi
 
 SMITE Optimizer Version 1.3.1
 
-This update introduces new fonts loaded from memory to prevent version incompatibilities.
-Previously, the program was loading system fonts that varied between Windows versions which caused spacing and label sizing issues.
-This update addressed this issue, fixing all cut-off text by changing the fonts for new ones.
+- This update introduces new fonts loaded from memory to prevent version incompatibilities.
+> Previously, the program was loading system fonts that varied between Windows versions which caused spacing and label sizing issues.
+> This update addressed this issue, fixing all cut-off text by changing the fonts for new ones.
 
 
 
@@ -101,18 +128,18 @@ The only thing it can't fix are settings that are set to malformed or incorrect 
 
 
 List of changes:
--Complete Code re-write.
--New modern UI with animations!
--Improved user-friendliness as well as making things a lot easier to understand.
--Added Help tips for every single option that fades in when hovering over, explaining in detail what exactly it is and what effects it has on performance.
--Simple and Advanced mode, making it easier for people that don't know anything about game development.
--Added an animated splash-screen.
--New update routine that is a lot more efficient.
--Added an algorithm to find errors in the configuration files and repair them.
--More efficient way of applying the changes.
--More efficient and user friendly way to restore backups.
--Updated Debug tab.
--Updates are now downloaded and applied automatically. (To disable automatic updates you will now have to go into the debug tab)
+- Complete Code re-write.
+- New modern UI with animations!
+- Improved user-friendliness as well as making things a lot easier to understand.
+- Added Help tips for every single option that fades in when hovering over, explaining in detail what exactly it is and what effects it has on performance.
+- Simple and Advanced mode, making it easier for people that don't know anything about game development.
+- Added an animated splash-screen.
+- New update routine that is a lot more efficient.
+- Added an algorithm to find errors in the configuration files and repair them.
+- More efficient way of applying the changes.
+- More efficient and user friendly way to restore backups.
+- Updated Debug tab.
+- Updates are now downloaded and applied automatically. (To disable automatic updates you will now have to go into the debug tab)
 
 
 The program and this update is free of charge.

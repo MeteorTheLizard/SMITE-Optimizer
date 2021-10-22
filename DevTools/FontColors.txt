@@ -25,6 +25,8 @@ Off: ff0087
 Varies: ffe600
 Gamemode: ff00be
 
+Really bad: ff0000
+
 Disclaimer: e1ff00 (Only in disclaimer and only on important things)
 Keyword: ff9f00 (Character Quality, Bloom, Unreal Engine 3, etc..)
 God: c900ff (God names)

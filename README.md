@@ -2,15 +2,26 @@
  <img width="600" height="100" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/SO_Logo.gif">
 </p>
 <p align="center">
- <img width="810" height="450" src="https://i.imgur.com/gnBxSsj.png" />
+ <img width="810" height="450" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/pic_1.jpg" />
 </p>
 <p align="center">
- <img width="810" height="450" src="https://i.imgur.com/GQueSZF.png" />
+ <img width="810" height="450" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/pic_2.jpg" />
 </p>
 
 <p align="center"> <strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>
 <p align="center"> <strong>Compatible with Windows 7, Windows 8, and Windows 10.</strong></p>
 <p align="center"> <strong>Windows XP and Windows Vista are not supported officially, but the program might work just fine.</strong></p>
+
+<h2 align="center"><strong>Powerful & Useful extras</strong></h2>
+
+<p align="center">
+ <img width="810" height="450" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/pic_3.jpg" />
+</p>
+
+<p align="center"> <strong>Have issues with the Audio cutting off during intense teamfights? This program lets you increase the amount of sounds that can play at once, fixing that issue! </strong> </p>
+<p align="center"> <strong>Additionally, there's also a feature that lets you install the old legacy launcher! (Experimental)</strong> </p>
+
+<p align="center">If you experience issues when installing the old Legacy launcher, make sure its uninstalled from your system "Hi-Rez Studios Games" and then delete this folder: "C:\ProgramData\Hi-Rez Studios" (This might be a hidden folder). Afterwards try to install the legacy launcher again.</p>
 
 <h2 align="center"><strong>How to install & use the program</strong></h2>
 
@@ -19,7 +30,7 @@
 <p align="center">After you have successfully downloaded the program upon first time launching it, it is possible that Windows Smartscreen is preventing you from opening it. Click on 'More info' in the popup and then the 'Run anyway' button. The program will now launch unless your Anti-virus prevents it from doing so. After it launched successfully it will ask you where your configuration files are located. Simply follow the instructions.</p>
 
 <p align="center">
- <img width="810" height="450" src="https://i.imgur.com/sHvDEw4.png" />
+ <img width="810" height="450" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/pic_4.jpg" />
 </p>
 
 <p align="center">Everything else was designed to be easy to understand. Simply hover over an option and a help tip will pop into view, explaining in detail what the setting does and what the recommended action is.</p>

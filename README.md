@@ -12,6 +12,8 @@
 <p align="center"> <strong>Compatible with Windows 7, Windows 8, and Windows 10.</strong></p>
 <p align="center"> <strong>Windows XP and Windows Vista are not supported officially, but the program might work just fine.</strong></p>
 
+<br>
+
 <h2 align="center"><strong>Powerful & Useful extras</strong></h2>
 
 <p align="center">
@@ -22,6 +24,8 @@
 <p align="center"> <strong>Additionally, there's also a feature that lets you install the old legacy launcher! (Experimental)</strong> </p>
 
 <p align="center">If you experience issues when installing the old Legacy launcher, make sure its uninstalled from your system "Hi-Rez Studios Games" and then delete this folder: "C:\ProgramData\Hi-Rez Studios" (This might be a hidden folder). Afterwards try to install the legacy launcher again.</p>
+
+<br>
 
 <h2 align="center"><strong>How to install & use the program</strong></h2>
 

@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.2
+#AutoIt3Wrapper_Res_Fileversion=1.3.2.1
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -184,7 +184,8 @@ Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
-Global Const $ProgramVersion = "1.3.2"
+
+Global Const $ProgramVersion = "1.3.2.1"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -260,6 +261,8 @@ Global $SourceLabelHoverBool = False
 Global $AutoItLicenseLabelHoverBool = False
 Global $MainGUIDebugLabelHoverBool = False
 Global $MainGUIDebugDumpInfoHoverBool = False
+
+Global $Bool_DisplaySetupError = False ;- Used to inform the user if they haven't launched the game before on their system
 
 ;- ----- ----- ----- ----- -----
 
@@ -1503,6 +1506,12 @@ Func DrawMainGUI()
 
 	WinMove($MainGUI,$sEmpty,$ScrW/2 - ($MinWidth/2),$ScrH/2 - ($MinHeight/2))
 	GUISetState(@SW_SHOWNOACTIVATE,$MainGUI) ;- Show the MainGUI but don't take focus!
+
+
+	If $Bool_DisplaySetupError Then
+		DisplayErrorMessage("Please make sure to launch the game at least once before using the program!" & @CRLF & @CRLF & "Choosing anything before doing that will cause problems!",$MainGUI,"IMPORTANT!")
+	EndIf
+
 EndFunc
 DrawMainGUI()
 
@@ -1564,6 +1573,26 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIHomeLabelLogoCopyright = GUICtrlCreateLabelTransparentBG("Logos shown are subject to Copyright and are Trademarked by their respective companies and were used under the 'Fair Use' agreement.",5,430,850,16)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+
+		;- If the standard path does not return any valid configuration files we want to inform the user that they should launch SMITE at least once before using the program to avoid issues
+
+			If Not ( FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini") _
+			and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") _
+			and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
+
+				;- A little messy but eh.
+
+				If Not ( FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") _
+				and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") _
+				and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
+
+					;- Valid configuration files have not been found in the standard path, so we inform the user!
+
+					$Bool_DisplaySetupError = True ;- This has to happen at a later state
+;~ 					DisplayErrorMessage("IMPORTANT!"&@CRLF&"Please make sure to launch the game at least once before using the program!")
+
+				EndIf
+			EndIf
 
 
 	;-- Home (Simple and Advanced mode)
@@ -2046,7 +2075,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 
 
 	;-- Donate
-		Local $Year = 2021
+		Local $Year = 2022
 
 		Global $MainGUIDonateButtonPaypal = GUICtrlCreatePic($sEmpty,136,168,250,110)
 			LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
@@ -2910,7 +2939,7 @@ EndFunc
 		EndIf
 	EndFunc
 
-	Func DisplayErrorMessage($Message,$Parent = $MainGUI) ;- Creates a new temporary GUI to display an error message, only going away when clicked.
+	Func DisplayErrorMessage($Message,$Parent = $MainGUI,$Header = "ERROR!") ;- Creates a new temporary GUI to display an error message, only going away when clicked.
 		HideErrorMessage()
 
 		_WinAPI_SetWindowPos($MainGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
@@ -2930,7 +2959,7 @@ EndFunc
 			Local $NotificationGUIBG = GUICtrlCreatePic($sEmpty,0,0,400,150)
 				LoadImageResource($NotificationGUIBG,$MainResourcePath & "NotificationBG.jpg","NotificationBG")
 				GUICtrlSetOnEvent($NotificationGUIBG,"HideErrorMessage")
-			Local $NotificationGUILabelMessage = GUICtrlCreateLabelTransparentBG("ERROR!"&@CRLF&@CRLF&$Message,5,3,390,140)
+			Local $NotificationGUILabelMessage = GUICtrlCreateLabelTransparentBG($Header&@CRLF&@CRLF&$Message,5,3,390,140)
 				GUICtrlSetOnEvent($NotificationGUILabelMessage,"HideErrorMessage")
 				GUICtrlSetColor(-1,0xF0F4F9)
 				GUICtrlSetFont(-1,10,Default,Default,$MainFontName)
@@ -3714,6 +3743,14 @@ EndFunc
 
 							;- Retrieve the info in the system information box
 								FileWrite(@TempDir & "\optimizerdebugdump\systeminfobox.txt",GUICtrlRead($MainGUIDebugEditSystemInfo))
+
+							;- Retrieve the configuration file paths (Idk why I haven't added this earlier smh...)
+								Local $Str_Path1 = GUICtrlRead($MainGUIDebugLabelEngineSettings)
+								Local $Str_Path2 = GUICtrlRead($MainGUIDebugLabelSystemSettings)
+								Local $Str_Path3 = GUICtrlRead($MainGUIDebugLabelGameSettings)
+								Local $Str_Path4 = GUICtrlRead($MainGUIDebugLabelConfigBackupPath)
+
+								FileWrite(@TempDir & "\optimizerdebugdump\paths.txt",$Str_Path1 & @CRLF & $Str_Path2 & @CRLF & $Str_Path3 & @CRLF & $Str_Path4)
 
 							;- Retrieve Launch.log files
 								DirCreate(@TempDir & "\optimizerdebugdump\logs\launch")

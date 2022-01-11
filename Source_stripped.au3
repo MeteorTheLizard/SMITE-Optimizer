@@ -3122,7 +3122,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.2"
+Global Const $ProgramVersion = "1.3.2.1"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3189,6 +3189,7 @@ Global $SourceLabelHoverBool = False
 Global $AutoItLicenseLabelHoverBool = False
 Global $MainGUIDebugLabelHoverBool = False
 Global $MainGUIDebugDumpInfoHoverBool = False
+Global $Bool_DisplaySetupError = False
 Global $Version = RegRead("HKCU\Software\SMITE Optimizer\","ProgramVersion")
 If @Error = 0 and $Version <= "1.2.2" Then
 RegDelete("HKCU\Software\SMITE Optimizer\","BlockDonations")
@@ -3724,6 +3725,9 @@ GUIDelete($SplashScreenGUI)
 $SplashScreenGUI = NULL
 WinMove($MainGUI,$sEmpty,$ScrW/2 -($MinWidth/2),$ScrH/2 -($MinHeight/2))
 GUISetState(@SW_SHOWNOACTIVATE,$MainGUI)
+If $Bool_DisplaySetupError Then
+DisplayErrorMessage("Please make sure to launch the game at least once before using the program!" & @CRLF & @CRLF & "Choosing anything before doing that will cause problems!",$MainGUI,"IMPORTANT!")
+EndIf
 EndFunc
 DrawMainGUI()
 Func InitGUI()
@@ -3769,6 +3773,11 @@ GUICtrlSetColor(-1,0xFFFFFF)
 Global $MainGUIHomeLabelLogoCopyright = GUICtrlCreateLabelTransparentBG("Logos shown are subject to Copyright and are Trademarked by their respective companies and were used under the 'Fair Use' agreement.",5,430,850,16)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+If Not(FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini") and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
+If Not(FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
+$Bool_DisplaySetupError = True
+EndIf
+EndIf
 Global $MainGUIHomeButtonApply = GUICtrlCreateButton("Apply Changes",696,401,100,35)
 GUICtrlSetOnEvent($MainGUIHomeButtonApply,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
@@ -4203,7 +4212,7 @@ Global $MainGUIRestoreConfigurationsLabelAskForConfirmation = GUICtrlCreateLabel
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"Dates shown are in the following format: DD/MM/YYYY."&@CRLF&"The other numbers are the time at which the backup was made.",57,283,425,41)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-Local $Year = 2021
+Local $Year = 2022
 Global $MainGUIDonateButtonPaypal = GUICtrlCreatePic($sEmpty,136,168,250,110)
 LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
 GUICtrlSetOnEvent($MainGUIDonateButtonPaypal,"ButtonPressLogic")
@@ -4967,7 +4976,7 @@ WinActivate($MainGUI)
 EndIf
 EndIf
 EndFunc
-Func DisplayErrorMessage($Message,$Parent = $MainGUI)
+Func DisplayErrorMessage($Message,$Parent = $MainGUI,$Header = "ERROR!")
 HideErrorMessage()
 _WinAPI_SetWindowPos($MainGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
 _WinAPI_SetWindowPos($MainGUI,$HWND_NOTOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
@@ -4982,7 +4991,7 @@ GUISetBkColor(0x000000)
 Local $NotificationGUIBG = GUICtrlCreatePic($sEmpty,0,0,400,150)
 LoadImageResource($NotificationGUIBG,$MainResourcePath & "NotificationBG.jpg","NotificationBG")
 GUICtrlSetOnEvent($NotificationGUIBG,"HideErrorMessage")
-Local $NotificationGUILabelMessage = GUICtrlCreateLabelTransparentBG("ERROR!"&@CRLF&@CRLF&$Message,5,3,390,140)
+Local $NotificationGUILabelMessage = GUICtrlCreateLabelTransparentBG($Header&@CRLF&@CRLF&$Message,5,3,390,140)
 GUICtrlSetOnEvent($NotificationGUILabelMessage,"HideErrorMessage")
 GUICtrlSetColor(-1,0xF0F4F9)
 GUICtrlSetFont(-1,10,Default,Default,$MainFontName)
@@ -5553,6 +5562,11 @@ Sleep(350)
 DirCreate(@TempDir & "\optimizerdebugdump")
 If Not @Error Then
 FileWrite(@TempDir & "\optimizerdebugdump\systeminfobox.txt",GUICtrlRead($MainGUIDebugEditSystemInfo))
+Local $Str_Path1 = GUICtrlRead($MainGUIDebugLabelEngineSettings)
+Local $Str_Path2 = GUICtrlRead($MainGUIDebugLabelSystemSettings)
+Local $Str_Path3 = GUICtrlRead($MainGUIDebugLabelGameSettings)
+Local $Str_Path4 = GUICtrlRead($MainGUIDebugLabelConfigBackupPath)
+FileWrite(@TempDir & "\optimizerdebugdump\paths.txt",$Str_Path1 & @CRLF & $Str_Path2 & @CRLF & $Str_Path3 & @CRLF & $Str_Path4)
 DirCreate(@TempDir & "\optimizerdebugdump\logs\launch")
 FileCopy("C:\Users\" & @UserName &"\Documents\My Games\SMITE\BattleGame\Logs\*.log",@TempDir & "\optimizerdebugdump\logs\launch\",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 FileCopy("C:\Users\" & @UserName &"\OneDrive\Documents\My Games\SMITE\BattleGame\Logs\*.log",@TempDir & "\optimizerdebugdump\logs\launch\",BitOr($FC_OVERWRITE,$FC_CREATEPATH))

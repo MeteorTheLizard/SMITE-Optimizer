@@ -14,6 +14,14 @@
 
 <br>
 
+<h2 align="center"><strong>An "outstanding contribution" to the community</strong></h2>
+
+<p align="center">The program is officially recognized by Hi-Rez and considered to be an "outstanding contribution"</p>
+
+<p align="center">https://ibb.co/album/bbLhkQ</p>
+
+<br>
+
 <h2 align="center"><strong>Powerful & Useful extras</strong></h2>
 
 <p align="center">

@@ -8,9 +8,11 @@
  <img width="810" height="450" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/pic_2.jpg" />
 </p>
 
-<p align="center"> <strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>
-<p align="center"> <strong>Compatible with Windows 7, Windows 8, and Windows 10.</strong></p>
-<p align="center"> <strong>Windows XP and Windows Vista are not supported officially, but the program might work just fine.</strong></p>
+<p align="center"><strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>
+<p align="center"><strong>Fully compatible with Windows 7, Windows 8, and Windows 10.</strong></p>
+<p align="center">Windows XP and Windows Vista are not supported officially, but the program might work just fine.</p>
+<p align="center">Full Windows 11 support is planned, however AutoIt does not officially support it yet.</p>
+<p align="center">Just like Windows XP and Windows Vista, the program might work just fine under Windows 11.</p>
 
 <br>
 

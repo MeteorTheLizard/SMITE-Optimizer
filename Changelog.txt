@@ -1,3 +1,13 @@
+SMITE Optimizer Version 1.3.3
+- Updated information boxes when trying to install the Legacy Launcher. It is no longer officially supported by Hi-Rez Studios, but I'm not going to restrict users from installing it if they wish to do so.
+- Added Website to Copyright tab.
+- Changed update checkbox label "Perform Automatic Updates" > "Automatic Updates"
+- Added cheap status label to the Debug tab when creating a Debug Dump to let the user know what it is working on.
+
+
+
+
+
 SMITE Optimizer Version 1.3.2.1
 - Added a notice when first launching the program when the standard path to the configuration files is invalid to tell the user to launch the game on their system at least once before doing anything with the program
 - Added "paths" to the debug dump feature. This should have been there right from the start!

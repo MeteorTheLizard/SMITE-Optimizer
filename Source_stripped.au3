@@ -3122,7 +3122,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.2.1"
+Global Const $ProgramVersion = "1.3.3"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3184,6 +3184,7 @@ Global $PayPalBtnHoverHideBool = False
 Global $PatreonBtnHoverHideBool = False
 Global $ViewOnlineChangesBtnHoverBool = False
 Global $AnimatedLogoBool = False
+Global $WebsiteOpenHoverBool = False
 Global $LicenseLabelHoverBool = False
 Global $SourceLabelHoverBool = False
 Global $AutoItLicenseLabelHoverBool = False
@@ -4276,9 +4277,18 @@ GUICtrlSetFont(-1,9,500,Default,$MainFontName)
 Global $MainGUICopyrightLabelSMITECopyright = GUICtrlCreateLabelTransparentBG("SMITE(R), Battleground of the Gods(TM) Copyright (C) "&$Year&" Hi-Rez Studios, INC. All rights reserved.",133,284,600,18)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetFont(-1,9,500,Default,$MainFontName)
-Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("Contact: MrRangerLP (at) gmx.de",103,337,250,20)
+Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("Contact: MrRangerLP (at) gmx.de",103,317,250,20)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 GUICtrlSetFont(-1,11,500,Default,$MainFontName)
+Global $MainGUICopyrightLabelWebsite = GUICtrlCreateLabelTransparentBG("Website: https://meteorthelizard.com",103,337,300,20)
+GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
+GUICtrlSetFont(-1,11,500,Default,$MainFontName)
+Global $MainGUICopyrightLabelOpen = GUICtrlCreateLabelTransparentBG("(Click here to open)",363,337,150,20)
+GUICtrlSetOnEvent($MainGUICopyrightLabelOpen,"ButtonPressLogic")
+GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
+GUICtrlSetFont(-1,11,500,Default,$MainFontName)
+GUICtrlSetColor(-1,0x4F89EA)
+GUICtrlSetCursor(-1,0)
 Global $MainGUICopyrightPicBGLeft = GUICtrlCreatePic($sEmpty,95,361,219,50)
 LoadImageResource($MainGUICopyrightPicBGLeft,$MainResourcePath & "CopyrightFooterBGLeft.jpg","CopyrightFooterBGLeft")
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
@@ -4373,7 +4383,7 @@ Global $MainGUIDebugCheckboxCheckForUpdates = GUICtrlCreateCheckboxTransparentBG
 GUICtrlSetOnEvent($MainGUIDebugCheckboxCheckForUpdates,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 If $CheckForUpdates = "1" Then GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_CHECKED)
-Global $MainGUIDebugLabelCheckForUpdates = GUICtrlCreateLabelTransparentBG("Perform Automatic Updates",646,383,150,13)
+Global $MainGUIDebugLabelCheckForUpdates = GUICtrlCreateLabelTransparentBG("Automatic Updates",646,383,150,13)
 GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 Global $MainGUIDebugButtonPerformUpdate = NULL
 If $UpdateAvailable Then
@@ -4831,6 +4841,8 @@ GUICtrlSetState($MainGUICopyrightLabelCopyright,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelCopyright2,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelSMITECopyright,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelContact,$GUI_SHOW)
+GUICtrlSetState($MainGUICopyrightLabelWebsite,$GUI_SHOW)
+GUICtrlSetState($MainGUICopyrightLabelOpen,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightPicBGLeft,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelVersionFooter,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelLicenseLink,$GUI_SHOW)
@@ -4849,6 +4861,8 @@ GUICtrlSetState($MainGUICopyrightLabelCopyright,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelCopyright2,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelSMITECopyright,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelContact,$GUI_HIDE)
+GUICtrlSetState($MainGUICopyrightLabelWebsite,$GUI_HIDE)
+GUICtrlSetState($MainGUICopyrightLabelOpen,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightPicBGLeft,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelVersionFooter,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelLicenseLink,$GUI_HIDE)
@@ -5533,6 +5547,8 @@ ShellExecute("https://www.patreon.com/SMITEOptimizer")
 LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 Case $MainGUIChangelogButtonViewOnline, $MainGUIChangelogButtonViewOnlineBG
 ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer/commits/master")
+Case $MainGUICopyrightLabelOpen
+ShellExecute("https://meteorthelizard.com")
 Case $MainGUICopyrightLabelLicenseLink
 _Resource_SaveToFile(@TempDir & "\GPL_License.txt","GPL_License")
 If FileExists(@TempDir & "\GPL_License.txt") Then ShellExecute(@TempDir & "\GPL_License.txt")
@@ -5557,30 +5573,42 @@ ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer/issues")
 Case $MainGUIDebugLabelCreateDebugInfo
 Local $sDirSelect = FileSelectFolder("Choose a folder to save the debug dump into",@DesktopDir)
 If Not @Error Then
+GUISwitch($MainGUI)
+Local $LabelDebugDumpWorking = GUICtrlCreateLabelTransparentBG("Creating debug dump..",65,220,400,55)
+GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
+GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 DirRemove(@TempDir & "\optimizerdebugdump",$DIR_REMOVE)
 Sleep(350)
 DirCreate(@TempDir & "\optimizerdebugdump")
 If Not @Error Then
+GUICtrlSetData($LabelDebugDumpWorking,"Retrieving information from system box")
 FileWrite(@TempDir & "\optimizerdebugdump\systeminfobox.txt",GUICtrlRead($MainGUIDebugEditSystemInfo))
+GUICtrlSetData($LabelDebugDumpWorking,"Retrieving configured file paths")
 Local $Str_Path1 = GUICtrlRead($MainGUIDebugLabelEngineSettings)
 Local $Str_Path2 = GUICtrlRead($MainGUIDebugLabelSystemSettings)
 Local $Str_Path3 = GUICtrlRead($MainGUIDebugLabelGameSettings)
 Local $Str_Path4 = GUICtrlRead($MainGUIDebugLabelConfigBackupPath)
 FileWrite(@TempDir & "\optimizerdebugdump\paths.txt",$Str_Path1 & @CRLF & $Str_Path2 & @CRLF & $Str_Path3 & @CRLF & $Str_Path4)
+GUICtrlSetData($LabelDebugDumpWorking,"Retrieving game launch logs")
 DirCreate(@TempDir & "\optimizerdebugdump\logs\launch")
 FileCopy("C:\Users\" & @UserName &"\Documents\My Games\SMITE\BattleGame\Logs\*.log",@TempDir & "\optimizerdebugdump\logs\launch\",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 FileCopy("C:\Users\" & @UserName &"\OneDrive\Documents\My Games\SMITE\BattleGame\Logs\*.log",@TempDir & "\optimizerdebugdump\logs\launch\",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
+GUICtrlSetData($LabelDebugDumpWorking,"Retrieving game configuration files")
 FileCopy($SettingsPath,@TempDir & "\optimizerdebugdump\config\EngineSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 FileCopy($SystemSettingsPath,@TempDir & "\optimizerdebugdump\config\SystemSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 FileCopy($GameSettingsPath,@TempDir & "\optimizerdebugdump\config\GameSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
+GUICtrlSetData($LabelDebugDumpWorking,"Retrieving EasyAntiCheat logs")
 FileCopy("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat\*.log",@TempDir & "\optimizerdebugdump\logs\*.log",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 FileCopy("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat\140\*.log",@TempDir & "\optimizerdebugdump\logs\*.log",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
+GUICtrlSetData($LabelDebugDumpWorking,"Retrieving dxdiag information")
 ShellExecute("dxdiag",'/dontskip /whql:off /t "' & @TempDir & '\optimizerdebugdump\dxdiag.txt"')
 While ProcessExists("dxdiag.exe")
 WEnd
+GUICtrlSetData($LabelDebugDumpWorking,"Creating archive")
 local $file_Zip = _Zip_Create($sDirSelect & "\SMITE_Optimizer_Debug.zip",1)
 _Zip_AddItem($file_Zip,@TempDir & "\optimizerdebugdump\")
 DirRemove(@TempDir & "\optimizerdebugdump",$DIR_REMOVE)
+GUICtrlDelete($LabelDebugDumpWorking)
 MsgBox(0,"Success","Debug dump successfully created!")
 EndIf
 EndIf
@@ -6653,7 +6681,8 @@ If IsAdmin() == 0 Then
 MsgBox($MB_OK,"Information","SMITE Optimizer needs Administrator privileges to install the Legacy Launcher.")
 Return
 EndIf
-Local $bContinue = MsgBox($MB_YESNO,"Information","This feature is experimental and may not always work, especially not if there have been previous installations of the Legacy launcher on the system."&@CRLF&@CRLF&"Installation requires user input!"&@CRLF&@CRLF&"Would you like to continue?")
+Local $obj_Info = MsgBox(0,"Information","Hi-Rez Studios ended their Legacy Launcher support with 9.4 'The Jade Emperor' update." & @CRLF & "You will no longer receive updates through the launcher making it obsolete.")
+Local $bContinue = MsgBox($MB_YESNO,"Information","This feature will not work if you have previously installed the Legacy Launcher on your System."&@CRLF&@CRLF&"Installation requires user input."&@CRLF&@CRLF&"Would you like to continue?")
 If $bContinue = $IDYES Then
 GUISwitch($MainGUI)
 GUISetState(@SW_MINIMIZE)
@@ -6876,6 +6905,10 @@ GUICtrlSetState($MainGUICopyrightPicLogo,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightAnimatedLogo,$GUI_HIDE)
 _GIF_PauseAnimation($MainGUICopyrightAnimatedLogo)
 $AnimatedLogoBool = False
+ElseIf $WebsiteOpenHoverBool Then
+GUICtrlSetColor($MainGUICopyrightLabelOpen,0x4F89EA)
+GUICtrlSetFont($MainGUICopyrightLabelOpen,11,500,Default,$MainFontName)
+$WebsiteOpenHoverBool = False
 ElseIf $LicenseLabelHoverBool Then
 GUICtrlSetColor($MainGUICopyrightLabelLicenseLink,0x4F89EA)
 GUICtrlSetFont($MainGUICopyrightLabelLicenseLink,15,500,Default,$MainFontName)
@@ -7222,6 +7255,12 @@ GUICtrlSetState($MainGUICopyrightPicLogo,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightAnimatedLogo,$GUI_SHOW)
 _GIF_ResumeAnimation($MainGUICopyrightAnimatedLogo)
 $AnimatedLogoBool = True
+EndIf
+Case $MainGUICopyrightLabelOpen
+If $WebsiteOpenHoverBool = False Then
+GUICtrlSetColor($MainGUICopyrightLabelOpen,0x0645AD)
+GUICtrlSetFont($MainGUICopyrightLabelOpen,11,500,4,$MainFontName)
+$WebsiteOpenHoverBool = True
 EndIf
 Case $MainGUICopyrightLabelLicenseLink
 If $LicenseLabelHoverBool = False Then

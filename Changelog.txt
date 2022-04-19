@@ -1,3 +1,21 @@
+SMITE Optimizer Version 1.3.4
+- Slight code optimizations
+- Added error handler when you try to apply fixes before completing the configuration discovery process.
+- The fixes tab will now remember your settings. Wow!
+- Fixed configuration discovery for the Epic Game Store. (They made updates to how things work.)
+- Implemented a new feature: Create Quicklaunch! (See next note)
+
+- Updated Legacy Launcher installer notices (again)
+> The legacy launcher still works at the time of writing this, installing it will download 9.3 when launching it.
+> You can then copy Steam or Epic Game Store files over to the legacy install to update it to 9.4 and then launch the game normally.
+> Eventually the legacy launcher will be completely shut down, meaning this method wont work anymore.
+> It is recommended to use the new Quicklaunch bypass instead which launches the Steam or Epic Game Store version like the legacy launcher meaning you still have all the benefits.
+> Additionally, since it uses official methods only, it is 100% 'legal' as in; Not violating the Terms of Service.
+
+
+
+
+
 SMITE Optimizer Version 1.3.3
 - Updated information boxes when trying to install the Legacy Launcher. It is no longer officially supported by Hi-Rez Studios, but I'm not going to restrict users from installing it if they wish to do so.
 - Added Website to Copyright tab.

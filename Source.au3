@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.3
+#AutoIt3Wrapper_Res_Fileversion=1.3.4
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -131,7 +131,7 @@
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 ;- Notes:
-;- Last error code: "016" - Next: "017"
+;- Last error code: "018" - Next: "019"
 ;- This program appears to be incompatible with Virtual Machines as any file operations fail. ( Does not seem to be the case anymore? Testing in Win10 VM worked just fine. )
 
 #NoTrayIcon
@@ -185,7 +185,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.3"
+Global Const $ProgramVersion = "1.3.4"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -590,7 +590,7 @@ EndFunc
 		If @Compiled Then
 			$SplashScreenGUIAnimation = _GUICtrlCreateGIF(@AutoItExe,"RES;SO_LogoGIF",0,0,600,100)
 		Else
-			$SplashScreenGUIAnimation = _GUICtrlCreateGIF($MainResourcePath & "SO_Logo.gif","",0,0,600,100)
+			$SplashScreenGUIAnimation = _GUICtrlCreateGIF($MainResourcePath & "SO_Logo.gif",$sEmpty,0,0,600,100)
 		EndIf
 
 		Global $SplashScreenGUIProgress = GUiCtrlCreateProgress(0,100,600,25)
@@ -683,9 +683,9 @@ EndFunc
 		$UpdateGet = BinaryToString($UpdateGet) ;- Convert binary information into a readable string for the IniMem_Read functions
 
 		Local $RemoteVersion = _IniMem_Read($UpdateGet,"Version","Version",$ProgramVersion)
-		Local $RemoteDownload32 = _IniMem_Read($UpdateGet,"Download","Download32","")
-		Local $RemoteDownload64 = _IniMem_Read($UpdateGet,"Download","Download64","")
-		Local $RemoteMessage = _IniMem_Read($UpdateGet,"Message","Message","")
+		Local $RemoteDownload32 = _IniMem_Read($UpdateGet,"Download","Download32",$sEmpty)
+		Local $RemoteDownload64 = _IniMem_Read($UpdateGet,"Download","Download64",$sEmpty)
+		Local $RemoteMessage = _IniMem_Read($UpdateGet,"Message","Message",$sEmpty)
 
 		If $RemoteVersion > $ProgramVersion Then ;- A new Update is available so we start downloading!
 			$UpdateTimer = TimerInit() ;- Used to make the version text extra annoying! :3
@@ -1364,7 +1364,7 @@ Func GUICtrlCreateCheckboxTransparentBG($X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0)
 
 	Return $Checkbox
 EndFunc
-Func GUICtrlCreateComboNoTheme($Str,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style = "")
+Func GUICtrlCreateComboNoTheme($Str,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style = $sEmpty)
 	Local $Combo = GUICtrlCreateCombo($Str,$X,$Y,$Size_X,$Size_Y,$Style)
 		DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
 
@@ -1448,14 +1448,14 @@ Func DrawMainGUI()
 		If $ProgramState <> $sEmpty Then $Text = $ProgramState
 
 		Global $MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("("&$Text&" mode)",-1000,18,-1,14,$SS_RIGHT)
-			Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelProgramState)[2] + 25
+			Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelProgramState)[2] + 25
 			GUICtrlSetPos(-1,$MinWidth - $Width - 102,18,$Width,14)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
 		Local $Text = "v"&$ProgramVersion
 		If $UpdateAvailable Then $Text = "(Update Available) v"&$ProgramVersion
 		Global $MainGUILabelVersion = GUICtrlCreateLabelTransparentBG($Text,-1000,4,-1,14,$SS_RIGHT)
-			Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelVersion)[2] + 25
+			Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelVersion)[2] + 25
 			GUICtrlSetPos(-1,$MinWidth - $Width - 105,4,$Width,14)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
@@ -2021,6 +2021,11 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIFixesLabelDisableJump = GUICtrlCreateLabelTransparentBG("Disable Jumping",98,158,140,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
+
+		Global $MainGUIFixesButtonCreateQuicklaunch = GUICtrlCreateButton("Create Quicklaunch Bypass",386,401,150,35)
+			GUICtrlSetOnEvent($MainGUIFixesButtonCreateQuicklaunch,"ButtonPressLogic")
+			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+
 		Global $MainGUIFixesButtonInstallLegacy = GUICtrlCreateButton("Install Legacy Launcher",541,401,150,35)
 			GUICtrlSetOnEvent($MainGUIFixesButtonInstallLegacy,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
@@ -2028,6 +2033,22 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIFixesButtonApply = GUICtrlCreateButton("Apply Fixes",696,401,100,35)
 			GUICtrlSetOnEvent($MainGUIFixesButtonApply,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+
+
+		;- Load settings from cookie
+
+		Local $Int_Settings = RegRead("HKCU\Software\SMITE Optimizer\","ConfigCookieFixes")
+
+		If not @Error Then
+
+			Local $Split = StringSplit($Int_Settings,"|")
+				_ArrayDelete($Split,0) ;- Why does every array function also add the count, nobody uses it ffs.
+
+			GUICtrlSetData($MainGUIFixesInputMaxFPS,$Split[0])
+			GUICtrlSetData($MainGUIFixesComboAudioFix,$Split[1])
+			GUICtrlSetState($MainGUIFixesCheckboxDisableJump,Internal_ConvertMagicNumber($Split[2]))
+
+		EndIf
 
 
 	;-- Restore Configurations
@@ -2135,7 +2156,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUICopyrightPicLogo = GUICtrlCreatePic($sEmpty,130,50,600,100)
 			LoadImageResource($MainGUICopyrightPicLogo,$MainResourcePath & "SO_Logo.jpg","SO_Logo")
 			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-		Global $MainGUICopyrightLabelInfo = GUICtrlCreateLabelTransparentBG("A Project brought to life by Meteor (MrRangerLP) in 2017 and still being worked on in "&$Year&"",69,160,730,18)
+		Global $MainGUICopyrightLabelInfo = GUICtrlCreateLabelTransparentBG("A Project brought to life by Meteor (MrRangerLP) in 2017 and still being worked on in "&$Year,69,160,730,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,12,500,Default,$MainFontName)
 		Global $MainGUICopyrightLabelLicense = GUICtrlCreateLabelTransparentBG('This Project is licensed under the "GNU GPL-3.0" License. Do note that only version 1.3 and above fall under this license.',64,194,735,18)
@@ -2673,6 +2694,7 @@ EndFunc
 		GUICtrlSetState($MainGUIFixesComboAudioFix,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesCheckboxDisableJump,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesLabelDisableJump,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesButtonCreateQuicklaunch,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_SHOW)
 
@@ -2696,6 +2718,7 @@ EndFunc
 		GUICtrlSetState($MainGUIFixesComboAudioFix,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesCheckboxDisableJump,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesLabelDisableJump,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesButtonCreateQuicklaunch,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_HIDE)
 
@@ -2756,7 +2779,7 @@ EndFunc
 	EndFunc
 
 	Func DrawMainGUIChangelog()
-		ControlFocus($MainGUI,"",$MainGUIChangelogRichEdit)
+		ControlFocus($MainGUI,$sEmpty,$MainGUIChangelogRichEdit)
 		GUICtrlSetState($MainGUIChangelogRichEdit,$GUI_SHOW)
 		GUICtrlSetState($MainGUIChangelogButtonViewOnlineBG,$GUI_SHOW)
 		GUICtrlSetState($MainGUIChangelogButtonViewOnline,$GUI_SHOW)
@@ -3083,7 +3106,7 @@ EndFunc
 							;- Get the location of the installation manifest.
 							Local $Is64 = $sEmpty
 							If @OSArch = "X64" Then $Is64 = "WOW6432Node\"
-							Local $EpicProgramData = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\"&$Is64&"Epic Games\EpicGamesLauncher\","AppDataPath")&"Manifests\"
+							Local $EpicProgramData = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
 
 							;- We need to loop through all files in the Manifest folder since filenames differ from machine to machine.
 							Local $Files = _FileListToArray($EpicProgramData,"*.item",1,True)
@@ -3305,7 +3328,7 @@ EndFunc
 
 												EndSwitch
 
-												Sleep(1)
+												Sleep(10)
 											Else
 												If WinGetTitle("[active]") = $ProgramName Then WinActivate($GUIMoreOptions)
 
@@ -3467,7 +3490,7 @@ EndFunc
 							EndSwitch
 						EndIf
 
-						Sleep(1)
+						Sleep(10)
 					Else
 						If WinGetTitle("[active]") = $ProgramName Then WinActivate($GUIMoreOptions)
 
@@ -3491,7 +3514,7 @@ EndFunc
 		GUICtrlDelete($MainGUILabelProgramState) ;- Fix position and size.
 		$MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("("&$Text&" mode)",-1000,18,-1,14,$SS_RIGHT)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelProgramState)[2] + 25
+		Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelProgramState)[2] + 25
 			GUICtrlSetPos(-1,$WinWidth - $Width - 102,18,$Width,14)
 
 			Local $Text = "Discovery"
@@ -3616,6 +3639,9 @@ EndFunc
 
 
 			;- Fixes
+				Case $MainGUIFixesButtonCreateQuicklaunch
+					Internal_CreateQuicklaunchBypass()
+
 				Case $MainGUIFixesButtonInstallLegacy
 					Internal_InstallLegacyLauncher()
 
@@ -3846,7 +3872,7 @@ EndFunc
 						GUICtrlDelete($MainGUILabelProgramState) ;- Fix position and size.
 						$MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("(Discovery mode)",-1000,18,-1,14,$SS_RIGHT)
 							GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-						Local $Width = ControlGetPos($MainGUI,"",$MainGUILabelProgramState)[2] + 25
+						Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelProgramState)[2] + 25
 							GUICtrlSetPos(-1,$WinWidth - $Width - 102,18,$Width,14)
 
 						;- Update debug menu
@@ -3954,6 +3980,17 @@ EndFunc
 
 			RegWrite("HKCU\Software\SMITE Optimizer\","ConfigCookieAdvanced","REG_SZ",$Int_Settings)
 		EndIf
+
+
+		;- Fixes
+		Local $Settings_Fixes = ""
+
+		$Settings_Fixes = $Settings_Fixes & GUICtrlRead($MainGUIFixesInputMaxFPS) & "|"
+		$Settings_Fixes = $Settings_Fixes & GUICtrlRead($MainGUIFixesComboAudioFix) & "|"
+		$Settings_Fixes = $Settings_Fixes & Internal_ConvertMagicNumberSave(GUICtrlRead($MainGUIFixesCheckboxDisableJump))
+
+		RegWrite("HKCU\Software\SMITE Optimizer\","ConfigCookieFixes","REG_SZ",$Settings_Fixes)
+
 	EndFunc
 
 	Func Internal_LoadSettingCookies($Bool = False,$Performance = False,$InitBool = False) ;- Load settings.
@@ -5357,6 +5394,11 @@ EndFunc
 			Return
 		EndIf
 
+		If $SettingsPath = "" or $SystemSettingsPath = "" Then
+			DisplayErrorMessage("Cannot apply settings, discover the configuration files first!")
+			Return
+		EndIf
+
 		If $ProcessingRequest Then Return ;- Make sure this is not run twice for whatever reason.
 		$ProcessingRequest = True
 
@@ -5531,13 +5573,262 @@ EndFunc
 						EndIf
 				EndSwitch
 
-				Sleep(1)
+				Sleep(10)
 			Else
 				If WinGetTitle("[active]") = $ProgramName Then WinActivate($ProcessUI)
 
 				Sleep(100)
 			EndIf
 		WEnd
+	EndFunc
+
+	Func Internal_CreateQuicklaunchBypass()
+		GUISetState(@SW_DISABLE,$MainGUI) ;- Disable Main Window
+
+		;- Init Variables
+		Local $S_Title = $ProgramName & " Quicklaunch Creator"
+		Local $RootDir = $sEmpty
+		Local $Type = $sEmpty
+		Local $Bits = $sEmpty
+
+
+		;- Create the GUI where we choose which version we want to create a quicklaunch for
+		Local $GUI_Quicklaunch = GUICreate($S_Title,320,80,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW)
+			GUISwitch($GUI_Quicklaunch)
+
+			Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select a version to create a bypass for:",7,5,313,35)
+
+			Local $GUI_ButtonSteam = GUICtrlCreateButton("Steam",5,40,100,35)
+			Local $GUI_ButtonEGS = GUICtrlCreateButton("Epic Game Store",110,40,100,35)
+			Local $GUI_ButtonCancel = GUICtrlCreateButton("Cancel",215,40,100,35)
+
+		GUISetState()
+
+
+		While True ;- Mouse input
+			Local $CursorInfo = GUIGetCursorInfo($GUI_Quicklaunch)
+
+			If WinGetTitle("[active]") = $S_Title and @Error = 0 Then
+				If _IsPressed("1B") Then ;- Allow the User to exit the UI by pressing the Escape key.
+					ExitLoop(1)
+				EndIf
+
+				If _IsPressed("01") Then
+					While _IsPressed("01")
+						Sleep(10) ;- Wait until they let go of mouse1! (This is cheap af!)
+					WEnd
+
+					Switch $CursorInfo[4]
+						Case $GUI_ButtonSteam
+
+							Local $Path = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation") ;- Imagine if it was always this easy!
+							If @Error Then
+								MsgBox($MB_OK,"Error!","Steam Installation not found!")
+
+								ExitLoop(1)
+							EndIf
+
+
+							;- Steam version is installed and was found! WOW! <3 <3
+
+							$RootDir = $Path
+							$Type = "Steam"
+
+							ExitLoop(1) ;- Exit here and proceed
+
+						Case $GUI_ButtonEGS
+
+							Local $Is64 = $sEmpty
+							If @OSArch = "X64" Then $Is64 = "WOW6432Node\"
+							Local $EpicProgramData = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
+
+							;- We need to loop through all files in the Manifest folder since filenames differ from machine to machine.
+							Local $Files = _FileListToArray($EpicProgramData,"*.item",1,True)
+							_ArrayDelete($Files,0) ;- Delete the array count.
+
+							For $I = 0 To uBound($Files) - 1 Step 1
+								Local $Read = FileReadToArray($Files[$I])
+
+								For $B = 0 To uBound($Read) - 1 Step 1
+									Local $Str = StringLeft($Read[$B],20)
+
+									If $Str == @TAB&'"InstallLocation": ' and StringInStr($Read[$B],"SMITE",0,1) <> 0 Then
+										Local $NewStr = StringReplace($Read[$B],"\\","\")
+										$NewStr = StringReplace($NewStr,'"InstallLocation": "',$sEmpty)
+										$NewStr = StringReplace($NewStr,'",',$sEmpty)
+										$NewStr = StringReplace($NewStr,@TAB,$sEmpty)
+
+										$EpicProgramData = $NewStr
+										ExitLoop(2)
+									EndIf
+								Next
+							Next
+
+
+							;- Check if the SMITE Config Folder exists.
+							If Not FileExists($EpicProgramData) Then
+								MsgBox($MB_OK,"Error!","Epic Game Store Installation not found!")
+
+								ExitLoop(1)
+							EndIf
+
+
+							;- EGS version is installed and was found! WOW! <3 <3
+
+							$RootDir = $EpicProgramData
+							$Type = "EGS"
+
+							ExitLoop(1)
+
+						Case $GUI_ButtonCancel
+							ExitLoop(1)
+
+					EndSwitch
+				EndIf
+
+				Sleep(10)
+			Else
+				If WinGetTitle("[active]") = $ProgramName Then WinActivate($GUI_Quicklaunch)
+
+				Sleep(100)
+			EndIf
+
+		WEnd
+
+
+		If $RootDir <> $sEmpty and $Type <> $sEmpty Then ;- We got a valid* installation! * = Valid as in, it appears to exist.
+
+			;- Ask if they want 32 Bit or 64 Bit
+
+			Local $GUI_Quicklaunch_Bits = GUICreate($S_Title,320,80,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW)
+				GUISwitch($GUI_Quicklaunch_Bits)
+
+				Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select an architecture:" & @CRLF & "('Automatic' if you don't know what you're doing!)",7,5,313,35)
+
+				Local $GUI_Button_32 = GUICtrlCreateButton("32 Bit",5,40,100,35)
+				Local $GUI_Button_64 = GUICtrlCreateButton("64 Bit",110,40,100,35)
+				Local $GUI_ButtonAuto = GUICtrlCreateButton("Automatic",215,40,100,35)
+
+			GUISetState()
+
+
+			While True
+				Local $CursorInfo = GUIGetCursorInfo($GUI_Quicklaunch_Bits)
+
+				If WinGetTitle("[active]") = $S_Title and @Error = 0 Then
+					If _IsPressed("1B") Then ;- Allow the User to exit the UI by pressing the Escape key.
+						ExitLoop(1)
+					EndIf
+
+					If _IsPressed("01") Then
+						While _IsPressed("01")
+							Sleep(10) ;- Wait until they let go of mouse1! (This is cheap af!)
+						WEnd
+
+						Switch $CursorInfo[4]
+							Case $GUI_Button_32
+
+								$Bits = "32"
+
+								ExitLoop(1) ;- Exit here and proceed
+
+							Case $GUI_Button_64
+
+								$Bits = "64"
+
+								ExitLoop(1) ;- Exit here and proceed
+
+							Case $GUI_ButtonAuto
+
+								$Bits = StringRight(@CPUArch,2)
+
+								ExitLoop(1) ;- Exit here and proceed
+
+						EndSwitch
+					EndIf
+
+					Sleep(10)
+				Else
+					If WinGetTitle("[active]") = $ProgramName Then WinActivate($GUI_Quicklaunch_Bits)
+
+					Sleep(100)
+				EndIf
+
+			WEnd
+
+		EndIf
+
+
+		If $Bits <> $sEmpty and $Type <> $sEmpty Then ;- We got a valid* installation and they chosen an architecture, create shortcut now!
+
+			If FileExists(@DesktopDir & "\SMITE - Quicklaunch (Steam).lnk") Then ;- Cleanup first!
+				FileDelete(@DesktopDir & "\SMITE - Quicklaunch (Steam).lnk")
+			EndIf
+
+			If FileExists(@DesktopDir & "\SMITE - Quicklaunch (EGS).lnk") Then ;- This one too
+				FileDelete(@DesktopDir & "\SMITE - Quicklaunch (EGS).lnk")
+			EndIf
+
+
+			Sleep(100) ;- Windows is very slow
+
+
+			If $Type = "Steam" Then
+
+				If $Bits = "32" Then
+					FileCreateShortcut($RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe",@DesktopDir & "\SMITE - Quicklaunch (Steam)",$RootDir & "\Binaries",'-eac_launcher_settings "Settings.json" -EACALT -eac_dir "..\\EasyAntiCheat\\" -seekfreeloadingpcconsole -LANGUAGE=ENG -HiCommand -pid=017',"(SMITE Optimizer) - Quicklaunch Bypass - MeteorTheLizard",$RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe")
+				Else
+					FileCreateShortcut($RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe",@DesktopDir & "\SMITE - Quicklaunch (Steam)",$RootDir & "\Binaries",'-eac_launcher_settings "Settings64.json" -EACALT -eac_dir "..\\EasyAntiCheat\\" -seekfreeloadingpcconsole -allow64 -LANGUAGE=ENG -HiCommand -pid=017',"(SMITE Optimizer) - Quicklaunch Bypass - MeteorTheLizard",$RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe")
+				EndIf
+
+
+				Sleep(100) ;- Windows is slowwwww
+
+
+				;- Verification
+				If FileExists(@DesktopDir & "\SMITE - Quicklaunch (Steam).lnk") Then
+					MsgBox($MB_OK,"Success!","Created Quicklaunch successfully on your desktop!" & @CRLF & "You can use this shortcut to launch SMITE just like the legacy launcher!")
+				Else
+					MsgBox($MB_OK,"Error!","Quicklaunch could not be created! Code: 017")
+				EndIf
+
+			ElseIf $Type = "EGS" Then
+
+				If $Bits = "32" Then
+					FileCreateShortcut($RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe",@DesktopDir & "\SMITE - Quicklaunch (EGS)",$RootDir & "\Binaries",'-eac_launcher_settings "Settings.json" -EACALT -eac_dir "..\\EasyAntiCheat\\" -seekfreeloadingpcconsole -LANGUAGE=ENG -HiCommand -pid=017',"(SMITE Optimizer) - Quicklaunch Bypass - MeteorTheLizard",$RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe")
+				Else
+					FileCreateShortcut($RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe",@DesktopDir & "\SMITE - Quicklaunch (EGS)",$RootDir & "\Binaries",'-eac_launcher_settings "Settings64.json" -EACALT -eac_dir "..\\EasyAntiCheat\\" -seekfreeloadingpcconsole -allow64 -LANGUAGE=ENG -HiCommand -pid=017',"(SMITE Optimizer) - Quicklaunch Bypass - MeteorTheLizard",$RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe")
+				EndIf
+
+
+				Sleep(100) ;- Windows is slowwwww
+
+
+				;- Verification
+				If FileExists(@DesktopDir & "\SMITE - Quicklaunch (EGS).lnk") Then
+					MsgBox($MB_OK,"Success!","Created Quicklaunch successfully on your desktop!" & @CRLF & "You can use this shortcut to launch SMITE just like the legacy launcher!")
+				Else
+					MsgBox($MB_OK,"Error!","Quicklaunch could not be created! Code: 018")
+				EndIf
+
+			EndIf
+
+		EndIf
+
+
+		;- Delete popup and switch back to main UI
+
+		GUIDelete($GUI_Quicklaunch)
+
+		If IsDeclared("GUI_Quicklaunch_Bits") Then _
+			GUIDelete($GUI_Quicklaunch_Bits)
+
+
+		GUISwitch($MainGUI)
+		GUISetState(@SW_ENABLE,$MainGUI) ;- Enable Main Window
+
+		WinActivate($MainGUI)
+
 	EndFunc
 
 	Func Internal_InstallLegacyLauncher()
@@ -5548,7 +5839,7 @@ EndFunc
 		EndIf
 
 
-		Local $obj_Info = MsgBox(0,"Information","Hi-Rez Studios ended their Legacy Launcher support with 9.4 'The Jade Emperor' update." & @CRLF & "You will no longer receive updates through the launcher making it obsolete.")
+		Local $obj_Info = MsgBox(0,"Information","Hi-Rez Studios ended their Legacy Launcher support with 9.4 'The Jade Emperor' update." & @CRLF & @CRLF & "You will no longer receive updates through the launcher. You can still perform updates manually by copying Steam or Epic Game Store game files into the legacy installation game folder" & @CRLF & @CRLF & "The launcher will eventually stop working completely, it is recommended to use the Quicklaunch Bypass instead." & @CRLF & "> Requires SMITE to be installed through Steam or Epic Game Store.")
 
 
 		Local $bContinue = MsgBox($MB_YESNO,"Information","This feature will not work if you have previously installed the Legacy Launcher on your System."&@CRLF&@CRLF&"Installation requires user input."&@CRLF&@CRLF&"Would you like to continue?")
@@ -5568,7 +5859,7 @@ EndFunc
 				If @Compiled Then
 					$SplashScreenGUIAnimation = _GUICtrlCreateGIF(@AutoItExe,"RES;SO_LogoGIF",0,0,600,100)
 				Else
-					$SplashScreenGUIAnimation = _GUICtrlCreateGIF($MainResourcePath & "SO_Logo.gif","",0,0,600,100)
+					$SplashScreenGUIAnimation = _GUICtrlCreateGIF($MainResourcePath & "SO_Logo.gif",$sEmpty,0,0,600,100)
 				EndIf
 
 				Global $SplashScreenGUIProgress = GUiCtrlCreateProgress(0,100,600,25)
@@ -6340,7 +6631,7 @@ While True ;- Main program routine.
 
 		;------------------------------------------------------------------------------
 
-		Sleep(1)
+		Sleep(10)
 	Else
 		If $MenuPopupState Then _FixMenuSwitch()
 		$JustTabbedBackIn = 0 ;- Used in the help tips logic.

@@ -9,10 +9,8 @@
 </p>
 
 <p align="center"><strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>
-<p align="center"><strong>Fully compatible with Windows 7, Windows 8, and Windows 10.</strong></p>
-<p align="center">Windows XP and Windows Vista are not supported officially, but the program might work just fine.</p>
-<p align="center">Full Windows 11 support is planned, however AutoIt does not officially support it yet.</p>
-<p align="center">Just like Windows XP and Windows Vista, the program might work just fine under Windows 11.</p>
+<p align="center"><strong>Fully compatible with Windows 7, Windows 8, and Windows 10. (Windows 11 support is planned.)</strong></p>
+<p align="center">Windows XP, Windows Vista, and Windows 11 are not supported officially, but the program might work just fine.</p>
 
 <br>
 
@@ -30,10 +28,14 @@
  <img width="810" height="450" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/pic_3.jpg" />
 </p>
 
-<p align="center"> <strong>Have issues with the Audio cutting off during intense teamfights? This program lets you increase the amount of sounds that can play at once, fixing that issue! </strong> </p>
-<p align="center"> <strong>Additionally, there's also a feature that lets you install the old legacy launcher! (Experimental)</strong> </p>
+<p align="center">Having issues with some sound clips cutting out during intense teamfights?<p>
+<p align="center">This program lets you increase the amount of sounds that can play at once, fixing that issue!</p>
 
-<p align="center">If you experience issues when installing the old Legacy launcher, make sure its uninstalled from your system "Hi-Rez Studios Games" and then delete this folder: "C:\ProgramData\Hi-Rez Studios" (This might be a hidden folder). Afterwards try to install the legacy launcher again.</p>
+<br>
+
+<h2 align="center"><strong>Using the Standalone Launcher post 9.4 patch</strong></h2>
+
+<p align="center">There is a feature that lets you install the old legacy (standalone) launcher! However it is now recommended to use the Quicklaunch Bypass instead as the standalone launcher is no longer supported by HiRez. Here is a video explaining how you can still use the standalone launcher, sort of. https://www.youtube.com/watch?v=CfyWE6LwJVU this method gives you all the benefits of the Standalone Launcher, but you're using the Steam or Epic Game Store version of the game instead. You'll still receive an increase in performance.</p>
 
 <br>
 

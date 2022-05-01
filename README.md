@@ -1,16 +1,23 @@
 <p align="center">
  <img width="600" height="100" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/SO_Logo.gif">
 </p>
+
+<p align="center"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/MeteorTheLizard/SMITE-Optimizer/total"> <img alt="GitHub" src="https://img.shields.io/github/license/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub issues" src="https://img.shields.io/github/issues/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/MeteorTheLizard"></p>
+
+<br>
+
+<p align="center"><strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>
+<p align="center"><strong>Fully compatible with Windows 7, Windows 8, and Windows 10. (Windows 11 support is planned.)</strong></p>
+<p align="center">Windows XP, Windows Vista, and Windows 11 are not supported officially, but the program might work just fine.</p>
+
+<br>
+
 <p align="center">
  <img width="810" height="450" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/pic_1.jpg" />
 </p>
 <p align="center">
  <img width="810" height="450" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/pic_2.jpg" />
 </p>
-
-<p align="center"><strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>
-<p align="center"><strong>Fully compatible with Windows 7, Windows 8, and Windows 10. (Windows 11 support is planned.)</strong></p>
-<p align="center">Windows XP, Windows Vista, and Windows 11 are not supported officially, but the program might work just fine.</p>
 
 <br>
 

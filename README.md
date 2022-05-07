@@ -2,8 +2,8 @@
  <img width="600" height="100" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/SO_Logo.gif">
 </p>
 
-<p align="center"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/MeteorTheLizard/SMITE-Optimizer/total"> <img alt="GitHub" src="https://img.shields.io/github/license/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub issues" src="https://img.shields.io/github/issues/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/MeteorTheLizard/SMITE-Optimizer"></p> <p align="center"><img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/MeteorTheLizard"></p>
-
+<p align="center"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/MeteorTheLizard/SMITE-Optimizer/total"> <img alt="GitHub" src="https://img.shields.io/github/license/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub issues" src="https://img.shields.io/github/issues/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/MeteorTheLizard/SMITE-Optimizer"></p> <p align="center"><img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/MeteorTheLizard/SMITE-Optimizer"> <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/MeteorTheLizard/SMITE-Optimizer">
+ 
 <br>
 
 <p align="center"><strong>A modern and powerful program to easily change the configuration files for <a href="https://www.smitegame.com/play-for-free/?ref=Meteor">SMITE</a> PC on Windows.</strong></p>

@@ -3122,7 +3122,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.4"
+Global Const $ProgramVersion = "1.3.4.1"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3180,6 +3180,7 @@ Global $DebugIconHoverHideBool = False
 Global $SteamBtnHoverHideBool = False
 Global $EGSBtnHoverHideBool = False
 Global $LegacyBtnHoverHideBool = False
+Global $KofiBtnHoverHideBool = False
 Global $PayPalBtnHoverHideBool = False
 Global $PatreonBtnHoverHideBool = False
 Global $ViewOnlineChangesBtnHoverBool = False
@@ -4225,26 +4226,24 @@ GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"Dates shown are in the following format: DD/MM/YYYY."&@CRLF&"The other numbers are the time at which the backup was made.",57,283,425,41)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 Local $Year = 2022
-Global $MainGUIDonateButtonPaypal = GUICtrlCreatePic($sEmpty,136,168,250,110)
-LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
-GUICtrlSetOnEvent($MainGUIDonateButtonPaypal,"ButtonPressLogic")
+Global $MainGUIDonateButtonKofi = GUICtrlCreatePic($sEmpty,136,168,250,110)
+LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
+GUICtrlSetOnEvent($MainGUIDonateButtonKofi,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 Global $MainGUIDonateButtonPatreon = GUICtrlCreatePic($sEmpty,474,168,250,110)
 LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 GUICtrlSetOnEvent($MainGUIDonateButtonPatreon,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-Global $MainGUIDonateLabelInfo = GUICtrlCreateLabelTransparentBG("Feeling generous? This is the place where you can show your appreciation for the project!",74,92,850,30)
+Global $MainGUIDonateButtonPaypal = GUICtrlCreatePic($sEmpty,305,300,250,110)
+LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
+GUICtrlSetOnEvent($MainGUIDonateButtonPaypal,"ButtonPressLogic")
+GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+Global $MainGUIDonateLabelInfo = GUICtrlCreateLabelTransparentBG("Feeling generous? This is the place where you can show your appreciation for the project!",74,67,850,30)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetFont(-1,12,500,Default,$MainFontName)
-Global $MainGUIDonateLabelInfo2 = GUICtrlCreateLabelTransparentBG("Thank you for your interest in donating. Any support is always greatly appreciated! <3",85,332,850,30)
+Global $MainGUIDonateLabelInfo2 = GUICtrlCreateLabelTransparentBG("Thank you for your interest in donating. Any support is always greatly appreciated! <3",85,115,850,30)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetFont(-1,12,500,Default,$MainFontName)
-Global $MainGUIDonateLabelLogoCopyrightPatreon = GUICtrlCreateLabelTransparentBG('Patreon (C) '&$Year&' Patreon, Inc. Logo and Wordmark used with permission as defined in "Brand Guidelines".',5,412,850,16)
-GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-GUICtrlSetFont(-1,10,500,Default,$MainFontName)
-Global $MainGUIDonateLabelLogoCopyrightPayPal = GUICtrlCreateLabelTransparentBG('PayPal (C) 1999-'&$Year&' PayPal. All Rights reserved. Logo used with permission as defined in "PayPal'&"'s trademarks"&'".',5,430,850,16)
-GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-GUICtrlSetFont(-1,10,500,Default,$MainFontName)
 Global $MainGUIChangelogRichEdit = GUICtrlCreateEdit($ChangelogText,55,41,$MinWidth-60,$MinHeight-46,BitOr($ES_READONLY,$WS_VSCROLL))
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM)
@@ -4818,20 +4817,18 @@ GUICtrlSetState($MainGUIRestoreConfigurationsLabelAskForConfirmation,$GUI_HIDE)
 GUICtrlSetState($MainGUIRestoreConfigurationsLabelBackupInfo,$GUI_HIDE)
 EndFunc
 Func DrawMainGUIDonate()
+GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_SHOW)
 GUICtrlSetState($MainGUIDonateButtonPaypal,$GUI_SHOW)
 GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_SHOW)
 GUICtrlSetState($MainGUIDonateLabelInfo,$GUI_SHOW)
 GUICtrlSetState($MainGUIDonateLabelInfo2,$GUI_SHOW)
-GUICtrlSetState($MainGUIDonateLabelLogoCopyrightPatreon,$GUI_SHOW)
-GUICtrlSetState($MainGUIDonateLabelLogoCopyrightPayPal,$GUI_SHOW)
 EndFunc
 Func UnDrawMainGUIDonate()
+GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_HIDE)
 GUICtrlSetState($MainGUIDonateButtonPaypal,$GUI_HIDE)
 GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_HIDE)
 GUICtrlSetState($MainGUIDonateLabelInfo,$GUI_HIDE)
 GUICtrlSetState($MainGUIDonateLabelInfo2,$GUI_HIDE)
-GUICtrlSetState($MainGUIDonateLabelLogoCopyrightPatreon,$GUI_HIDE)
-GUICtrlSetState($MainGUIDonateLabelLogoCopyrightPayPal,$GUI_HIDE)
 EndFunc
 Func DrawMainGUIChangelog()
 ControlFocus($MainGUI,$sEmpty,$MainGUIChangelogRichEdit)
@@ -5076,8 +5073,6 @@ $Found = VerifyAndStoreConfigPath("Epic Games Store", @MyDocumentsDir & "\My Gam
 If not $Found Then
 $Found = VerifyAndStoreConfigPath("Epic Games Store", "C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini", "C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini", "C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini")
 If not $Found Then
-Local $Is64 = $sEmpty
-If @OSArch = "X64" Then $Is64 = "WOW6432Node\"
 Local $EpicProgramData = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
 Local $Files = _FileListToArray($EpicProgramData,"*.item",1,True)
 _ArrayDelete($Files,0)
@@ -5554,11 +5549,14 @@ EndIf
 EndIf
 EndIf
 EndIf
+Case $MainGUIDonateButtonKofi
+ShellExecute("https://ko-fi.com/meteorthelizard")
+LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
 Case $MainGUIDonateButtonPaypal
 ShellExecute("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG")
 LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
 Case $MainGUIDonateButtonPatreon
-ShellExecute("https://www.patreon.com/SMITEOptimizer")
+ShellExecute("https://www.patreon.com/MeteorTheLizard")
 LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 Case $MainGUIChangelogButtonViewOnline, $MainGUIChangelogButtonViewOnlineBG
 ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer/commits/master")
@@ -6734,8 +6732,6 @@ $RootDir = $Path
 $Type = "Steam"
 ExitLoop(1)
 Case $GUI_ButtonEGS
-Local $Is64 = $sEmpty
-If @OSArch = "X64" Then $Is64 = "WOW6432Node\"
 Local $EpicProgramData = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
 Local $Files = _FileListToArray($EpicProgramData,"*.item",1,True)
 _ArrayDelete($Files,0)
@@ -7060,6 +7056,9 @@ UndoMenuHoverState()
 LoadImageResource($DebugIconHover,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
 LoadImageResource($DebugIcon,$MainResourcePath & "DebugIconInactive.jpg","DebugIconInactive")
 $DebugIconHoverHideBool = False
+ElseIf $KofiBtnHoverHideBool Then
+LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
+$KofiBtnHoverHideBool = False
 ElseIf $PayPalBtnHoverHideBool Then
 LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
 $PayPalBtnHoverHideBool = False
@@ -7399,6 +7398,12 @@ MenuHoverState("Debug",280,103,281)
 LoadImageResource($DebugIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 LoadImageResource($DebugIcon,$MainResourcePath & "DebugIconActive.jpg","DebugIconActive")
 $DebugIconHoverHideBool = True
+EndIf
+Case $MainGUIDonateButtonKofi
+If $KofiBtnHoverHideBool = False Then
+_FixMenuSwitch()
+LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnActive.jpg","KofiBtnActive")
+$KofiBtnHoverHideBool = True
 EndIf
 Case $MainGUIDonateButtonPaypal
 If $PayPalBtnHoverHideBool = False Then

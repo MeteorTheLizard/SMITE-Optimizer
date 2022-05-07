@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.4.1
+#AutoIt3Wrapper_Res_Fileversion=1.3.4.2
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -68,7 +68,7 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\PatreonBtnInActive.jpg, RT_RCDATA, PatreonBtnInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\PayPalBtnActive.jpg, RT_RCDATA, PayPalBtnActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\PayPalBtnInActive.jpg, RT_RCDATA, PayPalBtnInActive, 0
-#AutoIt3Wrapper_Res_File_Add=Resource\KofiBtnInActive.jpg, RT_RCDATA, KofiBtnInActive, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\KofiBtnActive.jpg, RT_RCDATA, KofiBtnActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\KofiBtnInActive.jpg, RT_RCDATA, KofiBtnInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\DebugFooter.jpg, RT_RCDATA, DebugFooter, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\RestoreConfigsIconActive.jpg, RT_RCDATA, RestoreConfigsIconActive, 0
@@ -187,7 +187,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.4.1"
+Global Const $ProgramVersion = "1.3.4.2"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth

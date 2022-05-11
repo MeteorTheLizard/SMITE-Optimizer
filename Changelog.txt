@@ -1,3 +1,20 @@
+SMITE Optimizer Version 1.3.4.3
+- Fixed a bug with the Desired FPS (Uncap) option always using the simple tab input even when in advanced mode.
+> This made it so that changing the FPS uncap option in the advanced tab had no effect. Whoops.
+
+- Changed error code 004 - 005 - 013 to be more descriptive. These errors happen when the optimizer could not write to the config files. Usually this happens when they're set to read only mode.
+- Changed error code 001 - 002 - 012 to be more descriptive. These errors happen when individual files of the config backup fail being copied. It now includes which file failed.
+- Changed error code 003 to be more descriptive. This error happens when an internal error occurred during the config backup routine.
+- Updated the system information box in the debug tab to be a bit larger to allow longer motherboard names to be displayed correctly. Thanks MSI and other manufacturers that do this!
+- Added a checkbox to the debug tab that allows users to disable the integrity / repair routine. This never caused problems but it can't hurt to have this option available.
+- Updated reference hives for the integrity verification algorithm.
+- Fixed an issue with the DevTool 'INIToAutoItHive.au3'
+- Fixed spelling mistakes in the changelog.
+
+
+
+
+
 SMITE Optimizer Version 1.3.4.2
 - Fixed a bug with the Ko-fi button in the 'Donation' tab
 
@@ -23,7 +40,7 @@ SMITE Optimizer Version 1.3.4
 - Updated Legacy Launcher installer notices (again)
 > The legacy launcher still works at the time of writing this, installing it will download 9.3 when launching it.
 > You can then copy Steam or Epic Game Store files over to the legacy install to update it to 9.4 and then launch the game normally.
-> Eventually the legacy launcher will be completely shut down, meaning this method wont work anymore.
+> Eventually the legacy launcher will be completely shut down, meaning this method won't work anymore.
 > It is recommended to use the new Quicklaunch bypass instead which launches the Steam or Epic Game Store version like the legacy launcher meaning you still have all the benefits.
 > Additionally, since it uses official methods only, it is 100% 'legal' as in; Not violating the Terms of Service.
 
@@ -55,9 +72,9 @@ SMITE Optimizer Version 1.3.2
 > New fix: Sounds cutting off (MaxChannels)
 > New shortcut: FPS. You can set the FPS cap in the fixes tab now so that you don't have to make changes to other settings if all you want is a higher FPS cap. (QoL)
 > New: Install Legacy Launcher Button. You heard right, the SMITE Optimizer now has a feature that allows you to install the old Legacy Launcher on your system. This feature is experimental and may not always work. Additionally, you will have to re-download the whole game through the launcher.
-> ( The downloaded files are from HiRez and are shipped to players through the Steam version ( Steam\steamapps\common\SMITE\Binaries\Redist ), they're official and 100% safe. )
+> (The downloaded files are from HiRez and are shipped to players through the Steam version (Steam\steamapps\common\SMITE\Binaries\Redist), they're official and 100% safe. )
 
-- Updated the Vehicle Quality help popup as this option affects the Distance Line, Reticule, and Ground Target now. (Previously: Unused) - Reported by: WarpBurger
+- Updated the Vehicle Quality help popup as this option affects the Distance Line, Reticle, and Ground Target now. (Previously: Unused) - Reported by: WarpBurger
 
 - Added the BattleGame / DefaultGame configuration files (This change requires ALL users to re-discover the configuration files)
 > This file was added as there are more useful settings inside, one of them is required for the Fixes tab.
@@ -66,7 +83,7 @@ SMITE Optimizer Version 1.3.2
 Misc:
 - Fixed spacing of menu item text
 - Fixed spacing of "(Click to Continue)" text when applying the changes
-- Fixed spacing of "Processing index of drive: (DriveLetter)" text when using the automatic file discovery feature
+- Fixed spacing of "Processing index of drive: (Drive letter)" text when using the automatic file discovery feature
 - Fixed the spacing of the steam logo in the steam discovery button in the discovery tab
 - Updated the DevTools/FontColors.txt to include the "Really bad" color
 - Updated the Changelog.txt to fix formatting inconsistencies.
@@ -76,7 +93,7 @@ Misc:
 
 
 SMITE Optimizer Version 1.3.1.52
-- Made even more improvments to the update routine.
+- Made even more improvements to the update routine.
 > The progress display is now fixed, no idea how I messed that up so badly. (Also made it display more information)
 > The update.ini it downloads from GitHub or Pastebin is now 100% guaranteed to be up-to-date.
 
@@ -86,7 +103,7 @@ SMITE Optimizer Version 1.3.1.52
 
 SMITE Optimizer Version 1.3.1.51
 - Made some Improvements to the automatic updater.
-> Whenever the program was launched, the update information was downloaded from the internet (github or pastebin).
+> Whenever the program was launched, the update information was downloaded from the internet (GitHub or pastebin).
 > However, that information was then cached out of my control and whenever the program was launched again, instead of downloading the information fresh from the internet, it loaded the information from cache which was causing problems.
 > The cached information was usually deleted on a proper shutdown of the system but due to Windows 10 not actually shutting down on a shut down, this cache was never reset until windows 10 did a full shutdown.
 > (I'm so tired of windows, ngl.), this issue is now fixed.
@@ -117,7 +134,7 @@ SMITE Optimizer Version 1.3.1.4
 
 
 SMITE Optimizer Version 1.3.1.3
-- Updated Copyright information
+- Updated Copyright information.
 
 
 
@@ -132,7 +149,7 @@ SMITE Optimizer Version 1.3.1.2
 
 SMITE Optimizer Version 1.3.1.1
 - Fixed 'Whole Scene Dominant Shadows' label in Advanced mode being cut-off.
-- Fixed 'Verifying and repairing integrity' label in the Apply changes progress window being wrapped to the next line.
+- Fixed 'Verifying and repairing integrity' label in the apply changes progress window being wrapped to the next line.
 
 
 
@@ -148,13 +165,13 @@ SMITE Optimizer Version 1.3.1
 
 
 
-SMITE Optimizer Version 1.3 (Codename: "The Future is here")
+SMITE Optimizer Version 1.3 (Code name: "The Future is here")
 
 Compatible Operating Systems: Windows 7, Windows 8, Windows 8.1 and Windows 10.
-Please note that the program might still work perfectly fine on Windows XP and Windows Vista, however it was not tested and they won't be officially supported. Expect bugs!
+Please note that the program might still work perfectly fine on Windows XP and Windows Vista, however it was not tested, and they won't be officially supported. Expect bugs!
 
 Most important changes:
-The program is now open source and available on GitHub! ( https://github.com/MeteorTheLizard/SMITE-Optimizer )
+The program is now open source and available on GitHub! (https://github.com/MeteorTheLizard/SMITE-Optimizer)
 Version 1.3 and upcoming versions are licensed under the GPL-3.0 License.
 Anyone may contribute to the code-base by creating a fork of the master branch and making changes to it. Once you are done open a pull request.
 Older versions than 1.3 are available on GitHub as well. Keep in mind that these versions are licensed differently.
@@ -189,7 +206,7 @@ List of changes:
 - New update routine that is a lot more efficient.
 - Added an algorithm to find errors in the configuration files and repair them.
 - More efficient way of applying the changes.
-- More efficient and user friendly way to restore backups.
+- More efficient and user-friendly way to restore backups.
 - Updated Debug tab.
 - Updates are now downloaded and applied automatically. (To disable automatic updates you will now have to go into the debug tab)
 

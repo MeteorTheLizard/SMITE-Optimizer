@@ -106,7 +106,7 @@ Global $B = 1
 
 	$I = 0
 
-	ConsoleWrite("Global Const $EngineSettingsClearHive["&$1DSize&"]["&$2DSize&"] = [ _"&@CRLF&@TAB&"[") ;- Initial line.
+	ConsoleWrite("Global Const $EngineSettingsClearHive["&$1DSize&"]["&$2DSize + 1&"] = [ _"&@CRLF&@TAB&"[") ;- Initial line.
 
 	While ($I < $1DSize)
 		ConsoleWrite("'"&$OutputAr[$I][0]&"',")

@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.4.3
+#AutoIt3Wrapper_Res_Fileversion=1.3.4.4
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -187,7 +187,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.4.3"
+Global Const $ProgramVersion = "1.3.4.4"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -3866,6 +3866,63 @@ EndFunc
 								FileCopy($SettingsPath,@TempDir & "\optimizerdebugdump\config\EngineSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH)) ;- BattleEngine.ini or DefaultEngine.in
 								FileCopy($SystemSettingsPath,@TempDir & "\optimizerdebugdump\config\SystemSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH)) ;- BattleSystemSettings.ini or DefaultSystemSettings.ini
 								FileCopy($GameSettingsPath,@TempDir & "\optimizerdebugdump\config\GameSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH)) ;- BattleGame.ini or DefaultGame.ini
+
+
+								;- For whatever reason Hi-Rez decided it is a good idea to store login information including the login token in the .ini files as plain-text.
+								;- This is incredibly unsafe and stupid.
+								;- We are not interested in this information so we are filtering it out to NOT be included in the debug dump.
+								;- This is especially important as these debug dumps usually get publicly posted, we don't want people to lose their accounts.
+								;- Hi-Rez why are you so dumb sometimes??
+
+								If FileExists(@TempDir & "\optimizerdebugdump\config\GameSettings.ini") Then
+
+									Local $Read = FileRead(@TempDir & "\optimizerdebugdump\config\GameSettings.ini")
+									Local $Split = StringSplit($Read,@CR)
+										_ArrayDelete($Split,0) ;- No count
+
+
+									;- [TgClientBase.TgGameLaunchBase]
+
+									For $I = 0 To uBound($Split) - 1 Step 1
+										If StringMid($Split[$I],2,10) = "LoginName=" Then
+
+											_ArrayDelete($Split,$I) ;- Name
+											_ArrayDelete($Split,$I) ;- Password
+;~ 											_ArrayDelete($Split,$I) ;- Save information
+											;- This is replaced with the thing below this comment, doing it this way preserves a space between the keys.
+
+											$Split[$I] = "{INFORMATION REPLACED FOR SECURITY REASONS}"
+
+											ExitLoop
+										EndIf
+									Next
+
+
+									;- [PlatformCommon.PComPlayerController]
+
+									For $I = 0 To uBound($Split) - 1 Step 1
+										If StringMid($Split[$I],2,16) = "m_bKeepLoggedIn=" Then
+
+											_ArrayDelete($Split,$I) ;- Stay logged in?
+											_ArrayDelete($Split,$I) ;- Portal ID
+											_ArrayDelete($Split,$I) ;- Account ID
+											_ArrayDelete($Split,$I) ;- Access Token
+											_ArrayDelete($Split,$I) ;- Token Expiration Date
+
+											$Split[$I] = "{INFORMATION REPLACED FOR SECURITY REASONS}"
+
+											ExitLoop
+										EndIf
+									Next
+
+
+									;- Write the new data to the file
+
+									$Split = _ArrayToString($Split,"")
+
+									FileWrite(@TempDir & "\optimizerdebugdump\config\GameSettings.ini",$Split)
+
+								EndIf
 
 							;- Retrieve EAC logs
 								GUICtrlSetData($LabelDebugDumpWorking,"Retrieving EasyAntiCheat logs")

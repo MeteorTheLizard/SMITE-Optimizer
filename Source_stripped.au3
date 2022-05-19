@@ -779,6 +779,46 @@ __ArrayDualPivotSort($aArray, $iPivot_Left, $iLess - 1, True)
 __ArrayDualPivotSort($aArray, $iGreater + 1, $iPivot_Right, False)
 EndIf
 EndFunc
+Func _ArrayToString(Const ByRef $aArray, $sDelim_Col = "|", $iStart_Row = -1, $iEnd_Row = -1, $sDelim_Row = @CRLF, $iStart_Col = -1, $iEnd_Col = -1)
+If $sDelim_Col = Default Then $sDelim_Col = "|"
+If $sDelim_Row = Default Then $sDelim_Row = @CRLF
+If $iStart_Row = Default Then $iStart_Row = -1
+If $iEnd_Row = Default Then $iEnd_Row = -1
+If $iStart_Col = Default Then $iStart_Col = -1
+If $iEnd_Col = Default Then $iEnd_Col = -1
+If Not IsArray($aArray) Then Return SetError(1, 0, -1)
+Local $iDim_1 = UBound($aArray, $UBOUND_ROWS) - 1
+If $iStart_Row = -1 Then $iStart_Row = 0
+If $iEnd_Row = -1 Then $iEnd_Row = $iDim_1
+If $iStart_Row < -1 Or $iEnd_Row < -1 Then Return SetError(3, 0, -1)
+If $iStart_Row > $iDim_1 Or $iEnd_Row > $iDim_1 Then Return SetError(3, 0, "")
+If $iStart_Row > $iEnd_Row Then Return SetError(4, 0, -1)
+Local $sRet = ""
+Switch UBound($aArray, $UBOUND_DIMENSIONS)
+Case 1
+For $i = $iStart_Row To $iEnd_Row
+$sRet &= $aArray[$i] & $sDelim_Col
+Next
+Return StringTrimRight($sRet, StringLen($sDelim_Col))
+Case 2
+Local $iDim_2 = UBound($aArray, $UBOUND_COLUMNS) - 1
+If $iStart_Col = -1 Then $iStart_Col = 0
+If $iEnd_Col = -1 Then $iEnd_Col = $iDim_2
+If $iStart_Col < -1 Or $iEnd_Col < -1 Then Return SetError(5, 0, -1)
+If $iStart_Col > $iDim_2 Or $iEnd_Col > $iDim_2 Then Return SetError(5, 0, -1)
+If $iStart_Col > $iEnd_Col Then Return SetError(6, 0, -1)
+For $i = $iStart_Row To $iEnd_Row
+For $j = $iStart_Col To $iEnd_Col
+$sRet &= $aArray[$i][$j] & $sDelim_Col
+Next
+$sRet = StringTrimRight($sRet, StringLen($sDelim_Col)) & $sDelim_Row
+Next
+Return StringTrimRight($sRet, StringLen($sDelim_Row))
+Case Else
+Return SetError(2, 0, -1)
+EndSwitch
+Return 1
+EndFunc
 Func _ArrayUnique(Const ByRef $aArray, $iColumn = 0, $iBase = 0, $iCase = 0, $iCount = $ARRAYUNIQUE_COUNT, $iIntType = $ARRAYUNIQUE_AUTO)
 If $iColumn = Default Then $iColumn = 0
 If $iBase = Default Then $iBase = 0
@@ -3122,7 +3162,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.4.3"
+Global Const $ProgramVersion = "1.3.4.4"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -5629,6 +5669,32 @@ GUICtrlSetData($LabelDebugDumpWorking,"Retrieving game configuration files")
 FileCopy($SettingsPath,@TempDir & "\optimizerdebugdump\config\EngineSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 FileCopy($SystemSettingsPath,@TempDir & "\optimizerdebugdump\config\SystemSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 FileCopy($GameSettingsPath,@TempDir & "\optimizerdebugdump\config\GameSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
+If FileExists(@TempDir & "\optimizerdebugdump\config\GameSettings.ini") Then
+Local $Read = FileRead(@TempDir & "\optimizerdebugdump\config\GameSettings.ini")
+Local $Split = StringSplit($Read,@CR)
+_ArrayDelete($Split,0)
+For $I = 0 To uBound($Split) - 1 Step 1
+If StringMid($Split[$I],2,10) = "LoginName=" Then
+_ArrayDelete($Split,$I)
+_ArrayDelete($Split,$I)
+$Split[$I] = "{INFORMATION REPLACED FOR SECURITY REASONS}"
+ExitLoop
+EndIf
+Next
+For $I = 0 To uBound($Split) - 1 Step 1
+If StringMid($Split[$I],2,16) = "m_bKeepLoggedIn=" Then
+_ArrayDelete($Split,$I)
+_ArrayDelete($Split,$I)
+_ArrayDelete($Split,$I)
+_ArrayDelete($Split,$I)
+_ArrayDelete($Split,$I)
+$Split[$I] = "{INFORMATION REPLACED FOR SECURITY REASONS}"
+ExitLoop
+EndIf
+Next
+$Split = _ArrayToString($Split,"")
+FileWrite(@TempDir & "\optimizerdebugdump\config\GameSettings.ini",$Split)
+EndIf
 GUICtrlSetData($LabelDebugDumpWorking,"Retrieving EasyAntiCheat logs")
 FileCopy("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat\*.log",@TempDir & "\optimizerdebugdump\logs\*.log",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 FileCopy("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat\140\*.log",@TempDir & "\optimizerdebugdump\logs\*.log",BitOr($FC_OVERWRITE,$FC_CREATEPATH))

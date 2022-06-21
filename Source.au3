@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_UseUpx=y
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.4.4
+#AutoIt3Wrapper_Res_Fileversion=1.3.4.5
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -66,8 +66,6 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\NotificationBG.jpg, RT_RCDATA, NotificationBG, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\PatreonBtnActive.jpg, RT_RCDATA, PatreonBtnActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\PatreonBtnInActive.jpg, RT_RCDATA, PatreonBtnInActive, 0
-#AutoIt3Wrapper_Res_File_Add=Resource\PayPalBtnActive.jpg, RT_RCDATA, PayPalBtnActive, 0
-#AutoIt3Wrapper_Res_File_Add=Resource\PayPalBtnInActive.jpg, RT_RCDATA, PayPalBtnInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\KofiBtnActive.jpg, RT_RCDATA, KofiBtnActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\KofiBtnInActive.jpg, RT_RCDATA, KofiBtnInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\DebugFooter.jpg, RT_RCDATA, DebugFooter, 0
@@ -187,7 +185,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.4.4"
+Global Const $ProgramVersion = "1.3.4.5"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -255,7 +253,6 @@ Global $SteamBtnHoverHideBool = False ;- Configuration Discovery
 Global $EGSBtnHoverHideBool = False
 Global $LegacyBtnHoverHideBool = False
 Global $KofiBtnHoverHideBool = False ;- Donate
-Global $PayPalBtnHoverHideBool = False ;- Donate
 Global $PatreonBtnHoverHideBool = False
 Global $ViewOnlineChangesBtnHoverBool = False ;- Changelog
 Global $AnimatedLogoBool = False ;- Copyright
@@ -2117,23 +2114,12 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 			GUICtrlSetOnEvent($MainGUIDonateButtonPatreon,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-		Global $MainGUIDonateButtonPaypal = GUICtrlCreatePic($sEmpty,305,300,250,110)
-			LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
-			GUICtrlSetOnEvent($MainGUIDonateButtonPaypal,"ButtonPressLogic")
-			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 		Global $MainGUIDonateLabelInfo = GUICtrlCreateLabelTransparentBG("Feeling generous? This is the place where you can show your appreciation for the project!",74,67,850,30)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,12,500,Default,$MainFontName)
 		Global $MainGUIDonateLabelInfo2 = GUICtrlCreateLabelTransparentBG("Thank you for your interest in donating. Any support is always greatly appreciated! <3",85,115,850,30)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,12,500,Default,$MainFontName)
-
-;~ 		Global $MainGUIDonateLabelLogoCopyrightPatreon = GUICtrlCreateLabelTransparentBG('Patreon (C) '&$Year&' Patreon, Inc. Logo and Wordmark used with permission as defined in "Brand Guidelines".',5,412,850,16)
-;~ 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-;~ 			GUICtrlSetFont(-1,10,500,Default,$MainFontName)
-;~ 		Global $MainGUIDonateLabelLogoCopyrightPayPal = GUICtrlCreateLabelTransparentBG('PayPal (C) 1999-'&$Year&' PayPal. All Rights reserved. Logo used with permission as defined in "PayPal'&"'s trademarks"&'".',5,430,850,16)
-;~ 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-;~ 			GUICtrlSetFont(-1,10,500,Default,$MainFontName)
 
 
 	;-- Changelog
@@ -2785,21 +2771,15 @@ EndFunc
 
 	Func DrawMainGUIDonate()
 		GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_SHOW)
-		GUICtrlSetState($MainGUIDonateButtonPaypal,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDonateLabelInfo,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDonateLabelInfo2,$GUI_SHOW)
-;~ 		GUICtrlSetState($MainGUIDonateLabelLogoCopyrightPatreon,$GUI_SHOW)
-;~ 		GUICtrlSetState($MainGUIDonateLabelLogoCopyrightPayPal,$GUI_SHOW)
 	EndFunc
 	Func UnDrawMainGUIDonate()
 		GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_HIDE)
-		GUICtrlSetState($MainGUIDonateButtonPaypal,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDonateLabelInfo,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDonateLabelInfo2,$GUI_HIDE)
-;~ 		GUICtrlSetState($MainGUIDonateLabelLogoCopyrightPatreon,$GUI_HIDE)
-;~ 		GUICtrlSetState($MainGUIDonateLabelLogoCopyrightPayPal,$GUI_HIDE)
 	EndFunc
 
 	Func DrawMainGUIChangelog()
@@ -3759,10 +3739,6 @@ EndFunc
 				Case $MainGUIDonateButtonKofi
 					ShellExecute("https://ko-fi.com/meteorthelizard")
 					LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive") ;- Undo the hover graphics.
-
-				Case $MainGUIDonateButtonPaypal
-					ShellExecute("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG")
-					LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive") ;- Undo the hover graphics.
 
 				Case $MainGUIDonateButtonPatreon
 					ShellExecute("https://www.patreon.com/MeteorTheLizard")
@@ -6274,9 +6250,6 @@ Func _FixMenuSwitch() ;- This function is used internally to handle menu hover l
 	ElseIf $KofiBtnHoverHideBool Then
 		LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
 		$KofiBtnHoverHideBool = False
-	ElseIf $PayPalBtnHoverHideBool Then
-		LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
-		$PayPalBtnHoverHideBool = False
 	ElseIf $PatreonBtnHoverHideBool Then
 		LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 		$PatreonBtnHoverHideBool = False
@@ -6670,13 +6643,6 @@ While True ;- Main program routine.
 
 						LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnActive.jpg","KofiBtnActive")
 						$KofiBtnHoverHideBool = True
-					EndIf
-				Case $MainGUIDonateButtonPaypal
-					If $PayPalBtnHoverHideBool = False Then
-						_FixMenuSwitch()
-
-						LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnActive.jpg","PayPalBtnActive")
-						$PayPalBtnHoverHideBool = True
 					EndIf
 				Case $MainGUIDonateButtonPatreon
 					If $PatreonBtnHoverHideBool = False Then

@@ -3162,7 +3162,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.4.4"
+Global Const $ProgramVersion = "1.3.4.5"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3221,7 +3221,6 @@ Global $SteamBtnHoverHideBool = False
 Global $EGSBtnHoverHideBool = False
 Global $LegacyBtnHoverHideBool = False
 Global $KofiBtnHoverHideBool = False
-Global $PayPalBtnHoverHideBool = False
 Global $PatreonBtnHoverHideBool = False
 Global $ViewOnlineChangesBtnHoverBool = False
 Global $AnimatedLogoBool = False
@@ -4274,10 +4273,6 @@ Global $MainGUIDonateButtonPatreon = GUICtrlCreatePic($sEmpty,474,168,250,110)
 LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 GUICtrlSetOnEvent($MainGUIDonateButtonPatreon,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-Global $MainGUIDonateButtonPaypal = GUICtrlCreatePic($sEmpty,305,300,250,110)
-LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
-GUICtrlSetOnEvent($MainGUIDonateButtonPaypal,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 Global $MainGUIDonateLabelInfo = GUICtrlCreateLabelTransparentBG("Feeling generous? This is the place where you can show your appreciation for the project!",74,67,850,30)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetFont(-1,12,500,Default,$MainFontName)
@@ -4864,14 +4859,12 @@ GUICtrlSetState($MainGUIRestoreConfigurationsLabelBackupInfo,$GUI_HIDE)
 EndFunc
 Func DrawMainGUIDonate()
 GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_SHOW)
-GUICtrlSetState($MainGUIDonateButtonPaypal,$GUI_SHOW)
 GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_SHOW)
 GUICtrlSetState($MainGUIDonateLabelInfo,$GUI_SHOW)
 GUICtrlSetState($MainGUIDonateLabelInfo2,$GUI_SHOW)
 EndFunc
 Func UnDrawMainGUIDonate()
 GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_HIDE)
-GUICtrlSetState($MainGUIDonateButtonPaypal,$GUI_HIDE)
 GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_HIDE)
 GUICtrlSetState($MainGUIDonateLabelInfo,$GUI_HIDE)
 GUICtrlSetState($MainGUIDonateLabelInfo2,$GUI_HIDE)
@@ -5602,9 +5595,6 @@ EndIf
 Case $MainGUIDonateButtonKofi
 ShellExecute("https://ko-fi.com/meteorthelizard")
 LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
-Case $MainGUIDonateButtonPaypal
-ShellExecute("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2NKTRNN5BTHHG")
-LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
 Case $MainGUIDonateButtonPatreon
 ShellExecute("https://www.patreon.com/MeteorTheLizard")
 LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
@@ -7162,9 +7152,6 @@ $DebugIconHoverHideBool = False
 ElseIf $KofiBtnHoverHideBool Then
 LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
 $KofiBtnHoverHideBool = False
-ElseIf $PayPalBtnHoverHideBool Then
-LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
-$PayPalBtnHoverHideBool = False
 ElseIf $PatreonBtnHoverHideBool Then
 LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 $PatreonBtnHoverHideBool = False
@@ -7507,12 +7494,6 @@ If $KofiBtnHoverHideBool = False Then
 _FixMenuSwitch()
 LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnActive.jpg","KofiBtnActive")
 $KofiBtnHoverHideBool = True
-EndIf
-Case $MainGUIDonateButtonPaypal
-If $PayPalBtnHoverHideBool = False Then
-_FixMenuSwitch()
-LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnActive.jpg","PayPalBtnActive")
-$PayPalBtnHoverHideBool = True
 EndIf
 Case $MainGUIDonateButtonPatreon
 If $PatreonBtnHoverHideBool = False Then

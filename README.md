@@ -27,6 +27,10 @@
 
 <p align="center">https://ibb.co/album/bbLhkQ</p>
 
+<p align="center">
+ <img width="558" height="268" src="https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer-Update/master/promo.jpg" />
+</p>
+
 <br>
 
 <h2 align="center"><strong>Powerful & Useful extras</strong></h2>

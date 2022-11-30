@@ -1,13 +1,41 @@
+SMITE Optimizer Version 1.3.5
+- Updated reference hives for the integrity verification algorithm.
+- Updated Browser Agent for the automatic updater.
+- Updated AutoIt Product Version from 3.3.14.5 to 3.3.16.1 - Modified ResourcesEx to be compatible with the newest AutoIt version.
+- Updated AutoIt License.
+- Added a message box that tells the user to disable the integrity check when the SMITE Optimizer crashed while applying the settings.
+- Added a 'common issues' button in the debug tab that opens a document that provides help for common issues.
+- Manual Search now defaults to the "../Documents/My Games/SMITE/" folder.
+- Vehicle Quality now defaults to "Best" since it affects the targeters.
+- Decals now defaults to "On" as they are very cheap to draw.
+
+- Made countless improvements to the overall design.
+> Changed the Menu Font to Montserrat.
+> Changed the accent color to match the color of the Buttons.
+> Moved the Ko-Fi and Patreon buttons in the donate tab slightly lower.
+> Changed the font of the "Welcome!" text to the new menu font.
+> Changed the hover contrast color to something less insane.
+> Added a heart to the background of the donation tab.
+
+- Drastically improved the help tips.
+> Changed the font to something more readable.
+> Updated the text for all help tips.
+> Fixed various typos and grammar.
+> Ran everything through a spell-checker.
+
+
+
+
+
 SMITE Optimizer Version 1.3.4.5
 - Removed PayPal as a donation option.
-> I don't support companies that frequently commit fraud and scam people.
 
 
 
 
 
 SMITE Optimizer Version 1.3.4.4
-- For whatever reason Hi-Rez decided it is a good idea to store login information and the access token in the BattleGame.ini file which I discovered today.
+- For whatever reason Hi-Rez decided it is a good idea to store login information and the access token in the BattleGame.ini file, which I discovered today.
 > This behavior is unacceptable as this file is packed when creating a debug dump.
 > Steps have been implemented to ensure that this critical information is filtered out so that it is NOT being stored and sent.
 > We are not interested in this information and it is a massive security risk as debug dumps usually get posted publicly.
@@ -22,11 +50,11 @@ SMITE Optimizer Version 1.3.4.3
 - Fixed a bug with the Desired FPS (Uncap) option always using the simple tab input even when in advanced mode.
 > This made it so that changing the FPS uncap option in the advanced tab had no effect. Whoops.
 
-- Changed error code 004 - 005 - 013 to be more descriptive. These errors happen when the optimizer could not write to the config files. Usually this happens when they're set to read only mode.
+- Changed error code 004 - 005 - 013 to be more descriptive. These errors happen when the optimizer could not write to the config files. Usually this happens when they're set to read-only mode.
 - Changed error code 001 - 002 - 012 to be more descriptive. These errors happen when individual files of the config backup fail being copied. It now includes which file failed.
 - Changed error code 003 to be more descriptive. This error happens when an internal error occurred during the config backup routine.
 - Updated the system information box in the debug tab to be a bit larger to allow longer motherboard names to be displayed correctly. Thanks MSI and other manufacturers that do this!
-- Added a checkbox to the debug tab that allows users to disable the integrity / repair routine. This never caused problems but it can't hurt to have this option available.
+- Added a checkbox to the debug tab that allows users to disable the integrity / repair routine. This never caused problems, but it can't hurt to have this option available.
 - Updated reference hives for the integrity verification algorithm.
 - Fixed an issue with the DevTool 'INIToAutoItHive.au3'
 - Fixed spelling mistakes in the changelog.
@@ -72,7 +100,7 @@ SMITE Optimizer Version 1.3.3
 - Updated information boxes when trying to install the Legacy Launcher. It is no longer officially supported by Hi-Rez Studios, but I'm not going to restrict users from installing it if they wish to do so.
 - Added Website to Copyright tab.
 - Changed update checkbox label "Perform Automatic Updates" > "Automatic Updates"
-- Added cheap status label to the Debug tab when creating a Debug Dump to let the user know what it is working on.
+- Added a cheap status label to the Debug tab when creating a Debug Dump to let the user know what it is working on.
 
 
 
@@ -88,7 +116,7 @@ SMITE Optimizer Version 1.3.2.1
 
 
 SMITE Optimizer Version 1.3.2
-- Added a new tab: Fixes. In this tab you can apply fixes for common issues. Applying fixes are separate from other settings, allowing you to apply them without changing other graphics settings.
+- Added a new tab: Fixes. In this tab, you can apply fixes for common issues. Applying fixes are separate from other settings, allowing you to apply them without changing other graphics settings.
 > New fix: Sounds cutting off (MaxChannels)
 > New shortcut: FPS. You can set the FPS cap in the fixes tab now so that you don't have to make changes to other settings if all you want is a higher FPS cap. (QoL)
 > New: Install Legacy Launcher Button. You heard right, the SMITE Optimizer now has a feature that allows you to install the old Legacy Launcher on your system. This feature is experimental and may not always work. Additionally, you will have to re-download the whole game through the launcher.
@@ -147,7 +175,7 @@ SMITE Optimizer Version 1.3.1.5
 
 
 SMITE Optimizer Version 1.3.1.4
-- Fixed a bug with the file integrity check routine that caused the program to crash when trying to apply changes to empty files. The program is supposed to add everything that is missing which can be EVERYTHING if the file is empty.
+- Fixed a bug with the file integrity check routine that caused the program to crash when trying to apply changes to empty files. The program is supposed to add everything that is missing, which can be EVERYTHING if the file is empty.
 
 
 
@@ -169,14 +197,13 @@ SMITE Optimizer Version 1.3.1.2
 
 SMITE Optimizer Version 1.3.1.1
 - Fixed 'Whole Scene Dominant Shadows' label in Advanced mode being cut-off.
-- Fixed 'Verifying and repairing integrity' label in the apply changes progress window being wrapped to the next line.
+- Fixed 'Verifying and repairing integrity' label in the apply changes progress window, being wrapped to the next line.
 
 
 
 
 
 SMITE Optimizer Version 1.3.1
-
 - This update introduces new fonts loaded from memory to prevent version incompatibilities.
 > Previously, the program was loading system fonts that varied between Windows versions which caused spacing and label sizing issues.
 > This update addressed this issue, fixing all cut-off text by changing the fonts for new ones.
@@ -193,7 +220,7 @@ Please note that the program might still work perfectly fine on Windows XP and W
 Most important changes:
 The program is now open source and available on GitHub! (https://github.com/MeteorTheLizard/SMITE-Optimizer)
 Version 1.3 and upcoming versions are licensed under the GPL-3.0 License.
-Anyone may contribute to the code-base by creating a fork of the master branch and making changes to it. Once you are done open a pull request.
+Anyone may contribute to the code-base by creating a fork of the master branch and making changes to it. Once you are done, open a pull request.
 Older versions than 1.3 are available on GitHub as well. Keep in mind that these versions are licensed differently.
 
 Since the code of every version of the SMITE Optimizer ever released is now publicly available, there is no need for security concerns anymore.
@@ -204,10 +231,10 @@ Over the past few years from the point this project initially started, I have im
 The current state of the program and its code reflects my current coding skills, compared to V1.2.2, it is a massive difference and a re-write was desperately needed.
 A re-write was also needed not just because the code was simply bad, but because the upcoming SMITE patch (7.8) will remove an option from the configuration files (bAllowFog) as it will now be enforced to always be true due to recent changes in HiRez' Terms of Service. V1.2.2 was not made with that in mind and will stop functioning once the patch goes live.
 
-Do note that you're still allowed to tweak and make changes to the .ini (configuration files) as you please which is all this program does.
+Do note that you're still allowed to tweak and make changes to the .ini (configuration files) as you please, which is all this program does.
 The program is no longer capable of making changes to the (bAllowFog) variable to ensure that no one gets banned, even though re-adding that variable and changing it has no effect in-game.
 
-For the past 3 weeks (It is currently the 9th of August 2020) I have been working on this re-write having spent at least 8 hours a day on it.
+For the past 3 weeks (It is currently the 9th of August 2020) I have been working on this rewrite, having spent at least 8 hours a day on it.
 It is safe to say that it was an absurd amount of work and took a lot of dedication, time, sweat, blood, and stamina.
 
 As previously mentioned, this version is a complete re-write of the SMITE Optimizer and features an overhauled and modern UI.
@@ -219,7 +246,7 @@ The only thing it can't fix are settings that are set to malformed or incorrect 
 List of changes:
 - Complete Code re-write.
 - New modern UI with animations!
-- Improved user-friendliness as well as making things a lot easier to understand.
+- Improved user friendliness as well as making things a lot easier to understand.
 - Added Help tips for every single option that fades in when hovering over, explaining in detail what exactly it is and what effects it has on performance.
 - Simple and Advanced mode, making it easier for people that don't know anything about game development.
 - Added an animated splash-screen.
@@ -228,7 +255,7 @@ List of changes:
 - More efficient way of applying the changes.
 - More efficient and user-friendly way to restore backups.
 - Updated Debug tab.
-- Updates are now downloaded and applied automatically. (To disable automatic updates you will now have to go into the debug tab)
+- Updates are now downloaded and applied automatically. (To disable automatic updates, you will now have to go into the debug tab)
 
 
 The program and this update is free of charge.

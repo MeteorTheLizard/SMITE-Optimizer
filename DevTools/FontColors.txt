@@ -3,10 +3,10 @@
 All Text is centered.
 Title - "Penumbra HalfSerif Std Bold" 20px (5px Y distance from top border)
 Default - Recommended - "Coolvetica" 15px (7px Y distance from title text)
-Description - "Coolvetica" 15px (15px Y distance from "Default - Recommended" text)
+Description - "Sans-serif" 15px (15px Y distance from "Default - Recommended" text)
 
 2Pics - 3Pics Hints:
-Description2 - "Coolvetica" 15px (Centered between Description and example pictures)
+Description2 - "Sans-serif" 15px (Centered between Description and example pictures)
 
 Best: 2870d6
 High: 00b5ff
@@ -24,12 +24,12 @@ On: 0005ff
 Off: ff0087
 Varies: ffe600
 Gamemode: ff00be
+Numbers: 01ff8d
 
 Really bad: ff0000
 
 Disclaimer: e1ff00 (Only in disclaimer and only on important things)
 Keyword: ff9f00 (Character Quality, Bloom, Unreal Engine 3, etc..)
-God: c900ff (God names)
 
 345 x 300 (Text_Compact)
 Height depends on amount of text but is never above 300.

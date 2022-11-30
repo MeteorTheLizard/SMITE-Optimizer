@@ -11,7 +11,7 @@
 
 
 		This devtool allows you to format a .ini file into a nicely formatted AutoIt array "Hive".
-			It requires a perfectly formatted .ini as a base. Any comments "//" "--" and ";" ";;" need to be removed!
+			It requires a perfectly formatted .ini as a base. Any comments "//" "--" and ";" ";;" as well as "#" need to be removed!
 			Anything else that might break the AutoIt syntax that has not been accounted for needs to be removed as well.
 			After every group, there needs to be at least one empty line. (Except for the last group)
 			Empty groups need to be removed as well as they WILL cause formatting problems!

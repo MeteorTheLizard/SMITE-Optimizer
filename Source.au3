@@ -8,7 +8,7 @@
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.5.0
+#AutoIt3Wrapper_Res_Fileversion=1.3.5.1
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_Icon_Add=Resource\SmiteIcon.ico
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
@@ -188,7 +188,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.5"
+Global Const $ProgramVersion = "1.3.5.1"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -2122,6 +2122,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			LoadImageResource($MainGUIDonatePicHeart,$MainResourcePath & "Heart_BG.jpg","Heart_BG")
 			GUICtrlSetOnEvent($MainGUIDonatePicHeart,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+			GUICtrlSetState($MainGUIDonatePicHeart,$GUI_DISABLE) ;- Can't be clicked.
 		Global $MainGUIDonateButtonKofi = GUICtrlCreatePic($sEmpty,136,188,250,110)
 			LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
 			GUICtrlSetOnEvent($MainGUIDonateButtonKofi,"ButtonPressLogic")
@@ -2175,29 +2176,29 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 		Global $MainGUICopyrightLabelInfo = GUICtrlCreateLabelTransparentBG("A Project brought to life by Meteor (MrRangerLP) in 2017 and still being worked on in "&$Year,69,160,730,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,12,500,Default,$MainFontName)
+			GUICtrlSetFont(-1,12,500,Default,$MenuFontName)
 		Global $MainGUICopyrightLabelLicense = GUICtrlCreateLabelTransparentBG('This Project is licensed under the "GNU GPL-3.0" License. Do note that only version 1.3 and above fall under this license.',64,194,735,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
 		Global $MainGUICopyrightLabelLicense2 = GUICtrlCreateLabelTransparentBG("Earlier versions are subject to Copyright (C) and may not be copied, shared, modified, or distributed.",124,213,615,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
 		Global $MainGUICopyrightLabelCopyright = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.0 - 1.2.2 Copyright (C) 2019 - Mario "Meteor Thuri" Schien.',175,248,600,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
 		Global $MainGUICopyrightLabelCopyright2 = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.3 and above Copyright (C) '&$Year&' - Mario "Meteor Thuri" Schien.',169,266,600,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
 		Global $MainGUICopyrightLabelSMITECopyright = GUICtrlCreateLabelTransparentBG("SMITE(R), Battleground of the Gods(TM) Copyright (C) "&$Year&" Hi-Rez Studios, INC. All rights reserved.",133,284,600,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
+			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
 		Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("Contact: MrRangerLP (at) gmx.de",103,317,250,20)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetFont(-1,11,500,Default,$MainFontName)
+			GUICtrlSetFont(-1,11,500,Default,$MenuFontName)
 		Global $MainGUICopyrightLabelWebsite = GUICtrlCreateLabelTransparentBG("Website: https://meteorthelizard.com",103,337,300,20)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetFont(-1,11,500,Default,$MainFontName)
-		Global $MainGUICopyrightLabelOpen = GUICtrlCreateLabelTransparentBG("(Click here to open)",363,337,150,20)
+			GUICtrlSetFont(-1,11,500,Default,$MenuFontName)
+		Global $MainGUICopyrightLabelOpen = GUICtrlCreateLabelTransparentBG("(Click here to open)",383,337,150,20)
 			GUICtrlSetOnEvent($MainGUICopyrightLabelOpen,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetFont(-1,11,500,Default,$MainFontName)

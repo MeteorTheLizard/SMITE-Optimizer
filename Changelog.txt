@@ -1,4 +1,12 @@
 SMITE Optimizer Version 1.3.5
+- Fixed the Ko-Fi and Patreon button not being clickable in some spots due to the background taking priority.
+- Made the text in the copyright tab more readable by using the new menu font instead of using the main font.
+
+
+
+
+
+SMITE Optimizer Version 1.3.5
 - Updated reference hives for the integrity verification algorithm.
 - Updated Browser Agent for the automatic updater.
 - Updated AutoIt Product Version from 3.3.14.5 to 3.3.16.1 - Modified ResourcesEx to be compatible with the newest AutoIt version.

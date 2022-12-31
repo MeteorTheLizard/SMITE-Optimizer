@@ -3123,7 +3123,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.5.1"
+Global Const $ProgramVersion = "1.3.5.2"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -4231,7 +4231,7 @@ Global $MainGUIRestoreConfigurationsLabelAskForConfirmation = GUICtrlCreateLabel
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"Dates shown are in the following format: DD/MM/YYYY."&@CRLF&"The other numbers are the time at which the backup was made.",57,283,425,41)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-Local $Year = 2022
+Local $Year = 2023
 Global $MainGUIDonatePicHeart = GUICtrlCreatePic($sEmpty,230,55,400,379)
 LoadImageResource($MainGUIDonatePicHeart,$MainResourcePath & "Heart_BG.jpg","Heart_BG")
 GUICtrlSetOnEvent($MainGUIDonatePicHeart,"ButtonPressLogic")

@@ -8,7 +8,7 @@
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.5.1
+#AutoIt3Wrapper_Res_Fileversion=1.3.5.2
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_Icon_Add=Resource\SmiteIcon.ico
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
@@ -188,7 +188,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.5.1"
+Global Const $ProgramVersion = "1.3.5.2"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -2116,7 +2116,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 
 
 	;-- Donate
-		Local $Year = 2022
+		Local $Year = 2023
 
 		Global $MainGUIDonatePicHeart = GUICtrlCreatePic($sEmpty,230,55,400,379)
 			LoadImageResource($MainGUIDonatePicHeart,$MainResourcePath & "Heart_BG.jpg","Heart_BG")

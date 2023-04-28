@@ -8,7 +8,7 @@
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.5.2
+#AutoIt3Wrapper_Res_Fileversion=1.3.6
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
 #AutoIt3Wrapper_Res_Icon_Add=Resource\SmiteIcon.ico
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
@@ -135,7 +135,7 @@
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 ;- Notes:
-;- Last error code: "018" - Next: "019"
+;- Last error code: "020" - Next: "021"
 ;- This program appears to be incompatible with Virtual Machines as any file operations fail. ( Does not seem to be the case anymore? Testing in Win10 VM worked just fine. )
 
 ;#RequireAdmin ;- This will not be needed ever. Hopefully.
@@ -188,7 +188,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.5.2"
+Global Const $ProgramVersion = "1.3.6"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -2053,6 +2053,14 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetOnEvent($MainGUIFixesButtonApply,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
+		Global $MainGUIFixesButtonExportHUD = GUICtrlCreateButton("Export HUD Settings",596,101,150,35)
+			GUICtrlSetOnEvent($MainGUIFixesButtonExportHUD,"Internal_ExportSettings")
+			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+
+		Global $MainGUIFixesButtonImportHUD = GUICtrlCreateButton("Import HUD Settings",596,141,150,35)
+			GUICtrlSetOnEvent($MainGUIFixesButtonImportHUD,"Internal_ImportSettings")
+			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+
 
 		;- Load settings from cookie
 
@@ -2729,6 +2737,8 @@ EndFunc
 		GUICtrlSetState($MainGUIFixesButtonCreateQuicklaunch,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesButtonImportHUD,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesButtonExportHUD,$GUI_SHOW)
 
 
 		;- We use hints in these tabs, so force them to show
@@ -2753,6 +2763,8 @@ EndFunc
 		GUICtrlSetState($MainGUIFixesButtonCreateQuicklaunch,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesButtonImportHUD,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesButtonExportHUD,$GUI_HIDE)
 
 
 		;- We use hints in these tabs, so force them to show
@@ -3916,7 +3928,7 @@ EndFunc
 											_ArrayDelete($Split,$I) ;- Access Token
 											_ArrayDelete($Split,$I) ;- Token Expiration Date
 
-											$Split[$I] = "{INFORMATION REPLACED FOR SECURITY REASONS}"
+											$Split[$I] = @CRLF & "//{INFORMATION REPLACED FOR SECURITY REASONS}"
 
 											ExitLoop
 										EndIf
@@ -5720,6 +5732,334 @@ EndFunc
 
 		RegDelete("HKCU\Software\SMITE Optimizer\","NotClosedProperly") ;- Success! No crash detection required anymore!
 
+	EndFunc
+
+	Func Internal_ExportSettings()
+		GUISetState(@SW_DISABLE,$MainGUI) ;- Disable Main Window
+
+		;- Init Variables
+		Local $S_Title = $ProgramName & " HUD Configuration Exporter"
+
+
+		;- Create the GUI where we choose which version we want to create a quicklaunch for
+		Local $GUI_ExportSettings = GUICreate($S_Title,320,80,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW)
+			GUISwitch($GUI_ExportSettings)
+
+			Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select which HUD to export:",7,5,313,35)
+
+			Local $GUI_ButtonClassic = GUICtrlCreateButton("Classic",5,40,100,35)
+			Local $GUI_ButtonNew = GUICtrlCreateButton("New",110,40,100,35)
+			Local $GUI_ButtonCancel = GUICtrlCreateButton("Cancel",215,40,100,35)
+
+		GUISetState()
+
+
+		Local $GameFile ;- Read EngineGame.ini from path
+
+			_FileReadToArray($GameSettingsPath,$GameFile,$FRTA_NOCOUNT)
+			If not IsArray($GameFile) Then
+				DisplayErrorMessage("Could not read EngineGame.ini Code: 19")
+				Return
+			EndIf
+
+
+		Local $S_ExportData = "TransformSettingsV2=" ;- We make this optional (by setting it to that string) since it is apparently old data used for the previous iteration of the new HUD
+		Local $S_ExportData_2 = $sEmpty
+		Local $S_ExportData_3 = $sEmpty
+
+
+		While True ;- Mouse input
+			Local $CursorInfo = GUIGetCursorInfo($GUI_ExportSettings)
+
+			If WinGetTitle("[active]") = $S_Title and @Error = 0 Then
+				If _IsPressed("1B") Then ;- Allow the User to exit the UI by pressing the Escape key.
+					ExitLoop(1)
+				EndIf
+
+				If _IsPressed("01") Then
+					While _IsPressed("01")
+						Sleep(10) ;- Wait until they let go of mouse1! (This is cheap!)
+					WEnd
+
+					Switch $CursorInfo[4]
+						Case $GUI_ButtonClassic
+
+							;- Search for "TransformSettings=" and store it if found
+
+							For $I = 0 To uBound($GameFile) - 1 Step 1
+								If StringLeft($GameFile[$I],18) == "TransformSettings=" Then
+									$S_ExportData = $GameFile[$I] ;- The data we want
+									ExitLoop
+								EndIf
+							Next
+
+
+							If $S_ExportData == $sEmpty Then
+								DisplayErrorMessage("Could not read EngineGame.ini Code: 19") ;- Too lazy to make another code for basically the same error
+								ExitLoop(1)
+							EndIf
+
+
+							ExitLoop(1)
+
+						Case $GUI_ButtonNew
+
+							;- Search for "TransformSettingsV2=" and "NewHudTransformSettingsKBM=" and "NewHudTransformSettingsGMP=" and store it if found
+							;- I'm unsure why there's 3 different values for these. I'm assuming V2 Became obsolete when they re-introduced the new HUD.
+
+							For $I = 0 To uBound($GameFile) - 1 Step 1
+								If StringLeft($GameFile[$I],20) == "TransformSettingsV2=" Then
+									$S_ExportData = $GameFile[$I] ;- The data we want
+									ExitLoop
+								EndIf
+							Next
+
+							For $I = 0 To uBound($GameFile) - 1 Step 1
+								If StringLeft($GameFile[$I],27) == "NewHudTransformSettingsKBM=" Then
+									$S_ExportData_2 = $GameFile[$I] ;- The data we want
+									ExitLoop
+								EndIf
+							Next
+
+							For $I = 0 To uBound($GameFile) - 1 Step 1
+								If StringLeft($GameFile[$I],27) == "NewHudTransformSettingsGMP=" Then
+									$S_ExportData_3 = $GameFile[$I] ;- The data we want
+									ExitLoop
+								EndIf
+							Next
+
+
+							If $S_ExportData == $sEmpty or $S_ExportData_2 == $sEmpty or $S_ExportData_3 == $sEmpty Then
+								DisplayErrorMessage("Could not read EngineGame.ini Code: 19") ;- Too lazy to make another code for basically the same error
+								ExitLoop(1)
+							EndIf
+
+
+							ExitLoop(1)
+
+						Case $GUI_ButtonCancel
+							ExitLoop(1)
+
+					EndSwitch
+				EndIf
+
+				Sleep(10)
+			Else
+				If WinGetTitle("[active]") = $ProgramName Then WinActivate($GUI_ExportSettings)
+
+				Sleep(100)
+			EndIf
+
+		WEnd
+
+
+		If $S_ExportData_2 <> $sEmpty Then ;- We exported the new HUD
+
+			Local $ExportPath = FileSelectFolder("Choose a directory to save the file",@DesktopDir)
+
+			If not @Error and $ExportPath <> $sEmpty Then
+
+				FileDelete($ExportPath & "/Export_NewHUD.ini") ;- Flush the old file by deleting it
+				Sleep(100) ;- Windows!
+
+				If @Error Then ;- Since flushing the file is important, we want to abort if it failed!
+					DisplayErrorMessage("Something went wrong during saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
+					Return
+				EndIf
+
+				FileWrite($ExportPath & "/Export_NewHUD.ini",$S_ExportData & @CRLF & $S_ExportData_2 & @CRLF & $S_ExportData_3)
+
+				If @Error Then ;- Since flushing the file is important, we want to abort if it failed!
+					DisplayErrorMessage("Something went wrong during saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
+					Return
+				EndIf
+
+				MsgBox(0,"Success!","New HUD settings exported to:" & @CRLF & $ExportPath)
+
+			EndIf
+
+		ElseIf $S_ExportData <> $sEmpty Then ;- We exported the classic HUD
+
+			Local $ExportPath = FileSelectFolder("Choose a directory to save the file",@DesktopDir)
+
+			If not @Error and $ExportPath <> $sEmpty Then
+
+				FileDelete($ExportPath & "/Export_ClassicHUD.ini") ;- Flush the old file by deleting it
+				Sleep(100) ;- Windows!
+
+				If @Error Then ;- Since flushing the file is important, we want to abort if it failed!
+					DisplayErrorMessage("Something went wrong during saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
+					Return
+				EndIf
+
+				FileWrite($ExportPath & "/Export_ClassicHUD.ini",$S_ExportData)
+
+				If @Error Then ;- Since flushing the file is important, we want to abort if it failed!
+					DisplayErrorMessage("Something went wrong during saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
+					Return
+				EndIf
+
+				MsgBox(0,"Success!","Classic HUD settings exported to:" & @CRLF & $ExportPath)
+
+			EndIf
+		EndIf
+
+
+		;- Delete popup and switch back to main UI
+
+		GUIDelete($GUI_ExportSettings)
+
+		GUISwitch($MainGUI)
+		GUISetState(@SW_ENABLE,$MainGUI) ;- Enable Main Window
+
+		WinActivate($MainGUI)
+
+	EndFunc
+
+	Func Internal_ImportSettings()
+
+		If ProcessExists("smite.exe") Then ;- \/ \/ \/ \/ \/
+			DisplayErrorMessage("Cannot import HUD settings while SMITE is running!")
+			Return
+		EndIf
+
+
+		Local $FileSelected = FileOpenDialog("Choose Export_ClassicHUD.ini or Export_NewHUD.ini",@DesktopDir,".INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST))
+
+		If Not @Error and $FileSelected <> $sEmpty Then ;- Do some checks on the selected file
+
+			Local $sFileName
+			Local $bFound = False
+
+			For $I = StringLen($FileSelected) To 1 Step -1 ;- Surely there is a better way to find and extract a sub string, right?
+
+				Local $sStr = StringLower(StringMid($FileSelected,$I,$I))
+
+				If $sStr == "export_classichud.ini" or $sStr == "export_newhud.ini" Then
+					$sFileName = StringMid($FileSelected,$I)
+					$bFound = True
+					ExitLoop
+				EndIf
+			Next
+
+
+			Local $bContentFine = False
+
+			Local $bFoundClassic = False
+			Local $bFoundV2 = False
+			Local $bFoundKBM = False
+			Local $bFoundGMP = False
+
+			Local $sDataClassic
+			Local $sDataV2
+			Local $sDataV2KBM
+			Local $sDataV2GMP
+
+			If $bFound Then ;- Valid file selected, now check the content!
+
+				Local $aExtracted[0] ;- Its a teeny bit weird to convert it to an array
+
+				_FileReadToArray($FileSelected,$aExtracted,$FRTA_NOCOUNT)
+				If not IsArray($aExtracted) Then
+					DisplayErrorMessage("Could not read supplied file! Code: 20")
+					Return
+				EndIf
+
+
+				;- Check for main strings
+
+				For $I = 0 To uBound($aExtracted) - 1 Step 1
+					If StringLeft($aExtracted[$I],18) == "TransformSettings=" Then
+
+						$bFoundClassic = True
+						$sDataClassic = $aExtracted[$I]
+
+					ElseIf StringLeft($aExtracted[$I],20) == "TransformSettingsV2=" Then
+
+						$bFoundV2 = True
+						$sDataV2 = $aExtracted[$I]
+
+					ElseIf StringLeft($aExtracted[$I],27) == "NewHudTransformSettingsKBM=" Then
+
+						$bFoundKBM = True
+						$sDataV2KBM = $aExtracted[$I]
+
+					ElseIf StringLeft($aExtracted[$I],27) == "NewHudTransformSettingsGMP=" Then
+
+						$bFoundGMP = True
+						$sDataV2GMP = $aExtracted[$I]
+
+					EndIf
+				Next
+
+
+				If $bFoundClassic or ($bFoundV2 and $bFoundKBM and $bFoundGMP) Then
+
+					$bContentFine = True
+
+				Else
+					DisplayErrorMessage("Could not read supplied file! Code: 20")
+					Return
+				EndIf
+
+			EndIf
+
+
+			;- The contents of the exported file appears to be fine, so we now import it into our EngineGame.ini
+
+			If $bContentFine Then
+
+				Internal_CreateConfigBackup() ;- Just to be safe?
+
+
+				Local $GameFile ;- Read EngineGame.ini from path
+
+					_FileReadToArray($GameSettingsPath,$GameFile,$FRTA_NOCOUNT)
+					If not IsArray($GameFile) Then
+						DisplayErrorMessage("Could not read EngineGame.ini Code: 20") ;- Re-use because I can
+						Return
+					EndIf
+
+
+				;- Loop through the data until we find what we want to replace
+
+				For $I = 0 To uBound($GameFile) - 1 Step 1
+
+					If $bFoundClassic and StringLeft($GameFile[$I],18) == "TransformSettings=" Then
+
+						$GameFile[$I] = $sDataClassic & @CRLF ;- Apply Data
+
+					ElseIf $bFoundV2 and StringLeft($GameFile[$I],20) == "TransformSettingsV2=" Then
+
+						$GameFile[$I] = $sDataV2 & @CRLF ;- Apply Data
+
+					ElseIf $bFoundKBM and StringLeft($GameFile[$I],27) == "NewHudTransformSettingsKBM=" Then
+
+						$GameFile[$I] = $sDataV2KBM & @CRLF ;- Apply Data
+
+					ElseIf $bFoundKBM and StringLeft($GameFile[$I],27) == "NewHudTransformSettingsGMP=" Then
+
+						$GameFile[$I] = $sDataV2GMP & @CRLF ;- Apply Data
+
+					EndIf
+				Next
+
+
+				;- Apply Changes to the EngineGame.ini file
+
+;~ 				If $VerifyIntegrityOnApply Then ;- Not needed?
+;~ 					$GameFile = Interal_VerifyAndFixConfiguration($GameFile,$GameSettingsClearHive) ;- Make sure everything is in order!
+;~ 				EndIf
+
+				_FileWriteFromArray($GameSettingsPath,$GameFile)
+
+
+				If not @Error Then
+					MsgBox(0,"Success!","HUD Configuration imported and applied successfully!")
+				EndIf
+
+			EndIf
+		EndIf
 	EndFunc
 
 	Func Internal_CreateQuicklaunchBypass()

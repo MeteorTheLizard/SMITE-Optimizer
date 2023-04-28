@@ -1,3 +1,14 @@
+SMITE Optimizer Version 1.3.6
+- Added a new feature under "Fixes" that allows users to export their classic and new HUD settings as well as import them.
+> This makes sharing HUD settings possible!
+> Note: Selecting a valid Exported HUD file during import will immediately apply it to your configuration files.
+
+- Updated Text that is displayed in the EngineGame.ini file when creating a debug dump that replaces the login information.
+
+
+
+
+
 SMITE Optimizer Version 1.3.5.2
 - Updated copyright information
 

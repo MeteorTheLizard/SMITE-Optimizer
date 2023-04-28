@@ -41,6 +41,8 @@
 
 <p align="center">Having issues with some sound clips cutting out during intense teamfights?<p>
 <p align="center">This program lets you increase the amount of sounds that can play at once, fixing that issue!</p>
+<br>
+<p align="center">HUD Settings Exporter & Importer - Share your HUD Settings with other Players!</p>
 
 <br>
 

@@ -106,15 +106,15 @@ Func __GIF_Animation_DrawTimer()
 
 	For $I = 0 To UBound($aGIF_Animation) - 1
 		If $aGIF_Animation[$I][17] Then
-			$aGIF_Animation[$I][0] = False
-			$aGIF_Animation[$I][17] = False
-
 			_GDIPlus_ImageDispose($aGIF_Animation[$I][1])
 			_GDIPlus_GraphicsDispose($aGIF_Animation[$I][7])
 			_GDIPlus_GraphicsDispose($aGIF_Animation[$I][10])
 			_GDIPlus_BitmapDispose($aGIF_Animation[$I][9])
 
 			GUICtrlDelete($aGIF_Animation[$I][0])
+
+			$aGIF_Animation[$I][0] = False
+			$aGIF_Animation[$I][17] = False
 		EndIf
 	Next
 

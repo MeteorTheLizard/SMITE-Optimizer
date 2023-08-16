@@ -2,6 +2,7 @@
 #Include <GDIPlus.au3>
 
 ;- Source: https://www.autoitscript.com/forum/topic/202663-gif-animation-cached/
+;- Original Author: "Nine" from AutoIt Forums.
 ;- Heavily modified and fixed by MeteorTheLizard.
 
 Global $aGIF_Animation[0][18]
@@ -100,12 +101,39 @@ Func _GUICtrlDeleteAnimGIF($idPic)
 EndFunc
 
 
+OnAutoItExitRegister("_GIF_Animation_Quit")
+
+Func _GIF_Animation_Quit()
+	AdlibUnRegister(__GIF_Animation_DrawTimer)
+
+	For $i = 0 To UBound($aGIF_Animation) - 1
+		If Not $aGIF_Animation[$i][0] Then ContinueLoop
+		_GDIPlus_ImageDispose($aGIF_Animation[$i][1])
+		_GDIPlus_GraphicsDispose($aGIF_Animation[$i][7])
+		_GDIPlus_GraphicsDispose($aGIF_Animation[$i][10])
+		_GDIPlus_BitmapDispose($aGIF_Animation[$i][9])
+	Next
+
+	_GDIPlus_Shutdown()
+EndFunc
+
+
 ;- Internal
+
+Local $bDrawing = False
 
 Func __GIF_Animation_DrawTimer()
 
+	If $bDrawing Then Return
+		$bDrawing = True
+
+
+	Local $bFound = False
+
 	For $I = 0 To UBound($aGIF_Animation) - 1
 		If $aGIF_Animation[$I][17] Then
+			$aGIF_Animation[$I][17] = False
+
 			_GDIPlus_ImageDispose($aGIF_Animation[$I][1])
 			_GDIPlus_GraphicsDispose($aGIF_Animation[$I][7])
 			_GDIPlus_GraphicsDispose($aGIF_Animation[$I][10])
@@ -114,9 +142,16 @@ Func __GIF_Animation_DrawTimer()
 			GUICtrlDelete($aGIF_Animation[$I][0])
 
 			$aGIF_Animation[$I][0] = False
-			$aGIF_Animation[$I][17] = False
+		ElseIf $aGIF_Animation[$I][0] Then
+			$bFound = True
 		EndIf
 	Next
+
+
+	If Not $bFound Then
+		AdlibUnRegister(__GIF_Animation_DrawTimer)
+		ReDim $aGIF_Animation[0][UBound($aGIF_Animation,2)]
+	EndIf
 
 
 	Local $aTime
@@ -128,16 +163,15 @@ Func __GIF_Animation_DrawTimer()
 
 		If (TimerDiff($aGIF_Animation[$i][5]) >= $aGIF_Animation[$i][16]) Or (TimerDiff($aGIF_Animation[$i][5]) >= $aTime[$aGIF_Animation[$i][4] + 1] * 10) Then
 			__GIF_Animation_DrawFrame($i)
-			$aGIF_Animation[$i][4] += 1
 
-			If $aGIF_Animation[$i][4] = $aGIF_Animation[$i][2] Then
-				$aGIF_Animation[$i][4] = 0
-			EndIf
-
+			$aGIF_Animation[$i][4] = Mod($aGIF_Animation[$i][4] + 1, $aGIF_Animation[$i][2])
 			$aGIF_Animation[$i][5] = TimerInit()
 
 		EndIf
 	Next
+
+
+	$bDrawing = False
 
 EndFunc
 

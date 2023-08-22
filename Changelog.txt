@@ -1,3 +1,41 @@
+SMITE Optimizer Version 1.3.7
+- Updated overall brand design, which includes a new theme, color changes, visual updates, and more.
+> Changed the default colors, which also now accesses a global variable, so that they can be changed more easily.
+> New modern buttons and a new GIF library for faster loading times, smoother animations, and better stability.
+> Fixed spacing for several brand-related GUI objects.
+> Updated the design of quick-action popups.
+> Updated CommonIssues.txt to reflect new changes.
+> Moved the MenuHover popups to a separate GUI so that they can be displayed over animations.
+> The logo in the copyright tab is now always animated.
+> > Added a button to the title bar that links to the official SMITE Optimizer Discord support server!
+> > Added an alert system. If an important message needs to be sent to all users, it will now be displayed after the launch of the SMITE Optimizer.
+
+- The resolution setting now defaults to the native screen resolution on the first start of the program.
+- Improved sorting for screen resolutions and made it, so your native monitor resolution always shows up.
+> There is currently a limitation that makes it so that resolutions higher than 1080p (FULL HD) are not added to the list.
+> This is due to the way screen resolutions are retrieved. (Help wanted!)
+
+- Changed the welcome text.
+- Removed labels from the donation tab.
+- Modified splash text from "Loading.." to "Initializing.."
+- Updated copyright information and moved the logo copyright information into the copyright tab.
+- Updated labels in the debug tab that display paths to use a different font on Windows 10 and Windows 11.
+- Updated labels in the restore configuration tab to be more clear about the timestamps.
+- Updated error text when available screen resolutions could not be obtained.
+- Removed invalid resource "Resource\HelpText"
+- Fixed the "Cancel" button from the Export HUD settings feature.
+- Fixed an issue where the program would sometimes lock up on startup.
+- Fixed a bug with the legacy launcher installation, displaying a second "SMITE Optimizer" block in the taskbar.
+- Removed resources that are no longer needed.
+- Drastically reduced the overall file size.
+- Massively improved the sorting of the restore backup file list.
+- Added partial support for Windows 11, some issues may occur.
+- Ran every comment, label, and string through a spell-checker.
+
+
+
+
+
 SMITE Optimizer Version 1.3.6
 - Added a new feature under "Fixes" that allows users to export their classic and new HUD settings as well as import them.
 > This makes sharing HUD settings possible!

@@ -8,8 +8,8 @@
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.6
-#AutoIt3Wrapper_Res_LegalCopyright=Made by MrRangerLP - All Rights Reserved.
+#AutoIt3Wrapper_Res_Fileversion=1.3.7.0
+#AutoIt3Wrapper_Res_LegalCopyright=Made by MeteorTheLizard - All Rights Reserved.
 #AutoIt3Wrapper_Res_Icon_Add=Resource\SmiteIcon.ico
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuFont.ttf, RT_FONT, MenuFont, 0
@@ -21,10 +21,11 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\Win_XP.wav, SOUND, ErrorWIN_XP, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\Win7_Win8.wav, SOUND, ErrorWIN_7_8, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\Win10.wav, SOUND, ErrorWIN_10, 0
-#AutoIt3Wrapper_Res_File_Add=Resource\Preload.gif, RES, PreloadGIF, 0
-#AutoIt3Wrapper_Res_File_Add=Resource\SO_Logo.gif, RES, SO_LogoGIF, 0
-#AutoIt3Wrapper_Res_File_Add=Resource\HelpText\DetailMode.gif, RES, DetailModeGIF, 0
-#AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Ragdoll_Physics.gif, RES, Ragdoll_PhysicsGIF, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\Win11.wav, SOUND, ErrorWIN_11, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\Splash_Start.gif, RT_RCDATA, SO_StartGIF, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\Splash_Loop.gif, RT_RCDATA, SO_LoopGIF, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\HelpText\DetailMode.gif, RT_RCDATA, DetailModeGIF, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Ragdoll_Physics.gif, RT_RCDATA, Ragdoll_PhysicsGIF, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\ASearchBtnActive.jpg, RT_RCDATA, ASearchBtnActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\ASearchBtnInActive.jpg, RT_RCDATA, ASearchBtnInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\ChangelogIconActive.jpg, RT_RCDATA, ChangelogIconActive, 0
@@ -41,12 +42,12 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\DebugIconInActive.jpg, RT_RCDATA, DebugIconInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\DonateIconActive.jpg, RT_RCDATA, DonateIconActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\DonateIconInActive.jpg, RT_RCDATA, DonateIconInActive, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\DonateBanner.jpg, RT_RCDATA, DonateBanner, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\EGSBtnActive.jpg, RT_RCDATA, EGSBtnActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\EGSBtnInActive.jpg, RT_RCDATA, EGSBtnInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpHoverBG.jpg, RT_RCDATA, HelpHoverBG, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpIconActive.jpg, RT_RCDATA, HelpIconActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpIconInActive.jpg, RT_RCDATA, HelpIconInActive, 0
-#AutoIt3Wrapper_Res_File_Add=Resource\HelpText, RT_RCDATA, HelpIconInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HomeIconActive.jpg, RT_RCDATA, HomeIconActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HomeIconInactive.jpg, RT_RCDATA, HomeIconInactive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HoverMenuBG.jpg, RT_RCDATA, HoverMenuBG, 0
@@ -62,6 +63,8 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\MenuSelectorHorizontal.jpg, RT_RCDATA, MenuSelectorHorizontal, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MinimizeActivate.jpg, RT_RCDATA, MinimizeActivate, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MinimizeNoActivate.jpg, RT_RCDATA, MinimizeNoActivate, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\DiscordIconInActive.jpg, RT_RCDATA, DiscordIconInActive, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\DiscordIconActive.jpg, RT_RCDATA, DiscordIconActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MoreOptionsBG.jpg, RT_RCDATA, MoreOptionsBG, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\ScanFilesBG.jpg, RT_RCDATA, ScanFilesBG, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\MSearchBtnActive.jpg, RT_RCDATA, MSearchBtnActive, 0
@@ -75,7 +78,6 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\DebugFooter.jpg, RT_RCDATA, DebugFooter, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\RestoreConfigsIconActive.jpg, RT_RCDATA, RestoreConfigsIconActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\RestoreConfigsIconInActive.jpg, RT_RCDATA, RestoreConfigsIconInActive, 0
-#AutoIt3Wrapper_Res_File_Add=Resource\SO_Logo.jpg, RT_RCDATA, SO_Logo, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\SteamBtnActive.jpg, RT_RCDATA, SteamBtnActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\SteamBtnInActive.jpg, RT_RCDATA, SteamBtnInActive, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\TopBar.jpg, RT_RCDATA, TopBar, 0
@@ -131,16 +133,17 @@
 #AutoIt3Wrapper_Run_AU3Check=n
 #AutoIt3Wrapper_Tidy_Stop_OnError=n
 #AutoIt3Wrapper_Run_Au3Stripper=y
-#Au3Stripper_Parameters=/so
+#Au3Stripper_Parameters=/so /mi 7
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 ;- Notes:
 ;- Last error code: "020" - Next: "021"
-;- This program appears to be incompatible with Virtual Machines as any file operations fail. ( Does not seem to be the case anymore? Testing in Win10 VM worked just fine. )
+;- This program appears to be incompatible with virtual machines, as any file operations fail. ( Does not seem to be the case anymore? Testing in a Win10 VM worked just fine. )
 
-;#RequireAdmin ;- This will not be needed ever. Hopefully.
+;#RequireAdmin ;- This will never be needed. Hopefully.
 
 If _SingleTon("SMITE_Optimizer",1) = 0 Then ;- Only allow one instance. If we start a second one, try to get focus on the first!
+
 	Local $WinList = WinList()
 
 	For $I = 0 To uBound($WinList) - 1 Step 1
@@ -150,7 +153,7 @@ If _SingleTon("SMITE_Optimizer",1) = 0 Then ;- Only allow one instance. If we st
 		EndIf
 	Next
 
-	Exit ;- Focus but don't continue!
+	Exit ;- Focus, but don't continue.
 EndIf
 
 #Include <Array.au3>
@@ -161,15 +164,18 @@ EndIf
 #Include <GuiListBox.au3>
 #Include <Misc.au3>
 #Include <WinApi.au3>
-#Include <Inet.au3>
-#Include <GIFAnimation.au3>
-#Include <ResourcesEx.au3>
+
+#Include <GIFExtended.au3> ;- Required for GIF animation implementation, part of the SMITE Optimizer.
+#Include <SOCtrlButtons.au3> ;- Modern button implementation, part of the SMITE Optimizer. Planned implementation: hover effect.
+
+#Include <Inet.au3> ;- Required for automatic updates.
 #Include <WinAPISysWin.au3> ;- Required by ResourceEx.
+#Include <ResourcesEx.au3> ;- Required to use resources.
 #Include <_Zip.au3> ;- Used for the debug dump.
 
-;- This function either loads the Resource from the supplied path if it is valid or attempts to load it from the appended resources.
-;- This makes it possible to see UI elements while in Development state and makes it so you don't have to compile every single time.
-;- This also makes it possible to create custom skins! (Though, rather limited without changing program code)
+;- This function either loads the resource from the supplied path if it is valid, or attempts to load it from the appended resources.
+;- This makes it possible to see UI elements while in the development state, so you don't have to compile every single time.
+;- This also makes it possible to create custom skins! (Though rather limited without changing program code.)
 Func LoadImageResource($Ctrl,$PathDir,$ResourceName)
 	If FileExists($PathDir) Then
 		GUICtrlSetImage($Ctrl,$PathDir)
@@ -188,14 +194,14 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.6"
+Global Const $ProgramVersion = "1.3.7"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
 Global Const $MinHeight = 450
-Global Const $sEmpty = "" ;- Optimizations. Instead of creating a new Object over and over again, we point to this instead. (Much faster) DO NOTE CHANGE THIS! IT WILL BREAK THE SCRIPT!
+Global Const $sEmpty = "" ;- Optimizations. Instead of creating a new object over and over again, we point to this instead. (Much faster.) Do not change this! It will break the script!
 Global Const $ChangelogText = _Resource_GetAsString("ChangelogText")
 Local $LoadFont = _Resource_LoadFont("MainFont")
 If @Error and @Compiled Then
@@ -208,7 +214,7 @@ If @Error and @Compiled Then
 	Exit
 EndIf
 
-;- You are required to install the fonts in order to be able to see them when not having the script in a compiled state!
+;- These fonts have to be installed on the system to be able to see them if you didn't compile the script.
 Global Const $MainFontName = "Monofonto" ;- Free
 Global Const $MenuFontName = "Montserrat" ;- Public Domain, GPL, OFL
 
@@ -223,15 +229,24 @@ Global $GUIMoreOptions = NULL
 Global $ProcessUI = NULL
 Global $ProcessingRequest = False
 
-Global $UpdateTimer = NULL ;- Vars for annoying "Update Available" label flashing. (Annoying to make sure the User sees it!)
+Global $UpdateTimer = NULL ;- Vars for the annoying "Update Available" label flashing. (It's annoying to make sure the user sees it!)
 Global $UpdateColorState = False
+
+Global $bDiscordIconState = False ;- Vars for flashing the Discord logo.
+Global $DiscordFlashTimer = NULL
+Global $bShouldFlashDiscordIcon = False
+Local $sRegRead = RegRead("HKCU\Software\SMITE Optimizer\","bShouldFlashDiscord")
+If @Error And $sRegRead <> "1" Then ;- They never clicked it, so flash it!
+	$bShouldFlashDiscordIcon = True
+	$DiscordFlashTimer = TimerInit()
+EndIf
 
 Global $MainGUIHomeDiscoveryDrawn = False ;- Bool to determine whether we are in Discovery Mode.
 
 Global $HoverBGDrawn = False ;- Hover popups.
 Global $HoverImageDrawn = False
 Global $LastMousePosX, $LastMousePosY
-Global $HoverTimer = TimerInit()
+Global $HoverTimer = NULL
 Global $DisplayHoverBG = 0
 Global $DisplayHoverImage = 0
 Global $LastHoverID = 0
@@ -245,10 +260,12 @@ Global $MenuPopupState = False
 Global $MainGUIButtonCloseBool = False ;- Main Program
 Global $MainGUIButtonMaximizeBool = False
 Global $MainGUIButtonMinimizeBool = False
+Global $MainGUIButtonDiscordBool = False
 Global $HomeIconHoverHideBool = False ;- Menu
 Global $FixesIconHoverHideBool = False
 Global $RCIconHoverHideBool = False
 Global $DonateIconHoverHideBool = False
+Global $bTriedToShowDonateBanner = False
 Global $ChangelogIconHoverHideBool = False
 Global $CopyrightIconHoverHideBool = False
 Global $DebugIconHoverHideBool = False
@@ -263,14 +280,26 @@ Global $WebsiteOpenHoverBool = False
 Global $LicenseLabelHoverBool = False
 Global $SourceLabelHoverBool = False
 Global $AutoItLicenseLabelHoverBool = False
-Global $MainGUIDebugLabelHoverBool = False
+Global $iCurrentFrameCopyrightGIF = 0
+Global $MainGUICopyrightAnimatedLogoID = NULL
+Global $MainGUIDebugLabelHoverBool = False ;- Debug
 Global $MainGUIDebugDumpInfoHoverBool = False
 
-Global $Bool_DisplaySetupError = False ;- Used to inform the user if they haven't launched the game before on their system
+Global $Bool_DisplaySetupError = False ;- Used to inform the user if they haven't launched the game before on their system.
+
+Global $cAccentColor = 0xC11F1F
+Global $cBackgroundColor = 0x00
+Global $cTextColor = 0xF3F6FB
+Global $cTextShadowColor = 0x00
+Global $cURLColor = 0x4F89EA
+Global $cURLHoverColor = 0x0645AD
+
+Global $sDiscordURL = "https://discord.gg/h2g7R9rt7F" ;- Official SMITE Optimizer support server!
+Global $sAlert = "" ;- Used on occasion, if something breaks or an important announcement needs to reach every user.
 
 ;- ----- ----- ----- ----- -----
 
-;- Old version compat. (Remove old registry values)
+;- Old version compatibility. (Remove old registry values.)
 Global $Version = RegRead("HKCU\Software\SMITE Optimizer\","ProgramVersion")
 If @Error = 0 and $Version <= "1.2.2" Then
 	RegDelete("HKCU\Software\SMITE Optimizer\","BlockDonations")
@@ -284,7 +313,7 @@ EndIf
 
 Global $bProperClose = RegRead("HKCU\Software\SMITE Optimizer\","NotClosedProperly")
 If not @Error Then
-	MsgBox(0,"Information","SMITE Optimizer did not close properly. If you experience issues when applying the settings we recommend disabling the integrity check in the debug tab." & @CRLF & @CRLF & "We also recommend checking out the 'common issues' in the debug tab for help.")
+	MsgBox(0,"Information","SMITE Optimizer did not close properly. If you experience issues when applying the settings, we recommend disabling the integrity check in the debug tab." & @CRLF & @CRLF & "We also recommend checking out the 'common issues' in the debug tab for help.")
 EndIf
 
 
@@ -303,16 +332,16 @@ If @Error Then $ProgramState = $sEmpty
 Global $ProgramHomeState = RegRead("HKCU\Software\SMITE Optimizer\","ConfigSimpleOrAdvanced")
 If @Error Then $ProgramHomeState = "Simple"
 Global $ConfigBackupPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigBackupPath")
-If @Error Then $ConfigBackupPath = RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders","Personal")&"\My Games\SMITE\Backups\" ;- ../CurrentUser/Documents/My Games/SMITE/Backups/
+If @Error Then $ConfigBackupPath = RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders","Personal")&"\My Games\SMITE\Backups\"
 Global $ProgramHomeHelpState = RegRead("HKCU\Software\SMITE Optimizer\","ConfigShowHints")
 If @Error Then $ProgramHomeHelpState = 1
 
-;- The registry entries exist but at least one of the files are missing:
-If (($SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $GameSettingsPath = $sEmpty) or _ ;- Invalid registry entries
+;- The registry entries exist, but at least one of the files is missing:
+If (($SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $GameSettingsPath = $sEmpty) or _ ;- Invalid registry entries.
 	not FileExists($SettingsPath) or _ ;- EngineSettings is missing
 	not FileExists($SystemSettingsPath) or _ ;- SystemSettings is missing
 	not FileExists($GameSettingsPath)) and _ ;- GameSettings is missing
-	RegRead("HKCU\Software\SMITE Optimizer\","ProgramVersion") <> $sEmpty Then ;- Only show when it wasn't the first start
+	RegRead("HKCU\Software\SMITE Optimizer\","ProgramVersion") <> $sEmpty Then ;- Only show it when it wasn't the first start.
 
 	RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 	RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
@@ -324,16 +353,16 @@ If (($SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $GameSettingsPa
 	$GameSettingsPath = $sEmpty
 
 	$ProgramState = $sEmpty
-
-;~ 	MsgBox($MB_OK,"Error","Could not find configuration files at the saved location"&@CRLF&"Please tell the program where to find them."&@CRLF&@CRLF&"If you just updated the SMITE Optimizer, this might be intentional.")
 EndIf
 
-;- Update Program Version.
+;- Update program version.
 RegWrite("HKCU\Software\SMITE Optimizer\","ProgramVersion","REG_SZ",$ProgramVersion)
 If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then FileDelete(@TempDir & "/SO_UpdatedVer.exe") ;- Remove the temporary downloaded update.
 
-#Region ;- BorderLessWinUDF (Heavily Modified)
-	#include <WinAPIGDI.au3>
+#Region ;- BorderLessWinUDF (Heavily modified)
+
+	#Include <WinAPIGDI.au3>
+
 
 	Local $GLOBAL_MAIN_GUI
 	Local $Win_Min_ResizeX = 145
@@ -379,7 +408,7 @@ If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then FileDelete(@TempDir & "/SO_U
 
 	Func INTERNAL_WM_SIZING($hWnd)
 		If $hWnd = $GLOBAL_MAIN_GUI and WinGetState($GLOBAL_MAIN_GUI) = 47 Then
-			Local $WorkingSize = _GetDesktopWorkArea($GLOBAL_MAIN_GUI)
+			Local $WorkingSize = _GetDesktopWorkArea_Main($GLOBAL_MAIN_GUI)
 			Local $aWinPos = WinGetPos($GLOBAL_MAIN_GUI)
 			_WinAPI_SetWindowPos($GLOBAL_MAIN_GUI,$HWND_TOP,$aWinPos[0]-1,$aWinPos[1]-1,$WorkingSize[2],$WorkingSize[3],$SWP_NOREDRAW)
 
@@ -390,7 +419,7 @@ If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then FileDelete(@TempDir & "/SO_U
 
 	Func INTERNAL_WM_GETMINMAXINFO($hWnd,$iMsg,$wParam,$lParam)
 		Local $tMinMaxInfo = DllStructCreate("int;int;int;int;int;int;int;int;int;dword",$lParam)
-		Local $WorkingSize = _GetDesktopWorkArea($GLOBAL_MAIN_GUI)
+		Local $WorkingSize = _GetDesktopWorkArea_Main($GLOBAL_MAIN_GUI)
 
 		DllStructSetData($tMinMaxInfo,3,$WorkingSize[2])
 		DllStructSetData($tMinMaxInfo,4,$WorkingSize[3])
@@ -477,6 +506,15 @@ If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then FileDelete(@TempDir & "/SO_U
 	EndFunc
 
 	Func INTERNAL_WM_LBUTTONDOWN($hWnd)
+
+		;- Undraw HoverImage if GUI was clicked, so that it doesn't get left behind when dragging / resizing the window.
+		If $DisplayHoverImage <> 0 And $HoverImageDrawn Then
+			$DisplayHoverImage = 0
+			WinMove($HoverInfoGUI,$sEmpty,-$ScrW*2,-$ScrH*2,0,0)
+			$HoverImageDrawn = False
+		EndIf
+
+
 		If $hWnd = $GLOBAL_MAIN_GUI and WinGetState($GLOBAL_MAIN_GUI) <> 47 Then
 			Local $aCurInfo = GUIGetCursorInfo($GLOBAL_MAIN_GUI)
 
@@ -487,7 +525,7 @@ If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then FileDelete(@TempDir & "/SO_U
 		EndIf
 	EndFunc
 
-	Func _GetDesktopWorkArea($hWnd)
+	Func _GetDesktopWorkArea_Main($hWnd)
 		Local $MonitorSizePos[4], $MonitorNumber = 1
 		$MonitorSizePos[0] = 0
 		$MonitorSizePos[1] = 0
@@ -594,32 +632,47 @@ Func ProperExit() ;- This is used internally as well.
 
 	RegDelete("HKCU\Software\SMITE Optimizer\","NotClosedProperly")
 
+	__GIFExtended_ShutDown() ;- Has to be called for SMITE Optimizer's GIF UDF
+	_GDIPlus_Shutdown() ;- Required for SMITE Optimizer's Button UDF
+
 	Exit
 EndFunc
 
 #Region ;- Splash-Screen.
+
 	Global $SplashScreenGUI = GUICreate($ProgramName,600,125,-1,-1,$WS_POPUP)
 
-		Global $SplashScreenGUIAnimation
+		Local $SplashScreenGUIAnimationStart, $SplashScreenGUIAnimationLoop, $iCtrl
 
 		If @Compiled Then
-			$SplashScreenGUIAnimation = _GUICtrlCreateGIF(@AutoItExe,"RES;SO_LogoGIF",0,0,600,100)
+
+			Local $aRet = GUICtrlCreateGIF( _Resource_GetAsImage("SO_StartGIF") ,0,0,600,100,90,10,True)
+				$SplashScreenGUIAnimationStart = $aRet[0]
+				$iCtrl = $aRet[1]
+
 		Else
-			$SplashScreenGUIAnimation = _GUICtrlCreateGIF($MainResourcePath & "SO_Logo.gif",$sEmpty,0,0,600,100)
+
+			Local $aRet = GUICtrlCreateGIF($MainResourcePath & "Splash_Start.gif",0,0,600,100,90,10)
+				$SplashScreenGUIAnimationStart = $aRet[0]
+				$iCtrl = $aRet[1]
+
 		EndIf
 
+
 		Global $SplashScreenGUIProgress = GUiCtrlCreateProgress(0,100,600,25)
-			GUICtrlSetColor(-1, 0xFF0000) ;- Red progress bar!
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",$sEmpty,"wstr",$sEmpty) ;- Remove Theme.
+			GUICtrlSetColor(-1,$cAccentColor) ;- Brand-colored progress bar!
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",$sEmpty,"wstr",$sEmpty)
 
-		Global $SplashScreenGUILabelStatusBG = GUICtrlCreateLabelTransparentBG("Loading..",1,106,600,20,$SS_CENTER)
-		Global $SplashScreenGUILabelStatus = GUICtrlCreateLabelTransparentBG("Loading..",0,105,600,20,$SS_CENTER)
-			GUICtrlSetColor(-1,0xFFC3C3)
+		Global $SplashScreenGUILabelStatusBG = GUICtrlCreateLabelTransparentBG("Initializing..",1,106,600,20,$SS_CENTER)
+			GUICtrlSetColor(-1,$cTextShadowColor)
 
-	GUISetState(@SW_SHOWNOACTIVATE,$SplashScreenGUI) ;- Start showing the splash screen but don't take focus!
+		Global $SplashScreenGUILabelStatus = GUICtrlCreateLabelTransparentBG("Initializing..",0,105,600,20,$SS_CENTER)
 
-	_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE)) ;- Bring window to front but don't take focus!!
-	_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_NOTOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE)) ;- Ugly hack.
+	GUISetState(@SW_SHOWNOACTIVATE,$SplashScreenGUI) ;- Start showing the splash screen, but don't take focus!
+
+	_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE)) ;- Bring the window to the front, but don't take focus!
+	_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_NOTOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
+
 
 	Func SplashScreenWriteStatus($Progress,$Text)
 		If not IsDeclared("SplashScreenGUI") Then Return
@@ -630,10 +683,32 @@ EndFunc
 			GUICtrlSetData($SplashScreenGUILabelStatus,$Text)
 		EndIf
 	EndFunc
+
+
+	Local $bSpawnedAnim = False ;- Prevent multiple layers of GIFs from being created.
+
+	While True ;- Perform the animation.
+
+		If $__g_GIFExtended_aStoreCache[$iCtrl][13] = 88 And Not $bSpawnedAnim Then
+			$bSpawnedAnim = True
+
+			If @Compiled Then
+				$SplashScreenGUIAnimationLoop = GUICtrlCreateGIF( _Resource_GetAsImage("SO_LoopGIF") ,0,0,600,100,90,10,True)[0] ;- Frame-rate override
+			Else
+				$SplashScreenGUIAnimationLoop = GUICtrlCreateGIF($MainResourcePath & "Splash_Loop.gif",0,0,600,100,90,10)[0] ;- Frame-rate override
+			EndIf
+		EndIf
+
+		If $__g_GIFExtended_aStoreCache[$iCtrl][13] >= 89 And $bSpawnedAnim Then
+			GUICtrlDeleteGIF($SplashScreenGUIAnimationStart)
+			ExitLoop
+		EndIf
+	WEnd
+
 #EndRegion
 
 #Region ;- Automatic Update Routine.
-	Func _IniMem_Read($s_ini,$s_Section,$s_key,$s_default = $sEmpty) ;- Author: Alek, heavily modified by MrRangerLP.
+	Func _IniMem_Read($s_ini,$s_Section,$s_key,$s_default = $sEmpty) ;- Author: Alek, heavily modified by MeteorTheLizard.
 		$s_ini = StringSplit($s_ini,@CRLF)
 
 		For $x = 1 To $s_ini[0]
@@ -663,9 +738,9 @@ EndFunc
 
 
 	;- This method guarantees an up-to-date update file.
-	Local $agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0" ;- Last updated: 29 Nov 2022
+	Local $agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0" ;- Last updated: 09 Aug. 2023
 
-	Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1") ;- Load info from GitHub
+	Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1") ;- Load information from GitHub
 		$oHTTP.Open("GET","https://meteorthelizard.github.io/SMITE-Optimizer-Update/",False)
 		$oHTTP.setRequestHeader("User-Agent",$agent)
 		$oHTTP.Option(4) = 13056
@@ -673,9 +748,9 @@ EndFunc
 
 		Local $UpdateGet = $oHTTP.ResponseText
 
-		$oHTTP = NULL ;- Destroy the object (Clear memory)
+		$oHTTP = NULL ;- Destroy the object (clear memory).
 
-	If not $UpdateGet Then ;- GitHub failed so we now try the pastebin backup
+	If not $UpdateGet Then ;- GitHub failed, so we now try the Pastebin backup.
 		Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
 			$oHTTP.Open("GET","https://pastebin.com/raw/SXnHTU9H",False)
 			$oHTTP.setRequestHeader("User-Agent",$agent)
@@ -684,25 +759,35 @@ EndFunc
 
 			$UpdateGet = $oHTTP.ResponseText
 
-			$oHTTP = NULL ;- Destroy the object (Clear memory)
+			$oHTTP = NULL ;- Destroy the object (clear memory)
 
 		If not $UpdateGet Then
 			MsgBox($MB_OK,"Error","Could not connect to the update servers.")
-			WinActivate($SplashScreenGUI) ;- Get focus again after closing messagebox.
+			WinActivate($SplashScreenGUI) ;- Get focus again after closing the message box.
 		EndIf
 	EndIf
 
 
 	If $UpdateGet Then
 
-		$UpdateGet = BinaryToString($UpdateGet) ;- Convert binary information into a readable string for the IniMem_Read functions
+		$UpdateGet = BinaryToString($UpdateGet) ;- Convert binary information into a readable string for the IniMem_Read functions.
 
 		Local $RemoteVersion = _IniMem_Read($UpdateGet,"Version","Version",$ProgramVersion)
 		Local $RemoteDownload32 = _IniMem_Read($UpdateGet,"Download","Download32",$sEmpty)
 		Local $RemoteDownload64 = _IniMem_Read($UpdateGet,"Download","Download64",$sEmpty)
 		Local $RemoteMessage = _IniMem_Read($UpdateGet,"Message","Message",$sEmpty)
+		Local $RemoteAlert = _IniMem_Read($UpdateGet,"Alert","Alert",$sEmpty)
+		Local $RemoteURL = _IniMem_Read($UpdateGet,"URL","URL",$sEmpty)
 
-		If $RemoteVersion > $ProgramVersion Then ;- A new Update is available so we start downloading!
+		If $RemoteAlert <> $sEmpty Then ;- Cache alert to display after launch!
+			$sAlert = $RemoteAlert
+		EndIf
+
+		If $RemoteURL <> $sEmpty Then ;- The Discord URL was updated remotely!
+			$sDiscordURL = $RemoteURL
+		EndIf
+
+		If $RemoteVersion > $ProgramVersion Then ;- A new update is available, so we start downloading!
 			$UpdateTimer = TimerInit() ;- Used to make the version text extra annoying! :3
 			$UpdateAvailable = True
 
@@ -716,7 +801,7 @@ EndFunc
 			If $CheckForUpdates = "1" or $ForceUpdate Then ;- Only update when updates are enabled!
 
 				;- Make sure the forced update key gets removed so it doesn't get called again.
-				;- (This happens when the user clicks the "Perform Update" button on the debug screen)
+				;- (This happens when the user clicks the "Perform Update" button on the debug screen.)
 				RegDelete("HKCU\Software\SMITE Optimizer\","DebugForceUpdate")
 
 				SplashScreenWriteStatus(0,"Preparing to download an update..") ;- Update Splash-Screen.
@@ -744,35 +829,35 @@ EndFunc
 					EndIf
 
 					Sleep(10)
-				Until INetGetInfo($NewFile,2) ;- Repeat until the download finished.
+				Until INetGetInfo($NewFile,2) ;- Repeat until the download is finished.
 
-				INetClose($NewFile) ;- Close the handle
+				INetClose($NewFile) ;- Close the handle.
 
-				;- Make sure the File exists before we try to do stuff.
+				;- Make sure the file exists before we try to do stuff.
 				If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then
 
-					;- To apply the Update, we create a temporary batch script that waits 0.5 seconds and then deletes the old version and puts the new version in place and then runs it.
-					;- This Process keeps the name of the .exe in case the User has changed it.
-					;- This batch script also cleans up after us!
+					;- To apply the update, we create a temporary batch script that waits 0.5 seconds, deletes the old version, puts the new version in place, and then runs it.
+					;- This process keeps the name of the .exe in case the user has changed it.
+					;- This batch script also cleans up the remaining files!
 
 					FileWrite(@TempDir & "\SO_Update.bat","CHCP 65001"&@CRLF&"@echo off"&@CRLF&"Cls"&@CRLF&"timeout /t 0.5 /nobreak"&@CRLF&'del "'&@ScriptFullPath&'" /f /q'&@CRLF&'copy /Y "'&@TempDir & '\SO_UpdatedVer.exe"'&' "'&@ScriptFullPath&'" >nul'&@CRLF&'start "" "'&@ScriptFullPath&'"'&@CRLF&'del "'&@TempDir & "\SO_Update.bat"&'" /f /q'&@CRLF&"Exit")
 					If FileExists(@TempDir & "\SO_Update.bat") Then
 						Run(@TempDir & "\SO_Update.bat",$sEmpty,@SW_HIDE) ;- Run the batch script and terminate ourselves.
 						Exit
 					Else
-						MsgBox($MB_OK,"Error","There was an unexpected error during the update process. Code: 007"&@CRLF&"If this error is persistent, please try and update manually.")
-						WinActivate($SplashScreenGUI) ;- Get focus again after closing messagebox.
+						MsgBox($MB_OK,"Error","There was an unexpected error during the update process. Code: 007"&@CRLF&"If this error is persistent, please try to update manually.")
+						WinActivate($SplashScreenGUI) ;- Get focus again after closing the message box.
 					EndIf
 				Else
-					MsgBox($MB_OK,"Error","There was an unexpected error during the update process. Code: 006"&@CRLF&"If this error is persistent, please try and update manually.")
-					WinActivate($SplashScreenGUI) ;- Get focus again after closing messagebox.
+					MsgBox($MB_OK,"Error","There was an unexpected error during the update process. Code: 006"&@CRLF&"If this error is persistent, please try to update manually.")
+					WinActivate($SplashScreenGUI) ;- Get focus again after closing the message box.
 				EndIf
 			EndIf
 		EndIf
 	EndIf
 #EndRegion
 
-#Region ;- Reference Hives. (Do NOT Indent these. Compiling WILL fail due to line length limits!) - (( This might not happen anymore -Meteor 2022 - (( This definitely happens still! -Meteor 2022 Nov.
+#Region ;- Reference Hives. (Do NOT Indent these. Compiling WILL fail due to line length limits!) - Last Updated - Nov. 2022
 Global Const $EngineSettingsClearHive[110][181] = [ _
 	['[URL]','Protocol=unreal','Name=Player','Map=lobbymap','LocalMap=lobbymap','LocalOptions=','TransitionMap=Entry','MapExt=tgm','EXEName=unreal.exe','DebugEXEName=DEBUG-unreal.exe','SaveExt=usa','Port=7000','PeerPort=7778','GameName=Smite','GameNameShort=Smite','MenuLevel=lobbymap'], _
 	['[Engine.ScriptPackages]','EngineNativePackages=Core','EngineNativePackages=Engine','EngineNativePackages=GFxUI','EngineNativePackages=IpDrv','EngineNativePackages=GameFramework','NetNativePackages=IpDrv','NetNativePackages=WinDrv','EditorPackages=UnrealEd','ScaleformEditorPackages=GFxUIEditor','EngineNativePackages=PlatformCommon','EngineNativePackages=TgGame','NativePackages=TgClientBase','NativePackages=TgClient','NativePackages=BattleGame','NativePackages=BattleClient','EditorPackages=TgEditor','EditorPackages=BattleEditor','NonNativePackages=TgGameContent','EngineNativePackages=Vivox'], _
@@ -1371,23 +1456,35 @@ Global Const $TextureQualityHive[9][8][4] = _
 
 Func GUICtrlCreateLabelTransparentBG($Text,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style = Default)
 	Local $Label = GUICtrlCreateLabel($Text,$X,$Y,$Size_X,$Size_Y,$Style)
-		GUICtrlSetBkColor(-1,$GUI_BKCOLOR_TRANSPARENT) ;- Transparent background.
+		GUICtrlSetBkColor(-1,$GUI_BKCOLOR_TRANSPARENT)
+		GUICtrlSetColor(-1,$cTextColor)
 		GUICtrlSetFont(-1,Default,Default,Default,$MainFontName)
 
 	Return $Label
 EndFunc
 Func GUICtrlCreateCheckboxTransparentBG($X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0)
 	Local $Checkbox = GUICtrlCreateCheckbox($sEmpty,$X,$Y,$Size_X,$Size_Y)
-		DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
-		GUICtrlSetBkColor(-1,$GUI_BKCOLOR_TRANSPARENT) ;- Make background transparent.
+		DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
+		GUICtrlSetBkColor(-1,$GUI_BKCOLOR_TRANSPARENT)
 
 	Return $Checkbox
 EndFunc
 Func GUICtrlCreateComboNoTheme($Str,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style = $sEmpty)
 	Local $Combo = GUICtrlCreateCombo($Str,$X,$Y,$Size_X,$Size_Y,$Style)
-		DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+		DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 
 	Return $Combo
+EndFunc
+
+Local $WindowsUIFont = "Segoe UI"
+If @OSVersion <> "WIN_10" and @OSVersion <> "WIN_11" Then
+	$WindowsUIFont = $MenuFontName ;- Fallback for older systems
+EndIf
+
+Func GUICtrlCreateButtonSO($GUI,$sStr,$X,$Y,$W,$H,$cBackgroundColor = $cBackgroundColor,$cTextColor = $cTextColor,$cAccentColor = $cAccentColor) ;- Wrapper function to define defaults more easily.
+	Local $Obj = _SOCtrlButtons_Create($GUI,$sStr,$X,$Y,$W,$H,$cBackgroundColor,$cTextColor,$WindowsUIFont,8,1,$cAccentColor) ;- Default Windows UI font, size 8, style bold.
+
+	Return $Obj
 EndFunc
 
 SplashScreenWriteStatus(100,"Loading Interface") ;- Update Splash-Screen.
@@ -1423,15 +1520,15 @@ Func CreateMenuObject($Name,$State = False)
 
 	Return $Array
 EndFunc
-Func DrawMainGUI()
+Func DrawMainGUI() ;- Random crash on this line. This function was defined, but then could not be found? - 11th Aug. 2023 - v1.3.7
 	Global $MainGUI = GUICreate($ProgramName,$MinWidth,$MinHeight,-$ScrW,-$ScrH,BitOR($WS_SIZEBOX,$WS_MINIMIZEBOX,$WS_MAXIMIZEBOX))
 		_GUI_EnableDragAndResize($MainGUI,$MinWidth,$MinHeight,$MinWidth,$MinHeight)
-		GUISetBkColor(0x2D2D2D) ;- GUISetBkColor(0x003C74) ;- Blue accent color looks weird here.
+		GUISetBkColor(0x2D2D2D)
 
-		GUICtrlSetDefColor(0xFFFFFF,$MainGUI)
-		GUICtrlSetDefBkColor(0x00,$MainGUI)
+		GUICtrlSetDefColor($cTextColor,$MainGUI)
+		GUICtrlSetDefBkColor($cBackgroundColor,$MainGUI)
 
-		Global $MainGUITitleBarBG = GUICtrlCreatePic($sEmpty,2,34,$MinWidth-4,$MinHeight - 36) ;- Ugly hack to fix window drag
+		Global $MainGUITitleBarBG = GUICtrlCreatePic($sEmpty,2,34,$MinWidth-4,$MinHeight - 36)
 			LoadImageResource($MainGUITitleBarBG,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
 			GUICtrlSetResizing(-1,$GUI_DOCKBORDERS)
 			GUICtrlSetState(-1,$GUI_DISABLE)
@@ -1446,37 +1543,44 @@ Func DrawMainGUI()
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIMenuTitle = GUICtrlCreateLabelTransparentBG($ProgramName,50,9,130,15)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-			GUICtrlSetFont(-1,9,Default,Default,$MainFontName)
+			GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
 
-		Global $MainGUIButtonClose = GUICtrlCreatePic($sEmpty,$MinWidth-34,0,34,34)
+		Global $MainGUIButtonClose = GUICtrlCreatePic($sEmpty,$MinWidth - 34,0,34,34)
 			LoadImageResource($MainGUIButtonClose,$MainResourcePath & "CloseNoActivate.jpg","CloseNoActivate")
 			GUICtrlSetOnEvent($MainGUIButtonClose,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
-		Global $MainGUIButtonMaximize = GUICtrlCreatePic($sEmpty,$MinWidth-(34*2),0,34,34)
+		Global $MainGUIButtonMaximize = GUICtrlCreatePic($sEmpty,$MinWidth - 68,0,34,34)
 			LoadImageResource($MainGUIButtonMaximize,$MainResourcePath & "Maximize1NoActivate.jpg","Maximize1NoActivate")
 			GUICtrlSetOnEvent($MainGUIButtonMaximize,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
-		Global $MainGUIButtonMinimize = GUICtrlCreatePic($sEmpty,$MinWidth-(34*3),0,34,34)
+		Global $MainGUIButtonMinimize = GUICtrlCreatePic($sEmpty,$MinWidth - 102,0,34,34)
 			LoadImageResource($MainGUIButtonMinimize,$MainResourcePath & "MinimizeNoActivate.jpg","MinimizeNoActivate")
 			GUICtrlSetOnEvent($MainGUIButtonMinimize,"ButtonPressLogic")
+			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+
+		Global $MainGUIButtonDiscord = GUICtrlCreatePic($sEmpty,$MinWidth - 140,2,38,32)
+			LoadImageResource($MainGUIButtonDiscord,$MainResourcePath & "DiscordIconInActive.jpg","DiscordIconInActive")
+			GUICtrlSetOnEvent($MainGUIButtonDiscord,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
 		Local $Text = "Discovery"
 		If $ProgramState <> $sEmpty Then $Text = $ProgramState
 
-		Global $MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("("&$Text&" mode)",-1000,18,-1,14,$SS_RIGHT)
+		Global $MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("("&$Text&" mode)",-1000,17,-1,25,$SS_RIGHT)
 			Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelProgramState)[2] + 25
-			GUICtrlSetPos(-1,$MinWidth - $Width - 102,18,$Width,14)
+			GUICtrlSetPos(-1,$MinWidth - $Width - 144,17,$Width,25)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+			GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
 
 		Local $Text = "v"&$ProgramVersion
-		If $UpdateAvailable Then $Text = "(Update Available) v"&$ProgramVersion
-		Global $MainGUILabelVersion = GUICtrlCreateLabelTransparentBG($Text,-1000,4,-1,14,$SS_RIGHT)
+		If $UpdateAvailable Then $Text = "(Update available) v"&$ProgramVersion
+		Global $MainGUILabelVersion = GUICtrlCreateLabelTransparentBG($Text,-1000,3,-1,14,$SS_RIGHT)
 			Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelVersion)[2] + 25
-			GUICtrlSetPos(-1,$MinWidth - $Width - 105,4,$Width,14)
+			GUICtrlSetPos(-1,$MinWidth - $Width - 146,3,$Width,14)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+			GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
 
 	;-MenuRender
 	;------------------------------------------------------------------------------
@@ -1520,8 +1624,10 @@ Func DrawMainGUI()
 
 	InitGUI() ;- Draw Tab Contents.
 
-	_GIF_ExitAnimation($SplashScreenGUIAnimation) ;- Close all handles created by the Animation thingy before deleting the GUI!
-	GUIDelete($SplashScreenGUI) ;- We are done with everything so yeet the Splash-Screen.
+
+	GUICtrlDeleteGIF($SplashScreenGUIAnimationLoop) ;- Destroy the GIF object, handles, and free memory.
+
+	GUIDelete($SplashScreenGUI) ;- Destroy splash screen
 	$SplashScreenGUI = NULL
 
 	WinMove($MainGUI,$sEmpty,$ScrW/2 - ($MinWidth/2),$ScrH/2 - ($MinHeight/2))
@@ -1532,10 +1638,20 @@ Func DrawMainGUI()
 		DisplayErrorMessage("Please make sure to launch the game at least once before using the program!" & @CRLF & @CRLF & "Choosing anything before doing that will cause problems!",$MainGUI,"IMPORTANT!")
 	EndIf
 
+
+	If $sAlert <> $sEmpty Then ;- Display stored alert!
+		Local $bShouldDisplay = RegRead("HKCU\Software\SMITE Optimizer\","sLastAlert")
+
+		If $bShouldDisplay <> $sAlert Then ;- Only display if we didn't discard this one already!
+			DisplayErrorMessage($sAlert,$MainGUI,"Message from the developers!")
+			RegWrite("HKCU\Software\SMITE Optimizer\","sLastAlert","REG_SZ",$sAlert)
+		EndIf
+	EndIf
+
 EndFunc
 DrawMainGUI()
 
-Func InitGUI() ;- In this function we draw every element of the GUI in advance and then hide them afterwards since this makes switching GUI states faster and easier to code.
+Func InitGUI() ;- In this function, we draw every element of the GUI in advance and then hide them afterward, since this makes switching GUI states faster and easier to code.
 
 	;- Hover info help stuff
 	;- ----- ----- ----- ----- -----
@@ -1550,16 +1666,8 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 				LoadImageResource($MainGUIHomeHelpImage,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 				GUICtrlSetState(-1,$GUI_DISABLE)
 
-			Global $HoverInfoGUIImageAnimation
 
-			If @Compiled Then
-				$HoverInfoGUIImageAnimation = _GUICtrlCreateGIF(@AutoItExe,"RES;PreloadGIF",0,0,0,0) ;- Needs to be assigned to a valid GIF, otherwise it will cause a lot of weird problems!
-			Else
-				$HoverInfoGUIImageAnimation = _GUICtrlCreateGIF($MainResourcePath & "Preload.gif",Default,0,0,0,0) ;- Needs to be assigned to a valid GIF, otherwise it will cause a lot of weird problems!
-			EndIf
-
-				_GIF_PauseAnimation($HoverInfoGUIImageAnimation)
-				GUICtrlSetState(-1,$GUI_DISABLE)
+			Global $HoverInfoGUIImageAnimation = NULL
 
 		GUISetState(@SW_SHOWNOACTIVATE,$HoverInfoGUI)
 
@@ -1568,10 +1676,10 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 	;- ----- ----- ----- ----- -----
 
 	;-- Home (Config Discovery)
-		Global $MainGUIHomeLabelWelcome = GUICtrlCreateLabelTransparentBG("Welcome! Thank you for choosing the SMITE Optimizer!",86,65,700,30)
+		Global $MainGUIHomeLabelWelcome = GUICtrlCreateLabelTransparentBG("Thank you for choosing the SMITE Optimizer!",152,65,700,30)
 			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,18,500,Default,$MenuFontName)
-		Global $MainGUIHomeLabelGetStarted = GUICtrlCreateLabelTransparentBG("Please select which Game Launcher you used to install SMITE on your System.",205,100,700,30)
+		Global $MainGUIHomeLabelGetStarted = GUICtrlCreateLabelTransparentBG("Please select the launcher you used to install SMITE on your system.",227,100,700,30)
 			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 		Global $MainGUIHomePicBtnSteam = GUICtrlCreatePic($sEmpty,110,150,300,100)
 			LoadImageResource($MainGUIHomePicBtnSteam,$MainResourcePath & "SteamBtnInActive.jpg","SteamBtnInActive")
@@ -1585,22 +1693,17 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			LoadImageResource($MainGUIHomePicBtnLegacy,$MainResourcePath & "LegacyBtnInActive.jpg","LegacyBtnInActive")
 			GUICtrlSetOnEvent($MainGUIHomePicBtnLegacy,"SetupPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-		Global $MainGUIHomeButtonMoreOptions = GUICtrlCreateButton("More Options",379,379,100,25)
+		Global $MainGUIHomeButtonMoreOptions = GUICtrlCreateButtonSO($MainGUI,"More Options",379,379,100,25)
 			GUICtrlSetOnEvent($MainGUIHomeButtonMoreOptions,"SetupPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetBkColor(-1,0x00F)
-			GUICtrlSetColor(-1,0xFFFFFF)
-		Global $MainGUIHomeLabelLogoCopyright = GUICtrlCreateLabelTransparentBG("Logos shown are subject to Copyright and are Trademarked by their respective companies and were used under the 'Fair Use' agreement.",5,430,850,16)
-			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,9,500,Default,$MainFontName)
 
-		;- If the standard path does not return any valid configuration files we want to inform the user that they should launch SMITE at least once before using the program to avoid issues
+		;- If the standard path does not return any valid configuration files, we want to inform the user that they should launch SMITE at least once before using the program to avoid issues.
 
 			If Not ( FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini") _
 			and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") _
 			and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
 
-				;- A little messy but eh.
+				;- Thank you, Microsoft. Not.
 
 				If Not ( FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") _
 				and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") _
@@ -1609,90 +1712,104 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 					;- Valid configuration files have not been found in the standard path, so we inform the user!
 
 					$Bool_DisplaySetupError = True ;- This has to happen at a later state
-;~ 					DisplayErrorMessage("IMPORTANT!"&@CRLF&"Please make sure to launch the game at least once before using the program!")
 
 				EndIf
 			EndIf
 
 
 	;-- Home (Simple and Advanced mode)
-		Global $MainGUIHomeButtonApply = GUICtrlCreateButton("Apply Changes",696,401,100,35)
+		Global $MainGUIHomeButtonApply = GUICtrlCreateButtonSO($MainGUI,"Apply changes",696,401,100,35)
 			GUICtrlSetOnEvent($MainGUIHomeButtonApply,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-		Global $MainGUIHomeButtonFixConfig = GUICtrlCreateButton("Verify and Repair",696-105,401,100,35)
+		Global $MainGUIHomeButtonFixConfig = GUICtrlCreateButtonSO($MainGUI,"Verify and repair",696-105,401,100,35)
 			GUICtrlSetOnEvent($MainGUIHomeButtonFixConfig,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 		Global $MainGUIHomeSwitchModeSimple = GUICtrlCreateRadio($sEmpty,10,404,13,13)
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetOnEvent($MainGUIHomeSwitchModeSimple,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			If $ProgramHomeState = "Simple" Then GUICtrlSetState(-1,$GUI_CHECKED)
 		Global $MainGUIHomeLabelModeSimple = GUICtrlCreateLabelTransparentBG("Simple",27,403,-1,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSwitchModeAdvanced = GUICtrlCreateRadio($sEmpty,10,422,13,13)
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetOnEvent($MainGUIHomeSwitchModeAdvanced,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			If $ProgramHomeState = "Advanced" Then GUICtrlSetState(-1,$GUI_CHECKED)
 		Global $MainGUIHomeLabelModeAdvanced = GUICtrlCreateLabelTransparentBG("Advanced",27,422,-1,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-		Global $MainGUIHomeButtonUseMaxPerformance = GUICtrlCreateButton("Use high performance Settings",157,401,200,35)
+		Global $MainGUIHomeButtonUseMaxPerformance = GUICtrlCreateButtonSO($MainGUI,"Use high performance settings",157,401,200,35)
 			GUICtrlSetOnEvent($MainGUIHomeButtonUseMaxPerformance,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-		Global $MainGUIHomeButtonRestoreDefaults = GUICtrlCreateButton("Restore default Settings",362,401,150,35)
+		Global $MainGUIHomeButtonRestoreDefaults = GUICtrlCreateButtonSO($MainGUI,"Restore default settings",362,401,150,35)
 			GUICtrlSetOnEvent($MainGUIHomeButtonRestoreDefaults,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 		Global $MainGUIHomeCheckboxDisplayHints = GUICtrlCreateCheckboxTransparentBG(160,384,13,13)
 			GUICtrlSetOnEvent($MainGUIHomeCheckboxDisplayHints,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetState(-1,$ProgramHomeHelpState)
-		Global $MainGUIHomeLabelDisplayHints = GUICtrlCreateLabelTransparentBG("Show Help",178,384,-1,13)
+		Global $MainGUIHomeLabelDisplayHints = GUICtrlCreateLabelTransparentBG("Show help",178,384,-1,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 
 
 	;-- Home (Simple mode)
-		;- Get available resolutions and format them properly and then sort the array.
+		;- Get the available resolutions, format them properly, and then sort the array.
 
 			Global $AvailableResolutions[0]
 			Local $AvailableResolutionsStr
 
-			Local $objWMIService = ObjGet("winmgmts:" & "{impersonationLevel=impersonate}!\\.\root\cimv2")
-			Local $colItems = $objWMIService.ExecQuery("Select * from CIM_VideoControllerResolution")
+			Local $objWMIService = ObjGet("winmgmts:\\.\root\cimv2")
+			Local $colItems = $objWMIService.ExecQuery("SELECT * FROM CIM_VideoControllerResolution")
 
-			Sleep(10) ;- We wait to make sure windows had enough time to give us the information we want.
+			Sleep(10) ;- Required.
 
 			For $objItem in $colItems
 				Local $Count = uBound($AvailableResolutions)
-				ReDim $AvailableResolutions[$Count+1]
-				$AvailableResolutions[$Count] = StringLeft($objItem.SettingID,StringInStr($objItem.SettingID,"x",0,2)-2)
+				ReDim $AvailableResolutions[$Count + 1]
+				$AvailableResolutions[$Count] = $objItem.HorizontalResolution & " x " & $objItem.VerticalResolution
 			Next
 
-			If uBound($AvailableResolutions) = 0 Then ;- We completely failed to retrieve the Screen Resolutions so we have to abort entirely.
-				MsgBox($MB_OK,"Error!","A fatal error has occured. Code: 008"&@CRLF&"You will only be able to select your current screen resolution."&@CRLF&"Restarting the program might fix this.") ;- This is a bug that rarely happens where AutoIt fails to communicate with Windows.
+			If uBound($AvailableResolutions) = 0 Then ;- Sometimes we cannot retrieve the screen resolutions. (BUG, UNKNOWN CAUSE)
+				MsgBox($MB_OK,"Error!","An error has occured. Code: 008"&@CRLF&"You will only be able to select your current screen resolution."&@CRLF&"Please restart the program to potentially resolve this.")
 
 				ReDim $AvailableResolutions[1]
-				$AvailableResolutions[0] = @DesktopWidth&"x"&@DesktopHeight
+				$AvailableResolutions[0] = @DesktopWidth & " x " & @DesktopHeight
 			Else
 
-				;- Yeet anything below 800x600 since that's the minimum resolution for SMITE.
-				For $I = uBound($AvailableResolutions)-1 To 0 Step -1
-					If StringLeft($AvailableResolutions[$I],StringInStr($AvailableResolutions[$I],"x")-1) < 800 or StringMid($AvailableResolutions[$I],StringInStr($AvailableResolutions[$I],"x")+2) < 600 Then
-						_ArrayDelete($AvailableResolutions,$I)
+
+				;- Finalize
+
+				_ArrayAdd($AvailableResolutions,@DesktopWidth & " x " & @DesktopHeight,0) ;- Temporary solution to get screen resolutions higher than 1080p
+
+
+				$AvailableResolutions = _ArrayUnique($AvailableResolutions) ;- Filter duplicates.
+					_ArrayDelete($AvailableResolutions,0)
+					_ArrayReverse($AvailableResolutions)
+
+
+				;- Remove anything below 800x600, since that is the minimum resolution for SMITE.
+
+				Local $iStart = 0
+
+				For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
+
+					Local $iNum = StringLeft($AvailableResolutions[$I],3)
+					local $iXStart = StringInStr($AvailableResolutions[$I],"x")
+
+					If $iNum <= 800 And ($iXStart = 5 or $iXStart = 4) Then
+						$iStart = $I
+						ExitLoop
 					EndIf
 				Next
 
-				$AvailableResolutions = _ArrayUnique($AvailableResolutions) ;- Filter duplicates.
-				_ArrayDelete($AvailableResolutions,0)
-				_ArraySort($AvailableResolutions,1,default,default,default,2) ;- Sort this Array.
+				For $I = uBound($AvailableResolutions) - 1 To $iStart Step -1
+					_ArrayDelete($AvailableResolutions,$I)
+				Next
 
-				If $AvailableResolutions[0] = "800 x 600" Then ;- For some reason the "Dual pivot Quicksort" algorithm completely fails to sort this resolution properly or I don't understand how it works.
-					_ArrayDelete($AvailableResolutions,0)
-					_ArrayAdd($AvailableResolutions,"800 x 600")
-				EndIf
 			EndIf
 
 			For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
-				$AvailableResolutionsStr = $AvailableResolutionsStr & $AvailableResolutions[$I]&"|"
+				$AvailableResolutionsStr = $AvailableResolutionsStr & $AvailableResolutions[$I] & "|"
 			Next
 
 		; ----- ----- -----
@@ -1728,7 +1845,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIHomeSimpleLabelMaxFPS = GUICtrlCreateLabelTransparentBG("Desired FPS (Uncap)",100,274,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleInputMaxFPS = GUICtrlCreateInput($sEmpty,100,288,190,21)
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetLimit(-1,3) ;- Going higher than 999 FPS is not recommended. Ever.
 		Global $MainGUIHomeSimpleLabelScreenRes = GUICtrlCreateLabelTransparentBG("Resolution",300,74,200,13)
@@ -1739,11 +1856,11 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIHomeSimpleLabelScreenResScale = GUICtrlCreateLabelTransparentBG("Resolution Scale",300,114,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleSliderScreenResScale = GUICtrlCreateSlider(300,128,190,21)
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetLimit(-1,200,50)
 		Global $MainGUIHomeSimpleInputScreenResScale = GUICtrlCreateInput($sEmpty,500,128,40,21,$ES_READONLY)
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleLabelWindowmode = GUICtrlCreateLabelTransparentBG("Window Type",300,154,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -1870,11 +1987,11 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIHomeAdvancedLabelScreenResScale = GUICtrlCreateLabelTransparentBG("Resolution Scale",255,159,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedSliderScreenResScale = GUICtrlCreateSlider(255,173,190,21)
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetLimit(-1,200,50)
 		Global $MainGUIHomeAdvancedInputScreenResScale = GUICtrlCreateInput($sEmpty,455,173,40,21,$ES_READONLY)
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedLabelWindowmode = GUICtrlCreateLabelTransparentBG("Window Type",255,199,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -1894,7 +2011,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIHomeAdvancedLabelMaxFPS = GUICtrlCreateLabelTransparentBG("Desired FPS (Uncap)",255,319,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedInputMaxFPS = GUICtrlCreateInput($sEmpty,255,333,190,21)
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetLimit(-1,3) ;- Going higher than 999 FPS is not recommended. Ever.
 		Global $MainGUIHomeAdvancedCheckboxSpeedTreeWind = GUICtrlCreateCheckboxTransparentBG(455,49,15,21)
@@ -2014,7 +2131,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIHomeAdvancedLabelDynamicShadows = GUICtrlCreateLabelTransparentBG("Dynamic Shadows",638,333,160,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
-		Internal_LoadSettingCookies(False,False,True) ;- Load settings from cookie. (Simple and Advanced)
+		Internal_LoadSettingCookies(False,False,True) ;- Load settings from the cookie. (Simple and Advanced)
 		Global $LastScreenResScaleAdvanced ;- Used in the main routine to determine whether it changed.
 
 		GUICtrlSetData($MainGUIHomeSimpleInputScreenResScale,GUICtrlRead($MainGUIHomeSimpleSliderScreenResScale)&"%") ;- Set the initial percentage.
@@ -2024,8 +2141,8 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 	;-- Fixes
 		Global $MainGUIFixesLabelMaxFPS = GUICtrlCreateLabelTransparentBG("Desired FPS (Uncap)",80,64,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Global $MainGUIFixesInputMaxFPS = GUICtrlCreateInput("150",80,78,190,21) ;- Defaults to 150 FPS since it should not store settings in the fixes tab
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+		Global $MainGUIFixesInputMaxFPS = GUICtrlCreateInput("150",80,78,190,21) ;- Defaults to 150 FPS since it should not store settings in the fixes tab.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetLimit(-1,3) ;- Going higher than 999 FPS is not recommended. Ever.
 
@@ -2041,28 +2158,28 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
 
-		Global $MainGUIFixesButtonCreateQuicklaunch = GUICtrlCreateButton("Create Quicklaunch Bypass",386,401,150,35)
+		Global $MainGUIFixesButtonCreateQuicklaunch = GUICtrlCreateButtonSO($MainGUI,"Create quicklaunch bypass",386,401,150,35)
 			GUICtrlSetOnEvent($MainGUIFixesButtonCreateQuicklaunch,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
-		Global $MainGUIFixesButtonInstallLegacy = GUICtrlCreateButton("Install Legacy Launcher",541,401,150,35)
+		Global $MainGUIFixesButtonInstallLegacy = GUICtrlCreateButtonSO($MainGUI,"Install legacy launcher",541,401,150,35)
 			GUICtrlSetOnEvent($MainGUIFixesButtonInstallLegacy,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
-		Global $MainGUIFixesButtonApply = GUICtrlCreateButton("Apply Fixes",696,401,100,35)
+		Global $MainGUIFixesButtonApply = GUICtrlCreateButtonSO($MainGUI,"Apply fixes",696,401,100,35)
 			GUICtrlSetOnEvent($MainGUIFixesButtonApply,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
-		Global $MainGUIFixesButtonExportHUD = GUICtrlCreateButton("Export HUD Settings",596,101,150,35)
+		Global $MainGUIFixesButtonExportHUD = GUICtrlCreateButtonSO($MainGUI,"Export HUD settings",596,101,150,35)
 			GUICtrlSetOnEvent($MainGUIFixesButtonExportHUD,"Internal_ExportSettings")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
-		Global $MainGUIFixesButtonImportHUD = GUICtrlCreateButton("Import HUD Settings",596,141,150,35)
+		Global $MainGUIFixesButtonImportHUD = GUICtrlCreateButtonSO($MainGUI,"Import HUD settings",596,141,150,35)
 			GUICtrlSetOnEvent($MainGUIFixesButtonImportHUD,"Internal_ImportSettings")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
 
-		;- Load settings from cookie
+		;- Load settings from the cookie
 
 		Local $Int_Settings = RegRead("HKCU\Software\SMITE Optimizer\","ConfigCookieFixes")
 
@@ -2080,46 +2197,36 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 
 	;-- Restore Configurations
 		Global $MainGUIRestoreConfigurationsListFiles = GUICtrlCreateList($sEmpty,57,43,746,239,BitOR($WS_BORDER,$WS_VSCROLL,$LBS_NOINTEGRALHEIGHT))
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM)
 			Internal_UpdateRestoreConfigList()
 
 		Global $MainGUIRestoreConfigurationsLabelBackupPath = GUICtrlCreateLabelTransparentBG("Backup Path:",5,410,75,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 		Global $MainGUIRestoreConfigurationsInputBackupPath = GUICtrlCreateInput($ConfigBackupPath,5,425,700,20,$ES_READONLY)
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKHEIGHT)
-		Global $MainGUIRestoreConfigurationsButtonChangeBackupPath = GUICtrlCreateButton("Change..",709,424,97,22)
+		Global $MainGUIRestoreConfigurationsButtonChangeBackupPath = GUICtrlCreateButtonSO($MainGUI,"Change..",709,424,97,22)
 			GUICtrlSetOnEvent($MainGUIRestoreConfigurationsButtonChangeBackupPath,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetBkColor(-1,0x00F)
-			GUICtrlSetColor(-1,0xFFFFFF)
-		Global $MainGUIRestoreConfigurationsButtonOpenBackupPath = GUICtrlCreateButton("Open Directory",709,399,97,22)
+		Global $MainGUIRestoreConfigurationsButtonOpenBackupPath = GUICtrlCreateButtonSO($MainGUI,"Open directory",709,399,97,22)
 			GUICtrlSetOnEvent($MainGUIRestoreConfigurationsButtonOpenBackupPath,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetBkColor(-1,0x00F)
-			GUICtrlSetColor(-1,0xFFFFFF)
-		Global $MainGUIRestoreConfigurationsButtonRestoreSelected = GUICtrlCreateButton("Restore Selected",704,284,100,35)
+		Global $MainGUIRestoreConfigurationsButtonRestoreSelected = GUICtrlCreateButtonSO($MainGUI,"Restore selected",704,284,100,35)
 			GUICtrlSetOnEvent($MainGUIRestoreConfigurationsButtonRestoreSelected,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetBkColor(-1,0x00F)
-			GUICtrlSetColor(-1,0xFFFFFF)
-		Global $MainGUIRestoreConfigurationsButtonRemoveSelected = GUICtrlCreateButton("Delete Selected",601,284,100,35)
+		Global $MainGUIRestoreConfigurationsButtonRemoveSelected = GUICtrlCreateButtonSO($MainGUI,"Delete selected",601,284,100,35)
 			GUICtrlSetOnEvent($MainGUIRestoreConfigurationsButtonRemoveSelected,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetBkColor(-1,0x00F)
-			GUICtrlSetColor(-1,0xFFFFFF)
-		Global $MainGUIRestoreConfigurationsButtonRefreshList = GUICtrlCreateButton("Refresh list",498,284,100,25)
+		Global $MainGUIRestoreConfigurationsButtonRefreshList = GUICtrlCreateButtonSO($MainGUI,"Refresh list",498,284,100,25)
 			GUICtrlSetOnEvent($MainGUIRestoreConfigurationsButtonRefreshList,"Internal_UpdateRestoreConfigList")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetBkColor(-1,0x00F)
-			GUICtrlSetColor(-1,0xFFFFFF)
 		Global $MainGUIRestoreConfigurationsCheckboxAskForConfirmation = GUICtrlCreateCheckboxTransparentBG(610,325,15,15)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetState(-1,$GUI_CHECKED)
 		Global $MainGUIRestoreConfigurationsLabelAskForConfirmation = GUICtrlCreateLabelTransparentBG("Ask to confirm action?",630,326,125,15)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-		Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"Dates shown are in the following format: DD/MM/YYYY."&@CRLF&"The other numbers are the time at which the backup was made.",57,283,425,41)
+		Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"The dates shown are in the following format: DD_MM_YYYY_HH_MM_SS."&@CRLF&"Day, month, year, hour, minute, seconds.",57,283,425,41)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 
 
@@ -2130,7 +2237,7 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			LoadImageResource($MainGUIDonatePicHeart,$MainResourcePath & "Heart_BG.jpg","Heart_BG")
 			GUICtrlSetOnEvent($MainGUIDonatePicHeart,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetState($MainGUIDonatePicHeart,$GUI_DISABLE) ;- Can't be clicked.
+			GUICtrlSetState($MainGUIDonatePicHeart,$GUI_DISABLE)
 		Global $MainGUIDonateButtonKofi = GUICtrlCreatePic($sEmpty,136,188,250,110)
 			LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
 			GUICtrlSetOnEvent($MainGUIDonateButtonKofi,"ButtonPressLogic")
@@ -2139,17 +2246,11 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 			GUICtrlSetOnEvent($MainGUIDonateButtonPatreon,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-		Global $MainGUIDonateLabelInfo = GUICtrlCreateLabelTransparentBG("Feeling generous? This is the place where you can show your appreciation for the project!",74,67,850,30)
-			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,12,500,Default,$MainFontName)
-		Global $MainGUIDonateLabelInfo2 = GUICtrlCreateLabelTransparentBG("Thank you for your interest in donating. Any support is always greatly appreciated! <3",85,115,850,30)
-			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetFont(-1,12,500,Default,$MainFontName)
 
 
 	;-- Changelog
 		Global $MainGUIChangelogRichEdit = GUICtrlCreateEdit($ChangelogText,55,41,$MinWidth-60,$MinHeight-46,BitOr($ES_READONLY,$WS_VSCROLL))
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM)
 		Global $MainGUIChangelogButtonViewOnlineBG = GUICtrlCreatePic($sEmpty,2,365,48,40)
 			LoadImageResource($MainGUIChangelogButtonViewOnlineBG,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
@@ -2165,90 +2266,74 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 	;-- Copyright
 		Global $MainGUICopyrightAnimatedLogo
 
-		If @Compiled Then
-			$MainGUICopyrightAnimatedLogo = _GUICtrlCreateGIF(@AutoItExe,"RES;SO_LogoGIF",130,50,600,100)
-		Else
-
-			;- We don't animate the logo when we didn't compile the script as otherwise it causes freezing issues on startup! (No idea why)
-
-			$MainGUICopyrightAnimatedLogo = GUICtrlCreatePic($sEmpty,130,50,600,100)
-			LoadImageResource($MainGUICopyrightAnimatedLogo,$MainResourcePath & "SO_Logo.jpg","SO_Logo")
-		EndIf
-
-			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			_GIF_PauseAnimation($MainGUICopyrightAnimatedLogo)
-			GUICtrlSetState(-1,$GUI_DISABLE)
-
-		Global $MainGUICopyrightPicLogo = GUICtrlCreatePic($sEmpty,130,50,600,100)
-			LoadImageResource($MainGUICopyrightPicLogo,$MainResourcePath & "SO_Logo.jpg","SO_Logo")
-			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-		Global $MainGUICopyrightLabelInfo = GUICtrlCreateLabelTransparentBG("A Project brought to life by Meteor (MrRangerLP) in 2017 and still being worked on in "&$Year,69,160,730,18)
+		Global $MainGUICopyrightLabelInfo = GUICtrlCreateLabelTransparentBG("A project brought to life by MeteorTheLizard in 2017 and still being maintained in "&$Year&".",88,160,730,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,12,500,Default,$MenuFontName)
-		Global $MainGUICopyrightLabelLicense = GUICtrlCreateLabelTransparentBG('This Project is licensed under the "GNU GPL-3.0" License. Do note that only version 1.3 and above fall under this license.',64,194,735,18)
+		Global $MainGUICopyrightLabelLicense = GUICtrlCreateLabelTransparentBG('SMITE Optimizer v1.3 and newer are licensed under the "GNU GPL-3.0" License.',195,189,735,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-		Global $MainGUICopyrightLabelLicense2 = GUICtrlCreateLabelTransparentBG("Earlier versions are subject to Copyright (C) and may not be copied, shared, modified, or distributed.",124,213,615,18)
+		Global $MainGUICopyrightLabelLicense2 = GUICtrlCreateLabelTransparentBG("Earlier versions than 1.3 may not be copied, shared, modified, or distributed without permission.",143,207,615,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-		Global $MainGUICopyrightLabelCopyright = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.0 - 1.2.2 Copyright (C) 2019 - Mario "Meteor Thuri" Schien.',175,248,600,18)
+		Global $MainGUICopyrightLabelCopyright = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.0 - 1.2.2, Copyright (C) 2019 - Mario "Meteor Thuri" Schien.',177,234,600,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-		Global $MainGUICopyrightLabelCopyright2 = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.3 and above Copyright (C) '&$Year&' - Mario "Meteor Thuri" Schien.',169,266,600,18)
+		Global $MainGUICopyrightLabelCopyright2 = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.3 and newer, Copyright (C) '&$Year&' - Mario "Meteor Thuri" Schien.',161,252,600,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-		Global $MainGUICopyrightLabelSMITECopyright = GUICtrlCreateLabelTransparentBG("SMITE(R), Battleground of the Gods(TM) Copyright (C) "&$Year&" Hi-Rez Studios, INC. All rights reserved.",133,284,600,18)
+		Global $MainGUICopyrightLabelSMITECopyright = GUICtrlCreateLabelTransparentBG("SMITE(R), Battleground of the Gods(TM) Copyright (C) "&$Year&" Hi-Rez Studios, Inc. All rights reserved.",134,270,600,18)
+			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
+		Global $MainGUICopyrightLabelLogoCopyright = GUICtrlCreateLabelTransparentBG("Logos used are subject to copyright and were used under the 'Fair Use' agreement.",181,288,600,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
 		Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("Contact: MrRangerLP (at) gmx.de",103,317,250,20)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetFont(-1,11,500,Default,$MenuFontName)
-		Global $MainGUICopyrightLabelWebsite = GUICtrlCreateLabelTransparentBG("Website: https://meteorthelizard.com",103,337,300,20)
+
+		Global $MainGUICopyrightLabelWebsite = GUICtrlCreateLabelTransparentBG("https://www.meteorthelizard.com",103,337,250,20)
+			GUICtrlSetOnEvent($MainGUICopyrightLabelWebsite,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetFont(-1,11,500,Default,$MenuFontName)
-		Global $MainGUICopyrightLabelOpen = GUICtrlCreateLabelTransparentBG("(Click here to open)",383,337,150,20)
-			GUICtrlSetOnEvent($MainGUICopyrightLabelOpen,"ButtonPressLogic")
-			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetFont(-1,11,500,Default,$MainFontName)
-			GUICtrlSetColor(-1,0x4F89EA)
+			GUICtrlSetColor(-1,$cURLColor)
 			GUICtrlSetCursor(-1,0)
-		Global $MainGUICopyrightPicBGLeft = GUICtrlCreatePic($sEmpty,95,361,219,50)
+		Global $MainGUICopyrightPicBGLeft = GUICtrlCreatePic($sEmpty,95,361,224,50)
 			LoadImageResource($MainGUICopyrightPicBGLeft,$MainResourcePath & "CopyrightFooterBGLeft.jpg","CopyrightFooterBGLeft")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetState(-1,$GUI_DISABLE)
 		Global $MainGUICopyrightLabelVersionFooter = GUICtrlCreateLabelTransparentBG("SMITE Optimizer Version "&$ProgramVersion,103,362,250,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetFont(-1,11,500,Default,$MainFontName)
+			GUICtrlSetFont(-1,11,500,Default,$MenuFontName)
 		Global $MainGUICopyrightLabelLicenseLink = GUICtrlCreateLabelTransparentBG("License",102,386,70,23)
 			GUICtrlSetOnEvent($MainGUICopyrightLabelLicenseLink,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetColor(-1,0x4F89EA)
+			GUICtrlSetColor(-1,$cURLColor)
 			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 			GUICtrlSetCursor(-1,0)
 		Global $MainGUICopyrightLabelSourceLink = GUICtrlCreateLabelTransparentBG("Source",193,386,65,23)
 			GUICtrlSetOnEvent($MainGUICopyrightLabelSourceLink,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetColor(-1,0x4F89EA)
+			GUICtrlSetColor(-1,$cURLColor)
 			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 			GUICtrlSetCursor(-1,0)
-		Global $MainGUICopyrightPicBGRight = GUICtrlCreatePic($sEmpty,342,361,373,50)
+		Global $MainGUICopyrightPicBGRight = GUICtrlCreatePic($sEmpty,368,361,347,50)
 			LoadImageResource($MainGUICopyrightPicBGRight,$MainResourcePath & "CopyrightFooterBGRight.jpg","CopyrightFooterBGRight")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetState(-1,$GUI_DISABLE)
-		Global $MainGUICopyrightLabelAutoItCopyright = GUICtrlCreateLabelTransparentBG("AutoIt v3 Copyright (C) 2022 AutoIt Consulting Ltd.",352,365,375,18)
+		Global $MainGUICopyrightLabelAutoItCopyright = GUICtrlCreateLabelTransparentBG("AutoIt v3 Copyright (C) 2022 AutoIt Consulting Ltd.",373,365,375,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetFont(-1,10,500,Default,$MainFontName)
+			GUICtrlSetFont(-1,10,500,Default,$MenuFontName)
 		Global $MainGUICopyrightLabelAutoitLicenseLink = GUICtrlCreateLabelTransparentBG("AutoIt v3 License",537,386,170,23)
 			GUICtrlSetOnEvent($MainGUICopyrightLabelAutoitLicenseLink,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetColor(-1,0x4F89EA)
+			GUICtrlSetColor(-1,$cURLColor)
 			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 			GUICtrlSetCursor(-1,0)
 
 
 	;- Debug
 		Local $TempN = @AutoItExe
-		$TempN = StringSplit($TempN,"\")
+			$TempN = StringSplit($TempN,"\")
 
 		If not IsDeclared("SysInfoRead") Then
 			Local $PID = Run("wmic cpu get name /value",$sEmpty,$sEmpty,0x2)
@@ -2274,59 +2359,59 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 			LoadImageResource($MainGUIDebugPicDebugFooterFooter,$MainResourcePath & "DebugFooter.jpg","DebugFooter")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetState(-1,$GUI_DISABLE)
-		Global $MainGUIDebugLabelReportABug = GUICtrlCreateLabelTransparentBG("Report a Bug",67,408,120,24)
+		Global $MainGUIDebugLabelReportABug = GUICtrlCreateLabelTransparentBG("Report a bug",67,408,120,24)
 			GUICtrlSetOnEvent($MainGUIDebugLabelReportABug,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetColor(-1,0x4F89EA)
+			GUICtrlSetColor(-1,$cURLColor)
 			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 			GUICtrlSetCursor(-1,0)
 		Global $MainGUIDebugLabelCreateDebugInfo = GUICtrlCreateLabelTransparentBG("Create debug dump",212,408,178,24)
 			GUICtrlSetOnEvent($MainGUIDebugLabelCreateDebugInfo,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-			GUICtrlSetColor(-1,0x4F89EA)
+			GUICtrlSetColor(-1,$cURLColor)
 			GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 			GUICtrlSetCursor(-1,0)
 		Global $MainGUIDebugEditSystemInfo = GUICtrlCreateEdit($TempN[uBound($TempN)-1]&" PID("&@AutoItPID&")"&@CRLF&@UserName&" | ( "&@OSVersion&" "&@OSArch&" )"&@CRLF&"CPU: "&$SysInfoRead&@CRLF&regRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment","NUMBER_OF_PROCESSORS")&" Thread(s) @ "&RegRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0", "~MHz")&" MHz | Architecture: "&@CPUArch&@CRLF&"RAM: "&Floor((MemGetStats()[1]/1000000))&" GB | ( "&Round((MemGetStats()[1]/1000000),2)&" GB )"&@CRLF&"GPU: "&$SysInfoOutput&@CRLF&"Mainboard: "&regRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS","BaseBoardManufacturer")&" | "&regRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS","BaseBoardProduct")& @CRLF &"Last BIOS update: "&regRead("HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS","BIOSReleaseDate"),67,261,400,144,BitOr($ES_READONLY,$ES_WANTRETURN),0)
-			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0) ;- Remove windows theme.
+			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKHEIGHT)
 
 		Local $DebugEngineSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 		If @Error Then $DebugEngineSettingsPath = "Not yet defined"
 		Global $MainGUIDebugLabelEngineSettings = GUICtrlCreateLabelTransparentBG("EngineSettings: "&$DebugEngineSettingsPath,55,40,750,40)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+			GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
 
 		Local $DebugSystemSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
 		If @Error Then $DebugSystemSettingsPath = "Not yet defined"
 		Global $MainGUIDebugLabelSystemSettings = GUICtrlCreateLabelTransparentBG("SystemSettings: "&$DebugSystemSettingsPath,55,80,750,35)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+			GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
 
 		Local $DebugGameSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathGame")
 		If @Error Then $DebugGameSettingsPath = "Not yet defined"
 		Global $MainGUIDebugLabelGameSettings = GUICtrlCreateLabelTransparentBG("GameSettings: "&$DebugGameSettingsPath,55,120,750,35)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+			GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
 
 		Local $DebugConfigBackupPath = $ConfigBackupPath
 		If $ConfigBackupPath = $sEmpty Then $DebugConfigBackupPath = "Not yet defined"
 		Global $MainGUIDebugLabelConfigBackupPath = GUICtrlCreateLabelTransparentBG("Backup Path: "&$DebugConfigBackupPath,55,160,750,35)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+			GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
 
 
-		Global $MainGUIDebugButtonCommonIssues = GUICtrlCreateButton("Common Issues",646,300,130,25)
+		Global $MainGUIDebugButtonCommonIssues = GUICtrlCreateButtonSO($MainGUI,"Common issues",646,300,130,25)
 			GUICtrlSetOnEvent($MainGUIDebugButtonCommonIssues,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetBkColor(-1,0x00F)
-			GUICtrlSetColor(-1,0xFFFFFF)
 
-		Global $MainGUIDebugButtonResetConfigPaths = GUICtrlCreateButton("Reset Configuration Paths",626,401,170,35)
+		Global $MainGUIDebugButtonResetConfigPaths = GUICtrlCreateButtonSO($MainGUI,"Reset configuration paths",626,401,170,35)
 			GUICtrlSetOnEvent($MainGUIDebugButtonResetConfigPaths,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			GUICtrlSetBkColor(-1,0x00F)
-			GUICtrlSetColor(-1,0xFFFFFF)
 		Global $MainGUIDebugCheckboxCheckForUpdates = GUICtrlCreateCheckboxTransparentBG(627,383,13,13)
 			GUICtrlSetOnEvent($MainGUIDebugCheckboxCheckForUpdates,"ButtonPressLogic")
 			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			If $CheckForUpdates = "1" Then GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_CHECKED)
-		Global $MainGUIDebugLabelCheckForUpdates = GUICtrlCreateLabelTransparentBG("Automatic Updates",646,383,150,13)
+		Global $MainGUIDebugLabelCheckForUpdates = GUICtrlCreateLabelTransparentBG("Automatic updates",646,383,150,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
 		Global $MainGUIDebugCheckboxRepairIntegrity = GUICtrlCreateCheckboxTransparentBG(627,363,13,13)
@@ -2336,15 +2421,15 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		Global $MainGUIDebugLabelRepairIntegrity = GUICtrlCreateLabelTransparentBG("Check integrity/repair",646,363,150,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
-		;- If there is an update available, we want to display an extra button that performs it!
+		;- If there is an update available, we want to display an extra button!
 		Global $MainGUIDebugButtonPerformUpdate = NULL
 
 		If $UpdateAvailable Then
-			$MainGUIDebugButtonPerformUpdate = GUICtrlCreateButton("Perform Update",540,401,100,35)
+
+			$MainGUIDebugButtonPerformUpdate = GUICtrlCreateButtonSO($MainGUI,"Perform Update",540,401,100,35)
 				GUICtrlSetOnEvent($MainGUIDebugButtonPerformUpdate,"ButtonPressLogic")
 				GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-				GUICtrlSetBkColor(-1,0x00F)
-				GUICtrlSetColor(-1,0xFFFFFF)
+
 		EndIf
 
 	;- ----- ----- ----- ----- -----
@@ -2369,17 +2454,26 @@ Func InitGUI() ;- In this function we draw every element of the GUI in advance a
 		UnDrawMainGUIHomeSimple()
 	EndIf
 
-	;- Hover Information popup
-		Global $MainGUIMenuHoverInfo = GUICtrlCreatePic($sEmpty,-90,-42,90,42)
-			LoadImageResource($MainGUIMenuHoverInfo,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
-			GUICtrlSetState(-1,$GUI_DISABLE)
+	;- Hover information popup
+		Global $MenuHoverGUI = GUICreate("SO_HOVERGUI",100,50,100,50,$WS_POPUP,$WS_EX_TOOLWINDOW)
+			GUISwitch($MenuHoverGUI)
+			GUISetBkColor(0x525252,$MenuHoverGUI)
+
 		Global $MainGUIMenuHoverText = GUICtrlCreateLabelTransparentBG($sEmpty,-90,-42,90,42)
 			GUICtrlSetFont(-1,25,500,0,$MenuFontName)
-			GUICtrlSetColor(-1,0x00)
+			GUICtrlSetColor(-1,$cTextShadowColor)
+
+		Global $MainGUIMenuHoverDBan = GUICtrlCreatePic($sEmpty,0,0,300,80)
+			LoadImageResource($MainGUIMenuHoverDBan,$MainResourcePath & "DonateBanner.jpg","DonateBanner")
+			GUICtrlSetState(-1,$GUI_HIDE)
+
+		GUISetState(@SW_HIDE,$MenuHoverGUI)
+
+		GUISwitch($MainGUI)
 
 EndFunc
 
-#Region ;- Draw / UnDraw Functions (Used to 'unhide' elements and switch GUI states)
+#Region ;- Draw / UnDraw Functions (used to show elements and switch GUI states)
 	Func DrawMainGUIHomeConfigDiscovery()
 		GUICtrlSetState($MainGUIHomeLabelWelcome,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeLabelGetStarted,$GUI_SHOW)
@@ -2387,7 +2481,6 @@ EndFunc
 		GUICtrlSetState($MainGUIHomePicBtnEGS,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomePicBtnLegacy,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeButtonMoreOptions,$GUI_SHOW)
-		GUICtrlSetState($MainGUIHomeLabelLogoCopyright,$GUI_SHOW)
 
 		$MainGUIHomeDiscoveryDrawn = True
 	EndFunc
@@ -2398,7 +2491,6 @@ EndFunc
 		GUICtrlSetState($MainGUIHomePicBtnEGS,$GUI_HIDE)
 		GUICtrlSetState($MainGUIHomePicBtnLegacy,$GUI_HIDE)
 		GUICtrlSetState($MainGUIHomeButtonMoreOptions,$GUI_HIDE)
-		GUICtrlSetState($MainGUIHomeLabelLogoCopyright,$GUI_HIDE)
 
 		$MainGUIHomeDiscoveryDrawn = False
 	EndFunc
@@ -2412,12 +2504,6 @@ EndFunc
 		GUICtrlSetState($MainGUIHomeLabelModeAdvanced,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeButtonUseMaxPerformance,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeButtonRestoreDefaults,$GUI_SHOW)
-
-		;- Undo the position change that the Fixes tab does
-;~ 		GUICtrlSetPos($MainGUIHomeCheckboxDisplayHints,160,384)
-;~ 		GUICtrlSetPos($MainGUIHomeLabelDisplayHints,178,384)
-		;- ^ We can't actually do that since that causes issues when the GUI is resized!
-
 		GUICtrlSetState($MainGUIHomeCheckboxDisplayHints,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeLabelDisplayHints,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeHelpBackground,$GUI_SHOW)
@@ -2438,13 +2524,12 @@ EndFunc
 		GUICtrlSetState($MainGUIHomeLabelModeAdvanced,$GUI_HIDE)
 		GUICtrlSetState($MainGUIHomeButtonUseMaxPerformance,$GUI_HIDE)
 		GUICtrlSetState($MainGUIHomeButtonRestoreDefaults,$GUI_HIDE)
-
 		GUICtrlSetState($MainGUIHomeCheckboxDisplayHints,$GUI_HIDE)
 		GUICtrlSetState($MainGUIHomeLabelDisplayHints,$GUI_HIDE)
 		GUICtrlSetState($MainGUIHomeHelpBackground,$GUI_HIDE)
 		GUICtrlSetState($MainGUIHomeHelpImage,$GUI_HIDE)
 
-		;- Reset the help popup.
+		;- Reset help popup.
 		GUICtrlSetPos($MainGUIHomeHelpBackground,-$MinWidth,-$MinHeight,1,1)
 		$HoverBGDrawn = False
 		WinMove($HoverInfoGUI,$sEmpty,-$ScrW*2,-$ScrH*2,0,0)
@@ -2739,15 +2824,6 @@ EndFunc
 		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonImportHUD,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonExportHUD,$GUI_SHOW)
-
-
-		;- We use hints in these tabs, so force them to show
-
-		;- Move the Show help checkbox over the Apply Fixes button since floating stuff is unprofessional!
-;~ 		GUICtrlSetPos($MainGUIHomeCheckboxDisplayHints,697,384)
-;~ 		GUICtrlSetPos($MainGUIHomeLabelDisplayHints,715,384)
-		;- ^ We can't actually do that since that causes issues when the GUI is resized!
-
 		GUICtrlSetState($MainGUIHomeCheckboxDisplayHints,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeLabelDisplayHints,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeHelpBackground,$GUI_SHOW)
@@ -2766,8 +2842,7 @@ EndFunc
 		GUICtrlSetState($MainGUIFixesButtonImportHUD,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesButtonExportHUD,$GUI_HIDE)
 
-
-		;- We use hints in these tabs, so force them to show
+		;- We use hints in these tabs, so force them to be displayed!
 		If not $bBool Then
 			GUICtrlSetState($MainGUIHomeCheckboxDisplayHints,$GUI_HIDE)
 			GUICtrlSetState($MainGUIHomeLabelDisplayHints,$GUI_HIDE)
@@ -2789,7 +2864,7 @@ EndFunc
 		GUICtrlSetState($MainGUIRestoreConfigurationsLabelAskForConfirmation,$GUI_SHOW)
 		GUICtrlSetState($MainGUIRestoreConfigurationsLabelBackupInfo,$GUI_SHOW)
 
-		GUICtrlSetState($MainGUIRestoreConfigurationsCheckboxAskForConfirmation,$GUI_CHECKED) ;- We want to make sure this is always checked unless they really don't want that.
+		GUICtrlSetState($MainGUIRestoreConfigurationsCheckboxAskForConfirmation,$GUI_CHECKED) ;- We want to make sure this is always checked, unless they really don't want that.
 	EndFunc
 	Func UnDrawMainGUIRestoreConfigs()
 		GUICtrlSetState($MainGUIRestoreConfigurationsListFiles,$GUI_HIDE)
@@ -2809,15 +2884,11 @@ EndFunc
 		GUICtrlSetState($MainGUIDonatePicHeart,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_SHOW)
-		GUICtrlSetState($MainGUIDonateLabelInfo,$GUI_SHOW)
-		GUICtrlSetState($MainGUIDonateLabelInfo2,$GUI_SHOW)
 	EndFunc
 	Func UnDrawMainGUIDonate()
 		GUICtrlSetState($MainGUIDonatePicHeart,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_HIDE)
-		GUICtrlSetState($MainGUIDonateLabelInfo,$GUI_HIDE)
-		GUICtrlSetState($MainGUIDonateLabelInfo2,$GUI_HIDE)
 	EndFunc
 
 	Func DrawMainGUIChangelog()
@@ -2833,18 +2904,34 @@ EndFunc
 	EndFunc
 
 	Func DrawMainGUICopyright()
-		_GIF_PauseAnimation($MainGUICopyrightAnimatedLogo)
 
-		GUICtrlSetState($MainGUICopyrightPicLogo,$GUI_SHOW)
+		GUISwitch($MainGUI)
+
+		Local $iGIFID, $aRet
+
+		If @Compiled Then
+			$aRet = GUICtrlCreateGIF( _Resource_GetAsImage("SO_LoopGIF") ,130,50,600,100,90,10,True)
+		Else
+			$aRet = GUICtrlCreateGIF($MainResourcePath & "Splash_Loop.gif",130,50,600,100,90,10)
+		EndIf
+
+			$MainGUICopyrightAnimatedLogo = $aRet[0]
+			$MainGUICopyrightAnimatedLogoID = $aRet[1]
+
+			$__g_GIFExtended_aStoreCache[$MainGUICopyrightAnimatedLogoID][13] = $iCurrentFrameCopyrightGIF ;- Restore last frame
+
+			GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+			GUICtrlSetState(-1,$GUI_DISABLE)
+
 		GUICtrlSetState($MainGUICopyrightLabelInfo,$GUI_SHOW)
 		GUICtrlSetState($MainGUICopyrightLabelLicense,$GUI_SHOW)
 		GUICtrlSetState($MainGUICopyrightLabelLicense2,$GUI_SHOW)
 		GUICtrlSetState($MainGUICopyrightLabelCopyright,$GUI_SHOW)
 		GUICtrlSetState($MainGUICopyrightLabelCopyright2,$GUI_SHOW)
 		GUICtrlSetState($MainGUICopyrightLabelSMITECopyright,$GUI_SHOW)
+		GUICtrlSetState($MainGUICopyrightLabelLogoCopyright,$GUI_SHOW)
 		GUICtrlSetState($MainGUICopyrightLabelContact,$GUI_SHOW)
 		GUICtrlSetState($MainGUICopyrightLabelWebsite,$GUI_SHOW)
-		GUICtrlSetState($MainGUICopyrightLabelOpen,$GUI_SHOW)
 		GUICtrlSetState($MainGUICopyrightPicBGLeft,$GUI_SHOW)
 		GUICtrlSetState($MainGUICopyrightLabelVersionFooter,$GUI_SHOW)
 		GUICtrlSetState($MainGUICopyrightLabelLicenseLink,$GUI_SHOW)
@@ -2854,17 +2941,20 @@ EndFunc
 		GUICtrlSetState($MainGUICopyrightLabelAutoitLicenseLink,$GUI_SHOW)
 	EndFunc
 	Func UnDrawMainGUICopyright()
-		GUICtrlSetState($MainGUICopyrightAnimatedLogo,$GUI_HIDE)
-		GUICtrlSetState($MainGUICopyrightPicLogo,$GUI_HIDE)
+
+		$iCurrentFrameCopyrightGIF = $__g_GIFExtended_aStoreCache[$MainGUICopyrightAnimatedLogoID][13] ;- Store current frame
+
+		GUICtrlDeleteGIF($MainGUICopyrightAnimatedLogo)
+
 		GUICtrlSetState($MainGUICopyrightLabelInfo,$GUI_HIDE)
 		GUICtrlSetState($MainGUICopyrightLabelLicense,$GUI_HIDE)
 		GUICtrlSetState($MainGUICopyrightLabelLicense2,$GUI_HIDE)
 		GUICtrlSetState($MainGUICopyrightLabelCopyright,$GUI_HIDE)
 		GUICtrlSetState($MainGUICopyrightLabelCopyright2,$GUI_HIDE)
 		GUICtrlSetState($MainGUICopyrightLabelSMITECopyright,$GUI_HIDE)
+		GUICtrlSetState($MainGUICopyrightLabelLogoCopyright,$GUI_HIDE)
 		GUICtrlSetState($MainGUICopyrightLabelContact,$GUI_HIDE)
 		GUICtrlSetState($MainGUICopyrightLabelWebsite,$GUI_HIDE)
-		GUICtrlSetState($MainGUICopyrightLabelOpen,$GUI_HIDE)
 		GUICtrlSetState($MainGUICopyrightPicBGLeft,$GUI_HIDE)
 		GUICtrlSetState($MainGUICopyrightLabelVersionFooter,$GUI_HIDE)
 		GUICtrlSetState($MainGUICopyrightLabelLicenseLink,$GUI_HIDE)
@@ -2916,7 +3006,7 @@ EndFunc
 	Global $LastMenu = "Home"
 	Func ToggleMenuState($State) ;- Used to handle the menu button presses.
 
-		If $HoverBGDrawn Then ;- Undraw the hover help stuff when changing menus.
+		If $HoverBGDrawn Then ;- Undraw the hover help popup when changing menus.
 			GUICtrlSetPos($MainGUIHomeHelpBackground,-$MinWidth,-$MinHeight,1,1)
 			$HoverBGDrawn = False
 		ElseIf $HoverImageDrawn Then
@@ -2997,21 +3087,52 @@ EndFunc
 	EndFunc
 
 	Func MenuHoverState($Text,$PosY,$SizeX,$TPosY) ;- Used in the menu to make modern text popups.
-		GUICtrlSetPos($MainGUIMenuHoverInfo,50,$PosY,$SizeX,40)
-		GUICtrlSetData($MainGUIMenuHoverText,$Text)
-		GUICtrlSetColor($MainGUIMenuHoverText,0xF3F6FB)
-		GUICtrlSetPos($MainGUIMenuHoverText,57,$TPosY,$SizeX,40)
+
+		Local $aWinPos = WinGetPos($MainGUI)
+
+			If $Text <> "DBan" Then
+				WinMove($MenuHoverGUI,"",$aWinPos[0] + 50,$aWinPos[1] + $PosY,$SizeX,40)
+			Else
+				WinMove($MenuHoverGUI,"",$aWinPos[0] + 50,$aWinPos[1] + $PosY,$SizeX,80)
+			EndIf
+
+		GUISetState(@SW_SHOWNOACTIVATE,$MenuHoverGUI)
+
+		_WinAPI_SetWindowPos($MenuHoverGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE)) ;- Bring the window to the front, but don't take focus!
+		_WinAPI_SetWindowPos($MenuHoverGUI,$HWND_NOTOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
+
+
+		If $Text <> "DBan" Then
+			GUICtrlSetState($MainGUIMenuHoverDBan,$GUI_HIDE)
+
+			GUICtrlSetData($MainGUIMenuHoverText,$Text)
+
+			GUICtrlSetColor($MainGUIMenuHoverText,$cTextColor)
+			GUICtrlSetPos($MainGUIMenuHoverText,7,0,$SizeX,40)
+		Else
+			GUICtrlSetState($MainGUIMenuHoverDBan,$GUI_SHOW)
+
+			GUICtrlSetData($MainGUIMenuHoverText,"")
+
+			GUICtrlSetColor($MainGUIMenuHoverText,0x00)
+			GUICtrlSetPos($MainGUIMenuHoverText,-1000,0,0,0)
+		EndIf
+
 		$MenuPopupState = True
 	EndFunc
 
 	Func UndoMenuHoverState() ;- Used in the menu to undo the modern text popup that was recently created.
-		GUICtrlSetPos($MainGUIMenuHoverInfo,-$ScrW*2,-$ScrH*2)
+		GUISetState(@SW_HIDE,$MenuHoverGUI)
+
+		;- This is still required.
 		GUICtrlSetPos($MainGUIMenuHoverText,-$ScrW*2,-$ScrH*2)
 		GUICtrlSetData($MainGUIMenuHoverText,$sEmpty)
+		GUICtrlSetState($MainGUIMenuHoverDBan,$GUI_HIDE)
+
 		$MenuPopupState = False
 	EndFunc
 
-	Func HideErrorMessage() ;- This function is called whenever the user clicks an error message to make it poof!
+	Func HideErrorMessage() ;- This function is called whenever the user clicks an error message to make it disappear!
 		If $NotificationGUI <> NULL Then
 			GUIDelete($NotificationGUI)
 			$NotificationGUI = NULL
@@ -3040,19 +3161,17 @@ EndFunc
 		Local $WinPos = WinGetPos($Parent)
 
 		Global $NotificationGUI = GUICreate("SO_NOTIFICATION_GUI",400,150,$WinPos[0] + ($WinPos[2]/2)-200,$WinPos[1] + ($WinPos[3]/2)-75,$WS_POPUP,$WS_EX_TOOLWINDOW)
-			GUISetBkColor(0x000000)
+			GUISetBkColor($cBackgroundColor)
 
 			Local $NotificationGUIBG = GUICtrlCreatePic($sEmpty,0,0,400,150)
 				LoadImageResource($NotificationGUIBG,$MainResourcePath & "NotificationBG.jpg","NotificationBG")
 				GUICtrlSetOnEvent($NotificationGUIBG,"HideErrorMessage")
 			Local $NotificationGUILabelMessage = GUICtrlCreateLabelTransparentBG($Header&@CRLF&@CRLF&$Message,5,3,390,140)
 				GUICtrlSetOnEvent($NotificationGUILabelMessage,"HideErrorMessage")
-				GUICtrlSetColor(-1,0xF0F4F9)
-				GUICtrlSetFont(-1,10,Default,Default,$MainFontName)
+				GUICtrlSetFont(-1,10,Default,Default,$MenuFontName)
 			Local $NotificationGUILabelDismiss = GUICtrlCreateLabelTransparentBG("Click to dismiss",5,132,390,13)
 				GUICtrlSetOnEvent($NotificationGUILabelDismiss,"HideErrorMessage")
-				GUICtrlSetColor(-1,0xF0F4F9)
-				GUICtrlSetFont(-1,10,Default,Default,$MainFontName)
+				GUICtrlSetFont(-1,10,Default,Default,$MenuFontName)
 
 		GUISetState(@SW_SHOW,$NotificationGUI)
 		GUISwitch($Parent)
@@ -3060,9 +3179,10 @@ EndFunc
 		If @OSVersion = "WIN_XP" or @OSVersion = "WIN_XPe" Then _Resource_LoadSound("WIN_XP",0)
 		If @OSVersion = "WIN_VISTA" or @OSVersion = "WIN_7" or @OSVersion = "WIN_8" or @OSVersion = "WIN_81" Then _Resource_LoadSound("ErrorWIN_7_8",0)
 		If @OSVersion = "WIN_10" Then _Resource_LoadSound("ErrorWIN_10",0)
+		If @OSVersion = "WIN_11" Then _Resource_LoadSound("ErrorWIN_11",0)
 	EndFunc
 
-	Func ReturnToMainGUI() ;- Internal function used inside of the SetupPressLogic function. It calls all things necessary to return to the MainGUI and mostly exists to reduce spaghetti code.
+	Func ReturnToMainGUI() ;- Internal function used inside the SetupPressLogic function.
 		GUISwitch($MainGUI)
 		_GUI_DragAndResizeUpdate($MainGUI,$MinWidth,$MinHeight)
 
@@ -3073,9 +3193,9 @@ EndFunc
 		WinActivate($MainGUI)
 	EndFunc
 
-	Func GetDriveLetters() ;- Internal function used inside of the SetupPressLogic function and is required for the Automatic configuration file search.
+	Func GetDriveLetters() ;- Internal function used inside the SetupPressLogic function.
 		Local $Temp = DriveGetDrive("fixed")
-		_ArrayDelete($Temp,0)
+			_ArrayDelete($Temp,0)
 
 		Local $Ret[0]
 
@@ -3087,7 +3207,7 @@ EndFunc
 		Return $Ret
 	EndFunc
 
-	Func VerifyAndStoreConfigPath($State,$PathSettings,$PathSystemSettings,$PathGameSettings) ;- Internal function used inside of the SetupPressLogic function. It verifies the paths supplied and mostly exists to reduce spaghetti code.
+	Func VerifyAndStoreConfigPath($State,$PathSettings,$PathSystemSettings,$PathGameSettings) ;- Internal function used inside the SetupPressLogic function.
 		If FileExists($PathSettings) and FileExists($PathSystemSettings) and FileExists($PathGameSettings) Then
 			RegWrite("HKCU\Software\SMITE Optimizer\","ConfigProgramState","REG_SZ",$State)
 			RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ",$PathSettings)
@@ -3100,7 +3220,7 @@ EndFunc
 		Return False
 	EndFunc
 
-	Func SetupPressLogic() ;- The SetupPressLogic functions handles button presses from the configuration discovery.
+	Func SetupPressLogic() ;- The SetupPressLogic function handles button presses from the configuration discovery.
 		Local $Found = False
 
 		Switch @GUI_CtrlId
@@ -3114,7 +3234,7 @@ EndFunc
 
 				If not $Found Then
 
-					;- Yes, OneDrive tends to mess with these Folders on Windows 10 and causes issues!
+					;- Yes, OneDrive tends to mess with these folders on Windows 10 and Windows 11, causing issues!
 					$Found = VerifyAndStoreConfigPath("Steam", _
 						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini", _
 						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini", _
@@ -3122,13 +3242,13 @@ EndFunc
 
 					If not $Found Then
 
-						;- Attempt to use the Internal configuration files.
+						;- Attempt to use the internal configuration files.
 						$Found = VerifyAndStoreConfigPath("Steam", _
 							RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultEngine.ini", _
 							RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultSystemSettings.ini", _
 							RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")&"\BattleGame\Config\DefaultGame.ini") _
 
-						If not $Found Then DisplayErrorMessage("Could not find Configuration files for a SMITE Steam installation. Perhaps it was not installed through Steam?")
+						If not $Found Then DisplayErrorMessage("Could not find configuration files for a SMITE Steam installation. Perhaps it was not installed through Steam?")
 					EndIf
 				EndIf
 			Case $MainGUIHomePicBtnEGS ;- Epic Games Store button.
@@ -3141,7 +3261,7 @@ EndFunc
 
 				If not $Found Then
 
-					;- Yes, OneDrive tends to mess with these Folders on Windows 10 and causes issues!
+					;- Yes, OneDrive tends to mess with these folders on Windows 10 and Windows 11, causing issues!
 					$Found = VerifyAndStoreConfigPath("Epic Games Store", _
 						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini", _
 						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini", _
@@ -3149,15 +3269,15 @@ EndFunc
 
 					If not $Found Then
 
-						;- Attempt to use the Internal configuration files.
+						;- Attempt to use the internal configuration files.
 						;- ---------- ---------- ---------- ---------- ----------
 
 							;- Get the location of the installation manifest.
 							Local $EpicProgramData = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
 
-							;- We need to loop through all files in the Manifest folder since filenames differ from machine to machine.
+							;- We need to loop through all files in the manifest folder, since filenames differ from machine to machine.
 							Local $Files = _FileListToArray($EpicProgramData,"*.item",1,True)
-							_ArrayDelete($Files,0)
+								_ArrayDelete($Files,0)
 
 							For $I = 0 To uBound($Files) - 1 Step 1
 								Local $Read = FileReadToArray($Files[$I])
@@ -3177,7 +3297,7 @@ EndFunc
 								Next
 							Next
 
-							;- Check if the SMITE Config Folder exists.
+							;- Check if the SMITE config folder exists.
 							If FileExists($EpicProgramData) Then _
 								$Found = VerifyAndStoreConfigPath("Epic Games Store", _
 									$EpicProgramData&"DefaultEngine.ini", _
@@ -3186,7 +3306,7 @@ EndFunc
 
 						;- ---------- ---------- ---------- ---------- ----------
 
-						If not $Found Then DisplayErrorMessage("Could not find Configuration files for a SMITE Epic Games Store installation. Perhaps it was not installed through the Epic Games Store?")
+						If not $Found Then DisplayErrorMessage("Could not find configuration files for a SMITE Epic Games Store installation. Perhaps it was not installed through the Epic Games Store?")
 					EndIf
 				EndIf
 			Case $MainGUIHomePicBtnLegacy ;- Legacy button.
@@ -3199,26 +3319,28 @@ EndFunc
 
 				If not $Found Then
 
-					;- Yes, OneDrive tends to mess with these Folders on Windows 10 and causes issues!
+					;- Yes, OneDrive tends to mess with these folders on Windows 10 and Windows 11, causing issues!
 					$Found = VerifyAndStoreConfigPath("Legacy", _
 						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini", _
 						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini", _
 						"C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini")
 
-					If not $Found Then DisplayErrorMessage("Could not find Configuration files for a Legacy installation. Perhaps you do not have the old and unavailable launcher?")
+					If not $Found Then DisplayErrorMessage("Could not find configuration files for a legacy installation. Perhaps you do not have the old and unavailable launcher?")
 				EndIf
-			Case $MainGUIHomeButtonMoreOptions ;- More Options button.
+			Case $MainGUIHomeButtonMoreOptions ;- More options button.
 				If $GUIMoreOptions <> NULL Then GUIDelete($GUIMoreOptions)
 				GUISetState(@SW_DISABLE,$MainGUI)
 
 				Local $WinPos = WinGetPos($MainGUI)
 
 				Global $GUIMoreOptions = GUICreate("SO_MOREOPTIONS",600,300,$WinPos[0] + ($WinPos[2]/2)-300,$WinPos[1] + ($WinPos[3]/2)-150,BitOR($WS_MINIMIZEBOX,$WS_MAXIMIZEBOX,$WS_POPUP),$WS_EX_TOOLWINDOW)
-					_GUI_EnableDrag($GUIMoreOptions,600,300)
-					GUISetBkColor(0x00)
+					GUISwitch($GUIMoreOptions)
 
-					GUICtrlSetDefColor(0xFFFFFF,$GUIMoreOptions)
-					GUICtrlSetDefBkColor(0x00,$GUIMoreOptions)
+					_GUI_EnableDrag($GUIMoreOptions,600,300)
+					GUISetBkColor($cBackgroundColor)
+
+					GUICtrlSetDefColor($cTextColor,$GUIMoreOptions)
+					GUICtrlSetDefBkColor($cBackgroundColor,$GUIMoreOptions)
 
 					Local $Pic = GUICtrlCreatePic($sEmpty,0,34,600,266)
 						LoadImageResource($Pic,$MainResourcePath & "MoreOptionsBG.jpg","MoreOptionsBG")
@@ -3250,17 +3372,17 @@ EndFunc
 
 					If (WinGetTitle("[active]") = "SO_MOREOPTIONS" or WinGetTitle("[active]") = "SO_NOTIFICATION_GUI") and @Error = 0 Then
 						If $NotificationGUI <> NULL Then
-							If _IsPressed("01") Then ;- MouseClick. (Left)
+							If _IsPressed("01") Then ;- MouseClick (Left)
 								GUIDelete($NotificationGUI)
 								$NotificationGUI = NULL
 
-								GUISetState(@SW_ENABLE,$GUIMoreOptions) ;- Ugly bring to front hack underneath. (It's faster than 2 WinActivate)
+								GUISetState(@SW_ENABLE,$GUIMoreOptions)
 								_WinAPI_SetWindowPos($MainGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
 								_WinAPI_SetWindowPos($MainGUI,$HWND_NOTOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
 								WinActivate($GUIMoreOptions)
 							EndIf
 						Else
-							If _IsPressed("1B") Then ;- Allow the User to exit the UI by pressing the Escape key.
+							If _IsPressed("1B") Then ;- Allow the user to exit the UI by pressing the escape key.
 								ReturnToMainGUI()
 								ExitLoop(1)
 							EndIf
@@ -3280,7 +3402,7 @@ EndFunc
 										EndIf
 									EndIf
 
-									If _IsPressed("01") Then ;- MouseClick. (Left)
+									If _IsPressed("01") Then ;- MouseClick (Left)
 										ReturnToMainGUI()
 										ExitLoop
 									EndIf
@@ -3298,17 +3420,19 @@ EndFunc
 										EndIf
 									EndIf
 
-									If _IsPressed("01") Then ;- MouseClick. (Left)
+									If _IsPressed("01") Then ;- MouseClick (Left)
 										GUIDelete($GUIMoreOptions)
 										WinActivate($MainGUI)
 
 										Local $WinPos = WinGetPos($MainGUI)
 
 										$GUIMoreOptions = GUICreate("SO_SCANFILES",400,250,$WinPos[0] + ($WinPos[2]/2)-200,$WinPos[1] + ($WinPos[3]/2)-125,BitOR($WS_MINIMIZEBOX,$WS_MAXIMIZEBOX,$WS_POPUP),$WS_EX_TOOLWINDOW)
-											GUISetBkColor(0x00)
+											GUISwitch($GUIMoreOptions)
 
-											GUICtrlSetDefColor(0xFFFFFF,$GUIMoreOptions)
-											GUICtrlSetDefBkColor(0x00,$GUIMoreOptions)
+											GUISetBkColor($cBackgroundColor)
+
+											GUICtrlSetDefColor($cTextColor,$GUIMoreOptions)
+											GUICtrlSetDefBkColor($cBackgroundColor,$GUIMoreOptions)
 
 											Local $Pic = GUICtrlCreatePic($sEmpty,0,34,400,216)
 												LoadImageResource($Pic,$MainResourcePath & "ScanFilesBG.jpg","ScanFilesBG")
@@ -3341,7 +3465,7 @@ EndFunc
 											Local $CursorInfo = GUIGetCursorInfo($GUIMoreOptions)
 
 											If WinGetTitle("[active]") = "SO_SCANFILES" and @Error = 0 Then
-												If _IsPressed("1B") Then ;- Allow the User to exit the UI by pressing the Escape key.
+												If _IsPressed("1B") Then ;- Allow the user to exit the UI by pressing the escape key.
 													ReturnToMainGUI()
 													ExitLoop(2)
 												EndIf
@@ -3353,7 +3477,7 @@ EndFunc
 															$CloseState = True
 														EndIf
 
-														If _IsPressed("01") Then ;- MouseClick. (Left)
+														If _IsPressed("01") Then ;- MouseClick (Left)
 															If IsDeclared("IndexerPID") and $IndexerPID <> 0 Then
 																ProcessClose($IndexerPID) ;- Close batch script.
 																If FileExists(@TempDir & "\SO_Index.bat") Then FileDelete(@TempDir & "\SO_Index.bat")
@@ -3389,8 +3513,8 @@ EndFunc
 												If FileExists(@TempDir & "\SO_Index.bat") Then FileDelete(@TempDir & "\SO_Index.bat")
 												If FileExists(@TempDir & "\SO_Index.txt") Then FileDelete(@TempDir & "\SO_Index.txt")
 
-												;- We are off-loading the indexing to a batch script running the dir command in the exact settings we need to easily process the list.
-												;- This is A LOT faster than indexing a whole drive using AutoIt since AutoIt is limited to one CPU core and extremely slow in general.
+												;- We are offloading the indexing to a batch script running the "dir" command with the exact settings we need to easily process the list.
+												;- This is a lot faster than indexing a whole drive using AutoIt since AutoIt is limited to one CPU core and extremely slow in general.
 												;- Compared to the way I did this before, this is at least 10 times faster.
 
 												FileWrite(@TempDir & "\SO_Index.bat","CHCP 65001"&@CRLF&"@echo off"&@CRLF&"Cls"&@CRLF&$FixedDrives[$DriveIndex]&":"&@CRLF&"cd.."&@CRLF&"dir /s /b /a:-d /o:n > "&@TempDir&"\SO_Index.txt")
@@ -3404,7 +3528,7 @@ EndFunc
 
 												If @Error <> 0 Then
 													ReturnToMainGUI()
-													DisplayErrorMessage("An error occured when attempting to run the index function.")
+													DisplayErrorMessage("An error occurred when attempting to run the index function.")
 													ExitLoop(2)
 												EndIf
 
@@ -3450,7 +3574,7 @@ EndFunc
 													If $SettingsEnginePath <> $sEmpty and $SettingsSystemPath <> $sEmpty and $SettingsGamePath <> $sEmpty Then ExitLoop
 												Next
 
-												If $SettingsEnginePath <> $sEmpty and $SettingsSystemPath <> $sEmpty and $SettingsGamePath <> $sEmpty Then ;- The automatic search has found both files so we finish up and continue.
+												If $SettingsEnginePath <> $sEmpty and $SettingsSystemPath <> $sEmpty and $SettingsGamePath <> $sEmpty Then ;- The automatic search has found all three files, so we finish up and continue.
 													RegWrite("HKCU\Software\SMITE Optimizer\","ConfigProgramState","REG_SZ","Custom Files")
 													RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ",$SettingsEnginePath)
 													RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathSystem","REG_SZ",$SettingsSystemPath)
@@ -3482,8 +3606,8 @@ EndFunc
 										EndIf
 									EndIf
 
-									If _IsPressed("01") Then ;- MouseClick. (Left)
-										Local $FileSettings = FileOpenDialog("Please Select BattleEngine.ini or DefaultEngine.ini","C:\Users\" & @UserName & "\Documents\My Games\SMITE\BattleGame\Config","INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST),"BattleEngine.ini")
+									If _IsPressed("01") Then ;- MouseClick (Left)
+										Local $FileSettings = FileOpenDialog("Please select BattleEngine.ini or DefaultEngine.ini","C:\Users\" & @UserName & "\Documents\My Games\SMITE\BattleGame\Config","INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST),"BattleEngine.ini")
 
 										If @Error = 0 Then ;- Check whether the user picked the right engine settings file.
 											If StringLower(StringRight($FileSettings,16)) <> "battleengine.ini" and StringLower(StringRight($FileSettings,17)) <> "defaultengine.ini" Then
@@ -3491,7 +3615,7 @@ EndFunc
 												$MSearchState = False
 												DisplayErrorMessage("Invalid file selected!",$GUIMoreOptions)
 											Else
-												Local $FileSystemSettings = FileOpenDialog("Please Select BattleSystemSettings.ini or DefaultSystemSettings.ini","C:\Users\" & @UserName & "\Documents\My Games\SMITE\BattleGame\Config","INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST),"BattleSystemSettings.ini")
+												Local $FileSystemSettings = FileOpenDialog("Please select BattleSystemSettings.ini or DefaultSystemSettings.ini","C:\Users\" & @UserName & "\Documents\My Games\SMITE\BattleGame\Config","INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST),"BattleSystemSettings.ini")
 
 												If @Error = 0 Then ;- Check whether the user picked the right system settings file.
 													If StringLower(StringRight($FileSystemSettings,24)) <> "battlesystemsettings.ini" and StringLower(StringRight($FileSystemSettings,25)) <> "defaultsystemsettings.ini" Then
@@ -3499,14 +3623,14 @@ EndFunc
 														$MSearchState = False
 														DisplayErrorMessage("Invalid file selected!",$GUIMoreOptions)
 													Else
-														Local $FileGameSettings = FileOpenDialog("Please Select BattleGame.ini or DefaultGame.ini","C:\Users\" & @UserName & "\Documents\My Games\SMITE\BattleGame\Config","INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST),"BattleGame.ini")
+														Local $FileGameSettings = FileOpenDialog("Please select BattleGame.ini or DefaultGame.ini","C:\Users\" & @UserName & "\Documents\My Games\SMITE\BattleGame\Config","INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST),"BattleGame.ini")
 
 														If @Error = 0 Then ;- Check whether the user picked the right game settings file.
 															If StringLower(StringRight($FileGameSettings,14)) <> "battlegame.ini" and StringLower(StringRight($FileGameSettings,15)) <> "defaultgame.ini" Then
 																LoadImageResource($GUIMoreOptionsMSearch,$MainResourcePath & "MSearchBtnInActive.jpg","MSearchBtnInActive")
 																$MSearchState = False
 																DisplayErrorMessage("Invalid file selected!",$GUIMoreOptions)
-															Else ;- When both files were accepted we close the MoreOptionsGUI and continue!
+															Else ;- When all three files were accepted, we close the MoreOptionsGUI and continue!
 																$Found = True
 
 																RegWrite("HKCU\Software\SMITE Optimizer\","ConfigProgramState","REG_SZ","Custom Files")
@@ -3546,7 +3670,7 @@ EndFunc
 				WEnd
 		EndSwitch
 
-		If not $Found Then Return ;- Code that is run whnever the program successfully found configuration files below.
+		If not $Found Then Return ;- Only run the code below if the files were found successfully.
 
 		$ProgramState = RegRead("HKCU\Software\SMITE Optimizer\","ConfigProgramState")
 		$SettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
@@ -3558,13 +3682,16 @@ EndFunc
 
 		Local $WinWidth = WinGetPos($MainGUI)[2]
 
-		GUICtrlDelete($MainGUILabelProgramState) ;- Fix position and size.
-		$MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("("&$Text&" mode)",-1000,18,-1,14,$SS_RIGHT)
-			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-		Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelProgramState)[2] + 25
-			GUICtrlSetPos(-1,$WinWidth - $Width - 102,18,$Width,14)
 
-			Local $Text = "Discovery"
+		GUICtrlDelete($MainGUILabelProgramState) ;- Fix position and size.
+		Global $MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("("&$Text&" mode)",-1000,17,-1,25,$SS_RIGHT)
+			Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelProgramState)[2] + 25
+			GUICtrlSetPos(-1,$MinWidth - $Width - 144,17,$Width,25)
+			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+			GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
+
+
+		Local $Text = "Discovery"
 		If $ProgramState <> $sEmpty Then $Text = $ProgramState
 
 		;- Update debug menu
@@ -3576,10 +3703,10 @@ EndFunc
 		DrawMainGUIHome()
 	EndFunc
 
-	Func ButtonPressLogic() ;- This is the main logic to handle button presses.
+	Func ButtonPressLogic() ;- This is the main logic for handling button presses.
 		Switch @GUI_CtrlId
 
-			;Main GUI Funcs
+			;Main GUI functions
 				Case $MainGUIButtonClose
 					ProperExit()
 
@@ -3596,6 +3723,11 @@ EndFunc
 
 				Case $MainGUIButtonMinimize
 					WinSetState($MainGUI,$sEmpty,@SW_MINIMIZE)
+
+				Case $MainGUIButtonDiscord
+					ShellExecute($sDiscordURL)
+					RegWrite("HKCU\Software\SMITE Optimizer\","bShouldFlashDiscord","REG_SZ","1")
+					$bShouldFlashDiscordIcon = False ;- Stop flashing already!
 
 				Case $HomeIcon, $HomeIconHover
 					If $MenuSelected <> 1 Then
@@ -3700,8 +3832,8 @@ EndFunc
 				Case $MainGUIRestoreConfigurationsButtonChangeBackupPath
 					Local $Folder = FileSelectFolder("Select a new Folder:",$ConfigBackupPath)
 
-					If StringLen($Folder) <= (260 - 18 - 21) Then ;- 18 is the length of the longest file name. 21 Is the Min and Max length of a subfolder and the slashes. Example: /02_08_2020_20_15_56/SystemSettings.ini
-						If @Error = 0 and FileExists($Folder) Then ;- Make sure the user didn't just close the dialog and the supplied folder is actually there. (Could have selected the folder from a drive that was removed)
+					If StringLen($Folder) <= (260 - 18 - 21) Then ;- 18 is the length of the longest file name. 21 is the min and max length of a subfolder, and the slashes. Example: /02_08_2020_20_15_56/SystemSettings.ini
+						If @Error = 0 and FileExists($Folder) Then ;- Make sure the user didn't just close the dialog and that the supplied folder is actually there. (Could have selected the folder from a drive that was removed.)
 							$Folder = $Folder & "\"
 
 							RegWrite("HKCU\Software\SMITE Optimizer\","ConfigBackupPath","REG_SZ",$Folder)
@@ -3709,7 +3841,7 @@ EndFunc
 							GUICtrlSetData($MainGUIRestoreConfigurationsInputBackupPath,$Folder)
 						EndIf
 					Else
-						DisplayErrorMessage("The selected path is to long!")
+						DisplayErrorMessage("The selected path is too long!")
 					EndIf
 
 				Case $MainGUIRestoreConfigurationsButtonOpenBackupPath
@@ -3730,7 +3862,7 @@ EndFunc
 
 					If $MsgB = $IDYES Then
 						Local $Error = DirRemove($ConfigBackupPath&$TPath,$DIR_REMOVE)
-						If $Error = 0 Then DisplayErrorMessage("The selected Backup could not be deleted!"&@CRLF&"It appears it was already deleted by another program, or maybe you?")
+						If $Error = 0 Then DisplayErrorMessage("The selected backup could not be deleted!"&@CRLF&"It appears it was already deleted by another program, or maybe you?")
 
 						Internal_UpdateRestoreConfigList()
 					EndIf
@@ -3750,8 +3882,8 @@ EndFunc
 
 					If $MsgB = $IDYES Then
 						If not FileExists($ConfigBackupPath&$TPath&"\Engine.ini") or not FileExists($ConfigBackupPath&$TPath&"\SystemSettings.ini") or not FileExists($ConfigBackupPath&$TPath&"\GameSettings.ini") Then
-							DisplayErrorMessage("Attempted to restore backup but it appears to be missing or is corrupted! Code: 009")
-							Internal_UpdateRestoreConfigList() ;- Refresh list to attempt removing missing backups. (Does not remove corrupted ones)
+							DisplayErrorMessage("Attempted to restore the backup, but it appears to be missing or corrupt! Code: 009")
+							Internal_UpdateRestoreConfigList() ;- Refresh list and attempt to remove missing backups. (Does not remove corrupt ones.)
 						Else
 							Local $CopySucc = FileCopy($ConfigBackupPath&$TPath&"\Engine.ini",$SettingsPath,$FC_OVERWRITE)
 
@@ -3790,7 +3922,7 @@ EndFunc
 					ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer/commits/master")
 
 			;- Copyright
-				Case $MainGUICopyrightLabelOpen
+				Case $MainGUICopyrightLabelWebsite
 					ShellExecute("https://meteorthelizard.com")
 
 				Case $MainGUICopyrightLabelLicenseLink
@@ -3813,20 +3945,20 @@ EndFunc
 					Local $CDHState = GUICtrlRead($MainGUIDebugCheckboxCheckForUpdates)
 
 					If $CDHState <> $GUI_CHECKED Then
-						RegWrite("HKCU\Software\SMITE Optimizer\","ConfigCheckForUpdates","REG_SZ","0") ;- Disabled.
+						RegWrite("HKCU\Software\SMITE Optimizer\","ConfigCheckForUpdates","REG_SZ","0") ;- Disable.
 					Else
-						RegDelete("HKCU\Software\SMITE Optimizer\","ConfigCheckForUpdates") ;- The key shouldn't exist when the setting is default!
+						RegDelete("HKCU\Software\SMITE Optimizer\","ConfigCheckForUpdates") ;- The key shouldn't exist when the setting is set to default!
 					EndIf
 
 				Case $MainGUIDebugCheckboxRepairIntegrity
 					Local $CDHState = GUICtrlRead($MainGUIDebugCheckboxRepairIntegrity)
 
 					If $CDHState <> $GUI_CHECKED Then
-						RegWrite("HKCU\Software\SMITE Optimizer\","ConfigVerifyIntegrityOnApply","REG_SZ","0") ;- Disabled.
+						RegWrite("HKCU\Software\SMITE Optimizer\","ConfigVerifyIntegrityOnApply","REG_SZ","0") ;- Disable.
 
 						$VerifyIntegrityOnApply = 0
 					Else
-						RegDelete("HKCU\Software\SMITE Optimizer\","ConfigVerifyIntegrityOnApply") ;- The key shouldn't exist when the setting is default!
+						RegDelete("HKCU\Software\SMITE Optimizer\","ConfigVerifyIntegrityOnApply") ;- The key shouldn't exist when the setting is set to default!
 
 						$VerifyIntegrityOnApply = 1
 					EndIf
@@ -3849,18 +3981,18 @@ EndFunc
 							GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 							GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 
-						DirRemove(@TempDir & "\optimizerdebugdump",$DIR_REMOVE) ;- Cleanup
-						Sleep(350) ;- Windows pls.
+						DirRemove(@TempDir & "\optimizerdebugdump",$DIR_REMOVE) ;- Cleanup!
+						Sleep(350) ;- Windows!
 
 						DirCreate(@TempDir & "\optimizerdebugdump")
-						If Not @Error Then ;- Time to retrieve information that could be useful for debugging
+						If Not @Error Then ;- Time to retrieve information that could be useful for debugging!
 
-							;- Retrieve the info in the system information box
+							;- Retrieve the information in the system information box.
 								GUICtrlSetData($LabelDebugDumpWorking,"Retrieving information from system box")
 
 								FileWrite(@TempDir & "\optimizerdebugdump\systeminfobox.txt",GUICtrlRead($MainGUIDebugEditSystemInfo))
 
-							;- Retrieve the configuration file paths (Idk why I haven't added this earlier smh...)
+							;- Retrieve the configuration file paths.
 								GUICtrlSetData($LabelDebugDumpWorking,"Retrieving configured file paths")
 
 								Local $Str_Path1 = GUICtrlRead($MainGUIDebugLabelEngineSettings)
@@ -3875,10 +4007,10 @@ EndFunc
 
 								DirCreate(@TempDir & "\optimizerdebugdump\logs\launch")
 
-								;- Copy all log files over. Copy pasta is delicious!
+								;- Copy all log files over.
 								FileCopy("C:\Users\" & @UserName &"\Documents\My Games\SMITE\BattleGame\Logs\*.log",@TempDir & "\optimizerdebugdump\logs\launch\",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 
-								;- And since OneDrive loves to move files around, we gotta look in there too! (Don't worry, it only copies the log files over, nothing else)
+								;- And since OneDrive loves to move files around, we've got to look in there too! (Don't worry, it only copies the log files over, nothing else.)
 								FileCopy("C:\Users\" & @UserName &"\OneDrive\Documents\My Games\SMITE\BattleGame\Logs\*.log",@TempDir & "\optimizerdebugdump\logs\launch\",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 
 							;- Retrieve config files
@@ -3889,9 +4021,9 @@ EndFunc
 								FileCopy($GameSettingsPath,@TempDir & "\optimizerdebugdump\config\GameSettings.ini",BitOr($FC_OVERWRITE,$FC_CREATEPATH)) ;- BattleGame.ini or DefaultGame.ini
 
 
-								;- For whatever reason Hi-Rez decided it is a good idea to store login information including the login token in the .ini files as plain-text.
-								;- We are not interested in this information so we are filtering it out to NOT be included in the debug dump.
-								;- This is especially important as these debug dumps usually get publicly posted, we don't want people to lose their accounts.
+								;- For whatever reason, Hi-Rez decided it is a good idea to store login information including the login token in the .ini files as plain-text.
+								;- We are not interested in this information, so we are filtering it out to not include it in the debug dump.
+								;- This is especially important as these debug dumps usually get publicly posted, we don't want people to lose their accounts!
 
 								If FileExists(@TempDir & "\optimizerdebugdump\config\GameSettings.ini") Then
 
@@ -3900,7 +4032,7 @@ EndFunc
 										_ArrayDelete($Split,0)
 
 
-									;- [TgClientBase.TgGameLaunchBase]
+									;- Tag [TgClientBase.TgGameLaunchBase]
 
 									For $I = 0 To uBound($Split) - 1 Step 1
 										If StringMid($Split[$I],2,10) = "LoginName=" Then
@@ -3910,14 +4042,14 @@ EndFunc
 ;~ 											_ArrayDelete($Split,$I) ;- Save information
 											;- This is replaced with the thing below this comment, doing it this way preserves a space between the keys.
 
-											$Split[$I] = "{INFORMATION REPLACED FOR SECURITY REASONS}"
+											$Split[$I] = @CRLF & ";{INFORMATION REPLACED FOR SECURITY REASONS}"
 
 											ExitLoop
 										EndIf
 									Next
 
 
-									;- [PlatformCommon.PComPlayerController]
+									;- Tag [PlatformCommon.PComPlayerController]
 
 									For $I = 0 To uBound($Split) - 1 Step 1
 										If StringMid($Split[$I],2,16) = "m_bKeepLoggedIn=" Then
@@ -3928,7 +4060,7 @@ EndFunc
 											_ArrayDelete($Split,$I) ;- Access Token
 											_ArrayDelete($Split,$I) ;- Token Expiration Date
 
-											$Split[$I] = @CRLF & "//{INFORMATION REPLACED FOR SECURITY REASONS}"
+											$Split[$I] = @CRLF & ";{INFORMATION REPLACED FOR SECURITY REASONS}"
 
 											ExitLoop
 										EndIf
@@ -3937,7 +4069,7 @@ EndFunc
 
 									;- Write the new data to the file
 
-									$Split = _ArrayToString($Split,"")
+									$Split = _ArrayToString($Split,$sEmpty)
 
 									FileWrite(@TempDir & "\optimizerdebugdump\config\GameSettings.ini",$Split)
 
@@ -3953,7 +4085,7 @@ EndFunc
 								GUICtrlSetData($LabelDebugDumpWorking,"Retrieving dxdiag information")
 
 								ShellExecute("dxdiag",'/dontskip /whql:off /t "' & @TempDir & '\optimizerdebugdump\dxdiag.txt"')
-								While ProcessExists("dxdiag.exe") ;- The program has to wait for that to finish, using Run() won't make a difference as the command line comes back immediately.
+								While ProcessExists("dxdiag.exe") ;- The program has to wait for that to finish; using Run() won't make a difference, as the command line comes back immediately.
 
 								WEnd
 
@@ -3962,7 +4094,7 @@ EndFunc
 							local $file_Zip = _Zip_Create($sDirSelect & "\SMITE_Optimizer_Debug.zip",1)
 								_Zip_AddItem($file_Zip,@TempDir & "\optimizerdebugdump\")
 
-							DirRemove(@TempDir & "\optimizerdebugdump",$DIR_REMOVE) ;- Cleanup
+							DirRemove(@TempDir & "\optimizerdebugdump",$DIR_REMOVE) ;- Cleanup!
 
 							GUICtrlDelete($LabelDebugDumpWorking)
 
@@ -3989,10 +4121,12 @@ EndFunc
 						Local $WinWidth = WinGetPos($MainGUI)[2]
 
 						GUICtrlDelete($MainGUILabelProgramState) ;- Fix position and size.
-						$MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("(Discovery mode)",-1000,18,-1,14,$SS_RIGHT)
+						Global $MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("(Discovery mode)",-1000,17,-1,25,$SS_RIGHT)
+							Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelProgramState)[2] + 25
+							GUICtrlSetPos(-1,$MinWidth - $Width - 144,17,$Width,25)
 							GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-						Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelProgramState)[2] + 25
-							GUICtrlSetPos(-1,$WinWidth - $Width - 102,18,$Width,14)
+							GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
+
 
 						;- Update debug menu
 						GUICtrlSetData($MainGUIDebugLabelEngineSettings,"EngineSettings: Not yet defined")
@@ -4007,7 +4141,7 @@ EndFunc
 		EndSwitch
 	EndFunc
 
-	Func Internal_ConvertMagicNumber($Number) ;- This is to ensure that the Program will always stay compatible even when 'Magic Numbers' get changed.
+	Func Internal_ConvertMagicNumber($Number) ;- This is to ensure that the program will always stay compatible, even when 'magic numbers' get changed.
 		If $Number = "En" or $Number = $GUI_CHECKED Then
 			Return $GUI_CHECKED
 		ElseIf $Number = "Di" or $Number = $GUI_UNCHECKED Then
@@ -4015,7 +4149,7 @@ EndFunc
 		EndIf
 	EndFunc
 
-	Func Internal_ConvertMagicNumberSave($Number) ;- This is to ensure that the Program will always stay compatible even when 'Magic Numbers' get changed.
+	Func Internal_ConvertMagicNumberSave($Number) ;- This is to ensure that the program will always stay compatible, even when 'magic numbers' get changed.
 		If $Number = $GUI_CHECKED Then
 			Return "En"
 		ElseIf $Number = $GUI_UNCHECKED Then
@@ -4102,7 +4236,7 @@ EndFunc
 
 
 		;- Fixes
-		Local $Settings_Fixes = ""
+		Local $Settings_Fixes = $sEmpty
 
 		$Settings_Fixes = $Settings_Fixes & GUICtrlRead($MainGUIFixesInputMaxFPS) & "|"
 		$Settings_Fixes = $Settings_Fixes & GUICtrlRead($MainGUIFixesComboAudioFix) & "|"
@@ -4116,7 +4250,7 @@ EndFunc
 		Local $Int_Settings
 
 		If $ProgramHomeState = "Simple" or $InitBool Then
-			If not $Performance Then ;- Do we want to use the max performance settings?
+			If not $Performance Then ;- Do we want to use the maximum performance settings?
 				$Int_Settings = RegRead("HKCU\Software\SMITE Optimizer\","ConfigCookieSimple")
 
 				If @Error or $Bool Then ;- If the key doesn't exist or we clicked the "Restore Defaults" button, we want to use the default settings!
@@ -4167,7 +4301,7 @@ EndFunc
 			EndIf
 
 			Local $Split = StringSplit($Int_Settings,"|")
-			_ArrayDelete($Split,0)
+				_ArrayDelete($Split,0)
 
 			_GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboWorldQuality,$Split[0])
 			_GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboCharacterQuality,$Split[1])
@@ -4175,8 +4309,23 @@ EndFunc
 			_GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboSkyQuality,$Split[3])
 			_GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboEffectsParticleQuality,$Split[4])
 			GUICtrlSetData($MainGUIHomeSimpleInputMaxFPS,$Split[5])
-			Local $Res = _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,$Split[6])
-			If $Res = -1 Then _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,$AvailableResolutions[0]) ;- That Resolution is not available anymore so we Default to Native!
+
+
+			Local $Res
+
+				RegRead("HKCU\Software\SMITE Optimizer\","ConfigCookieSimple")
+
+			If @Error Then ;- Default to native resolution on first launch!
+				$Res = _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,@DesktopWidth & " x " & @DesktopHeight)
+			Else
+				$Res = _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,$Split[6])
+
+				If $Res = -1 Then
+					_GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,@DesktopWidth & " x " & @DesktopHeight) ;- That resolution is not available anymore, so we default to native!
+				EndIf
+			EndIf
+
+
 			GUICtrlSetData($MainGUIHomeSimpleSliderScreenResScale,$Split[7])
 			_GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboWindowmode,$Split[8])
 			_GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboAntialiasing,$Split[9])
@@ -4194,7 +4343,7 @@ EndFunc
 		EndIf
 
 		If $ProgramHomeState = "Advanced" or $InitBool Then
-			If not $Performance Then ;- Do we want to use the max performance settings?
+			If not $Performance Then ;- Do we want to use the maximum performance settings?
 				$Int_Settings = RegRead("HKCU\Software\SMITE Optimizer\","ConfigCookieAdvanced")
 
 				If @Error or $Bool Then ;- If the key doesn't exist or we clicked the "Restore Defaults" button, we want to use the default settings!
@@ -4289,7 +4438,7 @@ EndFunc
 			EndIf
 
 			Local $Split = StringSplit($Int_Settings,"|")
-			_ArrayDelete($Split,0)
+				_ArrayDelete($Split,0)
 
 			_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboWorldQuality,$Split[0])
 			_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboCharacterQuality,$Split[1])
@@ -4301,8 +4450,23 @@ EndFunc
 			_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboParticleQualityLevel,$Split[7])
 			_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboSkyQuality,$Split[8])
 			_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboEffectsParticleQuality,$Split[9])
-			Local $Res = _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,$Split[10])
-			If $Res = -1 Then _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,$AvailableResolutions[0]) ;- That Resolution is not available anymore so we Default to Native!
+
+
+			Local $Res
+
+				RegRead("HKCU\Software\SMITE Optimizer\","ConfigCookieAdvanced")
+
+			If @Error Then ;- Default to native resolution on first launch!
+				$Res = _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,@DesktopWidth & " x " & @DesktopHeight)
+			Else
+				$Res = _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,$Split[10])
+
+				If $Res = -1 Then
+					_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,@DesktopWidth & " x " & @DesktopHeight) ;- That resolution is not available anymore, so we default to native!
+				EndIf
+			EndIf
+
+
 			GUICtrlSetData($MainGUIHomeAdvancedSliderScreenResScale,$Split[11])
 			_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboWindowmode,$Split[12])
 			_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboAntialiasing,$Split[13])
@@ -4341,23 +4505,38 @@ EndFunc
 	Func Internal_UpdateRestoreConfigList() ;- Update the backup file list.
 		_GUICtrlListBox_ResetContent($MainGUIRestoreConfigurationsListFiles)
 
-		Local $FileList = _FileListToArray($ConfigBackupPath,"*",2)
-		_ArrayDelete($FileList,0)
+		Local $aFileList2D[0][2]
 
-		For $I = uBound($FileList)-1 To 0 Step -1 ;- Make sure only valid folders are added to the list.
-			If not FileExists($ConfigBackupPath&$FileList[$I]&"/Engine.ini") or not FileExists($ConfigBackupPath&$FileList[$I]&"/SystemSettings.ini") or not FileExists($ConfigBackupPath&$FileList[$I]&"/GameSettings.ini") Then
+		Local $FileList = _FileListToArray($ConfigBackupPath,"*",2)
+			_ArrayDelete($FileList,0)
+
+		ReDim $aFileList2D[uBound($FileList)][2]
+
+		For $I = uBound($FileList) - 1 To 0 Step -1 ;- Make sure only valid folders are added to the list. Needs to happen in reverse!
+
+			If not FileExists($ConfigBackupPath & $FileList[$I] & "/Engine.ini") or not FileExists($ConfigBackupPath & $FileList[$I] & "/SystemSettings.ini") or not FileExists($ConfigBackupPath & $FileList[$I] & "/GameSettings.ini") Then
 				_ArrayDelete($FileList,$I)
+			Else
+
+				$aFileList2D[$I][0] = $FileList[$I]
+
+				Local $aStr = StringSplit($FileList[$I],"_")
+				$aFileList2D[$I][1] = $aStr[3] & $aStr[2] & $aStr[1] & $aStr[4] & $aStr[5] & $aStr[6]
+
 			EndIf
 		Next
 
-		_ArrayReverse($FileList) ;- New to old.
 
-		Local $FileCount = uBound($FileList)
+		_ArraySort($aFileList2D,1,Default,Default,1) ;- Descending, Col. 1
+
+
+		Local $FileCount = uBound($aFileList2D,1)
+
 		If $FileCount = 0 Then
 			_GUICtrlListBox_AddString($MainGUIRestoreConfigurationsListFiles,"No backups available.")
 		Else
-			For $I = 0 To $FileCount-1 Step 1
-				_GUICtrlListBox_AddString($MainGUIRestoreConfigurationsListFiles,$FileList[$I])
+			For $I = 0 To $FileCount - 1 Step 1
+				_GUICtrlListBox_AddString($MainGUIRestoreConfigurationsListFiles,$aFileList2D[$I][0])
 			Next
 		EndIf
 	EndFunc
@@ -4365,8 +4544,8 @@ EndFunc
 	Func Internal_CreateConfigBackup() ;- Create config backup.
 		Local $SubPath = $ConfigBackupPath & @MDAY & "_" & @MON & "_" & @YEAR & "_" & @HOUR & "_" & @MIN & "_" & @SEC
 
-		Local $CreateDir = DirCreate($SubPath) ;- Create subdir
-		If $CreateDir = 0 Then Return False ;- If the Directory creation was unsuccessful, we need to abort immediately!
+		Local $CreateDir = DirCreate($SubPath) ;- Create subdirectory.
+		If $CreateDir = 0 Then Return False ;- If the directory creation was unsuccessful, we need to abort immediately!
 
 		Local $FileCopy = FileCopy($SettingsPath,$SubPath & "\Engine.ini",1)
 		If $FileCopy = 0 Then Return False ;- If the file copy was unsuccessful, we need to abort immediately!
@@ -4377,33 +4556,34 @@ EndFunc
 		Local $FileCopy = FileCopy($GameSettingsPath,$SubPath & "\GameSettings.ini",1)
 		If $FileCopy = 0 Then Return False ;- If the file copy was unsuccessful, we need to abort immediately!
 
-		Internal_UpdateRestoreConfigList() ;- Update Restore configuration list.
+		Internal_UpdateRestoreConfigList() ;- Update restore configuration list.
 
 		Return True
 	EndFunc
 
 	;- Optimizer functions
-	Func Interal_VerifyAndFixConfiguration($FileReadArray,$Hive) ;- This function verifies and fixes any issues with a supplied configuration file. (Except non-sense variables)
+	Func Interal_VerifyAndFixConfiguration($FileReadArray,$Hive) ;- This function verifies and fixes any issues with a supplied configuration file. (Except nonsense variables.)
 		Local $HiveX = uBound($Hive,1)
 		Local $HiveY = uBound($Hive,2)
 
-		;- The following code verifies the integrity of the supplied configuration files.
-		;- It is capable of fixing almost any error and should be able to repair broken/corrupted files.
-		;- The only thing it cannot fix are variables that are set to non-sense.
+		;~ The following code verifies the integrity of the supplied configuration files.
+		;~ It is capable of fixing almost any error and should be able to repair broken or corrupted files.
+		;~ The only thing it cannot fix are variables that are set to nonsense.
 
-		;- Group = The "Group" of values such as "[URL]"
-		;- Keyname = The name of a variable within a group such as "Game="
-		;- Keyvalue = The value of a keyname within a group such as "SMITE"
-		;- [URL] < Group
-		;- Game=SMITE < Keyname=Keyvalue
+		;~ Group = The "group" of values, such as "[URL]"
+		;~ Keyname = The name of a variable within a group, such as "Game="
+		;~ Keyvalue = The value of a keyname within a group, such as "SMITE"
+		;~ [URL] < Group
+		;~ Game=SMITE < Keyname=Keyvalue
 
-		;- If any Keynames are missing, it will add them to the group using the Hives as a reference.
-		;- This works with duplicates as we use their keyvalues as a reference instead.
-		;- Duplicates within the .ini that do not exist in the Hive will be removed from the .ini as they would be useless.
+		;~ If any keynames are missing, it will add them to the group using the hives as a reference.
+		;~ This works with duplicates, as we use their keyvalues as a reference instead.
+		;~ Duplicates within the .ini that do not exist in the hive will be removed from the .ini as they would be useless.
 
-		;- Here we replace all "TRUE" and "true" with "True" and all "FALSE" and "false" with "False"
-		;- This does not really have any effect other than making the file look nicer and more consistent.
-		;- We want the file to be as "fixed/repaired" as possible, meaning inconsistency is something we definitely do not want.
+		;~ Here we replace all "TRUE" and "true" with "True" and all "FALSE" and "false" with "False"
+		;~ This does not really have any effect other than making the file look nicer and more consistent.
+		;~ We want the file to be as "fixed/repaired" as possible, meaning inconsistency is something we definitely do not want.
+
 
 		For $I = 0 To uBound($FileReadArray) - 1 Step 1 ;- Replace all "TRUE" and "true" with "True"
 			Local $C = StringInStr($FileReadArray[$I],"=TRUE")
@@ -4431,22 +4611,22 @@ EndFunc
 			EndIf
 		Next
 
-		;- Here we remove spaces between keys from bad formatting.
-		;- Normally you would go through this backwards but that would have meant that I needed to re-write this completely which I could not be bothered to do.
-		;- We instead have a tiny bit of inefficiency and cache the indexes respectively to remove them after we got them all.
-		;- If you know AutoIt and can be bothered to fix this, feel free to do so and submit a pull request on GitHub.
-		;- Keep in mind that a duplicate of this function exists later. (Function definitions inside of a function are not possible in AutoIt)
+		;~ Here, we remove spaces between keys from bad formatting.
+		;~ Normally you would go through this backwards, but that would have meant that I needed to rewrite it completely, which I could not be bothered to do.
+		;~ We instead have a tiny bit of inefficiency and cache the indexes, respectively, to remove them after we get them all.
+		;~ If you know AutoIt and can be bothered to fix this, feel free to do so and submit a pull request on GitHub.
+		;~ Keep in mind that a duplicate of this function will exist later. (Function definitions inside a function are not possible in AutoIt)
 
 		Local $ToRemove[0]
 		For $I = 0 To uBound($FileReadArray) - 1 Step 1 ;- Loop through every line of the file.
 			Local $Bounds = uBound($FileReadArray) - 1
 
 			If StringLeft($FileReadArray[$I],1) = "[" and StringRight($FileReadArray[$I],1) = "]" Then ;- Group start found.
-				For $B = $I+1 To $Bounds Step 1 ;- Loop through the rest of the file until a new group is found or the end of file is reached.
+				For $B = $I+1 To $Bounds Step 1 ;- Loop through the rest of the file until a new group is found or the end of the file is reached.
 					If ($B+1) > $Bounds Then ExitLoop ;- We reached the end of the file.
 					If StringLeft($FileReadArray[$B+1],1) = "[" and StringRight($FileReadArray[$B+1],1) = "]" Then ExitLoop ;- We reached the end of the group.
 
-					If $FileReadArray[$B] = $sEmpty and not (($I+1) > $Bounds or StringLeft($FileReadArray[$B+1],1) = "[" and StringRight($FileReadArray[$B+1],1) = "]") Then ;- Invalid/Empty line found.
+					If $FileReadArray[$B] = $sEmpty and not (($I+1) > $Bounds or StringLeft($FileReadArray[$B+1],1) = "[" and StringRight($FileReadArray[$B+1],1) = "]") Then ;- Invalid or empty line was found.
 						Local $Count = uBound($ToRemove)
 						ReDim $ToRemove[$Count+1]
 						$ToRemove[$Count] = $B - $Count ;- Add it to the cache with respective index.
@@ -4459,12 +4639,12 @@ EndFunc
 			_ArrayDelete($FileReadArray,$ToRemove[$I])
 		Next
 
-		;- Here we remove all invalid lines. These lines could be simple text or a comment not containing a "=" and are NOT the start of a group.
-		;- Basically a line that only contains words/characters and do not define anything are invalid.
+		;- Here we remove all invalid lines. These lines could be simple text or a comment not containing a "=" and are not the start of a group.
+		;- Basically, lines that only contain words or characters and do not define anything, are invalid.
 
 		For $I = uBound($FileReadArray) - 1 To 0 Step -1
 
-			;- The line is not empty, but also does not define anything and is also not the start of a group which means it is invalid!
+			;- The line is not empty, but it also does not define anything and is not the start of a group, which means it is invalid!
 			If $FileReadArray[$I] <> $sEmpty and not StringInStr($FileReadArray[$I],"=") and not (StringLeft($FileReadArray[$I],1) = "[" and StringRight($FileReadArray[$I],1) = "]") Then
 				_ArrayDelete($FileReadArray,$I)
 			EndIf
@@ -4474,16 +4654,16 @@ EndFunc
 
 		For $I = uBound($FileReadArray) - 1 To 0 Step -1
 			If StringLeft($FileReadArray[$I],1) = "[" and StringRight($FileReadArray[$I],1) = "]" Then ;- The start of the group
-				If $FileReadArray[$I+1] = $sEmpty Then ;- Check whether the line underneath it is empty, if it is, remove the pointless group.
+				If $FileReadArray[$I+1] = $sEmpty Then ;- Check whether the line underneath it is empty; if it is, remove the pointless group.
 					_ArrayDelete($FileReadArray,$I)
 				EndIf
 			EndIf
 		Next
 
 		;- Since the code above produces double spaces, we need to re-run the removing spaces code.
-		;- The code HAS to be run twice as additional spaces HAVE to be removed inside of groups for the empty group remover code to function.
-		;- If there was an additional space underneath a group definition, but it has keys, the code above would still detect it as empty and cause problems!
-		;- I had to copy-paste this code since function definitions inside of a function are not possible in AutoIt.
+		;- The code has to be run twice, as additional spaces have to be removed inside of groups for the empty group remover code to function.
+		;- If there was an additional space underneath a group definition, but it had keys, the code above would still detect it as empty and cause problems!
+		;- I had to copy-paste this code since function definitions inside a function are not possible in AutoIt.
 
 		Local $ToRemove[0]
 		For $I = 0 To uBound($FileReadArray) - 1 Step 1 ;- Loop through every line of the file.
@@ -4494,7 +4674,7 @@ EndFunc
 					If ($B+1) > $Bounds Then ExitLoop ;- We reached the end of the file.
 					If StringLeft($FileReadArray[$B+1],1) = "[" and StringRight($FileReadArray[$B+1],1) = "]" Then ExitLoop ;- We reached the end of the group.
 
-					If $FileReadArray[$B] = $sEmpty and not (($I+1) > $Bounds or StringLeft($FileReadArray[$B+1],1) = "[" and StringRight($FileReadArray[$B+1],1) = "]") Then ;- Invalid/Empty line found.
+					If $FileReadArray[$B] = $sEmpty and not (($I+1) > $Bounds or StringLeft($FileReadArray[$B+1],1) = "[" and StringRight($FileReadArray[$B+1],1) = "]") Then ;- Invalid or empty line found.
 						Local $Count = uBound($ToRemove)
 						ReDim $ToRemove[$Count+1]
 						$ToRemove[$Count] = $B - $Count ;- Add it to the cache with respective index.
@@ -4507,10 +4687,10 @@ EndFunc
 			_ArrayDelete($FileReadArray,$ToRemove[$I])
 		Next
 
-		;- Here is where the REAL magic happens. We make sure all Groups and keys exist in our supplied config. If not, we create them using the information supplied from the Hive.
-		;- This works with duplicate keynames and keyvalues. (which was absurdly hard to make)
-		;- This algorithm may not be the most efficient in terms of code but it is smart enough to detect file corruption even though there should not be any anymore.
-		;- This algorithm also does not care about the order of the groups. Meaning if we have a group that is normally at the start of the file but is at the end of our file for whatever reason; The algorithm has no issues working with it.
+		;- Here is where the real magic happens. We make sure all groups and keys exist in our supplied configuration. If not, we create them using the information supplied by the hive.
+		;- This works with duplicate keynames and keyvalues.
+		;- This algorithm may not be the most efficient in terms of code, but it is smart enough to detect file corruption even though there should not be any anymore.
+		;- This algorithm also does not care about the order of the groups. Meaning, if we have a group that is normally at the start of the file but is at the end of our file for whatever reason, the algorithm has no issues working with it.
 
 		Local $I = 0
 		Local $DuplicatesHandled[0][2]
@@ -4518,8 +4698,8 @@ EndFunc
 			Local $Key = $Hive[$I][0] ;- The group we are checking.
 			Local $Start = 0, $End = 0
 
-			;- This loop checks whether the group from the Hive exists in the supplied config file as well, if so, it sets the Start and End lines.
-			For $Z = 0 To uBound($FileReadArray) - 1 Step 1 ;- Check if the group exists in the config.
+			;- This loop checks whether the group from the hive exists in the supplied config file as well; if so, it sets the start and end lines.
+			For $Z = 0 To uBound($FileReadArray) - 1 Step 1 ;- Check if the group exists in the configuration.
 				If StringInStr($FileReadArray[$Z],$Key) Then ;- If it does, get the start array index.
 					$Start = $Z+1
 
@@ -4533,10 +4713,10 @@ EndFunc
 				EndIf
 			Next
 
-			If $Start <> 0 and $End <> 0 Then ;- The start of the group and the end have been found, now check whether all Keys exist in the supplied config, if not, add them!
+			If $Start <> 0 and $End <> 0 Then ;- The start of the group and the end have been found; now check whether all keys exist in the supplied configuration; if not, add them!
 				Local $Insertions = 0
 
-				For $B = 1 To $HiveY-1 Step 1 ;- If it exists, we check whether all keys also exist in the supplied config file, if not, we add them.
+				For $B = 1 To $HiveY-1 Step 1 ;- If it exists, we check whether all keys also exist in the supplied config file; if not, we add them.
 					If $Hive[$I][$B] = $sEmpty Then ExitLoop ;- We looped through all keys in the hive from the supplied group, so we go to the next group.
 
 					Local $HiveKName = StringMid($Hive[$I][$B],1,StringInStr($Hive[$I][$B],"=")) ;- The key from the hive to find in the supplied config.
@@ -4557,8 +4737,6 @@ EndFunc
 				Next
 
 				;- Duplicate handling.
-				;- Writing this was absurdly complex and I still cannot believe that I managed to do it.
-				;- I am serious. It feels like my brain is melting.
 
 				For $SP = $Start To $End + $Insertions Step 1
 					Local $FullLine = $FileReadArray[$SP]
@@ -4567,17 +4745,17 @@ EndFunc
 					Local $KeyName = StringLeft($FileReadArray[$SP],$EqualStart)
 
 					Local $DidWeHandleThatOneAlready = False
-					For $ZA = 0 To uBound($DuplicatesHandled) - 1 Step 1 ;- Prevent any further code from running if we already took care of this duplicate. (For optimizations sake)
+					For $ZA = 0 To uBound($DuplicatesHandled) - 1 Step 1 ;- Prevent any further code from running if we have already taken care of this duplicate. (For optimization's sake.)
 						If $DuplicatesHandled[$ZA][0] = $Hive[$I][0] and $DuplicatesHandled[$ZA][1] = $KeyName Then
 							$DidWeHandleThatOneAlready = True
 							ExitLoop
 						EndIf
 					Next
 
-					If not $DidWeHandleThatOneAlready Then ;- Check whether duplicates exist in the Hive for that keyname.
+					If not $DidWeHandleThatOneAlready Then ;- Check whether duplicates exist in the hive for that keyname.
 						Local $DuplicateCount = 0
 
-						For $A = 0 To $HiveY-1 Step 1 ;- Count how many duplicates exist for this keyname within the hive
+						For $A = 0 To $HiveY-1 Step 1 ;- Count how many duplicates exist for this keyname within the hive.
 							If $Hive[$I][$A] = $sEmpty Then ExitLoop ;- End of HiveY reached.
 
 							If StringLeft($Hive[$I][$A],StringInStr($Hive[$I][$A],"=")) = $KeyName Then
@@ -4586,7 +4764,7 @@ EndFunc
 						Next
 
 						If $DuplicateCount > 1 Then ;- Duplicates have been found!
-							Local $Count = uBound($DuplicatesHandled) ;- Prevent the same keyname from being detected in the same group again. (Faster processing and bug prevention)
+							Local $Count = uBound($DuplicatesHandled) ;- Prevent the same keyname from being detected in the same group again.
 							ReDim $DuplicatesHandled[$Count+1][2]
 							$DuplicatesHandled[$Count][0] = $Key
 							$DuplicatesHandled[$Count][1] = $KeyName
@@ -4606,22 +4784,22 @@ EndFunc
 							For $Tarantel = 0 To uBound($KeyValuesInHive) - 1 Step 1
 								Local $DoesItExistInSuppliedGroup = False
 
-								For $A = $Start To $End+$AddedDuplicates Step 1 ;- Now we check whether the extracted Keynames+Keyvalues exist in our supplied config group.
+								For $A = $Start To $End+$AddedDuplicates Step 1 ;- Now we check whether the extracted Keynames + Keyvalues exist in our supplied configuration group.
 									If $FileReadArray[$A] = $KeyValuesInHive[$Tarantel] Then
 										$DoesItExistInSuppliedGroup = True
 										ExitLoop
 									EndIf
 								Next
 
-								If not $DoesItExistInSuppliedGroup Then ;- The Keyname+Keyvalue we checked does not exist in our supplied config, so we add it!
+								If not $DoesItExistInSuppliedGroup Then ;- The keyname + keyvalue we checked do not exist in our supplied configuration, so we add them!
 									_ArrayInsert($FileReadArray,$Start,$KeyValuesInHive[$Tarantel])
 									$AddedDuplicates = $AddedDuplicates + 1
 								EndIf
 							Next
 						Else
 
-							;- This keyname does not seem to be a duplicate but we have to check whether it exists multiple times within the group. If it does, it would be useless and wasting space!
-							;- This part has a slight issue as it also tends to delete intended duplicates when an intended duplicate is missing within the same group. However, it gets re-added later so it is never missing!
+							;- This keyname does not seem to be a duplicate, but we have to check whether it exists multiple times within the group. If it does, it would be useless and waste space!
+							;- This part has a slight issue as it also tends to delete intended duplicates when an intended duplicate is missing within the same group. However, it gets re-added later, so it is never missing!
 
 							Local $INIGroupDuplicates = 0
 							For $A = $Start To $End Step 1 ;- Count the duplicates.
@@ -4630,7 +4808,7 @@ EndFunc
 								EndIf
 							Next
 
-							If $INIGroupDuplicates > 1 Then ;- Check if there were duplicates of that keyname within the group.
+							If $INIGroupDuplicates > 1 Then ;- Check if there are duplicates of that keyname within the group.
 								Local $Removals = 0
 
 								For $A = 0 To $INIGroupDuplicates-2 Step 1 ;- Since there could be multiple duplicates, we have to loop through the group multiple times.
@@ -4646,9 +4824,9 @@ EndFunc
 						EndIf
 					EndIf
 				Next
-			ElseIf $Start = 0 Then ;- The whole group is missing! So we load it from the Hive..
-				For $IDK = 0 To $HiveY - 1 Step 1 ;- Insert the name of the group and its' keynames.
-					If $Hive[$I][$IDK] = $sEmpty Then ;- The end of the HiveY has been reached, insert one more space and then exit the loop.
+			ElseIf $Start = 0 Then ;- The whole group is missing! So we load it from the Hive!
+				For $IDK = 0 To $HiveY - 1 Step 1 ;- Insert the name of the group and the keynames.
+					If $Hive[$I][$IDK] = $sEmpty Then ;- The end of the HiveY has been reached; insert one more space and then exit the loop.
 						_ArrayInsert($FileReadArray,$IDK,$sEmpty)
 						ExitLoop
 					EndIf
@@ -4661,7 +4839,7 @@ EndFunc
 			$I = $I + 1
 		WEnd
 
-		For $I = uBound($FileReadArray) - 1 To 1 Step -1 ;- After we done most of the black magic, we need to make sure that before every group, there is at least one empty line.
+		For $I = uBound($FileReadArray) - 1 To 1 Step -1 ;- After we're done with most of the black magic, we need to make sure that before every group, there is at least one empty line.
 			If $I = 0 Then ExitLoop ;- We reached the start of the file.
 
 			If StringLeft($FileReadArray[$I],1) = "[" and StringRight($FileReadArray[$I],1) = "]" and $FileReadArray[$I-1] <> $sEmpty Then
@@ -4673,7 +4851,7 @@ EndFunc
 	EndFunc
 
 	Func Internal_GetQualityLevel($Data) ;- Used to determine the quality level selected.
-		Local $Ret = 3 ;- In case we somehow got supplied a bad $Data var, we want to return the default setting!
+		Local $Ret = 3 ;- In case we somehow got supplied with a bad $Data variable, we want to return the default setting!
 
 		Switch $Data
 			Case "Best"
@@ -4702,7 +4880,7 @@ EndFunc
 
 		Local $KeyLength = StringLen($KeyName)
 		For $A = 0 To uBound($Array) - 1 Step 1
-			If StringLeft($Array[$A],$KeyLength) = $KeyName Then ;- Replace all occurances of that Key within the .INI
+			If StringLeft($Array[$A],$KeyLength) = $KeyName Then ;- Replace all occurrences of that key within the .INI
 				$Array[$A] = $KeyName&$KeyValue
 			EndIf
 		Next
@@ -4710,7 +4888,7 @@ EndFunc
 		Return $Array
 	EndFunc
 
-	Func Internal_ApplySingleKey($Array,$KeyName,$KeyValue) ;- Used to write key settings in the main Group.
+	Func Internal_ApplySingleKey($Array,$KeyName,$KeyValue) ;- Used to write key settings in the main group.
 
 		Local $KeyLength = StringLen($KeyName)
 		Local $FoundGroup = False
@@ -4720,7 +4898,7 @@ EndFunc
 				If $Array[$A] = "[SystemSettings]" Then
 					$FoundGroup = True
 				EndIf
-			ElseIf StringLeft($Array[$A],$KeyLength) = $KeyName Then ;- Replace the first occurance of that Key within the .INI with the value from the TextureHive.
+			ElseIf StringLeft($Array[$A],$KeyLength) = $KeyName Then ;- Replace the first occurrence of that key within the .INI with the value from the TextureHive.
 				$Array[$A] = $KeyName&$KeyValue
 				ExitLoop
 			EndIf
@@ -4734,8 +4912,8 @@ EndFunc
 			If $TextureQualityHive[$HSubIndex][$Quality][$I] = $sEmpty Then ExitLoop ;- End of HiveZ reached.
 
 			Local $VarStart = StringInStr($TextureQualityHive[$HSubIndex][$Quality][$I],"=")
-			Local $SubKeyname = StringLeft($TextureQualityHive[$HSubIndex][$Quality][$I],$VarStart) ;- Retrieve the name of the Key.
-			Local $SubKeyvar = StringMid($TextureQualityHive[$HSubIndex][$Quality][$I],$VarStart+1) ;- Retrieve the value of the Key.
+			Local $SubKeyname = StringLeft($TextureQualityHive[$HSubIndex][$Quality][$I],$VarStart) ;- Retrieve the name of the key.
+			Local $SubKeyvar = StringMid($TextureQualityHive[$HSubIndex][$Quality][$I],$VarStart+1) ;- Retrieve the value of the key.
 
 			Local $KeyLength = StringLen($SubKeyname)
 			Local $FoundGroup = False
@@ -4745,7 +4923,7 @@ EndFunc
 					If $Array[$A] = "[SystemSettings]" Then
 						$FoundGroup = True
 					EndIf
-				ElseIf StringLeft($Array[$A],$KeyLength) = $SubKeyname Then ;- Replace the first occurance of that Key within the .INI with the value from the TextureHive.
+				ElseIf StringLeft($Array[$A],$KeyLength) = $SubKeyname Then ;- Replace the first occurrence of that key within the .INI with the value from the TextureHive.
 					$Array[$A] = $TextureQualityHive[$HSubIndex][$Quality][$I]
 					ExitLoop
 				EndIf
@@ -4771,7 +4949,7 @@ EndFunc
 				If $ProgramHomeState = "Simple" Then
 
 					Local $RRead = GUICtrlRead($MainGUIHomeSimpleInputMaxFPS)
-					If $RRead < 30 Then $RRead = 30 ;- Restrict people from going lower than 30. I rather not have potatoes in my games.
+					If $RRead < 30 Then $RRead = 30 ;- Restrict people from going lower than 30. I'd rather not have potatoes in my games.
 
 					$Array = Internal_ApplyKey($Array,"bSmoothFrameRate=","True")
 					$Array = Internal_ApplyKey($Array,"MinDesiredFrameRate=",$RRead/2)
@@ -4781,7 +4959,7 @@ EndFunc
 				ElseIf $ProgramHomeState = "Advanced" Then
 
 					Local $RRead = GUICtrlRead($MainGUIHomeAdvancedInputMaxFPS)
-					If $RRead < 30 Then $RRead = 30 ;- Restrict people from going lower than 30. I rather not have potatoes in my games.
+					If $RRead < 30 Then $RRead = 30 ;- Restrict people from going lower than 30. I'd rather not have potatoes in my games.
 
 					$Array = Internal_ApplyKey($Array,"bSmoothFrameRate=","True")
 					$Array = Internal_ApplyKey($Array,"MinDesiredFrameRate=",$RRead/2)
@@ -4795,20 +4973,20 @@ EndFunc
 			$Array = Internal_ApplyKey($Array,"MaximumPoolSize=","0") ;- Default
 			$Array = Internal_ApplyKey($Array,"MinimumPoolSize=","255") ;- Default
 
-			;- We want to set the maximum loading time for textures to 1 second and load the rest outside of the loading screen.
-			;- This looks rather ugly for the player when textures load in AFTER the loading screen, but reduced loading times are better for everyone.
-			;- Plus, there is usually at least a 30 second pre-game timer which is more than enough time to load textures for any potato.
+			;- We want to set the maximum loading time for textures to 1 second and load the rest outside the loading screen.
+			;- This looks rather ugly for the player when textures load in after the loading screen, but reduced loading times are better for everyone.
+			;- Plus, there is usually at least a 30-second pre-game timer, which is more than enough time to load textures for any potato.
 			$Array = Internal_ApplyKey($Array,"LoadMapTimeLimit=","1")
 			$Array = Internal_ApplyKey($Array,"UseDynamicStreaming=","True") ;- Only works with this option enabled.
 
 		ElseIf $State = "SystemSettings" Then
 
-			;- Even though Depth of Field seems to be enabled by default on max settings (Need confirmation); It causes a lot of problems and artifacts, especially in Assault.
+			;- Even though depth of field seems to be enabled by default on max settings (need confirmation), it causes a lot of problems and artifacts, especially in assault.
 			$Array = Internal_ApplyKey($Array,"DepthOfField=","False") ;- So we simply disable it by default.
 
-			$Array = Internal_ApplyKey($Array,"DirectionalLightmaps=","True") ;- Default. (We are setting this to true to prevent crashes)
+			$Array = Internal_ApplyKey($Array,"DirectionalLightmaps=","True") ;- Default. (We are setting this to true to prevent crashes.)
 
-			;- The following settings don't have any effect but we disable them anyway since it could still run extra instructions.
+			;- The following settings don't have any effect, but we disable them anyway since it could still run extra instructions.
 			$Array = Internal_ApplyKey($Array,"MotionBlur=","False")
 			$Array = Internal_ApplyKey($Array,"MotionBlurPause=","False")
 			$Array = Internal_ApplyKey($Array,"MotionBlurSkinning=","1") ;- Default.
@@ -4822,7 +5000,7 @@ EndFunc
 					;- In Simple mode, "World Quality" changes both World and the Terrain.
 
 					Local $Quality = GUICtrlRead($MainGUIHomeSimpleComboWorldQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 0 ;- 0 = World Settings.
 
@@ -4832,16 +5010,14 @@ EndFunc
 
 					$Array = Internal_ApplySubkeys($Array,$HSubIndex,$Quality) ;- Apply Terrain Quality
 
-					;- If the world quality is lower than high we want to yeet some settings.
+					;- If the world quality is lower than high, we want to disable some settings.
 					;- Animated trees, light shafts, fog detail, Depth of Field, Texture based filter distortions.
 
-					If $Quality > 2 Then ;- If lower than High.
+					If $Quality > 2 Then ;- If lower than high.
 						$Array = Internal_ApplyKey($Array,"SpeedTreeWind=","False")
 						$Array = Internal_ApplyKey($Array,"SpeedTreeLeaves=","False")
 						$Array = Internal_ApplyKey($Array,"SpeedTreeFronds=","False")
 						$Array = Internal_ApplyKey($Array,"SpeedTreeLODBias=","0")
-
-						;- $Array = Internal_ApplyKey($Array,"bAllowFog=","False") ;- Does no longer exist.
 
 						$Array = Internal_ApplyKey($Array,"bAllowLightShafts=","False")
 
@@ -4871,7 +5047,7 @@ EndFunc
 					;- In Simple mode, "Character Quality" changes Character, NPC, Weapon, and Vehicle Quality.
 
 					Local $Quality = GUICtrlRead($MainGUIHomeSimpleComboCharacterQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 1 ;- 1 = Character Settings.
 
@@ -4895,16 +5071,16 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeSimpleComboShadowQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 6 ;- 6 = Shadow Settings.
 
 					$Array = Internal_ApplySubkeys($Array,$HSubIndex,$Quality) ;- Apply Shadow Quality
 
-					;- If the shadow quality is lower than high we want to change some settings.
+					;- If the shadow quality is lower than high, we want to change some settings.
 					;- Drop shadows, image based shadows, smooth bounds, shadows based on light reflections.
 
-					If $Quality > 2 Then ;- If lower than High.
+					If $Quality > 2 Then ;- If lower than high.
 						$Array = Internal_ApplyKey($Array,"bAllowDropShadows=","False")
 						$Array = Internal_ApplyKey($Array,"bAllowWholeSceneDominantShadows=","False")
 						$Array = Internal_ApplyKey($Array,"bUseConservativeShadowBounds=","False")
@@ -4922,7 +5098,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeSimpleComboSkyQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 7 ;- 7 = Skybox Settings.
 
@@ -4934,7 +5110,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeSimpleComboEffectsParticleQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 8 ;- 8 = Effects Settings.
 
@@ -5002,7 +5178,7 @@ EndFunc
 					Local $RsEn = GUICtrlRead($MainGUIHomeSimpleSliderScreenResScale)
 					If $RsEn <> 100 Then ;- Make sure this setting is actually enabled.
 						$Array = Internal_ApplyKey($Array,"ScreenPercentage=",$RsEn)
-						$Array = Internal_ApplyKey($Array,"UpscaleScreenPercentage=","True") ;- Upscaling is a lot faster than actually rendering the game at X% Res and nearly has the same quality. (It's also on by default)
+						$Array = Internal_ApplyKey($Array,"UpscaleScreenPercentage=","True") ;- Upscaling is a lot faster than actually rendering the game at X% resolution and nearly has the same quality. (It's also on by default.)
 					Else
 						$Array = Internal_ApplyKey($Array,"ScreenPercentage=","100")
 						$Array = Internal_ApplyKey($Array,"UpscaleScreenPercentage=","False")
@@ -5015,7 +5191,7 @@ EndFunc
 
 					Local $DX11Read = GUICtrlRead($MainGUIHomeSimpleCheckboxDirectX11)
 
-					;- We make extra sure that people can't apply this on a windows version older than WIN_7.
+					;- We make extra sure that people can't apply this on a Windows version older than WIN_7.
 					If @OSVersion = "WIN_XP" or @OSVersion = "WIN_VISTA" or @OSVersion = "WIN_XPe" or @OSVersion = "WIN_2008R2" or @OSVersion = "WIN_2008" or @OSVersion = "WIN_2003" Then $DX11Read = "False"
 
 					If $DX11Read = $GUI_UNCHECKED Then
@@ -5024,7 +5200,7 @@ EndFunc
 						$Array = Internal_ApplyKey($Array,"PreferD3D11=","False") ;- Default.
 						$Array = Internal_ApplyKey($Array,"UseD3D11Beta=","False") ;- Default.
 					ElseIf $DX11Read = $GUI_CHECKED Then
-						$Array = Internal_ApplyKey($Array,"UseDX11=","True") ;- This is for future proofing when DX11 SMITE goes out of beta.
+						$Array = Internal_ApplyKey($Array,"UseDX11=","True") ;- This is for future-proofing when DX11 SMITE goes out of beta.
 						$Array = Internal_ApplyKey($Array,"AllowD3D11=","True")
 						$Array = Internal_ApplyKey($Array,"PreferD3D11=","True")
 						$Array = Internal_ApplyKey($Array,"UseD3D11Beta=","True") ;- This is what enables it.
@@ -5119,8 +5295,8 @@ EndFunc
 
 				;- ----- ----- ----- ----- -----
 
-				Local $FPSRead = GUICtrlRead($MainGUIHomeSimpleInputMaxFPS) ;- FPS. (Also being applied in EngineSettings)
-				If $FPSRead < 30 Then $FPSRead = 30 ;- Restrict people from going lower than 30. I rather not have potatoes in my games.
+				Local $FPSRead = GUICtrlRead($MainGUIHomeSimpleInputMaxFPS) ;- FPS. (Also being applied in EngineSettings.)
+				If $FPSRead < 30 Then $FPSRead = 30 ;- Restrict people from going lower than 30. I'd rather not have potatoes in my games.
 				$Array = Internal_ApplyKey($Array,"TargetFrameRate=",$FPSRead)
 
 				Local $DetailModeRead = GUICtrlRead($MainGUIHomeSimpleComboDetailMode) ;- DetailMode.
@@ -5141,14 +5317,14 @@ EndFunc
 
 				Local $UncompTextRead = Internal_CheckboxToStrBool($MainGUIHomeSimpleCheckboxHighQualityMats) ;- High Quality Textures.
 				$Array = Internal_ApplyKey($Array,"bAllowHighQualityMaterials=",$UncompTextRead)
-				$Array = Internal_ApplyKey($Array,"bUseLowQualMaterials=",not $UncompTextRead) ;- This is always the opposite of the Checkbox.
+				$Array = Internal_ApplyKey($Array,"bUseLowQualMaterials=",not $UncompTextRead) ;- This is always the opposite of the checkbox.
 
 			ElseIf $ProgramHomeState = "Advanced" Then
 
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeAdvancedComboWorldQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 0 ;- 0 = World Settings.
 
@@ -5157,7 +5333,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeAdvancedComboCharacterQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 1 ;- 1 = Character Settings.
 
@@ -5166,7 +5342,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeAdvancedComboTerrainQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 2 ;- 2 = Terrain Settings.
 
@@ -5175,7 +5351,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeAdvancedComboNPCQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 3 ;- 3 = NPC Settings.
 
@@ -5184,7 +5360,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeAdvancedComboWeaponQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 4 ;- 4 = Weapon Settings.
 
@@ -5193,7 +5369,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeAdvancedComboVehicleQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 5 ;- 5 = Vehicle Settings.
 
@@ -5202,7 +5378,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeAdvancedComboShadowsQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 6 ;- 6 = Shadow Settings.
 
@@ -5211,7 +5387,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeAdvancedComboSkyQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 7 ;- 7 = Sky Settings.
 
@@ -5220,7 +5396,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 					Local $Quality = GUICtrlRead($MainGUIHomeAdvancedComboEffectsParticleQuality)
-					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the Index of the TextureHive respectively.
+					$Quality = Internal_GetQualityLevel($Quality) ;- Retrieve the index of the TextureHive respectively.
 
 					Local $HSubIndex = 8 ;- 8 = Effects Settings.
 
@@ -5295,7 +5471,7 @@ EndFunc
 					Local $RsEn = GUICtrlRead($MainGUIHomeAdvancedSliderScreenResScale)
 					If $RsEn <> 100 Then ;- Make sure this setting is actually enabled.
 						$Array = Internal_ApplyKey($Array,"ScreenPercentage=",$RsEn)
-						$Array = Internal_ApplyKey($Array,"UpscaleScreenPercentage=","True") ;- Upscaling is a lot faster than actually rendering the game at X% Res and nearly has the same quality. (It's also on by default)
+						$Array = Internal_ApplyKey($Array,"UpscaleScreenPercentage=","True") ;- Upscaling is a lot faster than actually rendering the game at X% resolution and nearly has the same quality. (It's also on by default.)
 					Else
 						$Array = Internal_ApplyKey($Array,"ScreenPercentage=","100")
 						$Array = Internal_ApplyKey($Array,"UpscaleScreenPercentage=","False")
@@ -5342,7 +5518,7 @@ EndFunc
 
 					Local $DX11Read = GUICtrlRead($MainGUIHomeAdvancedCheckboxDX11)
 
-					;- We make extra sure that people can't apply this on a windows version older than WIN_7.
+					;- We make extra sure that people can't apply this on a Windows version older than WIN_7.
 					If @OSVersion = "WIN_XP" or @OSVersion = "WIN_VISTA" or @OSVersion = "WIN_XPe" or @OSVersion = "WIN_2008R2" or @OSVersion = "WIN_2008" or @OSVersion = "WIN_2003" Then $DX11Read = "False"
 
 					If $DX11Read = $GUI_UNCHECKED Then
@@ -5351,7 +5527,7 @@ EndFunc
 						$Array = Internal_ApplyKey($Array,"PreferD3D11=","False") ;- Default.
 						$Array = Internal_ApplyKey($Array,"UseD3D11Beta=","False") ;- Default.
 					ElseIf $DX11Read = $GUI_CHECKED Then
-						$Array = Internal_ApplyKey($Array,"UseDX11=","True") ;- This is for future proofing when DX11 SMITE goes out of beta.
+						$Array = Internal_ApplyKey($Array,"UseDX11=","True") ;- This is for future-proofing when DX11 SMITE goes out of beta.
 						$Array = Internal_ApplyKey($Array,"AllowD3D11=","True")
 						$Array = Internal_ApplyKey($Array,"PreferD3D11=","True")
 						$Array = Internal_ApplyKey($Array,"UseD3D11Beta=","True") ;- This is what enables it.
@@ -5375,7 +5551,7 @@ EndFunc
 				;- ----- ----- ----- ----- -----
 
 				Local $FPSRead = GUICtrlRead($MainGUIHomeAdvancedInputMaxFPS) ;- FPS. (Also being applied in EngineSettings)
-				If $FPSRead < 30 Then $FPSRead = 30 ;- Restrict people from going lower than 30. I rather not have potatoes in my games.
+				If $FPSRead < 30 Then $FPSRead = 30 ;- Restrict people from going lower than 30. I'd rather not have potatoes in my games.
 				$Array = Internal_ApplyKey($Array,"TargetFrameRate=",$FPSRead)
 
 				Local $UseVsyncRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxVSync) ;- Vertical Synchronisation.
@@ -5453,12 +5629,12 @@ EndFunc
 
 				Local $UncompTextRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxUncText) ;- High Quality Textures.
 				$Array = Internal_ApplyKey($Array,"bAllowHighQualityMaterials=",$UncompTextRead)
-				$Array = Internal_ApplyKey($Array,"bUseLowQualMaterials=",not $UncompTextRead) ;- This is always the opposite of the Checkbox.
+				$Array = Internal_ApplyKey($Array,"bUseLowQualMaterials=",not $UncompTextRead) ;- This is always the opposite of the checkbox.
 
 			EndIf
 		ElseIf $State = "GameSettings" Then
 
-			;- Currently unused for the home tab
+			;- Currently unused for the home tab.
 
 		EndIf
 
@@ -5472,7 +5648,7 @@ EndFunc
 			;- ----- ----- ----- ----- -----
 
 				Local $RRead = GUICtrlRead($MainGUIFixesInputMaxFPS)
-				If $RRead < 30 Then $RRead = 30 ;- Restrict people from going lower than 30. I rather not have potatoes in my games.
+				If $RRead < 30 Then $RRead = 30 ;- Restrict people from going lower than 30. I'd rather not have potatoes in my games.
 
 				$Array = Internal_ApplyKey($Array,"bSmoothFrameRate=","True")
 				$Array = Internal_ApplyKey($Array,"MinDesiredFrameRate=",$RRead/2)
@@ -5483,7 +5659,7 @@ EndFunc
 
 			;- Audio Channels
 				Local $RRead = GUICtrlRead($MainGUIFixesComboAudioFix)
-				If $RRead < 32 or $RRead > 512 Then ;- Better safe than sorry? Idk.
+				If $RRead < 32 or $RRead > 512 Then ;- Better safe than sorry!
 					$RRead = 32
 				EndIf
 
@@ -5492,7 +5668,7 @@ EndFunc
 		ElseIf $State = "SystemSettings" Then
 
 			Local $FPSRead = GUICtrlRead($MainGUIFixesInputMaxFPS) ;- FPS. (Also being applied in EngineSettings)
-			If $FPSRead < 30 Then $FPSRead = 30 ;- Restrict people from going lower than 30. I rather not have potatoes in my games.
+			If $FPSRead < 30 Then $FPSRead = 30 ;- Restrict people from going lower than 30. I'd rather not have potatoes in my games.
 			$Array = Internal_ApplyKey($Array,"TargetFrameRate=",$FPSRead)
 
 		ElseIf $State = "GameSettings" Then
@@ -5521,22 +5697,23 @@ EndFunc
 	EndFunc
 
 	Func Internal_ProcessRequest($Bool = False,$FixesBool = False) ;- Main settings processing handler function.
-		If ProcessExists("smite.exe") Then ;- \/ \/ \/ \/ \/
+
+		If ProcessExists("smite.exe") Then
 			DisplayErrorMessage("Cannot apply settings while SMITE is running!")
 			Return
 		EndIf
 
-		If $SettingsPath = "" or $SystemSettingsPath = "" Then
-			DisplayErrorMessage("Cannot apply settings, discover the configuration files first!")
+		If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty Then
+			DisplayErrorMessage("Cannot apply settings; discover the configuration files first!")
 			Return
 		EndIf
 
-		If $ProcessingRequest Then Return ;- Make sure this is not run twice for whatever reason.
-		$ProcessingRequest = True
+		If $ProcessingRequest Then Return ;- Make sure this is not run twice, for whatever reason.
+			$ProcessingRequest = True
 
-		RegWrite("HKCU\Software\SMITE Optimizer\","NotClosedProperly","REG_SZ","1") ;- Set the cookie for crash detection
+		RegWrite("HKCU\Software\SMITE Optimizer\","NotClosedProperly","REG_SZ","1") ;- Set the cookie for crash detection.
 
-		$HoverTipAlpha = 0 ;- Make sure help tips are getting yeeted!
+		$HoverTipAlpha = 0 ;- Make sure the help tips are removed!
 		WinSetTrans($HoverInfoGUI,$sEmpty,$HoverTipAlpha)
 
 		Internal_SaveSettingCookie() ;- Store our current configuration.
@@ -5549,18 +5726,16 @@ EndFunc
 		Local $WinPos = WinGetPos($MainGUI)
 
 		Global $ProcessUI = GUICreate("SO_PROCESSING",400,150,$WinPos[0] + ($WinPos[2]/2)-200,$WinPos[1] + ($WinPos[3]/2)-75,$WS_POPUP,$WS_EX_TOOLWINDOW)
-			GUISetBkColor(0x000000)
+			GUISetBkColor($cBackgroundColor)
 
 			Local $ProcessUIBG = GUICtrlCreatePic($sEmpty,0,0,400,150)
 				LoadImageResource($ProcessUIBG,$MainResourcePath & "NotificationBG.jpg","NotificationBG")
 
 			Local $ProcessUILabelMainStatus = GUICtrlCreateLabelTransparentBG("Processing..",5,0,300,30)
 				GUICtrlSetFont(-1,20,500,Default,$MainFontName)
-				GUICtrlSetColor(-1,0xFFFFFF)
 
 			Local $ProcessUILabelCATC = GUICtrlCreateLabelTransparentBG("(Click to continue)",105,4,250,30)
 				GUICtrlSetFont(-1,15,500,Default,$MainFontName)
-				GUICtrlSetColor(-1,0xFFFFFF)
 				GUICtrlSetState(-1,$GUI_HIDE)
 
 			Local $ProcessUILabelStatusBackup = GUICtrlCreateLabelTransparentBG("[X] Creating backup",5,35,300,30)
@@ -5588,7 +5763,7 @@ EndFunc
 		Local $PState = 0
 		While True
 
-			;- We handle the different steps inside of the while loop so the window has a chance to come back in focus when the user re-activates it.
+			;- We handle the different steps inside the while loop, so the window has a chance to come back in focus when the user re-activates it.
 
 			Local $CursorInfo = GUIGetCursorInfo($ProcessUI)
 			Local $CfgArray
@@ -5607,7 +5782,7 @@ EndFunc
 
 				$PState = $PState + 1
 			ElseIf $PState = 1 Then ;- Read files
-				Local $EngineFile ;- Lazyyy fixes, eh.
+				Local $EngineFile
 				Local $SystemFile
 				Local $GameFile
 				Local $EngineFileFallback[1]
@@ -5678,27 +5853,27 @@ EndFunc
 
 				$PState = $PState + 1
 			ElseIf $PState = 4 Then ;- Save
-				FileDelete($SettingsPath) ;- We don't have to delete the files but it is cleaner and can prevent write errors even though _FileWriteFromArray overwrites by Default.
+				FileDelete($SettingsPath) ;- We don't have to delete the files, but it is cleaner and can prevent write errors, even though _FileWriteFromArray overwrites them anyway.
 				FileDelete($SystemSettingsPath)
 
 				_FileWriteFromArray($SettingsPath,$EngineSF)
 
 				If @Error <> 0 Then
-					Internal_ProcessHandleError("There was an error when writing to the configuration files! (Engine) Code: 004"&@CRLF&"Make sure the config files can be written to (Check read only status)")
+					Internal_ProcessHandleError("There was an error when writing to the configuration files! (Engine) Code: 004"&@CRLF&"Make sure the configuration files can be written to (Check read only status)")
 					ExitLoop
 				EndIf
 
 				_FileWriteFromArray($SystemSettingsPath,$SystemSF)
 
 				If @Error <> 0 Then
-					Internal_ProcessHandleError("There was an error when writing to the configuration files! (System) Code: 005"&@CRLF&"Make sure the config files can be written to (Check read only status)")
+					Internal_ProcessHandleError("There was an error when writing to the configuration files! (System) Code: 005"&@CRLF&"Make sure the configuration files can be written to (Check read only status)")
 					ExitLoop
 				EndIf
 
 				_FileWriteFromArray($GameSettingsPath,$GameSF)
 
 				If @Error <> 0 Then
-					Internal_ProcessHandleError("There was an error when writing to the configuration files! (Game) Code: 013"&@CRLF&"Make sure the config files can be written to (Check read only status)")
+					Internal_ProcessHandleError("There was an error when writing to the configuration files! (Game) Code: 013"&@CRLF&"Make sure the configuration files can be written to (Check read only status)")
 					ExitLoop
 				EndIf
 
@@ -5716,7 +5891,7 @@ EndFunc
 				Switch $CursorInfo[4]
 					Case $ProcessUIBG, $ProcessUILabelMainStatus, $ProcessUILabelCATC, $ProcessUILabelStatusBackup, $ProcessUILabelStatusRead, $ProcessUILabelStatusVerify, $ProcessUILabelStatusApply, $ProcessUILabelStatusSave, $ProcessUIProgress
 						If $PState = 5 and _IsPressed("01") Then
-							Internal_ProcessHandleError($sEmpty,False) ;- Exit but don't display an error.
+							Internal_ProcessHandleError($sEmpty,False)
 							ExitLoop
 						EndIf
 				EndSwitch
@@ -5730,26 +5905,29 @@ EndFunc
 		WEnd
 
 
-		RegDelete("HKCU\Software\SMITE Optimizer\","NotClosedProperly") ;- Success! No crash detection required anymore!
+		RegDelete("HKCU\Software\SMITE Optimizer\","NotClosedProperly") ;- Success! No crash detection is required anymore!
 
 	EndFunc
 
 	Func Internal_ExportSettings()
-		GUISetState(@SW_DISABLE,$MainGUI) ;- Disable Main Window
+		GUISetState(@SW_DISABLE,$MainGUI) ;- Disable MainGUI!
 
-		;- Init Variables
+		;- Initialize variables
 		Local $S_Title = $ProgramName & " HUD Configuration Exporter"
 
 
-		;- Create the GUI where we choose which version we want to create a quicklaunch for
+		;- Create the GUI where we choose which HUD version we want to export!
 		Local $GUI_ExportSettings = GUICreate($S_Title,320,80,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW)
 			GUISwitch($GUI_ExportSettings)
 
-			Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select which HUD to export:",7,5,313,35)
+			GUISetBkColor($cAccentColor,$GUI_ExportSettings)
 
-			Local $GUI_ButtonClassic = GUICtrlCreateButton("Classic",5,40,100,35)
-			Local $GUI_ButtonNew = GUICtrlCreateButton("New",110,40,100,35)
-			Local $GUI_ButtonCancel = GUICtrlCreateButton("Cancel",215,40,100,35)
+			Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select which HUD to export:",7,5,313,35)
+				GUICtrlSetFont(-1,12,Default,Default,$WindowsUIFont)
+
+			Local $GUI_ButtonClassic = GUICtrlCreateButtonSO($MainGUI,"Classic",5,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
+			Local $GUI_ButtonNew = GUICtrlCreateButtonSO($MainGUI,"New",110,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
+			Local $GUI_ButtonCancel = GUICtrlCreateButtonSO($MainGUI,"Cancel",215,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
 
 		GUISetState()
 
@@ -5763,7 +5941,7 @@ EndFunc
 			EndIf
 
 
-		Local $S_ExportData = "TransformSettingsV2=" ;- We make this optional (by setting it to that string) since it is apparently old data used for the previous iteration of the new HUD
+		Local $S_ExportData = $sEmpty
 		Local $S_ExportData_2 = $sEmpty
 		Local $S_ExportData_3 = $sEmpty
 
@@ -5772,30 +5950,30 @@ EndFunc
 			Local $CursorInfo = GUIGetCursorInfo($GUI_ExportSettings)
 
 			If WinGetTitle("[active]") = $S_Title and @Error = 0 Then
-				If _IsPressed("1B") Then ;- Allow the User to exit the UI by pressing the Escape key.
+				If _IsPressed("1B") Then ;- Allow the user to exit the GUI by pressing the escape key.
 					ExitLoop(1)
 				EndIf
 
 				If _IsPressed("01") Then
 					While _IsPressed("01")
-						Sleep(10) ;- Wait until they let go of mouse1! (This is cheap!)
+						Sleep(10) ;- Wait until they let go of mouse1!
 					WEnd
 
 					Switch $CursorInfo[4]
 						Case $GUI_ButtonClassic
 
-							;- Search for "TransformSettings=" and store it if found
+							;- Search for "TransformSettings=" and store it if found.
 
 							For $I = 0 To uBound($GameFile) - 1 Step 1
 								If StringLeft($GameFile[$I],18) == "TransformSettings=" Then
-									$S_ExportData = $GameFile[$I] ;- The data we want
+									$S_ExportData = $GameFile[$I] ;- The data we want!
 									ExitLoop
 								EndIf
 							Next
 
 
 							If $S_ExportData == $sEmpty Then
-								DisplayErrorMessage("Could not read EngineGame.ini Code: 19") ;- Too lazy to make another code for basically the same error
+								DisplayErrorMessage("Could not read EngineGame.ini Code: 19") ;- Too lazy to make another code for basically the same error.
 								ExitLoop(1)
 							EndIf
 
@@ -5804,33 +5982,33 @@ EndFunc
 
 						Case $GUI_ButtonNew
 
-							;- Search for "TransformSettingsV2=" and "NewHudTransformSettingsKBM=" and "NewHudTransformSettingsGMP=" and store it if found
-							;- I'm unsure why there's 3 different values for these. I'm assuming V2 Became obsolete when they re-introduced the new HUD.
+							;- Search for "TransformSettingsV2=" and "NewHudTransformSettingsKBM=" and "NewHudTransformSettingsGMP=" and store them if found.
+							;- I'm unsure why there are three different values for these. I'm assuming V2 became obsolete when they re-introduced the new HUD.
 
 							For $I = 0 To uBound($GameFile) - 1 Step 1
 								If StringLeft($GameFile[$I],20) == "TransformSettingsV2=" Then
-									$S_ExportData = $GameFile[$I] ;- The data we want
+									$S_ExportData = $GameFile[$I] ;- The data we want!
 									ExitLoop
 								EndIf
 							Next
 
 							For $I = 0 To uBound($GameFile) - 1 Step 1
 								If StringLeft($GameFile[$I],27) == "NewHudTransformSettingsKBM=" Then
-									$S_ExportData_2 = $GameFile[$I] ;- The data we want
+									$S_ExportData_2 = $GameFile[$I] ;- The data we want!
 									ExitLoop
 								EndIf
 							Next
 
 							For $I = 0 To uBound($GameFile) - 1 Step 1
 								If StringLeft($GameFile[$I],27) == "NewHudTransformSettingsGMP=" Then
-									$S_ExportData_3 = $GameFile[$I] ;- The data we want
+									$S_ExportData_3 = $GameFile[$I] ;- The data we want!
 									ExitLoop
 								EndIf
 							Next
 
 
 							If $S_ExportData == $sEmpty or $S_ExportData_2 == $sEmpty or $S_ExportData_3 == $sEmpty Then
-								DisplayErrorMessage("Could not read EngineGame.ini Code: 19") ;- Too lazy to make another code for basically the same error
+								DisplayErrorMessage("Could not read EngineGame.ini Code: 19") ;- Too lazy to make another code for basically the same error.
 								ExitLoop(1)
 							EndIf
 
@@ -5853,64 +6031,64 @@ EndFunc
 		WEnd
 
 
-		If $S_ExportData_2 <> $sEmpty Then ;- We exported the new HUD
+		If $S_ExportData_2 <> $sEmpty Then ;- We exported the new HUD!
 
-			Local $ExportPath = FileSelectFolder("Choose a directory to save the file",@DesktopDir)
+			Local $ExportPath = FileSelectFolder("Choose a directory to save the file.",@DesktopDir)
 
 			If not @Error and $ExportPath <> $sEmpty Then
 
 				FileDelete($ExportPath & "/Export_NewHUD.ini") ;- Flush the old file by deleting it
 				Sleep(100) ;- Windows!
 
-				If @Error Then ;- Since flushing the file is important, we want to abort if it failed!
-					DisplayErrorMessage("Something went wrong during saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
+				If @Error Then ;- Since flushing the file is important, we want to abort if it fails!
+					DisplayErrorMessage("Something went wrong while saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
 					Return
 				EndIf
 
 				FileWrite($ExportPath & "/Export_NewHUD.ini",$S_ExportData & @CRLF & $S_ExportData_2 & @CRLF & $S_ExportData_3)
 
-				If @Error Then ;- Since flushing the file is important, we want to abort if it failed!
-					DisplayErrorMessage("Something went wrong during saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
+				If @Error Then ;- Since flushing the file is important, we want to abort if it fails!
+					DisplayErrorMessage("Something went wrong while saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
 					Return
 				EndIf
 
-				MsgBox(0,"Success!","New HUD settings exported to:" & @CRLF & $ExportPath)
+				MsgBox(0,"Success!","New HUD settings were exported to:" & @CRLF & $ExportPath)
 
 			EndIf
 
-		ElseIf $S_ExportData <> $sEmpty Then ;- We exported the classic HUD
+		ElseIf $S_ExportData <> $sEmpty Then ;- We exported the classic HUD!
 
-			Local $ExportPath = FileSelectFolder("Choose a directory to save the file",@DesktopDir)
+			Local $ExportPath = FileSelectFolder("Choose a directory to save the file.",@DesktopDir)
 
 			If not @Error and $ExportPath <> $sEmpty Then
 
 				FileDelete($ExportPath & "/Export_ClassicHUD.ini") ;- Flush the old file by deleting it
 				Sleep(100) ;- Windows!
 
-				If @Error Then ;- Since flushing the file is important, we want to abort if it failed!
-					DisplayErrorMessage("Something went wrong during saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
+				If @Error Then ;- Since flushing the file is important, we want to abort if it fails!
+					DisplayErrorMessage("Something went wrong while saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
 					Return
 				EndIf
 
 				FileWrite($ExportPath & "/Export_ClassicHUD.ini",$S_ExportData)
 
-				If @Error Then ;- Since flushing the file is important, we want to abort if it failed!
-					DisplayErrorMessage("Something went wrong during saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
+				If @Error Then ;- Since flushing the file is important, we want to abort if it fails!
+					DisplayErrorMessage("Something went wrong while saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
 					Return
 				EndIf
 
-				MsgBox(0,"Success!","Classic HUD settings exported to:" & @CRLF & $ExportPath)
+				MsgBox(0,"Success!","Classic HUD settings were exported to:" & @CRLF & $ExportPath)
 
 			EndIf
 		EndIf
 
 
-		;- Delete popup and switch back to main UI
+		;- Delete popup and switch back to MainGUI
 
 		GUIDelete($GUI_ExportSettings)
 
 		GUISwitch($MainGUI)
-		GUISetState(@SW_ENABLE,$MainGUI) ;- Enable Main Window
+		GUISetState(@SW_ENABLE,$MainGUI) ;- Enable MainGUI
 
 		WinActivate($MainGUI)
 
@@ -5918,7 +6096,7 @@ EndFunc
 
 	Func Internal_ImportSettings()
 
-		If ProcessExists("smite.exe") Then ;- \/ \/ \/ \/ \/
+		If ProcessExists("smite.exe") Then
 			DisplayErrorMessage("Cannot import HUD settings while SMITE is running!")
 			Return
 		EndIf
@@ -5926,12 +6104,12 @@ EndFunc
 
 		Local $FileSelected = FileOpenDialog("Choose Export_ClassicHUD.ini or Export_NewHUD.ini",@DesktopDir,".INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST))
 
-		If Not @Error and $FileSelected <> $sEmpty Then ;- Do some checks on the selected file
+		If Not @Error and $FileSelected <> $sEmpty Then ;- Do some checking on the selected file.
 
 			Local $sFileName
 			Local $bFound = False
 
-			For $I = StringLen($FileSelected) To 1 Step -1 ;- Surely there is a better way to find and extract a sub string, right?
+			For $I = StringLen($FileSelected) To 1 Step -1 ;- Surely there is a better way to find and extract a substring, right?
 
 				Local $sStr = StringLower(StringMid($FileSelected,$I,$I))
 
@@ -5955,13 +6133,13 @@ EndFunc
 			Local $sDataV2KBM
 			Local $sDataV2GMP
 
-			If $bFound Then ;- Valid file selected, now check the content!
+			If $bFound Then ;- A valid file has been selected; now check the content!
 
-				Local $aExtracted[0] ;- Its a teeny bit weird to convert it to an array
+				Local $aExtracted[0]
 
 				_FileReadToArray($FileSelected,$aExtracted,$FRTA_NOCOUNT)
 				If not IsArray($aExtracted) Then
-					DisplayErrorMessage("Could not read supplied file! Code: 20")
+					DisplayErrorMessage("Could not read the supplied file! Code: 20")
 					Return
 				EndIf
 
@@ -5998,30 +6176,30 @@ EndFunc
 					$bContentFine = True
 
 				Else
-					DisplayErrorMessage("Could not read supplied file! Code: 20")
+					DisplayErrorMessage("Could not read the supplied file! Code: 20")
 					Return
 				EndIf
 
 			EndIf
 
 
-			;- The contents of the exported file appears to be fine, so we now import it into our EngineGame.ini
+			;- The contents of the exported file appear to be fine, so we now import them into our EngineGame.ini
 
 			If $bContentFine Then
 
-				Internal_CreateConfigBackup() ;- Just to be safe?
+				Internal_CreateConfigBackup() ;- Just to be safe.
 
 
 				Local $GameFile ;- Read EngineGame.ini from path
 
 					_FileReadToArray($GameSettingsPath,$GameFile,$FRTA_NOCOUNT)
 					If not IsArray($GameFile) Then
-						DisplayErrorMessage("Could not read EngineGame.ini Code: 20") ;- Re-use because I can
+						DisplayErrorMessage("Could not read EngineGame.ini Code: 20") ;- Code re-used.
 						Return
 					EndIf
 
 
-				;- Loop through the data until we find what we want to replace
+				;- Loop through the data until we find what we want to replace.
 
 				For $I = 0 To uBound($GameFile) - 1 Step 1
 
@@ -6047,10 +6225,6 @@ EndFunc
 
 				;- Apply Changes to the EngineGame.ini file
 
-;~ 				If $VerifyIntegrityOnApply Then ;- Not needed?
-;~ 					$GameFile = Interal_VerifyAndFixConfiguration($GameFile,$GameSettingsClearHive) ;- Make sure everything is in order!
-;~ 				EndIf
-
 				_FileWriteFromArray($GameSettingsPath,$GameFile)
 
 
@@ -6063,24 +6237,27 @@ EndFunc
 	EndFunc
 
 	Func Internal_CreateQuicklaunchBypass()
-		GUISetState(@SW_DISABLE,$MainGUI) ;- Disable Main Window
+		GUISetState(@SW_DISABLE,$MainGUI) ;- Disable MainGUI
 
-		;- Init Variables
+		;- Initialize variables
 		Local $S_Title = $ProgramName & " Quicklaunch Creator"
 		Local $RootDir = $sEmpty
 		Local $Type = $sEmpty
 		Local $Bits = $sEmpty
 
 
-		;- Create the GUI where we choose which version we want to create a quicklaunch for
+		;- Create the GUI where we choose which version we want to create a quick launch for.
 		Local $GUI_Quicklaunch = GUICreate($S_Title,320,80,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW)
 			GUISwitch($GUI_Quicklaunch)
 
-			Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select a version to create a bypass for:",7,5,313,35)
+			GUISetBkColor($cAccentColor,$GUI_Quicklaunch)
 
-			Local $GUI_ButtonSteam = GUICtrlCreateButton("Steam",5,40,100,35)
-			Local $GUI_ButtonEGS = GUICtrlCreateButton("Epic Game Store",110,40,100,35)
-			Local $GUI_ButtonCancel = GUICtrlCreateButton("Cancel",215,40,100,35)
+			Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select version to create a bypass for:",7,5,313,35)
+				GUICtrlSetFont(-1,12,Default,Default,$WindowsUIFont)
+
+			Local $GUI_ButtonSteam = GUICtrlCreateButtonSO($MainGUI,"Steam",5,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
+			Local $GUI_ButtonEGS = GUICtrlCreateButtonSO($MainGUI,"Epic Game Store",110,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
+			Local $GUI_ButtonCancel = GUICtrlCreateButtonSO($MainGUI,"Cancel",215,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
 
 		GUISetState()
 
@@ -6089,13 +6266,13 @@ EndFunc
 			Local $CursorInfo = GUIGetCursorInfo($GUI_Quicklaunch)
 
 			If WinGetTitle("[active]") = $S_Title and @Error = 0 Then
-				If _IsPressed("1B") Then ;- Allow the User to exit the UI by pressing the Escape key.
+				If _IsPressed("1B") Then ;- Allow the user to exit the GUI by pressing the escape key.
 					ExitLoop(1)
 				EndIf
 
 				If _IsPressed("01") Then
 					While _IsPressed("01")
-						Sleep(10) ;- Wait until they let go of mouse1! (This is cheap!)
+						Sleep(10) ;- Wait until they let go of mouse1!
 					WEnd
 
 					Switch $CursorInfo[4]
@@ -6109,8 +6286,6 @@ EndFunc
 							EndIf
 
 
-							;- Steam version is installed and was found! WOW! <3 <3
-
 							$RootDir = $Path
 							$Type = "Steam"
 
@@ -6120,9 +6295,9 @@ EndFunc
 
 							Local $EpicProgramData = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
 
-							;- We need to loop through all files in the Manifest folder since filenames differ from machine to machine.
+							;- We need to loop through all files in the manifest folder since filenames differ from machine to machine.
 							Local $Files = _FileListToArray($EpicProgramData,"*.item",1,True)
-							_ArrayDelete($Files,0)
+								_ArrayDelete($Files,0)
 
 							For $I = 0 To uBound($Files) - 1 Step 1
 								Local $Read = FileReadToArray($Files[$I])
@@ -6143,15 +6318,13 @@ EndFunc
 							Next
 
 
-							;- Check if the SMITE Config Folder exists.
+							;- Check if the SMITE config folder exists.
 							If Not FileExists($EpicProgramData) Then
 								MsgBox($MB_OK,"Error!","Epic Game Store Installation not found!")
 
 								ExitLoop(1)
 							EndIf
 
-
-							;- EGS version is installed and was found! WOW! <3 <3
 
 							$RootDir = $EpicProgramData
 							$Type = "EGS"
@@ -6174,18 +6347,18 @@ EndFunc
 		WEnd
 
 
-		If $RootDir <> $sEmpty and $Type <> $sEmpty Then ;- We got a valid* installation! * = Valid as in, it appears to exist.
+		If $RootDir <> $sEmpty and $Type <> $sEmpty Then ;- We got an existing installation!
 
-			;- Ask if they want 32 Bit or 64 Bit
+			;- Ask if they want 32-bit or 64-bit.
 
 			Local $GUI_Quicklaunch_Bits = GUICreate($S_Title,320,80,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW)
 				GUISwitch($GUI_Quicklaunch_Bits)
 
 				Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select an architecture:" & @CRLF & "('Automatic' if you don't know what you're doing!)",7,5,313,35)
 
-				Local $GUI_Button_32 = GUICtrlCreateButton("32 Bit",5,40,100,35)
-				Local $GUI_Button_64 = GUICtrlCreateButton("64 Bit",110,40,100,35)
-				Local $GUI_ButtonAuto = GUICtrlCreateButton("Automatic",215,40,100,35)
+				Local $GUI_Button_32 = GUICtrlCreateButtonSO($MainGUI,"32-Bit",5,40,100,35)
+				Local $GUI_Button_64 = GUICtrlCreateButtonSO($MainGUI,"64-Bit",110,40,100,35)
+				Local $GUI_ButtonAuto = GUICtrlCreateButtonSO($MainGUI,"Automatic",215,40,100,35)
 
 			GUISetState()
 
@@ -6194,13 +6367,13 @@ EndFunc
 				Local $CursorInfo = GUIGetCursorInfo($GUI_Quicklaunch_Bits)
 
 				If WinGetTitle("[active]") = $S_Title and @Error = 0 Then
-					If _IsPressed("1B") Then ;- Allow the User to exit the UI by pressing the Escape key.
+					If _IsPressed("1B") Then ;- Allow the user to exit the GUI by pressing the escape key.
 						ExitLoop(1)
 					EndIf
 
 					If _IsPressed("01") Then
 						While _IsPressed("01")
-							Sleep(10) ;- Wait until they let go of mouse1! (This is cheap!)
+							Sleep(10) ;- Wait until they let go of mouse1!
 						WEnd
 
 						Switch $CursorInfo[4]
@@ -6208,19 +6381,19 @@ EndFunc
 
 								$Bits = "32"
 
-								ExitLoop(1) ;- Exit here and proceed
+								ExitLoop(1) ;- Exit here and proceed.
 
 							Case $GUI_Button_64
 
 								$Bits = "64"
 
-								ExitLoop(1) ;- Exit here and proceed
+								ExitLoop(1) ;- Exit here and proceed.
 
 							Case $GUI_ButtonAuto
 
 								$Bits = StringRight(@CPUArch,2)
 
-								ExitLoop(1) ;- Exit here and proceed
+								ExitLoop(1) ;- Exit here and proceed.
 
 						EndSwitch
 					EndIf
@@ -6237,18 +6410,18 @@ EndFunc
 		EndIf
 
 
-		If $Bits <> $sEmpty and $Type <> $sEmpty Then ;- We got a valid* installation and they chosen an architecture, create shortcut now!
+		If $Bits <> $sEmpty and $Type <> $sEmpty Then  ;- We have an existing installation, and they have chosen an architecture. Create a shortcut now!
 
 			If FileExists(@DesktopDir & "\SMITE - Quicklaunch (Steam).lnk") Then ;- Cleanup first!
 				FileDelete(@DesktopDir & "\SMITE - Quicklaunch (Steam).lnk")
 			EndIf
 
-			If FileExists(@DesktopDir & "\SMITE - Quicklaunch (EGS).lnk") Then ;- This one too
+			If FileExists(@DesktopDir & "\SMITE - Quicklaunch (EGS).lnk") Then ;- This one too.
 				FileDelete(@DesktopDir & "\SMITE - Quicklaunch (EGS).lnk")
 			EndIf
 
 
-			Sleep(100) ;- Windows is very slow
+			Sleep(100) ;- Windows!
 
 
 			If $Type = "Steam" Then
@@ -6260,12 +6433,13 @@ EndFunc
 				EndIf
 
 
-				Sleep(100) ;- Windows is slowwwww
+				Sleep(100) ;- Windows!
 
 
 				;- Verification
+
 				If FileExists(@DesktopDir & "\SMITE - Quicklaunch (Steam).lnk") Then
-					MsgBox($MB_OK,"Success!","Created Quicklaunch successfully on your desktop!" & @CRLF & "You can use this shortcut to launch SMITE just like the legacy launcher!")
+					MsgBox($MB_OK,"Success!","Successfully created a quick launch shortcut on your desktop!" & @CRLF & "You can use this shortcut to launch SMITE just like the legacy launcher!")
 				Else
 					MsgBox($MB_OK,"Error!","Quicklaunch could not be created! Code: 017")
 				EndIf
@@ -6279,12 +6453,13 @@ EndFunc
 				EndIf
 
 
-				Sleep(100) ;- Windows is slowwwww
+				Sleep(100) ;- Windows!
 
 
 				;- Verification
+
 				If FileExists(@DesktopDir & "\SMITE - Quicklaunch (EGS).lnk") Then
-					MsgBox($MB_OK,"Success!","Created Quicklaunch successfully on your desktop!" & @CRLF & "You can use this shortcut to launch SMITE just like the legacy launcher!")
+					MsgBox($MB_OK,"Success!","Successfully created a quick launch shortcut on your desktop!" & @CRLF & "You can use this shortcut to launch SMITE just like the legacy launcher!")
 				Else
 					MsgBox($MB_OK,"Error!","Quicklaunch could not be created! Code: 018")
 				EndIf
@@ -6294,7 +6469,7 @@ EndFunc
 		EndIf
 
 
-		;- Delete popup and switch back to main UI
+		;- Delete popup and switch back to MainGUI
 
 		GUIDelete($GUI_Quicklaunch)
 
@@ -6303,57 +6478,57 @@ EndFunc
 
 
 		GUISwitch($MainGUI)
-		GUISetState(@SW_ENABLE,$MainGUI) ;- Enable Main Window
+		GUISetState(@SW_ENABLE,$MainGUI) ;- Enable MainGUI
 
 		WinActivate($MainGUI)
 
 	EndFunc
 
 	Func Internal_InstallLegacyLauncher()
-		If IsAdmin() == 0 Then ;- AutoIt can't elevate itself on request, possible workarounds are too crappy. Just let the user do it.
-			MsgBox($MB_OK,"Information","SMITE Optimizer needs Administrator privileges to install the Legacy Launcher.")
+		If @OSVersion <> "WIN_XP" And IsAdmin() == 0 Then ;- AutoIt can't elevate itself on request, possible workarounds are too crappy. Just let the user do it.
+			MsgBox($MB_OK,"Information","SMITE Optimizer needs administrator privileges to install the Legacy Launcher.")
 
 			Return
 		EndIf
 
 
-		Local $obj_Info = MsgBox(0,"Information","Hi-Rez Studios ended their Legacy Launcher support with 9.4 'The Jade Emperor' update." & @CRLF & @CRLF & "You will no longer receive updates through the launcher. You can still perform updates manually by copying Steam or Epic Game Store game files into the legacy installation game folder" & @CRLF & @CRLF & "The launcher will eventually stop working completely, it is recommended to use the Quicklaunch Bypass instead." & @CRLF & "> Requires SMITE to be installed through Steam or Epic Game Store.")
+		Local $obj_Info = MsgBox(0,"Information","Hi-Rez Studios ended their Legacy Launcher support with the 9.4 'The Jade Emperor' update." & @CRLF & @CRLF & "You will no longer receive updates through the launcher. You can still perform updates manually by copying Steam or Epic Game Store game files into the legacy installation game folder." & @CRLF & @CRLF & "The launcher will eventually stop working completely, it is recommended to use the Quick Launch Bypass instead." & @CRLF & "> Requires SMITE to be installed through Steam or the Epic Game Store.")
 
 
-		Local $bContinue = MsgBox($MB_YESNO,"Information","This feature will not work if you have previously installed the Legacy Launcher on your System."&@CRLF&@CRLF&"Installation requires user input."&@CRLF&@CRLF&"Would you like to continue?")
+		Local $bContinue = MsgBox($MB_YESNO,"Information","This feature will not work if you have previously installed the Legacy Launcher on your system."&@CRLF&@CRLF&"Installation requires user input."&@CRLF&@CRLF&"Would you like to continue?")
 
 		If $bContinue = $IDYES Then
 
-			;- Re-create the splash screen since we'll use that to display the download status
+			;- Re-create the splash screen, since we'll use that to display the download status.
 
 			GUISwitch($MainGUI)
 				GUISetState(@SW_MINIMIZE)
 				GUISetState(@SW_DISABLE)
 
-			Global $SplashScreenGUI = GUICreate($ProgramName,600,125,-1,-1,$WS_POPUP)
+			Global $SplashScreenGUI = GUICreate($ProgramName,600,125,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW) ;- Tool window, so it doesn't create an extra block in the taskbar.
 
-				Global $SplashScreenGUIAnimation
+				Local $SplashScreenGUIAnimation ;- We only use the loop here; the user has to wait long enough already.
 
 				If @Compiled Then
-					$SplashScreenGUIAnimation = _GUICtrlCreateGIF(@AutoItExe,"RES;SO_LogoGIF",0,0,600,100)
+					$SplashScreenGUIAnimation = GUICtrlCreateGIF( _Resource_GetAsImage("SO_LoopGIF") ,0,0,600,100,90,10,True)[0] ;- Frame-rate override
 				Else
-					$SplashScreenGUIAnimation = _GUICtrlCreateGIF($MainResourcePath & "SO_Logo.gif",$sEmpty,0,0,600,100)
+					$SplashScreenGUIAnimation = GUICtrlCreateGIF($MainResourcePath & "Splash_Loop.gif",0,0,600,100,90,10)[0] ;- Frame-rate override
 				EndIf
 
+
 				Global $SplashScreenGUIProgress = GUiCtrlCreateProgress(0,100,600,25)
-					GUICtrlSetColor(-1, 0xFF0000) ;- Red progress bar!
-					DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",$sEmpty,"wstr",$sEmpty) ;- Remove Theme.
+					GUICtrlSetColor(-1,$cAccentColor) ;- Brand-colored progress bar!
+					DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",$sEmpty,"wstr",$sEmpty)
 
-				Global $SplashScreenGUILabelStatusBG = GUICtrlCreateLabelTransparentBG("Loading..",1,106,600,20,$SS_CENTER)
-				Global $SplashScreenGUILabelStatus = GUICtrlCreateLabelTransparentBG("Loading..",0,105,600,20,$SS_CENTER)
-					GUICtrlSetColor(-1,0xFFC3C3)
+				Global $SplashScreenGUILabelStatusBG = GUICtrlCreateLabelTransparentBG("Initializing..",1,106,600,20,$SS_CENTER)
+					GUICtrlSetColor(-1,$cTextShadowColor)
 
-			GUISetState(@SW_SHOWNOACTIVATE,$SplashScreenGUI) ;- Start showing the splash screen but don't take focus!
+				Global $SplashScreenGUILabelStatus = GUICtrlCreateLabelTransparentBG("Initializing..",0,105,600,20,$SS_CENTER)
 
-			_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE)) ;- Bring window to front but don't take focus!!
-			_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_NOTOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE)) ;- Ugly hack.
+			GUISetState(@SW_SHOWNOACTIVATE,$SplashScreenGUI) ;- Start showing the splash screen, but don't take focus!
 
-
+			_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE)) ;- Bring the window to the front, but don't take focus!
+			_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_NOTOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
 
 			;- Download the required files
 
@@ -6386,12 +6561,12 @@ EndFunc
 
 				INetClose($NewFile) ;- Close the handle
 
-				If not FileExists($aInfo[$I][1]) Then ;- When the file failed, display an error code
+				If not FileExists($aInfo[$I][1]) Then ;- When the file fails, display an error code.
 					MsgBox($MB_OK,"Error","There was an unexpected error during the download process. Code: "&$aInfo[$I][2]&@CRLF&"GitHub may not be available right now.")
-					WinActivate($SplashScreenGUI) ;- Get focus again after closing messagebox.
+					WinActivate($SplashScreenGUI) ;- Get focus again after closing message box.
 
 					ExitLoop
-				ElseIf $I = 2 Then ;- Everything downloaded, now install!
+				ElseIf $I = 2 Then ;- Everything is downloaded; install it now.
 					SplashScreenWriteStatus(100,"Installing.. InstallHirezService.exe (Requires User Input)")
 
 					;- Run everything
@@ -6402,32 +6577,34 @@ EndFunc
 					RunWait(@TempDir & "/HiReq.exe")
 
 
-					;- Create a shortcut (Since otherwise we can't launch the game?)
+					;- Create a shortcut (since otherwise we can't launch the game.)
 
-					;- Retrieve the install location of the launcher
+					;- Retrieve the installation location of the launcher.
 					Local $sRootPath = RegRead("HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{3C87E0FF-BC0A-4F5E-951B-68DC3F8DF1FC}","InstallLocation")
 
 					If FileExists($sRootPath) Then
 
-						;- Create the shortcut and give it an Icon that is inside of the SMITE Optimizer.exe
+						;- Create the shortcut and give it an icon that is inside of the SMITE Optimizer.exe
 						FileCreateShortcut($sRootPath & "/HiRezLauncherUI.exe",@DesktopDir & "/SMITE - Legacy",Default,"game=300 product=17",Default,@ScriptFullPath,Default,2)
 
-						MsgBox($MB_OK,"Information","A shortcut has been created on your Desktop!"&@CRLF&@CRLF&"When using the Legacy version of SMITE, you might have to reset the configuration paths to make the SMITE Optimizer aware of the new paths. You can do so in the Debug tab."&@CRLF&@CRLF&"Enjoy the Legacy launcher! <3")
+						MsgBox($MB_OK,"Information","A shortcut has been created on your desktop!"&@CRLF&@CRLF&"When using the legacy version of SMITE, you might have to reset the configuration paths to make the SMITE Optimizer aware of the new paths. You can do so in the debug tab."&@CRLF&@CRLF&"Enjoy the legacy launcher! <3")
 					Else
-						MsgBox(0,"Error","An Error occured when trying to create a shortcut for SMITE."&@CRLF&"You can manually creating a shortcut by following these steps:"&@CRLF&"Locate the HiRezLauncherUI.exe and create a shortcut to it on the Desktop, then add these parameters at the end of the destination path: game=300 product=17")
+						MsgBox(0,"Error","An error occurred when trying to create a shortcut for SMITE."&@CRLF&"You can manually create a shortcut by following these steps:"&@CRLF&"Locate HiRezLauncherUI.exe and create a shortcut to it on the desktop, then add these parameters at the end of the destination path: game=300 product=17")
 					EndIf
 				EndIf
 			Next
 
-			Sleep(1000)
+			Sleep(1000) ;- Windows!
 
 			;- Cleanup
 			FileDelete(@TempDir & "/HiService.exe")
 			FileDelete(@TempDir & "/HiFix.exe")
 			FileDelete(@TempDir & "/HiReq.exe")
 
-			_GIF_ExitAnimation($SplashScreenGUIAnimation) ;- Close all handles created by the Animation thingy before deleting the GUI!
-			GUIDelete($SplashScreenGUI) ;- We are done with everything so yeet the Splash-Screen.
+
+			GUICtrlDeleteGIF($SplashScreenGUIAnimation)
+
+			GUIDelete($SplashScreenGUI) ;- We are done with everything, so destroy the Splash-Screen.
 			$SplashScreenGUI = NULL
 
 			GUISwitch($MainGUI)
@@ -6441,11 +6618,11 @@ EndFunc
 
 #Region ;- Help popup functions.
 
-	;- Since the window is resize-able, we need to calculate X axis offsets for the different objects, the 2D area for the mouse, the hover background and the image it displays.
+	;- Since the window is resizable, we need to calculate X axis offsets for the different objects, the 2D area for the mouse, the hover background, and the image it displays.
 	;- We calculate the XOffset by using the X position of the first control as a base in that category.
 
 	Func InRange2D($MousePos,$X_Start,$Y_Start,$X_End,$Y_End)
-		If $DisplayHoverBG <> 1 Then ;- Optimizations. Merging if statements in AutoIt is kinda bad. When one state is false, it still checks the rest even though It's pointless.
+		If $DisplayHoverBG <> 1 Then
 			Local $XOffset
 
 			If $ProgramHomeState = "Simple" Then ;- XOffset Calculation.
@@ -6466,7 +6643,7 @@ EndFunc
 		Return False
 	EndFunc
 
-	;- In this function we calculate the XOffsets individually since both statements can be false at the same time, meaning it would be wasted CPU time!
+	;- In this function, we calculate the XOffsets individually since both statements can be false at the same time, meaning it would be wasted CPU time!
 
 	Func DisplayHoverImage($X,$Y,$X_Size,$Y_Size,$Image,$X_Pic,$Y_Pic,$X_Size_Pic,$Y_Size_Pic,$IsAnimated = False)
 		If ($DisplayHoverBG = 1 and not $HoverBGDrawn) or $HoverID <> $X+$Y Then ;- This only runs when there is a change.
@@ -6499,23 +6676,40 @@ EndFunc
 			WinMove($HoverInfoGUI,$sEmpty,$WinPos[0] + $X_Pic + $XOffset,$WinPos[1] + $Y_Pic,$X_Size_Pic,$Y_Size_Pic)
 
 			If $IsAnimated Then
-				GUICtrlSetPos($HoverInfoGUIImageAnimation,0,0,$X_Size_Pic,$Y_Size_Pic)
 
-				If @Compiled Then
-					Local $StrippedImageStr = StringReplace($Image,@ScriptDir,$sEmpty)
+				If $HoverInfoGUIImageAnimation <> NULL Then
+					GUICtrlDeleteGIF($HoverInfoGUIImageAnimation) ;- Destroy the object.
+					$HoverInfoGUIImageAnimation = NULL
+				EndIf
+
+
+				GUISwitch($HoverInfoGUI) ;- Required since we created a new control.
+
+
+				Local $StrippedImageStr = StringReplace($Image,@ScriptDir,$sEmpty)
 					$StrippedImageStr = StringReplace($StrippedImageStr,"\Resource\HelpText/",$sEmpty)
 					$StrippedImageStr = StringReplace($StrippedImageStr,".gif",$sEmpty)
 
-					_GUICtrlSetGIF($HoverInfoGUIImageAnimation,@AutoItExe,"RES;"&$StrippedImageStr&"GIF")
-				Else
-					_GUICtrlSetGIF($HoverInfoGUIImageAnimation,$Image)
+
+				Local $iFrameCount = 32
+
+				If $StrippedImageStr = "DetailMode" Then
+					$iFrameCount = 20
 				EndIf
 
-				GUICtrlSetState($HoverInfoGUIImageAnimation,$GUI_SHOW)
+
+				If @Compiled Then
+					$HoverInfoGUIImageAnimation = GUICtrlCreateGIF( _Resource_GetAsImage($StrippedImageStr & "GIF") ,0,0,$X_Size_Pic,$Y_Size_Pic,$iFrameCount,100,True)[0]
+				Else
+					$HoverInfoGUIImageAnimation = GUICtrlCreateGIF($Image,0,0,$X_Size_Pic,$Y_Size_Pic,$iFrameCount,100)[0]
+				EndIf
+
+				GUISwitch($MainGUI) ;- Switch back!
+
 
 				$HelpIsAnimating = True
 			Else
-				WinSetTrans($HoverInfoGUI,$sEmpty,0) ;- Ugly hack to hide Image swaps.
+				WinSetTrans($HoverInfoGUI,$sEmpty,0)
 				GUICtrlSetPos($MainGUIHomeHelpImage,0,0,$X_Size_Pic,$Y_Size_Pic)
 
 				Local $StrippedImageStr = StringReplace($Image,@ScriptDir,$sEmpty)
@@ -6524,12 +6718,13 @@ EndFunc
 
 				LoadImageResource($MainGUIHomeHelpImage,$Image,$StrippedImageStr)
 
-				WinSetTrans($HoverInfoGUI,$sEmpty,$HoverTipAlpha) ;- Ugly hack to hide Image swaps.
+				WinSetTrans($HoverInfoGUI,$sEmpty,$HoverTipAlpha)
 
 				If $HelpIsAnimating Then
-					GUICtrlSetState($HoverInfoGUIImageAnimation,$GUI_HIDE)
-
-					_GIF_PauseAnimation($HoverInfoGUIImageAnimation) ;- Pause the animation to save CPU.
+					If $HoverInfoGUIImageAnimation <> NULL Then
+						GUICtrlDeleteGIF($HoverInfoGUIImageAnimation) ;- Destroy the object.
+						$HoverInfoGUIImageAnimation = NULL
+					EndIf
 
 					$HelpIsAnimating = False
 				EndIf
@@ -6540,7 +6735,7 @@ EndFunc
 		EndIf
 	EndFunc
 
-	;- This event will force the help tips to hide whenever a ComboBox expands.
+	;- This event will force the help tips to hide whenever a combo box expands.
 
 	GUIRegisterMsg($WM_COMMAND,"Internal_HideHelpPopupOnComboChange")
 	Func Internal_HideHelpPopupOnComboChange($hWnd,$msg,$wParam)
@@ -6581,6 +6776,11 @@ Func _FixMenuSwitch() ;- This function is used internally to handle menu hover l
 
 		LoadImageResource($MainGUIButtonMinimize,$MainResourcePath & "MinimizeNoActivate.jpg","MinimizeNoActivate")
 		$MainGUIButtonMinimizeBool = False
+	ElseIf $MainGUIButtonDiscordBool Then
+		UndoMenuHoverState()
+
+		LoadImageResource($MainGUIButtonDiscord,$MainResourcePath & "DiscordIconInActive.jpg","DiscordIconInActive")
+		$MainGUIButtonDiscordBool = False
 	ElseIf $HomeIconHoverHideBool Then
 		UndoMenuHoverState()
 
@@ -6635,35 +6835,28 @@ Func _FixMenuSwitch() ;- This function is used internally to handle menu hover l
 		LoadImageResource($MainGUIChangelogButtonViewOnlineBG,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
 		LoadImageResource($MainGUIChangelogButtonViewOnline,$MainResourcePath & "ChangelogIconInActive.jpg","ChangelogIconInActive")
 		$ViewOnlineChangesBtnHoverBool = False
-	ElseIf $AnimatedLogoBool Then
-		GUICtrlSetState($MainGUICopyrightPicLogo,$GUI_SHOW)
-		GUICtrlSetState($MainGUICopyrightAnimatedLogo,$GUI_HIDE)
-
-		_GIF_PauseAnimation($MainGUICopyrightAnimatedLogo)
-
-		$AnimatedLogoBool = False
 	ElseIf $WebsiteOpenHoverBool Then
-		GUICtrlSetColor($MainGUICopyrightLabelOpen,0x4F89EA)
-		GUICtrlSetFont($MainGUICopyrightLabelOpen,11,500,Default,$MainFontName)
+		GUICtrlSetColor($MainGUICopyrightLabelWebsite,$cURLColor)
+		GUICtrlSetFont($MainGUICopyrightLabelWebsite,11,500,Default,$MenuFontName)
 		$WebsiteOpenHoverBool = False
 	ElseIf $LicenseLabelHoverBool Then
-		GUICtrlSetColor($MainGUICopyrightLabelLicenseLink,0x4F89EA)
+		GUICtrlSetColor($MainGUICopyrightLabelLicenseLink,$cURLColor)
 		GUICtrlSetFont($MainGUICopyrightLabelLicenseLink,15,500,Default,$MainFontName)
 		$LicenseLabelHoverBool = False
 	ElseIf $SourceLabelHoverBool Then
-		GUICtrlSetColor($MainGUICopyrightLabelSourceLink,0x4F89EA)
+		GUICtrlSetColor($MainGUICopyrightLabelSourceLink,$cURLColor)
 		GUICtrlSetFont($MainGUICopyrightLabelSourceLink,15,500,Default,$MainFontName)
 		$SourceLabelHoverBool = False
 	ElseIf $AutoItLicenseLabelHoverBool Then
-		GUICtrlSetColor($MainGUICopyrightLabelAutoitLicenseLink,0x4F89EA)
+		GUICtrlSetColor($MainGUICopyrightLabelAutoitLicenseLink,$cURLColor)
 		GUICtrlSetFont($MainGUICopyrightLabelAutoitLicenseLink,15,500,Default,$MainFontName)
 		$AutoItLicenseLabelHoverBool = False
 	ElseIf $MainGUIDebugLabelHoverBool Then
-		GUICtrlSetColor($MainGUIDebugLabelReportABug,0x4F89EA)
+		GUICtrlSetColor($MainGUIDebugLabelReportABug,$cURLColor)
 		GUICtrlSetFont($MainGUIDebugLabelReportABug,15,500,Default,$MainFontName)
 		$MainGUIDebugLabelHoverBool = False
 	ElseIf $MainGUIDebugDumpInfoHoverBool Then
-		GUICtrlSetColor($MainGUIDebugLabelCreateDebugInfo,0x4F89EA)
+		GUICtrlSetColor($MainGUIDebugLabelCreateDebugInfo,$cURLColor)
 		GUICtrlSetFont($MainGUIDebugLabelCreateDebugInfo,15,500,Default,$MainFontName)
 		$MainGUIDebugDumpInfoHoverBool = False
 	ElseIf $SteamBtnHoverHideBool Then
@@ -6683,7 +6876,22 @@ While True ;- Main program routine.
 
 	If WinGetTitle("[active]") = $ProgramName and @Error = 0 Then
 
-		If $UpdateAvailable Then ;- If there is an update available, we want to make sure the version text is extra annoying to make sure the User sees it!
+		If Not $bTriedToShowDonateBanner Then
+
+			Local $regRead = RegRead("HKCU\Software\SMITE Optimizer\","ConfigProgramState") ;- Has to be a split statement.
+
+			If Not @Error Then
+
+				$bTriedToShowDonateBanner = True
+
+				If Random(1,4,1) = 3 Then ;- 1:4 chance. But it is pseudo-random number generation, so who knows?
+					MenuHoverState("DBan",138,300,0)
+				EndIf
+			EndIf
+		EndIf
+
+
+		If $UpdateAvailable Then ;- When there is an update available, we want to make sure the version text is extra annoying to make sure the user sees it!
 			If TimerDiff($UpdateTimer) > 750 Then
 				$UpdateTimer = TimerInit()
 
@@ -6691,15 +6899,31 @@ While True ;- Main program routine.
 					GUICtrlSetColor($MainGUILabelVersion,0xFF0000)
 					$UpdateColorState = False
 				Else
-					GUICtrlSetColor($MainGUILabelVersion,0xFFFFFF)
+					GUICtrlSetColor($MainGUILabelVersion,$cTextColor)
 					$UpdateColorState = True
 				EndIf
 			EndIf
 		Endif
 
+
+		If $bShouldFlashDiscordIcon Then ;- When the user has never clicked on the Discord icon, we should make it flash!
+			If TimerDiff($DiscordFlashTimer) > 750 Then
+				$DiscordFlashTimer = TimerInit()
+
+				If $bDiscordIconState Then
+					LoadImageResource($MainGUIButtonDiscord,$MainResourcePath & "DiscordIconActive.jpg","DiscordIconActive")
+					$bDiscordIconState = False
+				Else
+					LoadImageResource($MainGUIButtonDiscord,$MainResourcePath & "DiscordIconInActive.jpg","DiscordIconInActive")
+					$bDiscordIconState = True
+				EndIf
+			EndIf
+		Endif
+
+
 		If $ProgramHomeState = "Simple" Then ;- Simple mode logic
 
-			;- Check if Screenscale changed
+			;- Check if screenscale changed
 			Local $ReadScreenResSimple = GUICtrlRead($MainGUIHomeSimpleSliderScreenResScale)&"%"
 
 			If $ReadScreenResSimple <> $LastScreenResScaleSimple Then
@@ -6708,7 +6932,7 @@ While True ;- Main program routine.
 			EndIf
 		ElseIf $ProgramHomeState = "Advanced" Then ;- Advanced mode logic
 
-			;- Check if Screenscale changed
+			;- Check if screenscale changed
 			Local $ReadScreenResAdvanced = GUICtrlRead($MainGUIHomeAdvancedSliderScreenResScale)&"%"
 
 			If $ReadScreenResAdvanced <> $LastScreenResScaleAdvanced Then
@@ -6727,7 +6951,7 @@ While True ;- Main program routine.
 				$DisplayHoverBG = 0
 
 				If not $SupressHoverImage Then
-					If ($MousePos[0] <> $LastMousePosX or $MousePos[1] <> $LastMousePosY) or $JustTabbedBackIn > 1 Then ;- Reset timer when mouse was moved.
+					If ($MousePos[0] <> $LastMousePosX or $MousePos[1] <> $LastMousePosY) or $JustTabbedBackIn > 1 Then ;- Reset timer when the mouse is moved.
 						If $JustTabbedBackIn > 1 Then $JustTabbedBackIn = $JustTabbedBackIn -1 ;- This is used to get it to fade out after tabbing back in and not hovering over anything.
 
 						$HoverTimer = TimerInit()
@@ -6902,11 +7126,11 @@ While True ;- Main program routine.
 
 				If $DisplayHoverImage = -1 and $HoverTipAlpha < 255 Then ;- Come into view.
 					$HoverTipAlpha = $HoverTipAlpha + 8.5
-				ElseIf $DisplayHoverImage = -2 and $HoverTipAlpha > 0 Then ;- Get outta here.
+				ElseIf $DisplayHoverImage = -2 and $HoverTipAlpha > 0 Then ;- Move out of view.
 					$HoverTipAlpha = $HoverTipAlpha - 8.5
 				EndIf
 
-				If $HoverTipAlpha >= 0 and $HoverTipAlpha <= 255 Then ;- Alpha fade.
+				If $HoverTipAlpha >= 0 and $HoverTipAlpha <= 255 Then ;- Transparent fade.
 					WinSetTrans($HoverInfoGUI,$sEmpty,$HoverTipAlpha)
 				EndIf
 			EndIf
@@ -6942,6 +7166,13 @@ While True ;- Main program routine.
 
 						LoadImageResource($MainGUIButtonMinimize,$MainResourcePath & "MinimizeActivate.jpg","MinimizeActivate")
 						$MainGUIButtonMinimizeBool = True
+					EndIf
+				Case $MainGUIButtonDiscord
+					If $MainGUIButtonDiscordBool = False Then
+						_FixMenuSwitch()
+
+						LoadImageResource($MainGUIButtonDiscord,$MainResourcePath & "DiscordIconActive.jpg","DiscordIconActive")
+						$MainGUIButtonDiscordBool = True
 					EndIf
 				Case $HomeIconHover, $HomeIcon
 					If $HomeIconHoverHideBool = False Then
@@ -7036,48 +7267,39 @@ While True ;- Main program routine.
 						LoadImageResource($MainGUIChangelogButtonViewOnline,$MainResourcePath & "ChangelogIconActive.jpg","ChangelogIconActive")
 						$ViewOnlineChangesBtnHoverBool = True
 					EndIf
-				Case $MainGUICopyrightPicLogo, $MainGUICopyrightAnimatedLogo
-					If $AnimatedLogoBool = False Then
-						GUICtrlSetState($MainGUICopyrightPicLogo,$GUI_HIDE)
-						GUICtrlSetState($MainGUICopyrightAnimatedLogo,$GUI_SHOW)
-
-						_GIF_ResumeAnimation($MainGUICopyrightAnimatedLogo)
-
-						$AnimatedLogoBool = True
-					EndIf
-				Case $MainGUICopyrightLabelOpen
+				Case $MainGUICopyrightLabelWebsite
 					If $WebsiteOpenHoverBool = False Then
-						GUICtrlSetColor($MainGUICopyrightLabelOpen,0x0645AD)
-						GUICtrlSetFont($MainGUICopyrightLabelOpen,11,500,4,$MainFontName)
+						GUICtrlSetColor($MainGUICopyrightLabelWebsite,$cURLHoverColor)
+						GUICtrlSetFont($MainGUICopyrightLabelWebsite,11,500,4,$MenuFontName)
 						$WebsiteOpenHoverBool = True
 					EndIf
 				Case $MainGUICopyrightLabelLicenseLink
 					If $LicenseLabelHoverBool = False Then
-						GUICtrlSetColor($MainGUICopyrightLabelLicenseLink,0x0645AD)
+						GUICtrlSetColor($MainGUICopyrightLabelLicenseLink,$cURLHoverColor)
 						GUICtrlSetFont($MainGUICopyrightLabelLicenseLink,15,500,4,$MainFontName)
 						$LicenseLabelHoverBool = True
 					EndIf
 				Case $MainGUICopyrightLabelSourceLink
 					If $SourceLabelHoverBool = False Then
-						GUICtrlSetColor($MainGUICopyrightLabelSourceLink,0x0645AD)
+						GUICtrlSetColor($MainGUICopyrightLabelSourceLink,$cURLHoverColor)
 						GUICtrlSetFont($MainGUICopyrightLabelSourceLink,15,500,4,$MainFontName)
 						$SourceLabelHoverBool = True
 					EndIf
 				Case $MainGUICopyrightLabelAutoitLicenseLink
 					If $AutoItLicenseLabelHoverBool = False Then
-						GUICtrlSetColor($MainGUICopyrightLabelAutoitLicenseLink,0x0645AD)
+						GUICtrlSetColor($MainGUICopyrightLabelAutoitLicenseLink,$cURLHoverColor)
 						GUICtrlSetFont($MainGUICopyrightLabelAutoitLicenseLink,15,500,4,$MainFontName)
 						$AutoItLicenseLabelHoverBool = True
 					EndIf
 				Case $MainGUIDebugLabelReportABug
 					If $MainGUIDebugLabelHoverBool = False Then
-						GUICtrlSetColor($MainGUIDebugLabelReportABug,0x0645AD)
+						GUICtrlSetColor($MainGUIDebugLabelReportABug,$cURLHoverColor)
 						GUICtrlSetFont($MainGUIDebugLabelReportABug,15,500,4,$MainFontName)
 						$MainGUIDebugLabelHoverBool = True
 					EndIf
 				Case $MainGUIDebugLabelCreateDebugInfo
 					If $MainGUIDebugDumpInfoHoverBool = False Then
-						GUICtrlSetColor($MainGUIDebugLabelCreateDebugInfo,0x0645AD)
+						GUICtrlSetColor($MainGUIDebugLabelCreateDebugInfo,$cURLHoverColor)
 						GUICtrlSetFont($MainGUIDebugLabelCreateDebugInfo,15,500,4,$MainFontName)
 						$MainGUIDebugDumpInfoHoverBool = True
 					EndIf

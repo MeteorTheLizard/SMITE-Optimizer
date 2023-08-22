@@ -45,7 +45,10 @@
 
 <br>
 
+
 <strong>
+<p align="center">'Uncapping' the FPS, finally you can play with more than 150 FPS!<p>
+<br>
 <p align="center">Increase the maximum number of audio channels from 32 all the way up to 512! You'll never have a silent ultimate again!<p>
 <br>
 <p align="center">HUD settings exporter and importer: Share your HUD settings with other players!</p>

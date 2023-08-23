@@ -1,3 +1,11 @@
+SMITE Optimizer Version 1.3.7.1
+- Fixed a bug that would remove the 800x600 resolution from the list.
+- Fixed a bug with the new buttons not having any text on Windows Vista, Windows 7, Windows 8, and Windows 8.1.
+
+
+
+
+
 SMITE Optimizer Version 1.3.7
 - Updated overall brand design, which includes a new theme, color changes, visual updates, and more.
 > Changed the default colors, which also now accesses a global variable, so that they can be changed more easily.

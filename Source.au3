@@ -8,7 +8,7 @@
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.7.0
+#AutoIt3Wrapper_Res_Fileversion=1.3.7.1
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MeteorTheLizard - All Rights Reserved.
 #AutoIt3Wrapper_Res_Icon_Add=Resource\SmiteIcon.ico
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
@@ -194,7 +194,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.7"
+Global Const $ProgramVersion = "1.3.7.1"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -1477,7 +1477,7 @@ Func GUICtrlCreateComboNoTheme($Str,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style
 EndFunc
 
 Local $WindowsUIFont = "Segoe UI"
-If @OSVersion <> "WIN_10" and @OSVersion <> "WIN_11" Then
+If @OSVersion <> "WIN_VISTA" and @OSVersion <> "WIN_7" and @OSVersion <> "WIN_8" and @OSVersion <> "WIN_81" and @OSVersion <> "WIN_10" and @OSVersion <> "WIN_11" Then
 	$WindowsUIFont = $MenuFontName ;- Fallback for older systems
 EndIf
 
@@ -1796,7 +1796,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 					Local $iNum = StringLeft($AvailableResolutions[$I],3)
 					local $iXStart = StringInStr($AvailableResolutions[$I],"x")
 
-					If $iNum <= 800 And ($iXStart = 5 or $iXStart = 4) Then
+					If $iNum < 800 And ($iXStart = 5 or $iXStart = 4) Then
 						$iStart = $I
 						ExitLoop
 					EndIf

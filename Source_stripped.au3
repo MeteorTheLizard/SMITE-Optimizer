@@ -2752,7 +2752,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.7"
+Global Const $ProgramVersion = "1.3.7.1"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3313,7 +3313,7 @@ DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",
 Return $Combo
 EndFunc
 Local $WindowsUIFont = "Segoe UI"
-If @OSVersion <> "WIN_10" and @OSVersion <> "WIN_11" Then
+If @OSVersion <> "WIN_VISTA" and @OSVersion <> "WIN_7" and @OSVersion <> "WIN_8" and @OSVersion <> "WIN_81" and @OSVersion <> "WIN_10" and @OSVersion <> "WIN_11" Then
 $WindowsUIFont = $MenuFontName
 EndIf
 Func GUICtrlCreateButtonSO($GUI,$sStr,$X,$Y,$W,$H,$cBackgroundColor = $cBackgroundColor,$cTextColor = $cTextColor,$cAccentColor = $cAccentColor)
@@ -3533,7 +3533,7 @@ Local $iStart = 0
 For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
 Local $iNum = StringLeft($AvailableResolutions[$I],3)
 local $iXStart = StringInStr($AvailableResolutions[$I],"x")
-If $iNum <= 800 And($iXStart = 5 or $iXStart = 4) Then
+If $iNum < 800 And($iXStart = 5 or $iXStart = 4) Then
 $iStart = $I
 ExitLoop
 EndIf

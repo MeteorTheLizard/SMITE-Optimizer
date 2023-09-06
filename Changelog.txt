@@ -1,6 +1,28 @@
+SMITE Optimizer Version 1.3.7.2
+- Updated help tips for "World Quality", and "Effects Quality", to better reflect what they affect in-game. (Community Contribution)
+- Updated the recommended setting for "Effects Quality" from Minimum to Low; the recommended settings button was already setting this to Low. (Community Contribution)
+- Updated settings wheel for the "TEXTUREGROUP_ImageBasedReflection" texture group.
+- Integrated settings wheel for the "TEXTUREGROUP_Bokeh" texture group. It is now part of the shadows.
+> The following texture groups remain unable to be changed:
+> > TEXTUREGROUP_Cinematic
+> > TEXTUREGROUP_UI
+> > TEXTUREGROUP_RenderTarget
+> > TEXTUREGROUP_MobileFlattened
+> > TEXTUREGROUP_ProcBuilding_Face
+> > TEXTUREGROUP_ProcBuilding_LightMap
+> > TEXTUREGROUP_ColorLookupTable
+> > TEXTUREGROUP_TitleScreenPreview
+> > TEXTUREGROUP_UIStreamable
+
+- Updated reference hives for the integrity verification algorithm.
+
+
+
+
+
 SMITE Optimizer Version 1.3.7.1
-- Fixed a bug that would remove the 800x600 resolution from the list.
-- Fixed a bug with the new buttons not having any text on Windows Vista, Windows 7, Windows 8, and Windows 8.1.
+- Fixed a bug that would remove the 800x600 resolution from the list. (Community Contribution)
+- Fixed a bug with the new buttons not having any text on Windows Vista, Windows 7, Windows 8, and Windows 8.1. (Community Contribution)
 
 
 

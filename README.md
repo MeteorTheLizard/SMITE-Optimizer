@@ -13,6 +13,7 @@
 <br>
 
 <p align="center"><strong>Official support server: https://discord.gg/h2g7R9rt7F</strong></p>
+<p align="center"><strong>Metrics: https://metrics-so.meteorthelizard.com/</strong></p>
 
 <br>
 

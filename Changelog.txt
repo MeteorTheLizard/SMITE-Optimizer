@@ -1,3 +1,22 @@
+SMITE Optimizer Version 1.3.7.3
+- Removed fallback paths for configuration discovery. The files it was pointing to have not been working as a fallback for a long time and have caused all sorts of issues. Begone!
+- Fixed the AutoIt debugger reporting incorrect lines when encountering an error or crash.
+- Added a DevTool that can be used to reset the registry entries for the SMITE optimizer to fully reset the program.
+- Added a .reg file to the DevTools that contains my personal settings.
+- Updated AutoIt Copyright.
+
+- Added metrics to the SMITE Optimizer.
+> Added new clickable URLs to the Copyright tab, Privacy Policy, GDPR, and 'View SO-Metrics Online'.
+> Privacy is our top priority. Specific actions, events, and errors in the SMITE Optimizer cause it to access a path on metrics-so.meteorthelizard.com.
+> This increases the count for that action, event, or error by 1. When the SMITE Optimizer does that, it transmits your IP address, which is stored for a maximum of 1 week for security reasons.
+> No other information is collected, and your IP address is not being shared. Learn more in the Privacy Policy / GDPR statement in the Copyright tab.
+> All data that we collect and store can be viewed publicly by visiting: metrics-so.meteorthelizard.com, except for IP addresses.
+> > Why collect metrics? - A: to potentially identify issues with the SMITE Optimizer and resolve them to improve the user experience.
+
+
+
+
+
 SMITE Optimizer Version 1.3.7.2
 - Updated help tips for "World Quality", and "Effects Quality", to better reflect what they affect in-game. (Community Contribution)
 - Updated the recommended setting for "Effects Quality" from Minimum to Low; the recommended settings button was already setting this to Low. (Community Contribution)

@@ -109,13 +109,11 @@ Contact: MrRangerLP@gmx.de
 
 ## Contributing to the project and modifying and compiling the source
 
-[Get AutoIt Here](https://www.autoitscript.com/site/autoit/downloads/)
+[Get AutoIt Here](https://www.autoitscript.com/site/autoit/downloads/) - [Get SciTe Here](https://www.autoitscript.com/site/autoit-script-editor/downloads/)
 
-Download the repository and extract the .ZIP. We recommend using [SciTe](https://www.autoitscript.com/site/autoit-script-editor/downloads/) as it is easier to set up than other IDEs for our purposes.
+Install AutoIt normally. We recommend using SciTe as it is easier to set up, as AutoIt is meant to be used with it.
 
-Move all .au3 files in the "/Includes" folder from the extracted .ZIP into your "/AutoIt3/Include" folder.
-
-To compile the source, you might need to separately install Au3Stripper.
+From the "Get SciTe Here" page, you might need to install Tidy and Au3Stripper manually.
 
 <strong>Remember to read the license before making changes to the script or publishing your changes.</strong>
 

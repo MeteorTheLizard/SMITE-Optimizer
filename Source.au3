@@ -167,13 +167,14 @@ EndIf
 #Include <Misc.au3>
 #Include <WinApi.au3>
 
-#Include <GIFExtended.au3> ;- Required for GIF animation implementation, part of the SMITE Optimizer.
-#Include <SOCtrlButtons.au3> ;- Modern button implementation, part of the SMITE Optimizer. Planned implementation: hover effect.
+;- Removed requirement to install UDFs. -Community Contribution.
+#Include "./Includes/GIFExtended.au3" ;- Required for GIF animation implementation, part of the SMITE Optimizer.
+#Include "./Includes/SOCtrlButtons.au3" ;- Modern button implementation, part of the SMITE Optimizer. Planned implementation: hover effect.
 
 #Include <Inet.au3> ;- Required for automatic updates.
 #Include <WinAPISysWin.au3> ;- Required by ResourceEx.
-#Include <ResourcesEx.au3> ;- Required to use resources.
-#Include <_Zip.au3> ;- Used for the debug dump.
+#Include "./Includes/ResourcesEx.au3" ;- Required to use resources.
+#Include "./Includes/_Zip.au3" ;- Used for the debug dump.
 
 
 #Region ;- Metrics
@@ -202,7 +203,7 @@ EndIf
 
 	Func fSendMetric($sType) ;- In an ideal world, this would not block the main thread. But this cannot be achieved with AutoIt without doing shady stuff that would trigger AVs immediately.
 
-		If Not $bMetricsReachable Then Return ;- We didn't reach it initially, so just don't even try. (To improve the user experience! The main thread won't lock up over and over again!).
+		If not $bMetricsReachable or (not @Compiled and $sType <> "event_running_uncompiled") Then Return ;- We didn't reach it initially, so just don't even try. (To improve the user experience! The main thread won't lock up over and over again!).
 
 		Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
 			$oHTTP.Open("GET",$sMetricsServer & $sType,False)
@@ -287,7 +288,7 @@ Global $bDiscordIconState = False ;- Vars for flashing the Discord logo.
 Global $DiscordFlashTimer = NULL
 Global $bShouldFlashDiscordIcon = False
 Local $sRegRead = RegRead("HKCU\Software\SMITE Optimizer\","bShouldFlashDiscord")
-If @Error And $sRegRead <> "1" Then ;- They never clicked it, so flash it!
+If @Error and $sRegRead <> "1" Then ;- They never clicked it, so flash it!
 	$bShouldFlashDiscordIcon = True
 	$DiscordFlashTimer = TimerInit()
 EndIf
@@ -571,7 +572,7 @@ If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then FileDelete(@TempDir & "/SO_U
 	Func INTERNAL_WM_LBUTTONDOWN($hWnd)
 
 		;- Undraw HoverImage if GUI was clicked, so that it doesn't get left behind when dragging / resizing the window.
-		If $DisplayHoverImage <> 0 And $HoverImageDrawn Then
+		If $DisplayHoverImage <> 0 and $HoverImageDrawn Then
 			$DisplayHoverImage = 0
 			WinMove($HoverInfoGUI,$sEmpty,-$ScrW*2,-$ScrH*2,0,0)
 			$HoverImageDrawn = False
@@ -633,14 +634,14 @@ If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then FileDelete(@TempDir & "/SO_U
 			Local $TaskBarPos = WinGetPos("[CLASS:Shell_TrayWnd]")
 			If @Error Then Return $MonitorSizePos
 
-			If $TaskBarPos[0] = $MonitorList[$MonitorNumber][1] - 2 Or $TaskBarPos[1] = $MonitorList[$MonitorNumber][2] - 2 Then
+			If $TaskBarPos[0] = $MonitorList[$MonitorNumber][1] - 2 or $TaskBarPos[1] = $MonitorList[$MonitorNumber][2] - 2 Then
 				$TaskBarPos[0] = $TaskBarPos[0] + 2
 				$TaskBarPos[1] = $TaskBarPos[1] + 2
 				$TaskBarPos[2] = $TaskBarPos[2] - 4
 				$TaskBarPos[3] = $TaskBarPos[3] - 4
 			EndIf
 
-			If $TaskBarPos[0] = $MonitorList[$MonitorNumber][1] - 2 Or $TaskBarPos[1] = $MonitorList[$MonitorNumber][2] - 2 Then
+			If $TaskBarPos[0] = $MonitorList[$MonitorNumber][1] - 2 or $TaskBarPos[1] = $MonitorList[$MonitorNumber][2] - 2 Then
 				$TaskBarPos[0] = $TaskBarPos[0] + 2
 				$TaskBarPos[1] = $TaskBarPos[1] + 2
 				$TaskBarPos[2] = $TaskBarPos[2] - 4
@@ -690,7 +691,7 @@ Local $bProperOnce = False
 
 Func ProperExit() ;- This is used internally as well.
 
-	If Not $bProperOnce Then
+	If not $bProperOnce Then
 		$bProperOnce = True
 		fSendMetric("event_exit")
 	EndIf
@@ -761,7 +762,7 @@ EndFunc
 
 	While True ;- Perform the animation.
 
-		If $__g_GIFExtended_aStoreCache[$iCtrl][13] = 88 And Not $bSpawnedAnim Then
+		If $__g_GIFExtended_aStoreCache[$iCtrl][13] = 88 and not $bSpawnedAnim Then
 			$bSpawnedAnim = True
 
 			If @Compiled Then
@@ -771,7 +772,7 @@ EndFunc
 			EndIf
 		EndIf
 
-		If $__g_GIFExtended_aStoreCache[$iCtrl][13] >= 89 And $bSpawnedAnim Then
+		If $__g_GIFExtended_aStoreCache[$iCtrl][13] >= 89 and $bSpawnedAnim Then
 			GUICtrlDeleteGIF($SplashScreenGUIAnimationStart)
 			ExitLoop
 		EndIf
@@ -1195,13 +1196,13 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 
 		;- If the standard path does not return any valid configuration files, we want to inform the user that they should launch SMITE at least once before using the program to avoid issues.
 
-			If Not ( FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini") _
+			If not ( FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini") _
 				and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") _
 				and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
 
 				;- Thank you, Microsoft. Not.
 
-				If Not ( FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") _
+				If not ( FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") _
 					and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") _
 					and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
 
@@ -1293,7 +1294,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 					Local $iNum = StringLeft($AvailableResolutions[$I],3)
 					local $iXStart = StringInStr($AvailableResolutions[$I],"x")
 
-					If $iNum < 800 And ($iXStart = 5 or $iXStart = 4) Then
+					If $iNum < 800 and ($iXStart = 5 or $iXStart = 4) Then
 						$iStart = $I
 						ExitLoop
 					EndIf
@@ -2566,7 +2567,7 @@ EndFunc
 		Switch $State
 			Case "Home"
 				GUICtrlSetState($HomeIconSelector,$GUI_SHOW)
-				If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $ProgramState = $sEmpty Then
+				If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $GameSettingsPath = $sEmpty or $ProgramState = $sEmpty Then
 					DrawMainGUIHomeConfigDiscovery()
 				Else
 					DrawMainGUIHome()
@@ -3477,7 +3478,7 @@ EndFunc
 				Case $MainGUIDebugLabelCreateDebugInfo ;- TODO: This really needs some error handling!
 
 					Local $sDirSelect = FileSelectFolder("Choose a folder to save the debug dump into",@DesktopDir)
-					If Not @Error Then
+					If not @Error Then
 
 						GUISwitch($MainGUI)
 						Local $LabelDebugDumpWorking = GUICtrlCreateLabelTransparentBG("Creating debug dump..",65,220,400,55)
@@ -3488,7 +3489,7 @@ EndFunc
 						Sleep(350) ;- Windows!
 
 						DirCreate(@TempDir & "\optimizerdebugdump")
-						If Not @Error Then ;- Time to retrieve information that could be useful for debugging!
+						If not @Error Then ;- Time to retrieve information that could be useful for debugging!
 
 							;- Retrieve the information in the system information box.
 								GUICtrlSetData($LabelDebugDumpWorking,"Retrieving information from system box")
@@ -5227,7 +5228,7 @@ EndFunc
 			Return
 		EndIf
 
-		If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty Then
+		If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $GameSettingsPath = $sEmpty Then
 			fSendMetric("error_applywith_noconfigpaths")
 			DisplayErrorMessage("Cannot apply settings; discover the configuration files first!")
 			Return
@@ -5358,7 +5359,7 @@ EndFunc
 				$PState = $PState + 1
 			ElseIf $PState = 3 Then ;- Apply changes
 				If $Bool Then ;- Whether to apply settings or not
-					If Not $FixesBool Then ;- Home (Simple | Advanced)
+					If not $FixesBool Then ;- Home (Simple | Advanced)
 						$EngineSF = Internal_ApplyChanges($EngineSF,"EngineSettings")
 						$SystemSF = Internal_ApplyChanges($SystemSF,"SystemSettings")
 						$GameSF = Internal_ApplyChanges($GameSF,"GameSettings")
@@ -5643,7 +5644,7 @@ EndFunc
 
 		Local $FileSelected = FileOpenDialog("Choose Export_ClassicHUD.ini or Export_NewHUD.ini",@DesktopDir,".INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST))
 
-		If Not @Error and $FileSelected <> $sEmpty Then ;- Do some checking on the selected file.
+		If not @Error and $FileSelected <> $sEmpty Then ;- Do some checking on the selected file.
 
 			Local $sFileName
 			Local $bFound = False
@@ -5864,7 +5865,7 @@ EndFunc
 
 
 							;- Check if the SMITE config folder exists.
-							If Not FileExists($EpicProgramData) Then
+							If not FileExists($EpicProgramData) Then
 								fSendMetric("error_quickbypass_noegsfound")
 								MsgBox($MB_OK,"Error!","Epic Game Store Installation not found!")
 
@@ -6035,7 +6036,7 @@ EndFunc
 	EndFunc
 
 	Func Internal_InstallLegacyLauncher()
-		If @OSVersion <> "WIN_XP" And IsAdmin() == 0 Then ;- AutoIt can't elevate itself on request, possible workarounds are too crappy. Just let the user do it.
+		If @OSVersion <> "WIN_XP" and IsAdmin() == 0 Then ;- AutoIt can't elevate itself on request, possible workarounds are too crappy. Just let the user do it.
 			MsgBox($MB_OK,"Information","SMITE Optimizer needs administrator privileges to install the Legacy Launcher.")
 
 			Return
@@ -6445,11 +6446,11 @@ While True ;- Main program routine.
 
 	If WinGetTitle("[active]") = $ProgramName and @Error = 0 Then
 
-		If Not $bTriedToShowDonateBanner Then
+		If not $bTriedToShowDonateBanner Then
 
 			Local $regRead = RegRead("HKCU\Software\SMITE Optimizer\","ConfigProgramState") ;- Has to be a split statement.
 
-			If Not @Error Then
+			If not @Error Then
 
 				$bTriedToShowDonateBanner = True
 

@@ -2749,7 +2749,7 @@ $bMetricsReachable = True
 EndIf
 $oHTTP = NULL
 Func fSendMetric($sType)
-If Not $bMetricsReachable Then Return
+If not $bMetricsReachable or(not @Compiled and $sType <> "event_running_uncompiled") Then Return
 Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
 $oHTTP.Open("GET",$sMetricsServer & $sType,False)
 $oHTTP.setRequestHeader("User-Agent","SMITE_SO/1.0")
@@ -2810,7 +2810,7 @@ Global $bDiscordIconState = False
 Global $DiscordFlashTimer = NULL
 Global $bShouldFlashDiscordIcon = False
 Local $sRegRead = RegRead("HKCU\Software\SMITE Optimizer\","bShouldFlashDiscord")
-If @Error And $sRegRead <> "1" Then
+If @Error and $sRegRead <> "1" Then
 $bShouldFlashDiscordIcon = True
 $DiscordFlashTimer = TimerInit()
 EndIf
@@ -3027,7 +3027,7 @@ EndIf
 Return "GUI_RUNDEFMSG"
 EndFunc
 Func INTERNAL_WM_LBUTTONDOWN($hWnd)
-If $DisplayHoverImage <> 0 And $HoverImageDrawn Then
+If $DisplayHoverImage <> 0 and $HoverImageDrawn Then
 $DisplayHoverImage = 0
 WinMove($HoverInfoGUI,$sEmpty,-$ScrW*2,-$ScrH*2,0,0)
 $HoverImageDrawn = False
@@ -3077,13 +3077,13 @@ EndIf
 If $Taskbar_Monitor = $GUI_Monitor Then
 Local $TaskBarPos = WinGetPos("[CLASS:Shell_TrayWnd]")
 If @Error Then Return $MonitorSizePos
-If $TaskBarPos[0] = $MonitorList[$MonitorNumber][1] - 2 Or $TaskBarPos[1] = $MonitorList[$MonitorNumber][2] - 2 Then
+If $TaskBarPos[0] = $MonitorList[$MonitorNumber][1] - 2 or $TaskBarPos[1] = $MonitorList[$MonitorNumber][2] - 2 Then
 $TaskBarPos[0] = $TaskBarPos[0] + 2
 $TaskBarPos[1] = $TaskBarPos[1] + 2
 $TaskBarPos[2] = $TaskBarPos[2] - 4
 $TaskBarPos[3] = $TaskBarPos[3] - 4
 EndIf
-If $TaskBarPos[0] = $MonitorList[$MonitorNumber][1] - 2 Or $TaskBarPos[1] = $MonitorList[$MonitorNumber][2] - 2 Then
+If $TaskBarPos[0] = $MonitorList[$MonitorNumber][1] - 2 or $TaskBarPos[1] = $MonitorList[$MonitorNumber][2] - 2 Then
 $TaskBarPos[0] = $TaskBarPos[0] + 2
 $TaskBarPos[1] = $TaskBarPos[1] + 2
 $TaskBarPos[2] = $TaskBarPos[2] - 4
@@ -3120,7 +3120,7 @@ EndFunc
 OnAutoItExitRegister("ProperExit")
 Local $bProperOnce = False
 Func ProperExit()
-If Not $bProperOnce Then
+If not $bProperOnce Then
 $bProperOnce = True
 fSendMetric("event_exit")
 EndIf
@@ -3165,7 +3165,7 @@ EndIf
 EndFunc
 Local $bSpawnedAnim = False
 While True
-If $__g_GIFExtended_aStoreCache[$iCtrl][13] = 88 And Not $bSpawnedAnim Then
+If $__g_GIFExtended_aStoreCache[$iCtrl][13] = 88 and not $bSpawnedAnim Then
 $bSpawnedAnim = True
 If @Compiled Then
 $SplashScreenGUIAnimationLoop = GUICtrlCreateGIF( _Resource_GetAsImage("SO_LoopGIF") ,0,0,600,100,90,10,True)[0]
@@ -3173,7 +3173,7 @@ Else
 $SplashScreenGUIAnimationLoop = GUICtrlCreateGIF($MainResourcePath & "Splash_Loop.gif",0,0,600,100,90,10)[0]
 EndIf
 EndIf
-If $__g_GIFExtended_aStoreCache[$iCtrl][13] >= 89 And $bSpawnedAnim Then
+If $__g_GIFExtended_aStoreCache[$iCtrl][13] >= 89 and $bSpawnedAnim Then
 GUICtrlDeleteGIF($SplashScreenGUIAnimationStart)
 ExitLoop
 EndIf
@@ -3472,8 +3472,8 @@ GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DO
 Global $MainGUIHomeButtonMoreOptions = GUICtrlCreateButtonSO($MainGUI,"More Options",379,379,100,25)
 GUICtrlSetOnEvent($MainGUIHomeButtonMoreOptions,"SetupPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-If Not(FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini") and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
-If Not(FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
+If not(FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini") and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") and FileExists(@MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
+If not(FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini") and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini") and FileExists("C:\Users\"&@UserName&"\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini") ) Then
 $Bool_DisplaySetupError = True
 EndIf
 EndIf
@@ -3533,7 +3533,7 @@ Local $iStart = 0
 For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
 Local $iNum = StringLeft($AvailableResolutions[$I],3)
 local $iXStart = StringInStr($AvailableResolutions[$I],"x")
-If $iNum < 800 And($iXStart = 5 or $iXStart = 4) Then
+If $iNum < 800 and($iXStart = 5 or $iXStart = 4) Then
 $iStart = $I
 ExitLoop
 EndIf
@@ -4680,7 +4680,7 @@ EndIf
 Switch $State
 Case "Home"
 GUICtrlSetState($HomeIconSelector,$GUI_SHOW)
-If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $ProgramState = $sEmpty Then
+If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $GameSettingsPath = $sEmpty or $ProgramState = $sEmpty Then
 DrawMainGUIHomeConfigDiscovery()
 Else
 DrawMainGUIHome()
@@ -5370,7 +5370,7 @@ fSendMetric("action_reportabug_pressed")
 ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer/issues")
 Case $MainGUIDebugLabelCreateDebugInfo
 Local $sDirSelect = FileSelectFolder("Choose a folder to save the debug dump into",@DesktopDir)
-If Not @Error Then
+If not @Error Then
 GUISwitch($MainGUI)
 Local $LabelDebugDumpWorking = GUICtrlCreateLabelTransparentBG("Creating debug dump..",65,220,400,55)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
@@ -5378,7 +5378,7 @@ GUICtrlSetFont(-1,15,500,Default,$MainFontName)
 DirRemove(@TempDir & "\optimizerdebugdump",$DIR_REMOVE)
 Sleep(350)
 DirCreate(@TempDir & "\optimizerdebugdump")
-If Not @Error Then
+If not @Error Then
 GUICtrlSetData($LabelDebugDumpWorking,"Retrieving information from system box")
 FileWrite(@TempDir & "\optimizerdebugdump\systeminfobox.txt",GUICtrlRead($MainGUIDebugEditSystemInfo))
 GUICtrlSetData($LabelDebugDumpWorking,"Retrieving configured file paths")
@@ -6413,7 +6413,7 @@ fSendMetric("error_applywhen_smiterunning")
 DisplayErrorMessage("Cannot apply settings while SMITE is running!")
 Return
 EndIf
-If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty Then
+If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $GameSettingsPath = $sEmpty Then
 fSendMetric("error_applywith_noconfigpaths")
 DisplayErrorMessage("Cannot apply settings; discover the configuration files first!")
 Return
@@ -6502,7 +6502,7 @@ EndIf
 $PState = $PState + 1
 ElseIf $PState = 3 Then
 If $Bool Then
-If Not $FixesBool Then
+If not $FixesBool Then
 $EngineSF = Internal_ApplyChanges($EngineSF,"EngineSettings")
 $SystemSF = Internal_ApplyChanges($SystemSF,"SystemSettings")
 $GameSF = Internal_ApplyChanges($GameSF,"GameSettings")
@@ -6696,7 +6696,7 @@ DisplayErrorMessage("Cannot import HUD settings while SMITE is running!")
 Return
 EndIf
 Local $FileSelected = FileOpenDialog("Choose Export_ClassicHUD.ini or Export_NewHUD.ini",@DesktopDir,".INI Files (*.ini)",BitOr($FD_FILEMUSTEXIST,$FD_PATHMUSTEXIST))
-If Not @Error and $FileSelected <> $sEmpty Then
+If not @Error and $FileSelected <> $sEmpty Then
 Local $sFileName
 Local $bFound = False
 For $I = StringLen($FileSelected) To 1 Step -1
@@ -6829,7 +6829,7 @@ ExitLoop(2)
 EndIf
 Next
 Next
-If Not FileExists($EpicProgramData) Then
+If not FileExists($EpicProgramData) Then
 fSendMetric("error_quickbypass_noegsfound")
 MsgBox($MB_OK,"Error!","Epic Game Store Installation not found!")
 ExitLoop(1)
@@ -6929,7 +6929,7 @@ GUISetState(@SW_ENABLE,$MainGUI)
 WinActivate($MainGUI)
 EndFunc
 Func Internal_InstallLegacyLauncher()
-If @OSVersion <> "WIN_XP" And IsAdmin() == 0 Then
+If @OSVersion <> "WIN_XP" and IsAdmin() == 0 Then
 MsgBox($MB_OK,"Information","SMITE Optimizer needs administrator privileges to install the Legacy Launcher.")
 Return
 EndIf
@@ -7218,9 +7218,9 @@ EndFunc
 While True
 Local $CursorInfo = GUIGetCursorInfo($MainGUI)
 If WinGetTitle("[active]") = $ProgramName and @Error = 0 Then
-If Not $bTriedToShowDonateBanner Then
+If not $bTriedToShowDonateBanner Then
 Local $regRead = RegRead("HKCU\Software\SMITE Optimizer\","ConfigProgramState")
-If Not @Error Then
+If not @Error Then
 $bTriedToShowDonateBanner = True
 If Random(1,4,1) = 3 Then
 MenuHoverState("DBan",138,300,0)

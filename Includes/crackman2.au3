@@ -60,7 +60,7 @@ __cm2_RL_AddEntry("(21:9)",  2560, 1080)
 __cm2_RL_AddEntry("(21:9)",  3440, 1440)
 __cm2_RL_AddEntry("(21:9)",  5120, 2160)
 
-; 21:9 Aspect Ratio Resolutions
+; 32:9 Aspect Ratio Resolutions
 __cm2_RL_AddEntry("(32:9)",  3840, 1080)
 __cm2_RL_AddEntry("(32:9)",  5120, 1440)
 
@@ -105,7 +105,6 @@ Func __cm2_RL_FilterResolutions($iMaxWidth, $iMaxHeight)
 				$bNativeFound = True
 			EndIf
 
-
 			$iSize += 1
 		EndIf
 	Next
@@ -113,9 +112,7 @@ Func __cm2_RL_FilterResolutions($iMaxWidth, $iMaxHeight)
 	if Not $bNativeFound Then
 		Local $iDesktopX = $iMaxWidth
 		Local $iDesktopY = $iMaxHeight
-
-		Local $iDivisor = __cm2_RL_GCD($iDesktopX,$iDesktopY)
-
+		Local $iDivisor = (Int(__cm2_RL_GCD($iDesktopX,$iDesktopY)) < 1) ? 1 : Int(__cm2_RL_GCD($iDesktopX,$iDesktopY)
 		Local $sAspectRatio = ($iDivisor == 1) ? "(n/a)" : "(" & String($iDesktopX/$iDivisor) & ":" & String($iDesktopY/$iDivisor) & ")"
 
 		ReDim $cm2_RL_aResolutionStringList[$iSize]

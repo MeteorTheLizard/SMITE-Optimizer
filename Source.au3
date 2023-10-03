@@ -175,7 +175,7 @@ EndIf
 #Include <WinAPISysWin.au3> ;- Required by ResourceEx.
 #Include "./Includes/ResourcesEx.au3" ;- Required to use resources.
 #Include "./Includes/_Zip.au3" ;- Used for the debug dump.
-#Include "./Includes/crackman2.au3" ;- Contributions by crackman2, seperate file to easily revert dumb ideas
+#Include "./Includes/crackman2.au3" ;- Contributions by crackman2
 
 
 #Region ;- Metrics

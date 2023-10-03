@@ -175,7 +175,7 @@ EndIf
 #Include <WinAPISysWin.au3> ;- Required by ResourceEx.
 #Include "./Includes/ResourcesEx.au3" ;- Required to use resources.
 #Include "./Includes/_Zip.au3" ;- Used for the debug dump.
-#Include "./Includes/ResolutionList.au3"
+#Include "./Includes/crackman2.au3" ;- Contributions by crackman2, seperate file to easily revert dumb ideas
 
 
 #Region ;- Metrics
@@ -1254,68 +1254,10 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 	;-- Home (Simple mode)
 		;- Get the available resolutions, format them properly, and then sort the array.
 
-			Global $AvailableResolutions[0]
-			Local $AvailableResolutionsStr
+			__cm2_RL_FilterResolutions(@DesktopWidth, @DesktopHeight)
 
-			Local $objWMIService = ObjGet("winmgmts:\\.\root\cimv2")
-			Local $colItems = $objWMIService.ExecQuery("SELECT * FROM CIM_VideoControllerResolution")
-
-			Sleep(10) ;- Required.
-
-			For $objItem in $colItems
-				Local $Count = uBound($AvailableResolutions)
-				ReDim $AvailableResolutions[$Count + 1]
-				$AvailableResolutions[$Count] = $objItem.HorizontalResolution & " x " & $objItem.VerticalResolution
-			Next
-
-			If uBound($AvailableResolutions) = 0 Then ;- Sometimes we cannot retrieve the screen resolutions. (BUG, UNKNOWN CAUSE)
-				fSendMetric("error_failed_screen_resolutions")
-				MsgBox($MB_OK,"Error!","An error has occured. Code: 008"&@CRLF&"You will only be able to select your current screen resolution."&@CRLF&"Please restart the program to potentially resolve this.")
-
-				ReDim $AvailableResolutions[1]
-				$AvailableResolutions[0] = @DesktopWidth & " x " & @DesktopHeight
-			Else
-
-
-				;- Finalize
-
-				_ArrayAdd($AvailableResolutions,@DesktopWidth & " x " & @DesktopHeight,0) ;- Temporary solution to get screen resolutions higher than 1080p
-
-
-				$AvailableResolutions = _ArrayUnique($AvailableResolutions) ;- Filter duplicates.
-					_ArrayDelete($AvailableResolutions,0)
-					_ArrayReverse($AvailableResolutions)
-
-
-				;- Remove anything below 800x600, since that is the minimum resolution for SMITE.
-
-				Local $iStart = 0
-
-				For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
-
-					Local $iNum = StringLeft($AvailableResolutions[$I],3)
-					local $iXStart = StringInStr($AvailableResolutions[$I],"x")
-
-					If $iNum < 800 and ($iXStart = 5 or $iXStart = 4) Then
-						$iStart = $I
-						ExitLoop
-					EndIf
-				Next
-
-				For $I = uBound($AvailableResolutions) - 1 To $iStart Step -1
-					_ArrayDelete($AvailableResolutions,$I)
-				Next
-
-			EndIf
-
-;~ 			For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
-;~ 				$AvailableResolutionsStr = $AvailableResolutionsStr & $AvailableResolutions[$I] & "|"
-;~ 			Next
-
-			__RL_FilterResolutions(@DesktopWidth, @DesktopHeight)
-
-			For $I = 0 To uBound($aResolutionStringList) - 1 Step 1
-				$AvailableResolutionsStr = $AvailableResolutionsStr & $aResolutionStringList[$I] & "|"
+			For $I = 0 To uBound($cm2_RL_aResolutionStringList) - 1 Step 1
+				$AvailableResolutionsStr = $AvailableResolutionsStr & $cm2_RL_aResolutionStringList[$I] & "|"
 			Next
 
 		; ----- ----- -----
@@ -4713,7 +4655,7 @@ EndFunc
 					Local $ScreenResX = StringReplace($SplitC[0]," ",$sEmpty)
 					Local $ScreenResY = StringReplace($SplitC[1]," ",$sEmpty)
 
-					__RL_ExtractRes($ScreenResX, $ScreenResY)
+					__cm2_RL_ExtractRes($ScreenResX, $ScreenResY)
 
 					$Array = Internal_ApplyKey($Array,"ResX=",$ScreenResX)
 					$Array = Internal_ApplyKey($Array,"ResY=",$ScreenResY)
@@ -5005,7 +4947,7 @@ EndFunc
 					Local $SplitC = StringSplit($RRead,"x")
 						_ArrayDelete($SplitC,0)
 
-					__RL_ExtractRes($SplitC[0], $SplitC[1])
+					__cm2_RL_ExtractRes($SplitC[0], $SplitC[1])
 
 					Local $ScreenResX = StringReplace($SplitC[0]," ",$sEmpty)
 					Local $ScreenResY = StringReplace($SplitC[1]," ",$sEmpty)

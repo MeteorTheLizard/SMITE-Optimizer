@@ -1,3 +1,5 @@
+#include <Math.au3>
+
 ;- https://github.com/crackman2
 
 
@@ -72,30 +74,57 @@ Func __cm2_RL_Spacer($iAmount)
 	Return $sResult
 EndFunc   ;==>__cm2_RL_Spacer
 
+Func __cm2_RL_GCD($a, $b)
+    While $b <> 0
+        Local $temp = Mod($a, $b)
+        $a = $b
+        $b = $temp
+    WEnd
+    Return $a
+EndFunc
+
 
 ;- After the resolutons are added to the array, we filter the ones that don't fit within desktop resolution and add them to the list that will be displayed in the combobox
 Func __cm2_RL_FilterResolutions($iMaxWidth, $iMaxHeight)
 	Local $iSize = 1
+	Local $bNativeFound = False
 
 	For $iIterate = 0 To UBound($aResolutionList) - 1
 		If ($aResolutionList[$iIterate][1] <= $iMaxWidth) And ($aResolutionList[$iIterate][2] <= $iMaxHeight) Then
 			Local $iSpacerSizeRes = 9 - StringLen($aResolutionList[$iIterate][1] & "x" & $aResolutionList[$iIterate][2])
 			Local $iSpacerSizeAsp = 7 - StringLen($aResolutionList[$iIterate][0])
 
-			ReDim $aResolutionStringList[$iSize]
-			$aResolutionStringList[$iSize - 1] = $aResolutionList[$iIterate][0] & _
+			ReDim $cm2_RL_aResolutionStringList[$iSize]
+			$cm2_RL_aResolutionStringList[$iSize - 1] = $aResolutionList[$iIterate][0] & _
 					__cm2_RL_Spacer($iSpacerSizeRes + $iSpacerSizeAsp) & _
 					$aResolutionList[$iIterate][1] & "x" & _
 					$aResolutionList[$iIterate][2]
 
 			If ($aResolutionList[$iIterate][1] == $iMaxWidth) And ($aResolutionList[$iIterate][2] == $iMaxHeight) Then
-				$aResolutionStringList[$iSize - 1] &= " (native)" ;- Native resolution is marked as such
+				$cm2_RL_aResolutionStringList[$iSize - 1] &= " (native)" ;- Native resolution is marked as such
+				$bNativeFound = True
 			EndIf
-			ConsoleWrite($aResolutionStringList[$iSize - 1] & @CRLF)
+
 
 			$iSize += 1
 		EndIf
 	Next
+
+	if Not $bNativeFound Then
+		Local $iDesktopX = $iMaxWidth
+		Local $iDesktopY = $iMaxHeight
+
+		Local $iDivisor = __cm2_RL_GCD($iDesktopX,$iDesktopY)
+
+		Local $sAspectRatio = ($iDivisor == 1) ? "(n/a)" : "(" & String($iDesktopX/$iDivisor) & ":" & String($iDesktopY/$iDivisor) & ")"
+
+		ReDim $cm2_RL_aResolutionStringList[$iSize]
+
+		Local $iSpacerSizeRes = 9 - StringLen($iDesktopX & "x" & $iDesktopY)
+		Local $iSpacerSizeAsp = 7 - StringLen($sAspectRatio)
+
+		$cm2_RL_aResolutionStringList[$iSize - 1] = $sAspectRatio & __cm2_RL_Spacer($iSpacerSizeRes + $iSpacerSizeAsp) & $iDesktopX & "x" & $iDesktopY & " (native)"
+	EndIf
 EndFunc   ;==>__cm2_RL_FilterResolutions
 
 

@@ -1,5 +1,7 @@
 - Common Issues
 
+If you require support, you can join our discord server by pressing the discord icon in the title bar of the SMITE Optimizer.
+
 
 When you have one of the problems listed below, it is recommended to try each solution one by one.
 
@@ -8,6 +10,30 @@ If your issue is not listed here, we recommend opening an issue on GitHub.
 > Explain what you did step by step and include a screenshot of the error.
 > When possible attach a debug dump which you can create through the debug tab.
 > > https://github.com/MeteorTheLizard/SMITE-Optimizer/issues/
+
+You can also report bugs on our discord server in the #report-a-bug channel.
+
+
+-- ----- ----- ----- -----
+
+Problem: The SMITE Optimizer tells me the configuration files are located in the "/OneDrive/" path. -Community Contribution
+
+This means that OneDrive took control over the Documents folder of your system, which could potentially break the SMITE Optimizer as well as the game SMITE itself.
+If you are able to apply settings and you notice the changes in-game, then you're good and don't need to do anything.
+
+
+If you don't see any changes, you can try doing the following:
+
+Press Windows key + r
+Type in: "regedit"
+Navigate to: "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+On the right, there should be an entry called "Personal"
+If it says something about OneDrive in the value field, double-click the value and change it to "%USERPROFILE%\Documents"
+This will reset your documents path back to what it should be.
+Launch the game, then close the game. This will make the game generate new configuration files.
+Open the SMITE Optimizer, navigate to the debug tab, and reset your configuration paths.
+Re-discover them.
+The SMITE Optimizer should now function correctly, and changes should be visible in-game.
 
 -- ----- ----- ----- -----
 

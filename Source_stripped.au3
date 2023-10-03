@@ -2770,7 +2770,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.7.3"
+Global Const $ProgramVersion = "1.3.7.4"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3291,6 +3291,10 @@ EndIf
 EndIf
 EndIf
 EndIf
+Local $WindowsUIFont = "Segoe UI"
+If @OSVersion <> "WIN_VISTA" and @OSVersion <> "WIN_7" and @OSVersion <> "WIN_8" and @OSVersion <> "WIN_81" and @OSVersion <> "WIN_10" and @OSVersion <> "WIN_11" Then
+$WindowsUIFont = $MenuFontName
+EndIf
 Func GUICtrlCreateLabelTransparentBG($Text,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style = Default)
 Local $Label = GUICtrlCreateLabel($Text,$X,$Y,$Size_X,$Size_Y,$Style)
 GUICtrlSetBkColor(-1,$GUI_BKCOLOR_TRANSPARENT)
@@ -3309,10 +3313,6 @@ Local $Combo = GUICtrlCreateCombo($Str,$X,$Y,$Size_X,$Size_Y,$Style)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 Return $Combo
 EndFunc
-Local $WindowsUIFont = "Segoe UI"
-If @OSVersion <> "WIN_VISTA" and @OSVersion <> "WIN_7" and @OSVersion <> "WIN_8" and @OSVersion <> "WIN_81" and @OSVersion <> "WIN_10" and @OSVersion <> "WIN_11" Then
-$WindowsUIFont = $MenuFontName
-EndIf
 Func GUICtrlCreateButtonSO($GUI,$sStr,$X,$Y,$W,$H,$cBackgroundColor = $cBackgroundColor,$cTextColor = $cTextColor,$cAccentColor = $cAccentColor)
 Local $Obj = _SOCtrlButtons_Create($GUI,$sStr,$X,$Y,$W,$H,$cBackgroundColor,$cTextColor,$WindowsUIFont,8,1,$cAccentColor)
 Return $Obj
@@ -4814,14 +4814,41 @@ Func SetupPressLogic()
 Local $sDefaultEnginePath = @MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleEngine.ini"
 Local $sDefaultSystemPath = @MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
 Local $sDefaultGamePath = @MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini"
+Local $sDefaultEnginePathOneDrive = "C:\Users\" & @UserName & "\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
+Local $sDefaultSystemPathOneDrive = "C:\Users\" & @UserName & "\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
+Local $sDefaultGamePathOneDrive = "C:\Users\" & @UserName & "\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini"
 Local $Found = False
 Switch @GUI_CtrlId
 Case $MainGUIHomePicBtnSteam
 $Found = VerifyAndStoreConfigPath("Steam",$sDefaultEnginePath,$sDefaultSystemPath,$sDefaultGamePath)
+If not $Found Then
+$Found = VerifyAndStoreConfigPath("Steam",$sDefaultEnginePathOneDrive,$sDefaultSystemPathOneDrive,$sDefaultGamePathOneDrive)
+If $Found Then
+DisplayErrorMessage("Config files are located in " & '"/OneDrive/"' & " settings may not apply correctly! For more information, check 'Common Issues' in the debug tab!",$MainGUI,"Warning!")
+Else
+DisplayErrorMessage("Could not find configuration files!")
+EndIf
+EndIf
 Case $MainGUIHomePicBtnEGS
 $Found = VerifyAndStoreConfigPath("Epic Games Store",$sDefaultEnginePath,$sDefaultSystemPath,$sDefaultGamePath)
+If not $Found Then
+$Found = VerifyAndStoreConfigPath("Epic Games Store",$sDefaultEnginePathOneDrive,$sDefaultSystemPathOneDrive,$sDefaultGamePathOneDrive)
+If $Found Then
+DisplayErrorMessage("Config files are located in " & '"/OneDrive/"' & " settings may not apply correctly! For more information, check 'Common Issues' in the debug tab!",$MainGUI,"Warning!")
+Else
+DisplayErrorMessage("Could not find configuration files!")
+EndIf
+EndIf
 Case $MainGUIHomePicBtnLegacy
 $Found = VerifyAndStoreConfigPath("Legacy",$sDefaultEnginePath,$sDefaultSystemPath,$sDefaultGamePath)
+If not $Found Then
+$Found = VerifyAndStoreConfigPath("Legacy",$sDefaultEnginePathOneDrive,$sDefaultSystemPathOneDrive,$sDefaultGamePathOneDrive)
+If $Found Then
+DisplayErrorMessage("Config files are located in " & '"/OneDrive/"' & " settings may not apply correctly! For more information, check 'Common Issues' in the debug tab!",$MainGUI,"Warning!")
+Else
+DisplayErrorMessage("Could not find configuration files!")
+EndIf
+EndIf
 Case $MainGUIHomeButtonMoreOptions
 If $GUIMoreOptions <> NULL Then GUIDelete($GUIMoreOptions)
 GUISetState(@SW_DISABLE,$MainGUI)

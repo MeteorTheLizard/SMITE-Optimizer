@@ -8,7 +8,7 @@
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.7.3
+#AutoIt3Wrapper_Res_Fileversion=1.3.7.4
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MeteorTheLizard - All Rights Reserved.
 #AutoIt3Wrapper_Res_Icon_Add=Resource\SmiteIcon.ico
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
@@ -239,7 +239,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.7.3"
+Global Const $ProgramVersion = "1.3.7.4"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -949,6 +949,11 @@ EndFunc
 ;- GUI Functions
 ;-------------------
 
+Local $WindowsUIFont = "Segoe UI"
+If @OSVersion <> "WIN_VISTA" and @OSVersion <> "WIN_7" and @OSVersion <> "WIN_8" and @OSVersion <> "WIN_81" and @OSVersion <> "WIN_10" and @OSVersion <> "WIN_11" Then
+	$WindowsUIFont = $MenuFontName ;- Fallback for older systems
+EndIf
+
 Func GUICtrlCreateLabelTransparentBG($Text,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style = Default)
 	Local $Label = GUICtrlCreateLabel($Text,$X,$Y,$Size_X,$Size_Y,$Style)
 		GUICtrlSetBkColor(-1,$GUI_BKCOLOR_TRANSPARENT)
@@ -967,14 +972,10 @@ EndFunc
 Func GUICtrlCreateComboNoTheme($Str,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style = $sEmpty)
 	Local $Combo = GUICtrlCreateCombo($Str,$X,$Y,$Size_X,$Size_Y,$Style)
 		DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
+;~ 		GUICtrlSetFont(-1,Default,Default,Default,$MenuFontName)
 
 	Return $Combo
 EndFunc
-
-Local $WindowsUIFont = "Segoe UI"
-If @OSVersion <> "WIN_VISTA" and @OSVersion <> "WIN_7" and @OSVersion <> "WIN_8" and @OSVersion <> "WIN_81" and @OSVersion <> "WIN_10" and @OSVersion <> "WIN_11" Then
-	$WindowsUIFont = $MenuFontName ;- Fallback for older systems
-EndIf
 
 Func GUICtrlCreateButtonSO($GUI,$sStr,$X,$Y,$W,$H,$cBackgroundColor = $cBackgroundColor,$cTextColor = $cTextColor,$cAccentColor = $cAccentColor) ;- Wrapper function to define defaults more easily.
 	Local $Obj = _SOCtrlButtons_Create($GUI,$sStr,$X,$Y,$W,$H,$cBackgroundColor,$cTextColor,$WindowsUIFont,8,1,$cAccentColor) ;- Default Windows UI font, size 8, style bold.
@@ -1346,11 +1347,13 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetLimit(-1,3) ;- Going higher than 999 FPS is not recommended. Ever.
+;~ 			GUICtrlSetFont(-1,Default,Default,Default,$MenuFontName)
 		Global $MainGUIHomeSimpleLabelScreenRes = GUICtrlCreateLabelTransparentBG("Resolution",300,74,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleComboScreenRes = GUICtrlCreateComboNoTheme($sEmpty,300,88,190,13,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetData(-1,$AvailableResolutionsStr)
+;~ 			GUICtrlSetFont(-1,10,Default,Default,$MainFontName)
 		Global $MainGUIHomeSimpleLabelScreenResScale = GUICtrlCreateLabelTransparentBG("Resolution Scale",300,114,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleSliderScreenResScale = GUICtrlCreateSlider(300,128,190,21)
@@ -1360,6 +1363,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 		Global $MainGUIHomeSimpleInputScreenResScale = GUICtrlCreateInput($sEmpty,500,128,40,21,$ES_READONLY)
 			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+;~ 			GUICtrlSetFont(-1,Default,Default,Default,$MenuFontName)
 		Global $MainGUIHomeSimpleLabelWindowmode = GUICtrlCreateLabelTransparentBG("Window Type",300,154,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeSimpleComboWindowmode = GUICtrlCreateComboNoTheme($sEmpty,300,168,190,13,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
@@ -1483,6 +1487,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 		Global $MainGUIHomeAdvancedComboScreenRes = GUICtrlCreateComboNoTheme($sEmpty,255,133,190,13,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetData(-1,$AvailableResolutionsStr)
+;~ 			GUICtrlSetFont(-1,10,Default,Default,$MainFontName)
 		Global $MainGUIHomeAdvancedLabelScreenResScale = GUICtrlCreateLabelTransparentBG("Resolution Scale",255,159,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedSliderScreenResScale = GUICtrlCreateSlider(255,173,190,21)
@@ -1492,6 +1497,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 		Global $MainGUIHomeAdvancedInputScreenResScale = GUICtrlCreateInput($sEmpty,455,173,40,21,$ES_READONLY)
 			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+;~ 			GUICtrlSetFont(-1,Default,Default,Default,$MenuFontName)
 		Global $MainGUIHomeAdvancedLabelWindowmode = GUICtrlCreateLabelTransparentBG("Window Type",255,199,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedComboWindowmode = GUICtrlCreateComboNoTheme($sEmpty,255,213,190,13,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
@@ -1513,6 +1519,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetLimit(-1,3) ;- Going higher than 999 FPS is not recommended. Ever.
+;~ 			GUICtrlSetFont(-1,Default,Default,Default,$MenuFontName)
 		Global $MainGUIHomeAdvancedCheckboxSpeedTreeWind = GUICtrlCreateCheckboxTransparentBG(455,49,15,21)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 		Global $MainGUIHomeAdvancedLabelSpeedTreeWind = GUICtrlCreateLabelTransparentBG("SpeedTree Wind",473,52,140,13)
@@ -1645,6 +1652,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 			DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetLimit(-1,3) ;- Going higher than 999 FPS is not recommended. Ever.
+;~ 			GUICtrlSetFont(-1,Default,Default,Default,$MenuFontName)
 
 		Global $MainGUIFixesLabelAudioFix = GUICtrlCreateLabelTransparentBG("Audio Channels",80,104,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -2752,21 +2760,56 @@ EndFunc
 		Local $sDefaultSystemPath = @MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
 		Local $sDefaultGamePath = @MyDocumentsDir & "\My Games\Smite\BattleGame\Config\BattleGame.ini"
 
+		Local $sDefaultEnginePathOneDrive = "C:\Users\" & @UserName & "\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleEngine.ini"
+		Local $sDefaultSystemPathOneDrive = "C:\Users\" & @UserName & "\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleSystemSettings.ini"
+		Local $sDefaultGamePathOneDrive = "C:\Users\" & @UserName & "\OneDrive\Documents\My Games\Smite\BattleGame\Config\BattleGame.ini"
+
 
 		Local $Found = False
 
 
 		;- Since we no longer need a fallback, all buttons essentially do the same now. Though it is still useful to know what "mode" the program is in.
+		;- Also this is a mess, maybe do some cleanup at one point?
 
 		Switch @GUI_CtrlId
 			Case $MainGUIHomePicBtnSteam ;- Steam button.
 				$Found = VerifyAndStoreConfigPath("Steam",$sDefaultEnginePath,$sDefaultSystemPath,$sDefaultGamePath)
 
+				If not $Found Then
+					$Found = VerifyAndStoreConfigPath("Steam",$sDefaultEnginePathOneDrive,$sDefaultSystemPathOneDrive,$sDefaultGamePathOneDrive)
+
+					If $Found Then
+						DisplayErrorMessage("Config files are located in " & '"/OneDrive/"' & " settings may not apply correctly! For more information, check 'Common Issues' in the debug tab!",$MainGUI,"Warning!")
+					Else
+						DisplayErrorMessage("Could not find configuration files!")
+					EndIf
+				EndIf
+
 			Case $MainGUIHomePicBtnEGS ;- Epic Games Store button.
 				$Found = VerifyAndStoreConfigPath("Epic Games Store",$sDefaultEnginePath,$sDefaultSystemPath,$sDefaultGamePath)
 
+				If not $Found Then
+					$Found = VerifyAndStoreConfigPath("Epic Games Store",$sDefaultEnginePathOneDrive,$sDefaultSystemPathOneDrive,$sDefaultGamePathOneDrive)
+
+					If $Found Then
+						DisplayErrorMessage("Config files are located in " & '"/OneDrive/"' & " settings may not apply correctly! For more information, check 'Common Issues' in the debug tab!",$MainGUI,"Warning!")
+					Else
+						DisplayErrorMessage("Could not find configuration files!")
+					EndIf
+				EndIf
+
 			Case $MainGUIHomePicBtnLegacy ;- Legacy button.
 				$Found = VerifyAndStoreConfigPath("Legacy",$sDefaultEnginePath,$sDefaultSystemPath,$sDefaultGamePath)
+
+				If not $Found Then
+					$Found = VerifyAndStoreConfigPath("Legacy",$sDefaultEnginePathOneDrive,$sDefaultSystemPathOneDrive,$sDefaultGamePathOneDrive)
+
+					If $Found Then
+						DisplayErrorMessage("Config files are located in " & '"/OneDrive/"' & " settings may not apply correctly! For more information, check 'Common Issues' in the debug tab!",$MainGUI,"Warning!")
+					Else
+						DisplayErrorMessage("Could not find configuration files!")
+					EndIf
+				EndIf
 
 			Case $MainGUIHomeButtonMoreOptions ;- More options button.
 				If $GUIMoreOptions <> NULL Then GUIDelete($GUIMoreOptions)

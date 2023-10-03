@@ -1,5 +1,3 @@
-#include <Math.au3>
-
 ;- https://github.com/crackman2
 
 
@@ -85,7 +83,9 @@ EndFunc
 
 
 ;- After the resolutons are added to the array, we filter the ones that don't fit within desktop resolution and add them to the list that will be displayed in the combobox
-Func __cm2_RL_FilterResolutions($iMaxWidth, $iMaxHeight)
+Func __cm2_RL_GenerateResolutionStringList()
+	Local $iMaxWidth  = @DesktopWidth
+	Local $iMaxHeight = @DesktopHeight
 	Local $iSize = 1
 	Local $bNativeFound = False
 
@@ -110,23 +110,21 @@ Func __cm2_RL_FilterResolutions($iMaxWidth, $iMaxHeight)
 	Next
 
 	if Not $bNativeFound Then
-		Local $iDesktopX = $iMaxWidth
-		Local $iDesktopY = $iMaxHeight
-		Local $iDivisor = (Int(__cm2_RL_GCD($iDesktopX,$iDesktopY)) < 1) ? 1 : Int(__cm2_RL_GCD($iDesktopX,$iDesktopY)
-		Local $sAspectRatio = ($iDivisor == 1) ? "(n/a)" : "(" & String($iDesktopX/$iDivisor) & ":" & String($iDesktopY/$iDivisor) & ")"
+		Local $iDivisor = (Int(__cm2_RL_GCD($iMaxWidth,$iMaxHeight)) < 1) ? 1 : Int(__cm2_RL_GCD($iMaxWidth,$iMaxHeight)
+		Local $sAspectRatio = ($iDivisor == 1) ? "(n/a)" : "(" & String($iMaxWidth/$iDivisor) & ":" & String($iMaxHeight/$iDivisor) & ")"
 
 		ReDim $cm2_RL_aResolutionStringList[$iSize]
 
-		Local $iSpacerSizeRes = 9 - StringLen($iDesktopX & "x" & $iDesktopY)
+		Local $iSpacerSizeRes = 9 - StringLen($iMaxWidth & "x" & $iMaxHeight)
 		Local $iSpacerSizeAsp = 7 - StringLen($sAspectRatio)
 
-		$cm2_RL_aResolutionStringList[$iSize - 1] = $sAspectRatio & __cm2_RL_Spacer($iSpacerSizeRes + $iSpacerSizeAsp) & $iDesktopX & "x" & $iDesktopY & " (native)"
+		$cm2_RL_aResolutionStringList[$iSize - 1] = $sAspectRatio & __cm2_RL_Spacer($iSpacerSizeRes + $iSpacerSizeAsp) & $iMaxWidth & "x" & $iMaxHeight & " (native)"
 	EndIf
-EndFunc   ;==>__cm2_RL_FilterResolutions
+EndFunc   ;==>__cm2_RL_GenerateResolutionStringList
 
 
 ;- Extract the actual numbers from strings that may contain "(4:3)" or "(native)"
-Func __cm2_RL_ExtractRes(ByRef $sSplitX, ByRef $sSplitY)
+Func __cm2_RL_CleanUpResolutionStrings(ByRef $sSplitX, ByRef $sSplitY)
 	Local $sX
 	Local $sY
 
@@ -149,6 +147,6 @@ Func __cm2_RL_ExtractRes(ByRef $sSplitX, ByRef $sSplitY)
 
 	$sSplitX = $sX
 	$sSplitY = $sY
-EndFunc   ;==>__cm2_RL_ExtractRes
+EndFunc   ;==>__cm2_RL_CleanUpResolutionStrings
 
 #EndRegion

@@ -1252,9 +1252,11 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 
 
 	;-- Home (Simple mode)
-		;- Get the available resolutions, format them properly, and then sort the array.
+		;- Get the available resolutions, format them properly
 
-			__cm2_RL_FilterResolutions(@DesktopWidth, @DesktopHeight)
+			__cm2_RL_GenerateResolutionStringList()
+
+			Local $AvailableResolutionsStr
 
 			For $I = 0 To uBound($cm2_RL_aResolutionStringList) - 1 Step 1
 				$AvailableResolutionsStr &= $cm2_RL_aResolutionStringList[$I] & "|"
@@ -4655,7 +4657,7 @@ EndFunc
 					Local $ScreenResX = StringReplace($SplitC[0]," ",$sEmpty)
 					Local $ScreenResY = StringReplace($SplitC[1]," ",$sEmpty)
 
-					__cm2_RL_ExtractRes($ScreenResX, $ScreenResY)
+					__cm2_RL_CleanUpResolutionStrings($ScreenResX, $ScreenResY)
 
 					$Array = Internal_ApplyKey($Array,"ResX=",$ScreenResX)
 					$Array = Internal_ApplyKey($Array,"ResY=",$ScreenResY)
@@ -4947,10 +4949,10 @@ EndFunc
 					Local $SplitC = StringSplit($RRead,"x")
 						_ArrayDelete($SplitC,0)
 
-					__cm2_RL_ExtractRes($SplitC[0], $SplitC[1])
-
 					Local $ScreenResX = StringReplace($SplitC[0]," ",$sEmpty)
 					Local $ScreenResY = StringReplace($SplitC[1]," ",$sEmpty)
+
+					__cm2_RL_CleanUpResolutionStrings($ScreenResX, $ScreenResY)
 
 					$Array = Internal_ApplyKey($Array,"ResX=",$ScreenResX)
 					$Array = Internal_ApplyKey($Array,"ResY=",$ScreenResY)

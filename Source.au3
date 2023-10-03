@@ -1257,7 +1257,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 			__cm2_RL_FilterResolutions(@DesktopWidth, @DesktopHeight)
 
 			For $I = 0 To uBound($cm2_RL_aResolutionStringList) - 1 Step 1
-				$AvailableResolutionsStr = $AvailableResolutionsStr & $cm2_RL_aResolutionStringList[$I] & "|"
+				$AvailableResolutionsStr &= $cm2_RL_aResolutionStringList[$I] & "|"
 			Next
 
 		; ----- ----- -----

@@ -1,5 +1,3 @@
-#include <Array.au3>
-
 ;- https://github.com/crackman2
 
 
@@ -122,9 +120,6 @@ Func __cm2_RL_ExtractRes(ByRef $sSplitX, ByRef $sSplitY)
 			ExitLoop
 		EndIf
 	Next
-
-	ConsoleWrite("$sX: " & $sX & @CRLF)
-	ConsoleWrite("$sY: " & $sY & @CRLF)
 
 	$sSplitX = $sX
 	$sSplitY = $sY

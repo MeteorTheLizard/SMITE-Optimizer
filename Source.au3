@@ -175,6 +175,7 @@ EndIf
 #Include <WinAPISysWin.au3> ;- Required by ResourceEx.
 #Include "./Includes/ResourcesEx.au3" ;- Required to use resources.
 #Include "./Includes/_Zip.au3" ;- Used for the debug dump.
+#Include "./Includes/ResolutionList.au3"
 
 
 #Region ;- Metrics
@@ -1307,8 +1308,14 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 
 			EndIf
 
-			For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
-				$AvailableResolutionsStr = $AvailableResolutionsStr & $AvailableResolutions[$I] & "|"
+;~ 			For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
+;~ 				$AvailableResolutionsStr = $AvailableResolutionsStr & $AvailableResolutions[$I] & "|"
+;~ 			Next
+
+			__RL_FilterResolutions(@DesktopWidth, @DesktopHeight)
+
+			For $I = 0 To uBound($aResolutionStringList) - 1 Step 1
+				$AvailableResolutionsStr = $AvailableResolutionsStr & $aResolutionStringList[$I] & "|"
 			Next
 
 		; ----- ----- -----
@@ -1353,6 +1360,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 		Global $MainGUIHomeSimpleComboScreenRes = GUICtrlCreateComboNoTheme($sEmpty,300,88,190,13,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetData(-1,$AvailableResolutionsStr)
+			GUICtrlSetFont(-1,9,"","","Monofonto")
 ;~ 			GUICtrlSetFont(-1,10,Default,Default,$MainFontName)
 		Global $MainGUIHomeSimpleLabelScreenResScale = GUICtrlCreateLabelTransparentBG("Resolution Scale",300,114,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -1487,6 +1495,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 		Global $MainGUIHomeAdvancedComboScreenRes = GUICtrlCreateComboNoTheme($sEmpty,255,133,190,13,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 			GUICtrlSetData(-1,$AvailableResolutionsStr)
+			GUICtrlSetFont(-1,9,"","","Monofonto")
 ;~ 			GUICtrlSetFont(-1,10,Default,Default,$MainFontName)
 		Global $MainGUIHomeAdvancedLabelScreenResScale = GUICtrlCreateLabelTransparentBG("Resolution Scale",255,159,200,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -4704,6 +4713,8 @@ EndFunc
 					Local $ScreenResX = StringReplace($SplitC[0]," ",$sEmpty)
 					Local $ScreenResY = StringReplace($SplitC[1]," ",$sEmpty)
 
+					__RL_ExtractRes($ScreenResX, $ScreenResY)
+
 					$Array = Internal_ApplyKey($Array,"ResX=",$ScreenResX)
 					$Array = Internal_ApplyKey($Array,"ResY=",$ScreenResY)
 
@@ -4993,6 +5004,8 @@ EndFunc
 					Local $RRead = GUICtrlRead($MainGUIHomeAdvancedComboScreenRes)
 					Local $SplitC = StringSplit($RRead,"x")
 						_ArrayDelete($SplitC,0)
+
+					__RL_ExtractRes($SplitC[0], $SplitC[1])
 
 					Local $ScreenResX = StringReplace($SplitC[0]," ",$sEmpty)
 					Local $ScreenResY = StringReplace($SplitC[1]," ",$sEmpty)

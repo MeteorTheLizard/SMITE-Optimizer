@@ -77,6 +77,16 @@ Solution: The game received an update which partially reset your configuration f
 
 -- ----- ----- ----- -----
 
+Problem: The SMITE Optimizer said it found my Steam installation, but it is invalid. -Community Contribution
+Solution: Press windows key + r
+		  Type "regedit"
+		  Navigate to "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\"
+		  Make sure "InstallLocation" is not empty and points to the SMITE folder.
+		  To find out where SMITE was installed, go into your Steam library, right-click on SMITE > Properties > Installed Files > Browse
+		  This will open a new Explorer window. You can copy the path and paste it into the InstallLocation data field in regedit.
+
+-- ----- ----- ----- -----
+
 Problem: I'm trying to create a QuickLaunch Bypass, but the SMITE Optimizer cannot find my game.
 Solution: Verify the game files through Steam or Epic Game Store.
 Solution2: Uninstall the game and install it again (This re-creates the registry entries, which verifying does not do! These are required!)

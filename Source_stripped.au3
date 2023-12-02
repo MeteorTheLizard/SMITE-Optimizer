@@ -1028,6 +1028,9 @@ Return SetError($iError, 0, $iReturn)
 EndFunc
 Global Const $CBS_AUTOHSCROLL = 0x40
 Global Const $CBS_DROPDOWNLIST = 0x3
+Global Const $CB_DELETESTRING = 0x144
+Global Const $CB_GETDROPPEDSTATE = 0x157
+Global Const $CB_INSERTSTRING = 0x14A
 Global Const $CB_SELECTSTRING = 0x14D
 Global Const $CBN_CLOSEUP = 8
 Global Const $CBN_DROPDOWN = 7
@@ -1170,6 +1173,18 @@ Local $aCall = DllCall("user32.dll", "bool", "UpdateWindow", "hwnd", $hWnd)
 If @error Then Return SetError(@error, @extended, False)
 Return $aCall[0]
 EndFunc
+Func _GUICtrlComboBox_DeleteString($hWnd, $iIndex)
+If Not IsHWnd($hWnd) Then $hWnd = GUICtrlGetHandle($hWnd)
+Return _SendMessage($hWnd, $CB_DELETESTRING, $iIndex)
+EndFunc
+Func _GUICtrlComboBox_GetDroppedState($hWnd)
+If Not IsHWnd($hWnd) Then $hWnd = GUICtrlGetHandle($hWnd)
+Return _SendMessage($hWnd, $CB_GETDROPPEDSTATE) <> 0
+EndFunc
+Func _GUICtrlComboBox_InsertString($hWnd, $sText, $iIndex = -1)
+If Not IsHWnd($hWnd) Then $hWnd = GUICtrlGetHandle($hWnd)
+Return _SendMessage($hWnd, $CB_INSERTSTRING, $iIndex, $sText, 0, "wparam", "wstr")
+EndFunc
 Func _GUICtrlComboBox_SelectString($hWnd, $sText, $iIndex = -1)
 If Not IsHWnd($hWnd) Then $hWnd = GUICtrlGetHandle($hWnd)
 Return _SendMessage($hWnd, $CB_SELECTSTRING, $iIndex, $sText, 0, "wparam", "wstr")
@@ -1180,6 +1195,7 @@ Global Const $BM_GETIMAGE = 0xF6
 Global Const $BM_SETIMAGE = 0xF7
 Global Const $ES_READONLY = 2048
 Global Const $ES_WANTRETURN = 4096
+Global Const $ES_NUMBER = 8192
 Global Const $GUI_RUNDEFMSG = 'GUI_RUNDEFMSG'
 Global Const $GUI_CHECKED = 1
 Global Const $GUI_UNCHECKED = 4
@@ -2770,23 +2786,35 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.7.4"
+Global Const $ProgramVersion = "1.3.7.5"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
 Global Const $MinHeight = 450
 Global Const $sEmpty = ""
 Global Const $ChangelogText = _Resource_GetAsString("ChangelogText")
-Local $LoadFont = _Resource_LoadFont("MainFont")
+_Resource_LoadFont("MainFont")
 If @Error and @Compiled Then
 fSendMetric("error_font_code10")
 MsgBox(0,"Error!","Critical error while loading the fonts! Code: 010")
 Exit
 EndIf
-Local $LoadFont = _Resource_LoadFont("MenuFont")
+_Resource_LoadFont("MenuFont")
 If @Error and @Compiled Then
 fSendMetric("error_font_code11")
 MsgBox(0,"Error!","Critical error while loading the fonts! Code: 011")
+Exit
+EndIf
+_Resource_LoadFont("InttFont")
+If @Error and @Compiled Then
+fSendMetric("error_font_code21")
+MsgBox(0,"Error!","Critical error while loading the fonts! Code: 021")
+Exit
+EndIf
+_Resource_LoadFont("ResCFont")
+If @Error and @Compiled Then
+fSendMetric("error_font_code22")
+MsgBox(0,"Error!","Critical error while loading the fonts! Code: 022")
 Exit
 EndIf
 If not @Compiled Then
@@ -2794,6 +2822,8 @@ fSendMetric("event_running_uncompiled")
 EndIf
 Global Const $MainFontName = "Monofonto"
 Global Const $MenuFontName = "Montserrat"
+Global Const $InttFontName = "PT Root UI Bold"
+Global Const $ResCFontName = "Lambda"
 Global $MenuSelected = 1
 Global $MainGUIMaximizedState = False
 Global $MainGUIButtonMaximize = NULL
@@ -2804,6 +2834,9 @@ Global $NotificationGUI = NULL
 Global $GUIMoreOptions = NULL
 Global $ProcessUI = NULL
 Global $ProcessingRequest = False
+Global $ResPromptGUI = NULL
+Global $HomeSimpleComboResLastIndex
+Global $HomeAdvancedComboResLastIndex
 Global $UpdateTimer = NULL
 Global $UpdateColorState = False
 Global $bDiscordIconState = False
@@ -2828,6 +2861,10 @@ Global $JustTabbedBackIn = -1
 Global $SupressHoverImage = False
 Global $HelpIsAnimating = False
 Global $MenuPopupState = False
+Global $LastReadScrResSimple
+Global $LastScreenResScaleSimple
+Global $LastReadScrResAdvanced
+Global $LastScreenResScaleAdvanced
 Global $MainGUIButtonCloseBool = False
 Global $MainGUIButtonMaximizeBool = False
 Global $MainGUIButtonMinimizeBool = False
@@ -2845,6 +2882,7 @@ Global $EGSBtnHoverHideBool = False
 Global $LegacyBtnHoverHideBool = False
 Global $KofiBtnHoverHideBool = False
 Global $PatreonBtnHoverHideBool = False
+Global $PayPalBtnHoverHideBool = False
 Global $ViewOnlineChangesBtnHoverBool = False
 Global $WebsiteOpenHoverBool = False
 Global $LicenseLabelHoverBool = False
@@ -2962,6 +3000,7 @@ DllStructSetData($tMinMaxInfo,5,$WorkingSize[0]+1)
 DllStructSetData($tMinMaxInfo,6,$WorkingSize[1]+1)
 DllStructSetData($tMinMaxInfo,7,$Win_Min_ResizeX)
 DllStructSetData($tMinMaxInfo,8,$Win_Min_ResizeY)
+FixCopyrightGIFPosition()
 Return 0
 EndFunc
 Func INTERNAL_WM_NCCALCSIZE($hWnd)
@@ -3029,12 +3068,15 @@ EndFunc
 Func INTERNAL_WM_LBUTTONDOWN($hWnd)
 If $DisplayHoverImage <> 0 and $HoverImageDrawn Then
 $DisplayHoverImage = 0
-WinMove($HoverInfoGUI,$sEmpty,-$ScrW*2,-$ScrH*2,0,0)
+WinMove($HoverInfoGUI,$sEmpty,-$ScrW * 2,-$ScrH * 2,0,0)
 $HoverImageDrawn = False
 EndIf
 If $hWnd = $GLOBAL_MAIN_GUI and WinGetState($GLOBAL_MAIN_GUI) <> 47 Then
 Local $aCurInfo = GUIGetCursorInfo($GLOBAL_MAIN_GUI)
 If $aCurInfo[4] = $MainGUITitleBarBG or $aCurInfo[4] = $GUIMoreOptionsTitleBarBG Then
+If $bTriedToShowDonateBanner Then
+UndoMenuHoverState()
+EndIf
 DllCall("user32.dll","int","ReleaseCapture")
 DllCall("user32.dll","long","SendMessage","hwnd",$GLOBAL_MAIN_GUI,"int",0x00A1,"int",2,"int",0)
 EndIf
@@ -3202,15 +3244,29 @@ Global $UpdateAvailable = False
 If $CheckForUpdates = "1" Then SplashScreenWriteStatus(25,"Checking for Updates")
 fSendMetric("updater_init")
 Local $agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0"
+Local $sUpdateProvider = "update-so.meteorthelizard.com"
+SplashScreenWriteStatus(25,"Checking for Updates (update-so.meteorthelizard.com)")
 Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
-$oHTTP.Open("GET","https://meteorthelizard.github.io/SMITE-Optimizer-Update/",False)
+$oHTTP.Open("GET","https://update-so.meteorthelizard.com/update.ini",False)
 $oHTTP.setRequestHeader("User-Agent",$agent)
 $oHTTP.Option(4) = 13056
 $oHTTP.Send()
 Local $UpdateGet = $oHTTP.ResponseText
 $oHTTP = NULL
 If not $UpdateGet Then
+fSendMetric("error_updater_mtl_failed")
+SplashScreenWriteStatus(25,"Checking for Updates (meteorthelizard.github.io)")
+Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
+$oHTTP.Open("GET","https://meteorthelizard.github.io/SMITE-Optimizer-Update/",False)
+$oHTTP.setRequestHeader("User-Agent",$agent)
+$oHTTP.Option(4) = 13056
+$oHTTP.Send()
+$UpdateGet = $oHTTP.ResponseText
+$oHTTP = NULL
+$sUpdateProvider = "meteorthelizard.github.io"
+If not $UpdateGet Then
 fSendMetric("error_updater_github_failed")
+SplashScreenWriteStatus(25,"Checking for Updates (pastebin.com)")
 Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
 $oHTTP.Open("GET","https://pastebin.com/raw/SXnHTU9H",False)
 $oHTTP.setRequestHeader("User-Agent",$agent)
@@ -3218,10 +3274,12 @@ $oHTTP.Option(4) = 13056
 $oHTTP.Send()
 $UpdateGet = $oHTTP.ResponseText
 $oHTTP = NULL
+$sUpdateProvider = "pastebin.com"
 If not $UpdateGet Then
 fSendMetric("error_updater_failed_connect")
 MsgBox($MB_OK,"Error","Could not connect to the update servers.")
 WinActivate($SplashScreenGUI)
+EndIf
 EndIf
 EndIf
 If $UpdateGet Then
@@ -3251,6 +3309,7 @@ EndIf
 If $CheckForUpdates = "1" or $ForceUpdate Then
 fSendMetric("updater_can_update")
 RegDelete("HKCU\Software\SMITE Optimizer\","DebugForceUpdate")
+RegWrite("HKCU\Software\SMITE Optimizer\","UpdateProvider",$sUpdateProvider)
 SplashScreenWriteStatus(0,"Preparing to download an update..")
 Local $NewFileSize, $NewFile
 If @AutoItX64 = 1 Then
@@ -3296,22 +3355,29 @@ If @OSVersion <> "WIN_VISTA" and @OSVersion <> "WIN_7" and @OSVersion <> "WIN_8"
 $WindowsUIFont = $MenuFontName
 EndIf
 Func GUICtrlCreateLabelTransparentBG($Text,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style = Default)
-Local $Label = GUICtrlCreateLabel($Text,$X,$Y,$Size_X,$Size_Y,$Style)
+Local $Obj = GUICtrlCreateLabel($Text,$X,$Y,$Size_X,$Size_Y,$Style)
 GUICtrlSetBkColor(-1,$GUI_BKCOLOR_TRANSPARENT)
 GUICtrlSetColor(-1,$cTextColor)
-GUICtrlSetFont(-1,Default,Default,Default,$MainFontName)
-Return $Label
+GUICtrlSetFont(-1,Default,Default,Default,$MainFontName,BitOr(4,5))
+Return $Obj
 EndFunc
 Func GUICtrlCreateCheckboxTransparentBG($X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0)
-Local $Checkbox = GUICtrlCreateCheckbox($sEmpty,$X,$Y,$Size_X,$Size_Y)
+Local $Obj = GUICtrlCreateCheckbox($sEmpty,$X,$Y,$Size_X,$Size_Y)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetBkColor(-1,$GUI_BKCOLOR_TRANSPARENT)
-Return $Checkbox
+Return $Obj
 EndFunc
 Func GUICtrlCreateComboNoTheme($Str,$X = 0,$Y = 0,$Size_X = 0,$Size_Y = 0,$Style = $sEmpty)
-Local $Combo = GUICtrlCreateCombo($Str,$X,$Y,$Size_X,$Size_Y,$Style)
+Local $Obj = GUICtrlCreateCombo($Str,$X,$Y,$Size_X,$Size_Y,$Style)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
-Return $Combo
+GUICtrlSetFont(-1,9,Default,Default,$InttFontName,BitOr(4,5))
+Return $Obj
+EndFunc
+Func GUICtrlCreateInputSO($sStr,$iX,$iY,$iSize_X,$iSize_Y,$iStyle = $sEmpty)
+Local $Obj = GUICtrlCreateInput($sStr,$iX,$iY,$iSize_X,$iSize_Y,$iStyle)
+DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
+GUICtrlSetFont(-1,9,Default,Default,$InttFontName,BitOr(4,5))
+Return $Obj
 EndFunc
 Func GUICtrlCreateButtonSO($GUI,$sStr,$X,$Y,$W,$H,$cBackgroundColor = $cBackgroundColor,$cTextColor = $cTextColor,$cAccentColor = $cAccentColor)
 Local $Obj = _SOCtrlButtons_Create($GUI,$sStr,$X,$Y,$W,$H,$cBackgroundColor,$cTextColor,$WindowsUIFont,8,1,$cAccentColor)
@@ -3509,42 +3575,7 @@ GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 GUICtrlSetState(-1,$ProgramHomeHelpState)
 Global $MainGUIHomeLabelDisplayHints = GUICtrlCreateLabelTransparentBG("Show help",178,384,-1,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-Global $AvailableResolutions[0]
-Local $AvailableResolutionsStr
-Local $objWMIService = ObjGet("winmgmts:\\.\root\cimv2")
-Local $colItems = $objWMIService.ExecQuery("SELECT * FROM CIM_VideoControllerResolution")
-Sleep(10)
-For $objItem in $colItems
-Local $Count = uBound($AvailableResolutions)
-ReDim $AvailableResolutions[$Count + 1]
-$AvailableResolutions[$Count] = $objItem.HorizontalResolution & " x " & $objItem.VerticalResolution
-Next
-If uBound($AvailableResolutions) = 0 Then
-fSendMetric("error_failed_screen_resolutions")
-MsgBox($MB_OK,"Error!","An error has occured. Code: 008"&@CRLF&"You will only be able to select your current screen resolution."&@CRLF&"Please restart the program to potentially resolve this.")
-ReDim $AvailableResolutions[1]
-$AvailableResolutions[0] = @DesktopWidth & " x " & @DesktopHeight
-Else
-_ArrayAdd($AvailableResolutions,@DesktopWidth & " x " & @DesktopHeight,0)
-$AvailableResolutions = _ArrayUnique($AvailableResolutions)
-_ArrayDelete($AvailableResolutions,0)
-_ArrayReverse($AvailableResolutions)
-Local $iStart = 0
-For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
-Local $iNum = StringLeft($AvailableResolutions[$I],3)
-local $iXStart = StringInStr($AvailableResolutions[$I],"x")
-If $iNum < 800 and($iXStart = 5 or $iXStart = 4) Then
-$iStart = $I
-ExitLoop
-EndIf
-Next
-For $I = uBound($AvailableResolutions) - 1 To $iStart Step -1
-_ArrayDelete($AvailableResolutions,$I)
-Next
-EndIf
-For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
-$AvailableResolutionsStr = $AvailableResolutionsStr & $AvailableResolutions[$I] & "|"
-Next
+Internal_ProcessScreenRes()
 Local $TypeOptions = "Best|High|Medium|Low|Very Low|Minimum|Potato|Lowest Possible"
 Local $WindowOptions = "Fullscreen|Borderless Window|Windowed"
 Global $MainGUIHomeSimpleLabelWorldQuality = GUICtrlCreateLabelTransparentBG("World Quality",100,74,200,13)
@@ -3574,7 +3605,7 @@ GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetData(-1,$TypeOptions)
 Global $MainGUIHomeSimpleLabelMaxFPS = GUICtrlCreateLabelTransparentBG("Desired FPS (Uncap)",100,274,200,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-Global $MainGUIHomeSimpleInputMaxFPS = GUICtrlCreateInput($sEmpty,100,288,190,21)
+Global $MainGUIHomeSimpleInputMaxFPS = GUICtrlCreateInputSO($sEmpty,100,288,190,21)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetLimit(-1,3)
@@ -3583,13 +3614,14 @@ GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeSimpleComboScreenRes = GUICtrlCreateComboNoTheme($sEmpty,300,88,190,13,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetData(-1,$AvailableResolutionsStr)
+GUICtrlSetFont(-1,9,Default,Default,$ResCFontName,BitOr(4,5))
 Global $MainGUIHomeSimpleLabelScreenResScale = GUICtrlCreateLabelTransparentBG("Resolution Scale",300,114,200,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeSimpleSliderScreenResScale = GUICtrlCreateSlider(300,128,190,21)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetLimit(-1,200,50)
-Global $MainGUIHomeSimpleInputScreenResScale = GUICtrlCreateInput($sEmpty,500,128,40,21,$ES_READONLY)
+Global $MainGUIHomeSimpleInputScreenResScale = GUICtrlCreateInputSO($sEmpty,500,128,40,21,$ES_READONLY)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeSimpleLabelWindowmode = GUICtrlCreateLabelTransparentBG("Window Type",300,154,200,13)
@@ -3652,7 +3684,6 @@ Global $MainGUIHomeSimpleCheckboxHighQualityMats = GUICtrlCreateCheckboxTranspar
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeSimpleLabelHighQualityMats = GUICtrlCreateLabelTransparentBG("Uncompressed Textures",613,256,235,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-Global $LastScreenResScaleSimple
 Global $MainGUIHomeAdvancedLabelWorldQuality = GUICtrlCreateLabelTransparentBG("World Quality",55,39,200,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeAdvancedComboWorldQuality = GUICtrlCreateComboNoTheme($sEmpty,55,53,190,13,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
@@ -3708,13 +3739,14 @@ GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeAdvancedComboScreenRes = GUICtrlCreateComboNoTheme($sEmpty,255,133,190,13,BitOR($CBS_DROPDOWNLIST,$CBS_AUTOHSCROLL))
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetData(-1,$AvailableResolutionsStr)
+GUICtrlSetFont(-1,9,Default,Default,$ResCFontName,BitOr(4,5))
 Global $MainGUIHomeAdvancedLabelScreenResScale = GUICtrlCreateLabelTransparentBG("Resolution Scale",255,159,200,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeAdvancedSliderScreenResScale = GUICtrlCreateSlider(255,173,190,21)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetLimit(-1,200,50)
-Global $MainGUIHomeAdvancedInputScreenResScale = GUICtrlCreateInput($sEmpty,455,173,40,21,$ES_READONLY)
+Global $MainGUIHomeAdvancedInputScreenResScale = GUICtrlCreateInputSO($sEmpty,455,173,40,21,$ES_READONLY)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeAdvancedLabelWindowmode = GUICtrlCreateLabelTransparentBG("Window Type",255,199,200,13)
@@ -3734,7 +3766,7 @@ GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetData(-1,"16x|8x|4x|2x|Off")
 Global $MainGUIHomeAdvancedLabelMaxFPS = GUICtrlCreateLabelTransparentBG("Desired FPS (Uncap)",255,319,200,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-Global $MainGUIHomeAdvancedInputMaxFPS = GUICtrlCreateInput($sEmpty,255,333,190,21)
+Global $MainGUIHomeAdvancedInputMaxFPS = GUICtrlCreateInputSO($sEmpty,255,333,190,21)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetLimit(-1,3)
@@ -3853,12 +3885,11 @@ GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeAdvancedLabelDynamicShadows = GUICtrlCreateLabelTransparentBG("Dynamic Shadows",638,333,160,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Internal_LoadSettingCookies(False,False,True)
-Global $LastScreenResScaleAdvanced
 GUICtrlSetData($MainGUIHomeSimpleInputScreenResScale,GUICtrlRead($MainGUIHomeSimpleSliderScreenResScale)&"%")
 GUICtrlSetData($MainGUIHomeAdvancedInputScreenResScale,GUICtrlRead($MainGUIHomeAdvancedSliderScreenResScale)&"%")
 Global $MainGUIFixesLabelMaxFPS = GUICtrlCreateLabelTransparentBG("Desired FPS (Uncap)",80,64,200,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-Global $MainGUIFixesInputMaxFPS = GUICtrlCreateInput("150",80,78,190,21)
+Global $MainGUIFixesInputMaxFPS = GUICtrlCreateInputSO("150",80,78,190,21)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetLimit(-1,3)
@@ -3900,7 +3931,7 @@ GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKB
 Internal_UpdateRestoreConfigList()
 Global $MainGUIRestoreConfigurationsLabelBackupPath = GUICtrlCreateLabelTransparentBG("Backup Path:",5,410,75,13)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-Global $MainGUIRestoreConfigurationsInputBackupPath = GUICtrlCreateInput($ConfigBackupPath,5,425,700,20,$ES_READONLY)
+Global $MainGUIRestoreConfigurationsInputBackupPath = GUICtrlCreateInputSO($ConfigBackupPath,5,425,700,20,$ES_READONLY)
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKHEIGHT)
 Global $MainGUIRestoreConfigurationsButtonChangeBackupPath = GUICtrlCreateButtonSO($MainGUI,"Change..",709,424,97,22)
@@ -3931,13 +3962,17 @@ LoadImageResource($MainGUIDonatePicHeart,$MainResourcePath & "Heart_BG.jpg","Hea
 GUICtrlSetOnEvent($MainGUIDonatePicHeart,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetState($MainGUIDonatePicHeart,$GUI_DISABLE)
-Global $MainGUIDonateButtonKofi = GUICtrlCreatePic($sEmpty,136,188,250,110)
+Global $MainGUIDonateButtonKofi = GUICtrlCreatePic($sEmpty,136,118,250,110)
 LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
 GUICtrlSetOnEvent($MainGUIDonateButtonKofi,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-Global $MainGUIDonateButtonPatreon = GUICtrlCreatePic($sEmpty,474,188,250,110)
+Global $MainGUIDonateButtonPatreon = GUICtrlCreatePic($sEmpty,474,118,250,110)
 LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 GUICtrlSetOnEvent($MainGUIDonateButtonPatreon,"ButtonPressLogic")
+GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+Global $MainGUIDonateButtonPaypal = GUICtrlCreatePic($sEmpty,305,260,250,110)
+LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
+GUICtrlSetOnEvent($MainGUIDonateButtonPaypal,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 Global $MainGUIChangelogRichEdit = GUICtrlCreateEdit($ChangelogText,55,41,$MinWidth-60,$MinHeight-46,BitOr($ES_READONLY,$WS_VSCROLL))
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
@@ -4110,7 +4145,7 @@ GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_D
 Global $MainGUIDebugButtonPerformUpdate = NULL
 If $UpdateAvailable Then
 fSendMetric("event_automaticupdates_aredisabled")
-$MainGUIDebugButtonPerformUpdate = GUICtrlCreateButtonSO($MainGUI,"Perform Update",540,401,100,35)
+$MainGUIDebugButtonPerformUpdate = GUICtrlCreateButtonSO($MainGUI,"Perform Update",514,401,100,35)
 GUICtrlSetOnEvent($MainGUIDebugButtonPerformUpdate,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 EndIf
@@ -4538,11 +4573,13 @@ Func DrawMainGUIDonate()
 GUICtrlSetState($MainGUIDonatePicHeart,$GUI_SHOW)
 GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_SHOW)
 GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_SHOW)
+GUICtrlSetState($MainGUIDonateButtonPaypal,$GUI_SHOW)
 EndFunc
 Func UnDrawMainGUIDonate()
 GUICtrlSetState($MainGUIDonatePicHeart,$GUI_HIDE)
 GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_HIDE)
 GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_HIDE)
+GUICtrlSetState($MainGUIDonateButtonPaypal,$GUI_HIDE)
 EndFunc
 Func DrawMainGUIChangelog()
 ControlFocus($MainGUI,$sEmpty,$MainGUIChangelogRichEdit)
@@ -4566,7 +4603,7 @@ EndIf
 $MainGUICopyrightAnimatedLogo = $aRet[0]
 $MainGUICopyrightAnimatedLogoID = $aRet[1]
 $__g_GIFExtended_aStoreCache[$MainGUICopyrightAnimatedLogoID][13] = $iCurrentFrameCopyrightGIF
-GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKHCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetState(-1,$GUI_DISABLE)
 GUICtrlSetState($MainGUICopyrightLabelInfo,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelLicense,$GUI_SHOW)
@@ -4715,9 +4752,9 @@ EndFunc
 Func MenuHoverState($Text,$PosY,$SizeX,$TPosY)
 Local $aWinPos = WinGetPos($MainGUI)
 If $Text <> "DBan" Then
-WinMove($MenuHoverGUI,"",$aWinPos[0] + 50,$aWinPos[1] + $PosY,$SizeX,40)
+WinMove($MenuHoverGUI,$sEmpty,$aWinPos[0] + 50,$aWinPos[1] + $PosY,$SizeX,40)
 Else
-WinMove($MenuHoverGUI,"",$aWinPos[0] + 50,$aWinPos[1] + $PosY,$SizeX,80)
+WinMove($MenuHoverGUI,$sEmpty,$aWinPos[0] + 50,$aWinPos[1] + $PosY,$SizeX,80)
 EndIf
 GUISetState(@SW_SHOWNOACTIVATE,$MenuHoverGUI)
 _WinAPI_SetWindowPos($MenuHoverGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
@@ -4729,7 +4766,7 @@ GUICtrlSetColor($MainGUIMenuHoverText,$cTextColor)
 GUICtrlSetPos($MainGUIMenuHoverText,7,0,$SizeX,40)
 Else
 GUICtrlSetState($MainGUIMenuHoverDBan,$GUI_SHOW)
-GUICtrlSetData($MainGUIMenuHoverText,"")
+GUICtrlSetData($MainGUIMenuHoverText,$sEmpty)
 GUICtrlSetColor($MainGUIMenuHoverText,0x00)
 GUICtrlSetPos($MainGUIMenuHoverText,-1000,0,0,0)
 EndIf
@@ -4799,6 +4836,17 @@ ReDim $Ret[uBound($Ret)+1]
 $Ret[$I] = StringUpper(StringLeft($Temp[$I],1))
 Next
 Return $Ret
+EndFunc
+Func FixCopyrightGIFPosition()
+If IsDeclared("LastMenu") and $LastMenu = "Copyright" Then
+GUISwitch($MainGUI)
+Local $Temp = GUICtrlCreatePic($sEmpty,130,50,99999,100)
+LoadImageResource($Temp,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
+GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+Local $aPos = WinGetClientSize($MainGUI)
+GUICtrlSetPos($MainGUICopyrightAnimatedLogo,$aPos[0] / 2 - 275,50,600,100)
+GUICtrlDelete($Temp)
+EndIf
 EndFunc
 Func VerifyAndStoreConfigPath($State,$PathSettings,$PathSystemSettings,$PathGameSettings)
 If FileExists($PathSettings) and FileExists($PathSystemSettings) and FileExists($PathGameSettings) Then
@@ -5161,10 +5209,12 @@ If $MainGUIMaximizedState Then
 WinSetState($MainGUI,$sEmpty,@SW_RESTORE)
 $MainGUIMaximizedState = False
 LoadImageResource($MainGUIButtonMaximize,$MainResourcePath & "Maximize1NoActivate.jpg","Maximize1NoActivate")
+FixCopyrightGIFPosition()
 Else
 WinSetState($MainGUI,$sEmpty,@SW_MAXIMIZE)
 $MainGUIMaximizedState = True
 LoadImageResource($MainGUIButtonMaximize,$MainResourcePath & "Maximize2NoActivate.jpg","Maximize2NoActivate")
+FixCopyrightGIFPosition()
 EndIf
 Case $MainGUIButtonMinimize
 WinSetState($MainGUI,$sEmpty,@SW_MINIMIZE)
@@ -5340,6 +5390,10 @@ Case $MainGUIDonateButtonPatreon
 fSendMetric("action_patreon_pressed")
 ShellExecute("https://www.patreon.com/MeteorTheLizard")
 LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
+Case $MainGUIDonateButtonPaypal
+fSendMetric("action_paypal_pressed")
+ShellExecute("https://www.paypal.com/paypalme/MeteorTheLizard")
+LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
 Case $MainGUIChangelogButtonViewOnline, $MainGUIChangelogButtonViewOnlineBG
 fSendMetric("action_changelog_pressed")
 ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer/commits/master")
@@ -5451,6 +5505,14 @@ EndIf
 GUICtrlSetData($LabelDebugDumpWorking,"Retrieving EasyAntiCheat logs")
 FileCopy("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat\*.log",@TempDir & "\optimizerdebugdump\logs\*.log",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
 FileCopy("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat\140\*.log",@TempDir & "\optimizerdebugdump\logs\*.log",BitOr($FC_OVERWRITE,$FC_CREATEPATH))
+GUICtrlSetData($LabelDebugDumpWorking,"Retrieving registry values")
+Local $sData = $sEmpty
+For $i = 1 To 100 Step 1
+Local $sVar = RegEnumVal("HKCU\SOFTWARE\SMITE Optimizer\", $i)
+If @Error Then ContinueLoop
+$sData = $sData & $sVar & " = " & RegRead("HKCU\SOFTWARE\SMITE Optimizer\",$sVar) & @CRLF
+Next
+FileWrite(@TempDir & "\optimizerdebugdump\reg-values.txt",$sData)
 GUICtrlSetData($LabelDebugDumpWorking,"Retrieving dxdiag information")
 ShellExecute("dxdiag",'/dontskip /whql:off /t "' & @TempDir & '\optimizerdebugdump\dxdiag.txt"')
 While ProcessExists("dxdiag.exe")
@@ -5492,6 +5554,187 @@ ToggleMenuState("Home")
 EndIf
 GUISetState(@SW_ENABLE,$MainGUI)
 EndSwitch
+EndFunc
+Func Internal_ProcessScreenRes()
+Global $AvailableResolutions[0]
+Global $AvailableResolutionsStr
+_ArrayAdd($AvailableResolutions,"800 x 600")
+_ArrayAdd($AvailableResolutions,"1024 x 768")
+_ArrayAdd($AvailableResolutions,"1280 x 960")
+_ArrayAdd($AvailableResolutions,"1400 x 1050")
+_ArrayAdd($AvailableResolutions,"1440 x 1080")
+_ArrayAdd($AvailableResolutions,"1600 x 1200")
+_ArrayAdd($AvailableResolutions,"1280 x 720")
+_ArrayAdd($AvailableResolutions,"1366 x 768")
+_ArrayAdd($AvailableResolutions,"1600 x 900")
+_ArrayAdd($AvailableResolutions,"1920 x 1080")
+_ArrayAdd($AvailableResolutions,"2560 x 1440")
+_ArrayAdd($AvailableResolutions,"3840 x 2160")
+_ArrayAdd($AvailableResolutions,"7680 x 4320")
+_ArrayAdd($AvailableResolutions,"1280 x 800")
+_ArrayAdd($AvailableResolutions,"1440 x 900")
+_ArrayAdd($AvailableResolutions,"1680 x 1050")
+_ArrayAdd($AvailableResolutions,"1920 x 1200")
+_ArrayAdd($AvailableResolutions,"2560 x 1600")
+_ArrayAdd($AvailableResolutions,"3840 x 2400")
+_ArrayAdd($AvailableResolutions,"2560 x 1080")
+_ArrayAdd($AvailableResolutions,"3440 x 1440")
+_ArrayAdd($AvailableResolutions,"3840 x 1600")
+_ArrayAdd($AvailableResolutions,"5120 x 2160")
+_ArrayAdd($AvailableResolutions,"3840 x 1080")
+_ArrayAdd($AvailableResolutions,"5120 x 1440")
+$AvailableResolutions = _ArrayUnique($AvailableResolutions)
+_ArrayDelete($AvailableResolutions,0)
+Local $aTempPixels[0][2]
+For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
+ReDim $aTempPixels[$I + 1][2]
+$aTempPixels[$I][0] = $AvailableResolutions[$I]
+Local $aSplit = StringSplit($aTempPixels[$I][0]," x ",1)
+If uBound($aSplit) > 2 Then $aTempPixels[$I][1] =(Number($aSplit[1]) * Number($aSplit[2]))
+Next
+_ArraySort($aTempPixels,Default,Default,Default,1)
+For $I = 0 To uBound($aTempPixels) - 1 Step 1
+$AvailableResolutions[$I] = $aTempPixels[$I][0]
+Next
+_ArrayInsert($AvailableResolutions,0,@DesktopWidth & " x " & @DesktopHeight)
+Local $bErrorFlag = False
+Local $sReadX = RegRead("HKCU\Software\SMITE Optimizer\","Custom_ResX")
+If @Error Then $bErrorFlag = True
+Local $sReadY = RegRead("HKCU\Software\SMITE Optimizer\","Custom_ResY")
+If @Error Then $bErrorFlag = True
+If Not $bErrorFlag Then
+$sReadX = Floor(Abs(Number($sReadX)))
+$sReadX =($sReadX < 800 ? 800 : $sReadX > 15360 ? 15360 : $sReadX)
+$sReadY = Floor(Abs(Number($sReadY)))
+$sReadY =($sReadY < 600 ? 600 : $sReadY > 8640 ? 8640 : $sReadY)
+_ArrayInsert($AvailableResolutions,1,"Custom (" & $sReadX & " x " & $sReadY & ")")
+Else
+_ArrayInsert($AvailableResolutions,1,"Custom")
+EndIf
+For $I = 0 To uBound($AvailableResolutions) - 1 Step 1
+$AvailableResolutionsStr = $AvailableResolutionsStr & $AvailableResolutions[$I] & "|"
+Next
+EndFunc
+Func Internal_ChooseCustomRes()
+If $ResPromptGUI <> NULL Then
+GUIDelete($ResPromptGUI)
+EndIf
+_WinAPI_SetWindowPos($MainGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
+_WinAPI_SetWindowPos($MainGUI,$HWND_NOTOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
+GUISetState(@SW_DISABLE,$MainGUI)
+Local $WinPos = WinGetPos($MainGUI)
+Global $ResPromptGUI = GUICreate("SO_RESSELECT",300,150,$WinPos[0] +($WinPos[2]/2)-150,$WinPos[1] +($WinPos[3]/2)-75,BitOR($WS_MINIMIZEBOX,$WS_MAXIMIZEBOX,$WS_POPUP),$WS_EX_TOOLWINDOW)
+GUISwitch($ResPromptGUI)
+_GUI_EnableDrag($ResPromptGUI,300,150)
+GUISetBkColor($cBackgroundColor)
+GUICtrlSetDefColor($cTextColor,$ResPromptGUI)
+GUICtrlSetDefBkColor($cBackgroundColor,$ResPromptGUI)
+Local $Pic = GUICtrlCreatePic($sEmpty,0,34,300,116)
+LoadImageResource($Pic,$MainResourcePath & "ChooseResBG.jpg","ChooseResBG")
+GUICtrlSetState(-1,$GUI_DISABLE)
+Local $Pic = GUICtrlCreatePic($sEmpty,18,9,16,16)
+LoadImageResource($Pic,$MainResourcePath & "\SMITEOptimizerIcon.jpg","SMITEOptimizerIcon")
+GUICtrlCreateLabelTransparentBG("Choose resolution",50,9,105,15)
+GUICtrlSetFont(-1,9,Default,Default,$MainFontName)
+GUICtrlCreateLabelTransparentBG("Width",66,45,50,15)
+GUICtrlSetFont(-1,9,Default,Default,$MainFontName)
+Local $sRead = RegRead("HKCU\Software\SMITE Optimizer\","Custom_ResX")
+$sRead = Floor(Abs(Number($sRead)))
+$sRead =($sRead < 800 ? 800 : $sRead > 15360 ? 15360 : $sRead)
+Local $ResX = GUICtrlCreateInputSO($sRead,65,64,75,25,$ES_NUMBER)
+GUICtrlCreateLabelTransparentBG("Height",161,45,50,15)
+GUICtrlSetFont(-1,9,Default,Default,$MainFontName)
+Local $sRead = RegRead("HKCU\Software\SMITE Optimizer\","Custom_ResY")
+$sRead = Floor(Abs(Number($sRead)))
+$sRead =($sRead < 600 ? 600 : $sRead > 8640 ? 8640 : $sRead)
+Local $ResY = GUICtrlCreateInputSO($sRead,160,64,75,25,$ES_NUMBER)
+Local $Cancel = GUICtrlCreateButtonSO($ResPromptGUI,"Cancel",65,101,75,35)
+Local $Apply = GUICtrlCreateButtonSO($ResPromptGUI,"Apply",160,101,75,35)
+Local $ResPromptGUIClose = GUICtrlCreatePic($sEmpty,266,0,34,34)
+LoadImageResource($ResPromptGUIClose,$MainResourcePath & "CloseNoActivate.jpg","CloseNoActivate")
+GUISetState(@SW_SHOW,$ResPromptGUI)
+Local $CloseState = False
+Local $bReturnFlag = False
+While True
+Local $CursorInfo = GUIGetCursorInfo($ResPromptGUI)
+If WinGetTitle("[active]") = "SO_RESSELECT" Then
+If _IsPressed("1B") Then
+ExitLoop
+EndIf
+Switch $CursorInfo[4]
+Case $ResPromptGUIClose
+If not $CloseState Then
+LoadImageResource($ResPromptGUIClose,$MainResourcePath & "CloseActivate.jpg","CloseActivate")
+$CloseState = True
+EndIf
+If _IsPressed("01") Then
+If $ProgramHomeState = "Simple" Then
+_GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,$HomeSimpleComboResLastIndex)
+ElseIf $ProgramHomeState = "Advanced" Then
+_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,$HomeAdvancedComboResLastIndex)
+EndIf
+ExitLoop
+EndIf
+Case $Apply
+If _IsPressed("01") Then
+While _IsPressed("01")
+Sleep(10)
+WEnd
+Local $iX = GUICtrlRead($ResX)
+$iX = Floor(Abs(Number($iX)))
+$iX =($iX < 800 ? 800 : $iX > 15360 ? 15360 : $iX)
+Local $iY = GUICtrlRead($ResY)
+$iY = Floor(Abs(Number($iY)))
+$iY =($iY < 600 ? 600 : $iY > 8640 ? 8640 : $iY)
+RegWrite("HKCU\Software\SMITE Optimizer\","Custom_ResX","REG_SZ",$iX)
+RegWrite("HKCU\Software\SMITE Optimizer\","Custom_ResY","REG_SZ",$iY)
+Local $sSet = "Custom (" & $iX & " x " & $iY & ")"
+_GUICtrlComboBox_DeleteString($MainGUIHomeSimpleComboScreenRes,1)
+_GUICtrlComboBox_InsertString($MainGUIHomeSimpleComboScreenRes,$sSet,1)
+If $ProgramHomeState = "Simple" Then
+_GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,$sSet,1)
+$LastReadScrResSimple = GUICtrlRead($MainGUIHomeSimpleComboScreenRes)
+EndIf
+_GUICtrlComboBox_DeleteString($MainGUIHomeAdvancedComboScreenRes,1)
+_GUICtrlComboBox_InsertString($MainGUIHomeAdvancedComboScreenRes,$sSet,1)
+If $ProgramHomeState = "Advanced" Then
+_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,$sSet,1)
+$LastReadScrResAdvanced = GUICtrlRead($MainGUIHomeAdvancedComboScreenRes)
+EndIf
+$bReturnFlag = True
+ExitLoop
+EndIf
+Case $Cancel
+If _IsPressed("01") Then
+While _IsPressed("01")
+Sleep(10)
+WEnd
+If $ProgramHomeState = "Simple" Then
+_GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,$HomeSimpleComboResLastIndex)
+ElseIf $ProgramHomeState = "Advanced" Then
+_GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,$HomeAdvancedComboResLastIndex)
+EndIf
+ExitLoop
+EndIf
+Case Else
+If $CloseState Then
+LoadImageResource($ResPromptGUIClose,$MainResourcePath & "CloseNoActivate.jpg","CloseNoActivate")
+$CloseState = False
+EndIf
+EndSwitch
+Sleep(10)
+Else
+If WinGetTitle("[active]") = $ProgramName Then WinActivate($ResPromptGUI)
+Sleep(100)
+EndIf
+WEnd
+GUISwitch($MainGUI)
+_GUI_DragAndResizeUpdate($MainGUI,$MinWidth,$MinHeight)
+GUIDelete($ResPromptGUI)
+$ResPromptGUI = NULL
+GUISetState(@SW_ENABLE,$MainGUI)
+WinActivate($MainGUI)
+Return $bReturnFlag
 EndFunc
 Func Internal_ConvertMagicNumber($Number)
 If $Number = "En" or $Number = $GUI_CHECKED Then
@@ -5602,13 +5845,27 @@ _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboCharacterQuality,$Split[1])
 _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboShadowQuality,$Split[2])
 _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboSkyQuality,$Split[3])
 _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboEffectsParticleQuality,$Split[4])
+Local $sLowerRead = StringLower($Split[5])
+If $sLowerRead == "inf" or $sLowerRead == "nan" or StringInStr($sLowerRead,"e",0) <> 0 Then
+$Split[5] = 999
+EndIf
 GUICtrlSetData($MainGUIHomeSimpleInputMaxFPS,$Split[5])
 Local $Res
 RegRead("HKCU\Software\SMITE Optimizer\","ConfigCookieSimple")
 If @Error Then
 $Res = _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,@DesktopWidth & " x " & @DesktopHeight)
 Else
+If StringLeft($Split[6],6) <> "Custom" Then
 $Res = _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,$Split[6])
+Else
+Local $sReadX = RegRead("HKCU\Software\SMITE Optimizer\","Custom_ResX")
+$sReadX = Floor(Abs(Number($sReadX)))
+$sReadX =($sReadX < 800 ? 800 : $sReadX > 15360 ? 15360 : $sReadX)
+Local $sReadY = RegRead("HKCU\Software\SMITE Optimizer\","Custom_ResY")
+$sReadY = Floor(Abs(Number($sReadY)))
+$sReadY =($sReadY < 600 ? 600 : $sReadY > 8640 ? 8640 : $sReadY)
+$Res = _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,"Custom (" & $sReadX & " x " & $sReadY & ")")
+EndIf
 If $Res = -1 Then
 _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboScreenRes,@DesktopWidth & " x " & @DesktopHeight)
 EndIf
@@ -5627,6 +5884,8 @@ GUICtrlSetState($MainGUIHomeSimpleCheckboxDynamicLightShadows,Internal_ConvertMa
 GUICtrlSetState($MainGUIHomeSimpleCheckboxLensflares,Internal_ConvertMagicNumber($Split[18]))
 GUICtrlSetState($MainGUIHomeSimpleCheckboxReflections,Internal_ConvertMagicNumber($Split[19]))
 GUICtrlSetState($MainGUIHomeSimpleCheckboxHighQualityMats,Internal_ConvertMagicNumber($Split[20]))
+$LastReadScrResSimple = GUICtrlRead($MainGUIHomeSimpleComboScreenRes)
+$HomeSimpleComboResLastIndex = $LastReadScrResSimple
 EndIf
 If $ProgramHomeState = "Advanced" or $InitBool Then
 If not $Performance Then
@@ -5654,7 +5913,17 @@ RegRead("HKCU\Software\SMITE Optimizer\","ConfigCookieAdvanced")
 If @Error Then
 $Res = _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,@DesktopWidth & " x " & @DesktopHeight)
 Else
+If StringLeft($Split[10],6) <> "Custom" Then
 $Res = _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,$Split[10])
+Else
+Local $sReadX = RegRead("HKCU\Software\SMITE Optimizer\","Custom_ResX")
+$sReadX = Floor(Abs(Number($sReadX)))
+$sReadX =($sReadX < 800 ? 800 : $sReadX > 15360 ? 15360 : $sReadX)
+Local $sReadY = RegRead("HKCU\Software\SMITE Optimizer\","Custom_ResY")
+$sReadY = Floor(Abs(Number($sReadY)))
+$sReadY =($sReadY < 600 ? 600 : $sReadY > 8640 ? 8640 : $sReadY)
+$Res = _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,"Custom (" & $sReadX & " x " & $sReadY & ")")
+EndIf
 If $Res = -1 Then
 _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboScreenRes,@DesktopWidth & " x " & @DesktopHeight)
 EndIf
@@ -5663,6 +5932,10 @@ GUICtrlSetData($MainGUIHomeAdvancedSliderScreenResScale,$Split[11])
 _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboWindowmode,$Split[12])
 _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboAntialiasing,$Split[13])
 _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboMaxAnisotropy,$Split[14])
+Local $sLowerRead = StringLower($Split[15])
+If $sLowerRead == "inf" or $sLowerRead == "nan" or StringInStr($sLowerRead,"e",0) <> 0 Then
+$Split[15] = 999
+EndIf
 GUICtrlSetData($MainGUIHomeAdvancedInputMaxFPS,$Split[15])
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxSpeedTreeWind,Internal_ConvertMagicNumber($Split[16]))
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxSpeedTreeLeaves,Internal_ConvertMagicNumber($Split[17]))
@@ -5691,6 +5964,8 @@ GUICtrlSetState($MainGUIHomeAdvancedCheckboxDynamicLights,Internal_ConvertMagicN
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxCompDynamicLights,Internal_ConvertMagicNumber($Split[40]))
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxSHSecondaryLighting,Internal_ConvertMagicNumber($Split[41]))
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxDynamicShadows,Internal_ConvertMagicNumber($Split[42]))
+$LastReadScrResAdvanced = GUICtrlRead($MainGUIHomeAdvancedComboScreenRes)
+$HomeSimpleComboResLastIndex = $LastReadScrResAdvanced
 EndIf
 EndFunc
 Func Internal_UpdateRestoreConfigList()
@@ -6005,6 +6280,10 @@ If $State = "EngineSettings" Then
 If $ProgramHomeState = "Simple" Then
 Local $RRead = GUICtrlRead($MainGUIHomeSimpleInputMaxFPS)
 If $RRead < 30 Then $RRead = 30
+Local $sLowerRead = StringLower($RRead)
+If $sLowerRead = "inf" or $sLowerRead = "nan" or StringInStr($sLowerRead,"e",0) <> 0 Then
+$RRead = 999
+EndIf
 $Array = Internal_ApplyKey($Array,"bSmoothFrameRate=","True")
 $Array = Internal_ApplyKey($Array,"MinDesiredFrameRate=",$RRead/2)
 $Array = Internal_ApplyKey($Array,"MinSmoothedFrameRate=",$RRead/2)
@@ -6012,6 +6291,10 @@ $Array = Internal_ApplyKey($Array,"MaxSmoothedFrameRate=",$RRead)
 ElseIf $ProgramHomeState = "Advanced" Then
 Local $RRead = GUICtrlRead($MainGUIHomeAdvancedInputMaxFPS)
 If $RRead < 30 Then $RRead = 30
+Local $sLowerRead = StringLower($RRead)
+If $sLowerRead = "inf" or $sLowerRead = "nan" or StringInStr($sLowerRead,"e",0) <> 0 Then
+$RRead = 999
+EndIf
 $Array = Internal_ApplyKey($Array,"bSmoothFrameRate=","True")
 $Array = Internal_ApplyKey($Array,"MinDesiredFrameRate=",$RRead/2)
 $Array = Internal_ApplyKey($Array,"MinSmoothedFrameRate=",$RRead/2)
@@ -6108,8 +6391,9 @@ EndIf
 Local $RRead = GUICtrlRead($MainGUIHomeSimpleComboScreenRes)
 Local $SplitC = StringSplit($RRead,"x")
 _ArrayDelete($SplitC,0)
-Local $ScreenResX = StringReplace($SplitC[0]," ",$sEmpty)
-Local $ScreenResY = StringReplace($SplitC[1]," ",$sEmpty)
+$SplitC[0] = StringReplace($SplitC[0],"Custom (",$sEmpty)
+Local $ScreenResX = Number($SplitC[0])
+Local $ScreenResY = Number($SplitC[1])
 $Array = Internal_ApplyKey($Array,"ResX=",$ScreenResX)
 $Array = Internal_ApplyKey($Array,"ResY=",$ScreenResY)
 Local $Mode = GUICtrlRead($MainGUIHomeSimpleComboWindowmode)
@@ -6198,6 +6482,10 @@ $Array = Internal_ApplyKey($Array,"AllowImageReflectionShadowing=","True")
 EndIf
 Local $FPSRead = GUICtrlRead($MainGUIHomeSimpleInputMaxFPS)
 If $FPSRead < 30 Then $FPSRead = 30
+Local $sLowerRead = StringLower($FPSRead)
+If $sLowerRead = "inf" or $sLowerRead = "nan" or StringInStr($sLowerRead,"e",0) <> 0 Then
+$FPSRead = 999
+EndIf
 $Array = Internal_ApplyKey($Array,"TargetFrameRate=",$FPSRead)
 Local $DetailModeRead = GUICtrlRead($MainGUIHomeSimpleComboDetailMode)
 $Array = Internal_ApplyKey($Array,"DetailMode=",$DetailModeRead)
@@ -6271,8 +6559,9 @@ EndIf
 Local $RRead = GUICtrlRead($MainGUIHomeAdvancedComboScreenRes)
 Local $SplitC = StringSplit($RRead,"x")
 _ArrayDelete($SplitC,0)
-Local $ScreenResX = StringReplace($SplitC[0]," ",$sEmpty)
-Local $ScreenResY = StringReplace($SplitC[1]," ",$sEmpty)
+$SplitC[0] = StringReplace($SplitC[0],"Custom (",$sEmpty)
+Local $ScreenResX = Number($SplitC[0])
+Local $ScreenResY = Number($SplitC[1])
 $Array = Internal_ApplyKey($Array,"ResX=",$ScreenResX)
 $Array = Internal_ApplyKey($Array,"ResY=",$ScreenResY)
 Local $Mode = GUICtrlRead($MainGUIHomeAdvancedComboWindowmode)
@@ -6338,6 +6627,10 @@ $Array = Internal_ApplyKey($Array,"AllowImageReflectionShadowing=","True")
 EndIf
 Local $FPSRead = GUICtrlRead($MainGUIHomeAdvancedInputMaxFPS)
 If $FPSRead < 30 Then $FPSRead = 30
+Local $sLowerRead = StringLower($FPSRead)
+If $sLowerRead = "inf" or $sLowerRead = "nan" or StringInStr($sLowerRead,"e",0) <> 0 Then
+$FPSRead = 999
+EndIf
 $Array = Internal_ApplyKey($Array,"TargetFrameRate=",$FPSRead)
 Local $UseVsyncRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxVSync)
 $Array = Internal_ApplyKey($Array,"UseVsync=",$UseVsyncRead)
@@ -6401,6 +6694,10 @@ Func Internal_ApplyFixes($Array,$State)
 If $State = "EngineSettings" Then
 Local $RRead = GUICtrlRead($MainGUIFixesInputMaxFPS)
 If $RRead < 30 Then $RRead = 30
+Local $sLowerRead = StringLower($RRead)
+If $sLowerRead = "inf" or $sLowerRead = "nan" or StringInStr($sLowerRead,"e",0) <> 0 Then
+$RRead = 999
+EndIf
 $Array = Internal_ApplyKey($Array,"bSmoothFrameRate=","True")
 $Array = Internal_ApplyKey($Array,"MinDesiredFrameRate=",$RRead/2)
 $Array = Internal_ApplyKey($Array,"MinSmoothedFrameRate=",$RRead/2)
@@ -6414,6 +6711,10 @@ fSendMetric("event_applyfixes_engine_complete")
 ElseIf $State = "SystemSettings" Then
 Local $FPSRead = GUICtrlRead($MainGUIFixesInputMaxFPS)
 If $FPSRead < 30 Then $FPSRead = 30
+Local $sLowerRead = StringLower($FPSRead)
+If $sLowerRead = "inf" or $sLowerRead = "nan" or StringInStr($sLowerRead,"e",0) <> 0 Then
+$FPSRead = 999
+EndIf
 $Array = Internal_ApplyKey($Array,"TargetFrameRate=",$FPSRead)
 fSendMetric("event_applyfixes_system_complete")
 ElseIf $State = "GameSettings" Then
@@ -6829,18 +7130,23 @@ Sleep(10)
 WEnd
 Switch $CursorInfo[4]
 Case $GUI_ButtonSteam
-Local $Path = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")
+Local $sPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")
 If @Error Then
 fSendMetric("error_quickbypass_nosteamfound")
 MsgBox($MB_OK,"Error!","Steam Installation not found!")
 ExitLoop(1)
 EndIf
-$RootDir = $Path
+If $sPath = $sEmpty or not FileExists($sPath) Then
+fSendMetric("error_quickbypass_nosteamfound_path")
+MsgBox($MB_OK,"Error!","Steam installation was found but is invalid! You can find out more by reading the 'Common Issues' in the debug tab.")
+ExitLoop(1)
+EndIf
+$RootDir = $sPath
 $Type = "Steam"
 ExitLoop(1)
 Case $GUI_ButtonEGS
-Local $EpicProgramData = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
-Local $Files = _FileListToArray($EpicProgramData,"*.item",1,True)
+Local $sPath = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
+Local $Files = _FileListToArray($sPath,"*.item",1,True)
 _ArrayDelete($Files,0)
 For $I = 0 To uBound($Files) - 1 Step 1
 Local $Read = FileReadToArray($Files[$I])
@@ -6851,17 +7157,17 @@ Local $NewStr = StringReplace($Read[$B],"\\","\")
 $NewStr = StringReplace($NewStr,'"InstallLocation": "',$sEmpty)
 $NewStr = StringReplace($NewStr,'",',$sEmpty)
 $NewStr = StringReplace($NewStr,@TAB,$sEmpty)
-$EpicProgramData = $NewStr
+$sPath = $NewStr
 ExitLoop(2)
 EndIf
 Next
 Next
-If not FileExists($EpicProgramData) Then
+If not FileExists($sPath) Then
 fSendMetric("error_quickbypass_noegsfound")
 MsgBox($MB_OK,"Error!","Epic Game Store Installation not found!")
 ExitLoop(1)
 EndIf
-$RootDir = $EpicProgramData
+$RootDir = $sPath
 $Type = "EGS"
 ExitLoop(1)
 Case $GUI_ButtonCancel
@@ -6877,10 +7183,11 @@ WEnd
 If $RootDir <> $sEmpty and $Type <> $sEmpty Then
 Local $GUI_Quicklaunch_Bits = GUICreate($S_Title,320,80,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW)
 GUISwitch($GUI_Quicklaunch_Bits)
+GUISetBkColor($cAccentColor,$GUI_Quicklaunch_Bits)
 Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select an architecture:" & @CRLF & "('Automatic' if you don't know what you're doing!)",7,5,313,35)
-Local $GUI_Button_32 = GUICtrlCreateButtonSO($MainGUI,"32-Bit",5,40,100,35)
-Local $GUI_Button_64 = GUICtrlCreateButtonSO($MainGUI,"64-Bit",110,40,100,35)
-Local $GUI_ButtonAuto = GUICtrlCreateButtonSO($MainGUI,"Automatic",215,40,100,35)
+Local $GUI_Button_32 = GUICtrlCreateButtonSO($MainGUI,"32-Bit",5,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
+Local $GUI_Button_64 = GUICtrlCreateButtonSO($MainGUI,"64-Bit",110,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
+Local $GUI_ButtonAuto = GUICtrlCreateButtonSO($MainGUI,"Automatic",215,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
 GUISetState()
 While True
 Local $CursorInfo = GUIGetCursorInfo($GUI_Quicklaunch_Bits)
@@ -7190,6 +7497,9 @@ $KofiBtnHoverHideBool = False
 ElseIf $PatreonBtnHoverHideBool Then
 LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
 $PatreonBtnHoverHideBool = False
+ElseIf $PayPalBtnHoverHideBool Then
+LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
+$PayPalBtnHoverHideBool = False
 ElseIf $ViewOnlineChangesBtnHoverBool Then
 UndoMenuHoverState()
 LoadImageResource($MainGUIChangelogButtonViewOnlineBG,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
@@ -7279,12 +7589,34 @@ EndIf
 EndIf
 Endif
 If $ProgramHomeState = "Simple" Then
+If _GUICtrlComboBox_GetDroppedState($MainGUIHomeSimpleComboScreenRes) = False Then
+Local $ReadScrResSimple = GUICtrlRead($MainGUIHomeSimpleComboScreenRes)
+If $ReadScrResSimple <> $LastReadScrResSimple Then
+Local $bReturnFlag = False
+If StringLeft($ReadScrResSimple,6) = "Custom" Then
+$HomeSimpleComboResLastIndex = $LastReadScrResSimple
+$bReturnFlag = Internal_ChooseCustomRes()
+EndIf
+If Not $bReturnFlag Then $LastReadScrResSimple = $ReadScrResSimple
+EndIf
+EndIf
 Local $ReadScreenResSimple = GUICtrlRead($MainGUIHomeSimpleSliderScreenResScale)&"%"
 If $ReadScreenResSimple <> $LastScreenResScaleSimple Then
 GUICtrlSetData($MainGUIHomeSimpleInputScreenResScale,$ReadScreenResSimple)
 $LastScreenResScaleSimple = $ReadScreenResSimple
 EndIf
 ElseIf $ProgramHomeState = "Advanced" Then
+If _GUICtrlComboBox_GetDroppedState($MainGUIHomeAdvancedComboScreenRes) = False Then
+Local $ReadScrResAdvanced = GUICtrlRead($MainGUIHomeAdvancedComboScreenRes)
+If $ReadScrResAdvanced <> $LastReadScrResAdvanced Then
+Local $bReturnFlag = False
+If StringLeft($ReadScrResAdvanced,6) = "Custom" Then
+$HomeAdvancedComboResLastIndex = $LastReadScrResAdvanced
+$bReturnFlag = Internal_ChooseCustomRes()
+EndIf
+If Not $bReturnFlag Then $LastReadScrResAdvanced = $ReadScrResAdvanced
+EndIf
+EndIf
 Local $ReadScreenResAdvanced = GUICtrlRead($MainGUIHomeAdvancedSliderScreenResScale)&"%"
 If $ReadScreenResAdvanced <> $LastScreenResScaleAdvanced Then
 GUICtrlSetData($MainGUIHomeAdvancedInputScreenResScale,$ReadScreenResAdvanced)
@@ -7569,6 +7901,12 @@ If $PatreonBtnHoverHideBool = False Then
 _FixMenuSwitch()
 LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnActive.jpg","PatreonBtnActive")
 $PatreonBtnHoverHideBool = True
+EndIf
+Case $MainGUIDonateButtonPaypal
+If $PayPalBtnHoverHideBool = False Then
+_FixMenuSwitch()
+LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnActive.jpg","PayPalBtnActive")
+$PayPalBtnHoverHideBool = True
 EndIf
 Case $MainGUIChangelogButtonViewOnline, $MainGUIChangelogButtonViewOnlineBG
 If $ViewOnlineChangesBtnHoverBool = False Then

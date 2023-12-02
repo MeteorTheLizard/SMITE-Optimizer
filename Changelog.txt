@@ -1,9 +1,36 @@
+SMITE Optimizer Version 1.3.7.5
+- Updated fonts for combo and input controls.
+- Ensured to call NoTheme on input controls.
+- Fixed style inconsistencies with the quicklaunch bypass popups.
+- Added a new error message when trying to create a quicklaunch bypass for Steam, but the registry entries are invalid. (Community Contribution)
+-> Added a new section to the CommonIssues.txt explaining what to do when the registry entries are invalid.
+- Added new metrics: "error_quickbypass_nosteamfound_path", "error_font_code21", "error_font_code22", "error_updater_mtl_failed", "action_paypal_pressed"
+- Made the donation reminder banner less intrusive by making it undraw properly when moving the window.
+- Resolved various issues with the GIF in the copyright tab.
+- Re-instated the PayPal button in the donation tab due to recent policy changes on their end.
+- Fixed position of the "Perform Update" button in the debug tab.
+- Added SMITE-Optimizer registry values to the "Create debug dump" feature.
+- Implemented an UpdateProvider registry entry which will also be exported through the above change. This key stores the last provider from which an updated version was downloaded.
+- Updated the splash-screen to show which update provider is being contacted in real time.
+
+- Fixed a bug with the resolution selector when an unavailable resolution was loaded. This usually happens when the display configuration changed.
+- Metric "error_failed_screen_resolutions" is now marked as deprecated and is no longer used.
+- Overhauled how resolutions are selected. Instead of relying on winmgmts which is limited to Full HD and often fails for no reason, you can now choose from a list of common resolutions or create a custom one!
+- Implemented logic for custom resolutions. Selecting "Custom" in the resolution combo will now prompt you to input a resolution. Limited to: 800x600 - 15360x8640. The game does not support lower or higher settings.
+> Please note that the game defaults to the nearest valid resolution to preserve a compatible aspect-ratio. "Random" resolutions such as "2100x1181" will not work.
+
+- Added new update provider server, "update-so.meteorthelizard.com", for retrieving the .ini and .exe update files.
+
+
+
+
+
 SMITE Optimizer Version 1.3.7.4
 - Minor style changes.
 - Minor compatibility changes regarding code-workflow.
 - Now properly checking for the BattleGame.ini settings path at various locations.
 - Potentially resolved an issue with OneDrive.
-- Added a new section to the 'Common Issues' file, explaining how to resolve issues caused by OneDrive. -Community Contribution
+- Added a new section to the 'Common Issues' file, explaining how to resolve issues caused by OneDrive. (Community Contribution)
 - Now mentioning the discord server in the 'Common Issues' file.
 
 

@@ -1,3 +1,14 @@
+SMITE Optimizer Version 1.3.7.6
+- Updated copyright information. Happy new year!
+- Added a new button to the "Fixes" tab that repairs EasyAntiCheat. (This requires administrator privileges.)
+- Added new metrics: "action_fixes_eac", "error_fixes_eac_filedel", "error_fixes_eac_nogame", "error_fixes_eac_nosetup", "action_fixes_eac_success"
+- Fixed blue pixels in some borders of the help tips.
+- Updated DevTools "Template_Pics.xcf", "Template_Text_Compact.xcf", and "DevSettings.reg"
+
+
+
+
+
 SMITE Optimizer Version 1.3.7.5
 - Updated fonts for combo and input controls.
 - Ensured to call NoTheme on input controls.

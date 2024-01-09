@@ -25,6 +25,8 @@ Global Const $MB_OK = 0
 Global Const $MB_YESNO = 4
 Global Const $IDYES = 6
 Global Const $STR_NOCASESENSEBASIC = 2
+Global Const $STR_STRIPLEADING = 1
+Global Const $STR_STRIPTRAILING = 2
 Global Const $STR_STRIPALL = 8
 Global Const $STR_CHRSPLIT = 0
 Global Const $STR_ENTIRESPLIT = 1
@@ -143,6 +145,37 @@ Case Else
 Return SetError(2, 0, -1)
 EndSwitch
 Return UBound($aArray, $UBOUND_ROWS) - 1
+EndFunc
+Func _ArrayConcatenate(ByRef $aArrayTarget, Const ByRef $aArraySource, $iStart = 0)
+If $iStart = Default Then $iStart = 0
+If Not IsArray($aArrayTarget) Then Return SetError(1, 0, -1)
+If Not IsArray($aArraySource) Then Return SetError(2, 0, -1)
+Local $iDim_Total_Tgt = UBound($aArrayTarget, $UBOUND_DIMENSIONS)
+Local $iDim_Total_Src = UBound($aArraySource, $UBOUND_DIMENSIONS)
+Local $iDim_1_Tgt = UBound($aArrayTarget, $UBOUND_ROWS)
+Local $iDim_1_Src = UBound($aArraySource, $UBOUND_ROWS)
+If $iStart < 0 Or $iStart > $iDim_1_Src - 1 Then Return SetError(6, 0, -1)
+Switch $iDim_Total_Tgt
+Case 1
+If $iDim_Total_Src <> 1 Then Return SetError(4, 0, -1)
+ReDim $aArrayTarget[$iDim_1_Tgt + $iDim_1_Src - $iStart]
+For $i = $iStart To $iDim_1_Src - 1
+$aArrayTarget[$iDim_1_Tgt + $i - $iStart] = $aArraySource[$i]
+Next
+Case 2
+If $iDim_Total_Src <> 2 Then Return SetError(4, 0, -1)
+Local $iDim_2_Tgt = UBound($aArrayTarget, $UBOUND_COLUMNS)
+If UBound($aArraySource, $UBOUND_COLUMNS) <> $iDim_2_Tgt Then Return SetError(5, 0, -1)
+ReDim $aArrayTarget[$iDim_1_Tgt + $iDim_1_Src - $iStart][$iDim_2_Tgt]
+For $i = $iStart To $iDim_1_Src - 1
+For $j = 0 To $iDim_2_Tgt - 1
+$aArrayTarget[$iDim_1_Tgt + $i - $iStart][$j] = $aArraySource[$i][$j]
+Next
+Next
+Case Else
+Return SetError(3, 0, -1)
+EndSwitch
+Return UBound($aArrayTarget, $UBOUND_ROWS)
 EndFunc
 Func _ArrayDelete(ByRef $aArray, $vRange)
 If Not IsArray($aArray) Then Return SetError(1, 0, -1)
@@ -888,6 +921,16 @@ Global Const $FRTA_COUNT = 1
 Global Const $FRTA_INTARRAYS = 2
 Global Const $FRTA_ENTIRESPLIT = 4
 Global Const $FLTA_FILESFOLDERS = 0
+Global Const $FLTAR_FILESFOLDERS = 0
+Global Const $FLTAR_FILES = 1
+Global Const $FLTAR_NOHIDDEN = 4
+Global Const $FLTAR_NOSYSTEM = 8
+Global Const $FLTAR_NOLINK = 16
+Global Const $FLTAR_NORECUR = 0
+Global Const $FLTAR_RECUR = 1
+Global Const $FLTAR_NOSORT = 0
+Global Const $FLTAR_RELPATH = 1
+Global Const $FLTAR_FULLPATH = 2
 Func _FileListToArray($sFilePath, $sFilter = "*", $iFlag = $FLTA_FILESFOLDERS, $bReturnPath = False)
 Local $sDelimiter = "|", $sFileList = "", $sFileName = "", $sFullPath = ""
 $sFilePath = StringRegExpReplace($sFilePath, "[\\/]+$", "") & "\"
@@ -908,6 +951,312 @@ WEnd
 FileClose($hSearch)
 If $sFileList = "" Then Return SetError(4, 0, 0)
 Return StringSplit(StringTrimLeft($sFileList, 1), $sDelimiter)
+EndFunc
+Func _FileListToArrayRec($sFilePath, $sMask = "*", $iReturn = $FLTAR_FILESFOLDERS, $iRecur = $FLTAR_NORECUR, $iSort = $FLTAR_NOSORT, $iReturnPath = $FLTAR_RELPATH)
+If Not FileExists($sFilePath) Then Return SetError(1, 1, "")
+If $sMask = Default Then $sMask = "*"
+If $iReturn = Default Then $iReturn = $FLTAR_FILESFOLDERS
+If $iRecur = Default Then $iRecur = $FLTAR_NORECUR
+If $iSort = Default Then $iSort = $FLTAR_NOSORT
+If $iReturnPath = Default Then $iReturnPath = $FLTAR_RELPATH
+If $iRecur > 1 Or Not IsInt($iRecur) Then Return SetError(1, 6, "")
+Local $bLongPath = False
+If StringLeft($sFilePath, 4) == "\\?\" Then
+$bLongPath = True
+EndIf
+Local $sFolderSlash = ""
+If StringRight($sFilePath, 1) = "\" Then
+$sFolderSlash = "\"
+Else
+$sFilePath = $sFilePath & "\"
+EndIf
+Local $asFolderSearchList[100] = [1]
+$asFolderSearchList[1] = $sFilePath
+Local $iHide_HS = 0, $sHide_HS = ""
+If BitAND($iReturn, $FLTAR_NOHIDDEN) Then
+$iHide_HS += 2
+$sHide_HS &= "H"
+$iReturn -= $FLTAR_NOHIDDEN
+EndIf
+If BitAND($iReturn, $FLTAR_NOSYSTEM) Then
+$iHide_HS += 4
+$sHide_HS &= "S"
+$iReturn -= $FLTAR_NOSYSTEM
+EndIf
+Local $iHide_Link = 0
+If BitAND($iReturn, $FLTAR_NOLINK) Then
+$iHide_Link = 0x400
+$iReturn -= $FLTAR_NOLINK
+EndIf
+Local $iMaxLevel = 0
+If $iRecur < 0 Then
+StringReplace($sFilePath, "\", "", 0, $STR_NOCASESENSEBASIC)
+$iMaxLevel = @extended - $iRecur
+EndIf
+Local $sExclude_List = "", $sExclude_List_Folder = "", $sInclude_List = "*"
+Local $aMaskSplit = StringSplit($sMask, "|")
+Switch $aMaskSplit[0]
+Case 3
+$sExclude_List_Folder = $aMaskSplit[3]
+ContinueCase
+Case 2
+$sExclude_List = $aMaskSplit[2]
+ContinueCase
+Case 1
+$sInclude_List = $aMaskSplit[1]
+EndSwitch
+Local $sInclude_File_Mask = ".+"
+If $sInclude_List <> "*" Then
+If Not __FLTAR_ListToMask($sInclude_File_Mask, $sInclude_List) Then Return SetError(1, 2, "")
+EndIf
+Local $sInclude_Folder_Mask = ".+"
+Switch $iReturn
+Case 0
+Switch $iRecur
+Case 0
+$sInclude_Folder_Mask = $sInclude_File_Mask
+EndSwitch
+Case 2
+$sInclude_Folder_Mask = $sInclude_File_Mask
+EndSwitch
+Local $sExclude_File_Mask = ":"
+If $sExclude_List <> "" Then
+If Not __FLTAR_ListToMask($sExclude_File_Mask, $sExclude_List) Then Return SetError(1, 3, "")
+EndIf
+Local $sExclude_Folder_Mask = ":"
+If $iRecur Then
+If $sExclude_List_Folder Then
+If Not __FLTAR_ListToMask($sExclude_Folder_Mask, $sExclude_List_Folder) Then Return SetError(1, 4, "")
+EndIf
+If $iReturn = 2 Then
+$sExclude_Folder_Mask = $sExclude_File_Mask
+EndIf
+Else
+$sExclude_Folder_Mask = $sExclude_File_Mask
+EndIf
+If Not($iReturn = 0 Or $iReturn = 1 Or $iReturn = 2) Then Return SetError(1, 5, "")
+If Not($iSort = 0 Or $iSort = 1 Or $iSort = 2) Then Return SetError(1, 7, "")
+If Not($iReturnPath = 0 Or $iReturnPath = 1 Or $iReturnPath = 2) Then Return SetError(1, 8, "")
+If $iHide_Link Then
+Local $tFile_Data = DllStructCreate("struct;align 4;dword FileAttributes;uint64 CreationTime;uint64 LastAccessTime;uint64 LastWriteTime;" & "dword FileSizeHigh;dword FileSizeLow;dword Reserved0;dword Reserved1;wchar FileName[260];wchar AlternateFileName[14];endstruct")
+Local $hDLL = DllOpen('kernel32.dll'), $aDLL_Ret
+EndIf
+Local $asReturnList[100] = [0]
+Local $asFileMatchList = $asReturnList, $asRootFileMatchList = $asReturnList, $asFolderMatchList = $asReturnList
+Local $bFolder = False, $hSearch = 0, $sCurrentPath = "", $sName = "", $sRetPath = ""
+Local $iAttribs = 0, $sAttribs = ''
+Local $asFolderFileSectionList[100][2] = [[0, 0]]
+While $asFolderSearchList[0] > 0
+$sCurrentPath = $asFolderSearchList[$asFolderSearchList[0]]
+$asFolderSearchList[0] -= 1
+Switch $iReturnPath
+Case 1
+$sRetPath = StringReplace($sCurrentPath, $sFilePath, "")
+Case 2
+If $bLongPath Then
+$sRetPath = StringTrimLeft($sCurrentPath, 4)
+Else
+$sRetPath = $sCurrentPath
+EndIf
+EndSwitch
+If $iHide_Link Then
+$aDLL_Ret = DllCall($hDLL, 'handle', 'FindFirstFileW', 'wstr', $sCurrentPath & "*", 'struct*', $tFile_Data)
+If @error Or Not $aDLL_Ret[0] Then
+ContinueLoop
+EndIf
+$hSearch = $aDLL_Ret[0]
+Else
+$hSearch = FileFindFirstFile($sCurrentPath & "*")
+If $hSearch = -1 Then
+ContinueLoop
+EndIf
+EndIf
+If $iReturn = 0 And $iSort And $iReturnPath Then
+__FLTAR_AddToList($asFolderFileSectionList, $sRetPath, $asFileMatchList[0] + 1)
+EndIf
+$sAttribs = ''
+While 1
+If $iHide_Link Then
+$aDLL_Ret = DllCall($hDLL, 'int', 'FindNextFileW', 'handle', $hSearch, 'struct*', $tFile_Data)
+If @error Or Not $aDLL_Ret[0] Then
+ExitLoop
+EndIf
+$sName = DllStructGetData($tFile_Data, "FileName")
+If $sName = ".." Or $sName = "." Then
+ContinueLoop
+EndIf
+$iAttribs = DllStructGetData($tFile_Data, "FileAttributes")
+If $iHide_HS And BitAND($iAttribs, $iHide_HS) Then
+ContinueLoop
+EndIf
+If BitAND($iAttribs, $iHide_Link) Then
+ContinueLoop
+EndIf
+$bFolder = False
+If BitAND($iAttribs, 16) Then
+$bFolder = True
+EndIf
+Else
+$bFolder = False
+$sName = FileFindNextFile($hSearch, 1)
+If @error Then
+ExitLoop
+EndIf
+If $sName = ".." Or $sName = "." Then
+ContinueLoop
+EndIf
+$sAttribs = @extended
+If StringInStr($sAttribs, "D") Then
+$bFolder = True
+EndIf
+If StringRegExp($sAttribs, "[" & $sHide_HS & "]") Then
+ContinueLoop
+EndIf
+EndIf
+If $bFolder Then
+Select
+Case $iRecur < 0
+StringReplace($sCurrentPath, "\", "", 0, $STR_NOCASESENSEBASIC)
+If @extended < $iMaxLevel Then
+ContinueCase
+EndIf
+Case $iRecur = 1
+If Not StringRegExp($sName, $sExclude_Folder_Mask) Then
+__FLTAR_AddToList($asFolderSearchList, $sCurrentPath & $sName & "\")
+EndIf
+EndSelect
+EndIf
+If $iSort Then
+If $bFolder Then
+If StringRegExp($sName, $sInclude_Folder_Mask) And Not StringRegExp($sName, $sExclude_Folder_Mask) Then
+__FLTAR_AddToList($asFolderMatchList, $sRetPath & $sName & $sFolderSlash)
+EndIf
+Else
+If StringRegExp($sName, $sInclude_File_Mask) And Not StringRegExp($sName, $sExclude_File_Mask) Then
+If $sCurrentPath = $sFilePath Then
+__FLTAR_AddToList($asRootFileMatchList, $sRetPath & $sName)
+Else
+__FLTAR_AddToList($asFileMatchList, $sRetPath & $sName)
+EndIf
+EndIf
+EndIf
+Else
+If $bFolder Then
+If $iReturn <> 1 And StringRegExp($sName, $sInclude_Folder_Mask) And Not StringRegExp($sName, $sExclude_Folder_Mask) Then
+__FLTAR_AddToList($asReturnList, $sRetPath & $sName & $sFolderSlash)
+EndIf
+Else
+If $iReturn <> 2 And StringRegExp($sName, $sInclude_File_Mask) And Not StringRegExp($sName, $sExclude_File_Mask) Then
+__FLTAR_AddToList($asReturnList, $sRetPath & $sName)
+EndIf
+EndIf
+EndIf
+WEnd
+If $iHide_Link Then
+DllCall($hDLL, 'int', 'FindClose', 'ptr', $hSearch)
+Else
+FileClose($hSearch)
+EndIf
+WEnd
+If $iHide_Link Then
+DllClose($hDLL)
+EndIf
+If $iSort Then
+Switch $iReturn
+Case 2
+If $asFolderMatchList[0] = 0 Then Return SetError(1, 9, "")
+ReDim $asFolderMatchList[$asFolderMatchList[0] + 1]
+$asReturnList = $asFolderMatchList
+__ArrayDualPivotSort($asReturnList, 1, $asReturnList[0])
+Case 1
+If $asRootFileMatchList[0] = 0 And $asFileMatchList[0] = 0 Then Return SetError(1, 9, "")
+If $iReturnPath = 0 Then
+__FLTAR_AddFileLists($asReturnList, $asRootFileMatchList, $asFileMatchList)
+__ArrayDualPivotSort($asReturnList, 1, $asReturnList[0])
+Else
+__FLTAR_AddFileLists($asReturnList, $asRootFileMatchList, $asFileMatchList, 1)
+EndIf
+Case 0
+If $asRootFileMatchList[0] = 0 And $asFolderMatchList[0] = 0 Then Return SetError(1, 9, "")
+If $iReturnPath = 0 Then
+__FLTAR_AddFileLists($asReturnList, $asRootFileMatchList, $asFileMatchList)
+$asReturnList[0] += $asFolderMatchList[0]
+ReDim $asFolderMatchList[$asFolderMatchList[0] + 1]
+_ArrayConcatenate($asReturnList, $asFolderMatchList, 1)
+__ArrayDualPivotSort($asReturnList, 1, $asReturnList[0])
+Else
+Local $asReturnList[$asFileMatchList[0] + $asRootFileMatchList[0] + $asFolderMatchList[0] + 1]
+$asReturnList[0] = $asFileMatchList[0] + $asRootFileMatchList[0] + $asFolderMatchList[0]
+__ArrayDualPivotSort($asRootFileMatchList, 1, $asRootFileMatchList[0])
+For $i = 1 To $asRootFileMatchList[0]
+$asReturnList[$i] = $asRootFileMatchList[$i]
+Next
+Local $iNextInsertionIndex = $asRootFileMatchList[0] + 1
+__ArrayDualPivotSort($asFolderMatchList, 1, $asFolderMatchList[0])
+Local $sFolderToFind = ""
+For $i = 1 To $asFolderMatchList[0]
+$asReturnList[$iNextInsertionIndex] = $asFolderMatchList[$i]
+$iNextInsertionIndex += 1
+If $sFolderSlash Then
+$sFolderToFind = $asFolderMatchList[$i]
+Else
+$sFolderToFind = $asFolderMatchList[$i] & "\"
+EndIf
+Local $iFileSectionEndIndex = 0, $iFileSectionStartIndex = 0
+For $j = 1 To $asFolderFileSectionList[0][0]
+If $sFolderToFind = $asFolderFileSectionList[$j][0] Then
+$iFileSectionStartIndex = $asFolderFileSectionList[$j][1]
+If $j = $asFolderFileSectionList[0][0] Then
+$iFileSectionEndIndex = $asFileMatchList[0]
+Else
+$iFileSectionEndIndex = $asFolderFileSectionList[$j + 1][1] - 1
+EndIf
+If $iSort = 1 Then
+__ArrayDualPivotSort($asFileMatchList, $iFileSectionStartIndex, $iFileSectionEndIndex)
+EndIf
+For $k = $iFileSectionStartIndex To $iFileSectionEndIndex
+$asReturnList[$iNextInsertionIndex] = $asFileMatchList[$k]
+$iNextInsertionIndex += 1
+Next
+ExitLoop
+EndIf
+Next
+Next
+EndIf
+EndSwitch
+Else
+If $asReturnList[0] = 0 Then Return SetError(1, 9, "")
+ReDim $asReturnList[$asReturnList[0] + 1]
+EndIf
+Return $asReturnList
+EndFunc
+Func __FLTAR_AddFileLists(ByRef $asTarget, $asSource_1, $asSource_2, $iSort = 0)
+ReDim $asSource_1[$asSource_1[0] + 1]
+If $iSort = 1 Then __ArrayDualPivotSort($asSource_1, 1, $asSource_1[0])
+$asTarget = $asSource_1
+$asTarget[0] += $asSource_2[0]
+ReDim $asSource_2[$asSource_2[0] + 1]
+If $iSort = 1 Then __ArrayDualPivotSort($asSource_2, 1, $asSource_2[0])
+_ArrayConcatenate($asTarget, $asSource_2, 1)
+EndFunc
+Func __FLTAR_AddToList(ByRef $aList, $vValue_0, $vValue_1 = -1)
+If $vValue_1 = -1 Then
+$aList[0] += 1
+If UBound($aList) <= $aList[0] Then ReDim $aList[UBound($aList) * 2]
+$aList[$aList[0]] = $vValue_0
+Else
+$aList[0][0] += 1
+If UBound($aList) <= $aList[0][0] Then ReDim $aList[UBound($aList) * 2][2]
+$aList[$aList[0][0]][0] = $vValue_0
+$aList[$aList[0][0]][1] = $vValue_1
+EndIf
+EndFunc
+Func __FLTAR_ListToMask(ByRef $sMask, $sList)
+If StringRegExp($sList, "\\|/|:|\<|\>|\|") Then Return 0
+$sList = StringReplace(StringStripWS(StringRegExpReplace($sList, "\s*;\s*", ";"), BitOR($STR_STRIPLEADING, $STR_STRIPTRAILING)), ";", "|")
+$sList = StringReplace(StringReplace(StringRegExpReplace($sList, "[][$^.{}()+\-]", "\\$0"), "?", "."), "*", ".*?")
+$sMask = "(?i)^(" & $sList & ")\z"
+Return 1
 EndFunc
 Func _FileReadToArray($sFilePath, ByRef $vReturn, $iFlags = $FRTA_COUNT, $sDelimiter = "")
 $vReturn = 0
@@ -2786,7 +3135,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.7.5"
+Global Const $ProgramVersion = "1.3.7.6"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3917,6 +4266,9 @@ GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_D
 Global $MainGUIFixesButtonImportHUD = GUICtrlCreateButtonSO($MainGUI,"Import HUD settings",596,141,150,35)
 GUICtrlSetOnEvent($MainGUIFixesButtonImportHUD,"Internal_ImportSettings")
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+Global $MainGUIFixesButtonRepairEAC = GUICtrlCreateButtonSO($MainGUI,"Repair EasyAntiCheat",386,361,150,35)
+GUICtrlSetOnEvent($MainGUIFixesButtonRepairEAC,"ButtonPressLogic")
+GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 Local $Int_Settings = RegRead("HKCU\Software\SMITE Optimizer\","ConfigCookieFixes")
 If not @Error Then
 Local $Split = StringSplit($Int_Settings,"|")
@@ -3956,7 +4308,7 @@ Global $MainGUIRestoreConfigurationsLabelAskForConfirmation = GUICtrlCreateLabel
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"The dates shown are in the following format: DD_MM_YYYY_HH_MM_SS."&@CRLF&"Day, month, year, hour, minute, seconds.",57,283,425,41)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-Local $Year = 2023
+Local $Year = 2024
 Global $MainGUIDonatePicHeart = GUICtrlCreatePic($sEmpty,230,55,400,379)
 LoadImageResource($MainGUIDonatePicHeart,$MainResourcePath & "Heart_BG.jpg","Heart_BG")
 GUICtrlSetOnEvent($MainGUIDonatePicHeart,"ButtonPressLogic")
@@ -4518,6 +4870,7 @@ GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_SHOW)
 GUICtrlSetState($MainGUIFixesButtonApply,$GUI_SHOW)
 GUICtrlSetState($MainGUIFixesButtonImportHUD,$GUI_SHOW)
 GUICtrlSetState($MainGUIFixesButtonExportHUD,$GUI_SHOW)
+GUICtrlSetState($MainGUIFixesButtonRepairEAC,$GUI_SHOW)
 GUICtrlSetState($MainGUIHomeCheckboxDisplayHints,$GUI_SHOW)
 GUICtrlSetState($MainGUIHomeLabelDisplayHints,$GUI_SHOW)
 GUICtrlSetState($MainGUIHomeHelpBackground,$GUI_SHOW)
@@ -4535,6 +4888,7 @@ GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_HIDE)
 GUICtrlSetState($MainGUIFixesButtonApply,$GUI_HIDE)
 GUICtrlSetState($MainGUIFixesButtonImportHUD,$GUI_HIDE)
 GUICtrlSetState($MainGUIFixesButtonExportHUD,$GUI_HIDE)
+GUICtrlSetState($MainGUIFixesButtonRepairEAC,$GUI_HIDE)
 If not $bBool Then
 GUICtrlSetState($MainGUIHomeCheckboxDisplayHints,$GUI_HIDE)
 GUICtrlSetState($MainGUIHomeLabelDisplayHints,$GUI_HIDE)
@@ -5310,6 +5664,8 @@ Internal_InstallLegacyLauncher()
 Case $MainGUIFixesButtonApply
 fSendMetric("action_applyfixes_pressed")
 Internal_ProcessRequest(True,True)
+Case $MainGUIFixesButtonRepairEAC
+Internal_FixEAC()
 Case $MainGUIRestoreConfigurationsButtonChangeBackupPath
 Local $Folder = FileSelectFolder("Select a new Folder:",$ConfigBackupPath)
 If StringLen($Folder) <=(260 - 18 - 21) Then
@@ -7340,6 +7696,58 @@ GUISetState(@SW_RESTORE)
 GUISetState(@SW_ENABLE)
 WinActivate($MainGUI)
 EndIf
+EndFunc
+Func Internal_FixEAC()
+If @OSVersion <> "WIN_XP" and IsAdmin() == 0 Then
+MsgBox($MB_OK,"Information","SMITE Optimizer needs administrator privileges to repair EasyAntiCheat!")
+Return
+EndIf
+fSendMetric("action_fixes_eac")
+Local $aFileList = _FileListToArrayRec("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat","*.eac",$FLTAR_FILES,$FLTAR_RECUR,Default,$FLTAR_FULLPATH)
+_ArrayDelete($aFileList,0)
+For $I = 0 To uBound($aFileList) - 1 Step 1
+Local $bSucc = FileDelete($aFileList[$I])
+If Not $bSucc Then
+fSendMetric("error_fixes_eac_filedel")
+DisplayErrorMessage("Error",$MainGUI,"Failed to delete: " & @CRLF & $aFileList[$I] & @CRLF & "Cannot continue.")
+Return
+EndIf
+Next
+Local $sPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")
+If @Error Or $sPath = $sEmpty or not FileExists($sPath) Then
+$sPath = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
+Local $Files = _FileListToArray($sPath,"*.item",1,True)
+_ArrayDelete($Files,0)
+For $I = 0 To uBound($Files) - 1 Step 1
+Local $Read = FileReadToArray($Files[$I])
+For $B = 0 To uBound($Read) - 1 Step 1
+Local $Str = StringLeft($Read[$B],20)
+If $Str == @TAB&'"InstallLocation": ' and StringInStr($Read[$B],"SMITE",0,1) <> 0 Then
+Local $NewStr = StringReplace($Read[$B],"\\","\")
+$NewStr = StringReplace($NewStr,'"InstallLocation": "',$sEmpty)
+$NewStr = StringReplace($NewStr,'",',$sEmpty)
+$NewStr = StringReplace($NewStr,@TAB,$sEmpty)
+$sPath = $NewStr
+ExitLoop(2)
+EndIf
+Next
+Next
+If not FileExists($sPath) Then
+fSendMetric("error_fixes_eac_nogame")
+DisplayErrorMessage("Error",$MainGUI,"Failed to retrieve game location!")
+Return
+EndIf
+EndIf
+$sPath = $sPath & "\Binaries\EasyAntiCheat\EasyAntiCheat_Setup.exe"
+If not FileExists($sPath) Then
+fSendMetric("error_fixes_eac_nosetup")
+DisplayErrorMessage("Error",$MainGUI,"Failed to retrieve location of EasyAntiCheat_Setup.exe!")
+Return
+EndIf
+ShellExecuteWait($sPath,"install 140 -console")
+RunWait(@ComSpec & " /c " & 'sc config "EasyAntiCheat" start= demand',$sEmpty,@SW_HIDE)
+fSendMetric("action_fixes_eac_success")
+MsgBox(0,"Information","Repaired EasyAntiCheat successfully.")
 EndFunc
 Func InRange2D($MousePos,$X_Start,$Y_Start,$X_End,$Y_End)
 If $DisplayHoverBG <> 1 Then

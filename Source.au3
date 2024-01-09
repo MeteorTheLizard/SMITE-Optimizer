@@ -8,7 +8,7 @@
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.7.5
+#AutoIt3Wrapper_Res_Fileversion=1.3.7.6
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MeteorTheLizard - All Rights Reserved.
 #AutoIt3Wrapper_Res_Icon_Add=Resource\SmiteIcon.ico
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
@@ -244,7 +244,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.7.5"
+Global Const $ProgramVersion = "1.3.7.6"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -1705,6 +1705,10 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 			GUICtrlSetOnEvent($MainGUIFixesButtonImportHUD,"Internal_ImportSettings")
 			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
+		Global $MainGUIFixesButtonRepairEAC = GUICtrlCreateButtonSO($MainGUI,"Repair EasyAntiCheat",386,361,150,35)
+			GUICtrlSetOnEvent($MainGUIFixesButtonRepairEAC,"ButtonPressLogic")
+			GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
+
 
 		;- Load settings from the cookie
 
@@ -1758,7 +1762,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 
 
 	;-- Donate
-		Local $Year = 2023
+		Local $Year = 2024
 
 		Global $MainGUIDonatePicHeart = GUICtrlCreatePic($sEmpty,230,55,400,379)
 			LoadImageResource($MainGUIDonatePicHeart,$MainResourcePath & "Heart_BG.jpg","Heart_BG")
@@ -2375,6 +2379,7 @@ EndFunc
 		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonImportHUD,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonExportHUD,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesButtonRepairEAC,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeCheckboxDisplayHints,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeLabelDisplayHints,$GUI_SHOW)
 		GUICtrlSetState($MainGUIHomeHelpBackground,$GUI_SHOW)
@@ -2392,6 +2397,7 @@ EndFunc
 		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesButtonImportHUD,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesButtonExportHUD,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesButtonRepairEAC,$GUI_HIDE)
 
 		;- We use hints in these tabs, so force them to be displayed!
 		If not $bBool Then
@@ -3381,6 +3387,9 @@ EndFunc
 				Case $MainGUIFixesButtonApply
 					fSendMetric("action_applyfixes_pressed")
 					Internal_ProcessRequest(True,True)
+
+				Case $MainGUIFixesButtonRepairEAC
+					Internal_FixEAC()
 
 
 			;- Restore Configuration
@@ -6736,6 +6745,99 @@ EndFunc
 
 			WinActivate($MainGUI)
 		EndIf
+	EndFunc
+
+	Func Internal_FixEAC()
+		If @OSVersion <> "WIN_XP" and IsAdmin() == 0 Then ;- AutoIt can't elevate itself on request, possible workarounds are too crappy. Just let the user do it.
+			MsgBox($MB_OK,"Information","SMITE Optimizer needs administrator privileges to repair EasyAntiCheat!")
+
+			Return
+		EndIf
+
+		fSendMetric("action_fixes_eac")
+
+
+		;- Delete EasyAntiCheat image file
+
+		Local $aFileList = _FileListToArrayRec("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat","*.eac",$FLTAR_FILES,$FLTAR_RECUR,Default,$FLTAR_FULLPATH)
+			_ArrayDelete($aFileList,0)
+
+		For $I = 0 To uBound($aFileList) - 1 Step 1
+			Local $bSucc = FileDelete($aFileList[$I])
+			If Not $bSucc Then
+				fSendMetric("error_fixes_eac_filedel")
+				DisplayErrorMessage("Error",$MainGUI,"Failed to delete: " & @CRLF & $aFileList[$I] & @CRLF & "Cannot continue.")
+				Return
+			EndIf
+		Next
+
+
+		;- Re-install EasyAntiCheat using the binary file provided by Steam / EGS.
+
+
+		;- Attempt retrieval of steam path
+
+		Local $sPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")
+
+		If @Error Or $sPath = $sEmpty or not FileExists($sPath) Then ;- Not steam?
+
+			;- Attempt retrieval of EGS path
+
+			$sPath = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
+
+			;- We need to loop through all files in the manifest folder since filenames differ from machine to machine.
+			Local $Files = _FileListToArray($sPath,"*.item",1,True)
+				_ArrayDelete($Files,0)
+
+			For $I = 0 To uBound($Files) - 1 Step 1
+				Local $Read = FileReadToArray($Files[$I])
+
+				For $B = 0 To uBound($Read) - 1 Step 1
+					Local $Str = StringLeft($Read[$B],20)
+
+					If $Str == @TAB&'"InstallLocation": ' and StringInStr($Read[$B],"SMITE",0,1) <> 0 Then
+						Local $NewStr = StringReplace($Read[$B],"\\","\")
+						$NewStr = StringReplace($NewStr,'"InstallLocation": "',$sEmpty)
+						$NewStr = StringReplace($NewStr,'",',$sEmpty)
+						$NewStr = StringReplace($NewStr,@TAB,$sEmpty)
+
+						$sPath = $NewStr
+						ExitLoop(2)
+					EndIf
+				Next
+			Next
+
+
+			;- Check if the SMITE folder exists.
+
+			If not FileExists($sPath) Then
+				fSendMetric("error_fixes_eac_nogame")
+				DisplayErrorMessage("Error",$MainGUI,"Failed to retrieve game location!")
+				Return
+			EndIf
+		EndIf
+
+
+		$sPath = $sPath & "\Binaries\EasyAntiCheat\EasyAntiCheat_Setup.exe"
+
+		If not FileExists($sPath) Then
+			fSendMetric("error_fixes_eac_nosetup")
+			DisplayErrorMessage("Error",$MainGUI,"Failed to retrieve location of EasyAntiCheat_Setup.exe!")
+			Return
+		EndIf
+
+
+		;- Run the installer
+		ShellExecuteWait($sPath,"install 140 -console") ;- Parameters taken from smites installscript.vdf (Steam)
+									  ;- 140 = game ID for EAC
+
+		;- Set EasyAntiCheat service to "Manual"
+		RunWait(@ComSpec & " /c " & 'sc config "EasyAntiCheat" start= demand',$sEmpty,@SW_HIDE)
+
+
+		fSendMetric("action_fixes_eac_success")
+		MsgBox(0,"Information","Repaired EasyAntiCheat successfully.")
+
 	EndFunc
 #EndRegion
 

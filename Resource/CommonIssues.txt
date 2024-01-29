@@ -1,9 +1,14 @@
 - Common Issues
 
-If you require support, you can join our discord server by pressing the discord icon in the title bar of the SMITE Optimizer.
+
+IF YOU REQUIRE HELP OR SUPPORT, JOIN OUR OFFICIAL DISCORD SERVER.
+We are happy to help with any technical problem you might encounter, as long as it is SMITE-Optimizer or SMITE-PC-related.
+Click the discord logo next to the close button of the SMITE-Optimizer to join our discord!
+
 
 
 When you have one of the problems listed below, it is recommended to try each solution one by one.
+
 
 If your issue is not listed here, we recommend opening an issue on GitHub.
 > Make sure to explain the problem as detailed as possible.
@@ -11,7 +16,8 @@ If your issue is not listed here, we recommend opening an issue on GitHub.
 > When possible attach a debug dump which you can create through the debug tab.
 > > https://github.com/MeteorTheLizard/SMITE-Optimizer/issues/
 
-You can also report bugs on our discord server in the #report-a-bug channel.
+
+You can also report bugs on our Discord server in the #report-a-bug channel.
 
 
 -- ----- ----- ----- -----
@@ -68,16 +74,19 @@ Solution: Your configuration files are corrupt. Restore a backup through the "Re
 -- ----- ----- ----- -----
 
 Problem: I applied the settings, but now my game is in Fullscreen at a low resolution!
+
 Solution: The SMITE Optimizer does not read existing configuration files on first launch and uses your primary display device resolution when possible. Make sure to set the Window Type and Resolution and apply the changes again.
 
 -- ----- ----- ----- -----
 
 Problem: I applied the settings a while ago, but some of the settings are gone now!
+
 Solution: The game received an update which partially reset your configuration files. Re-apply the SMITE Optimizer to fix it.
 
 -- ----- ----- ----- -----
 
 Problem: The SMITE Optimizer said it found my Steam installation, but it is invalid. -Community Contribution
+
 Solution: Press windows key + r
 		  Type "regedit"
 		  Navigate to "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\"
@@ -85,25 +94,31 @@ Solution: Press windows key + r
 		  To find out where SMITE was installed, go into your Steam library, right-click on SMITE > Properties > Installed Files > Browse
 		  This will open a new Explorer window. You can copy the path and paste it into the InstallLocation data field in regedit.
 
+> We are happy to help. Join our official Discord server by clicking the Discord icon next to the close button.
+
 -- ----- ----- ----- -----
 
 Problem: I'm trying to create a QuickLaunch Bypass, but the SMITE Optimizer cannot find my game.
+
 Solution: Verify the game files through Steam or Epic Game Store.
 Solution2: Uninstall the game and install it again (This re-creates the registry entries, which verifying does not do! These are required!)
 
 -- ----- ----- ----- -----
 
 Problem: When I start the game, it says "Version Mismatch" in the login screen!
+
 Solution: You're using the QuickLaunch Bypass. You have to manually update the game whenever there was a patch. You do this through Steam or Epic Game Store.
 
 -- ----- ----- ----- -----
 
 Problem: I changed my settings to be very low overall, but my FPS didn't get better!
+
 Solution: Newer hardware does not benefit from lower settings. It is recommended to bump the settings up higher as that will force your CPU and GPU to work harder, which CAN result in higher FPS. If you have a decent PC I recommend using my settings which can be found on GitHub in the screenshots. (Resolution scale should be 100% !!)
 
 -- ----- ----- ----- -----
 
-Problem: The game crashes for no reason even without using the SMITE Optimizer
+Problem: The game crashes for no reason even without using the SMITE Optimizer!
+
 Solution: Re-install your graphics drivers as well as all the redistributables for the game. You can find the in the game folder (Steam > \Steam\steamapps\common\SMITE\Binaries\Redist)
 Solution2: Re/Install your Chipset drivers for your motherboard.
 Solution3: Make sure your hardware and operating system is supported.

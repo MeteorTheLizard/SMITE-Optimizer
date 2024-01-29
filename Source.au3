@@ -8,7 +8,7 @@
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.7.6
+#AutoIt3Wrapper_Res_Fileversion=1.3.7.7
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MeteorTheLizard - All Rights Reserved.
 #AutoIt3Wrapper_Res_Icon_Add=Resource\SmiteIcon.ico
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
@@ -100,6 +100,7 @@
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Desired_FPS.jpg, RT_RCDATA, Desired_FPS, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\DirectX_11.jpg, RT_RCDATA, DirectX_11, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Disable_Jumping.jpg, RT_RCDATA, Disable_Jumping, 0
+#AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Disable_Fog.jpg, RT_RCDATA, Disable_Fog, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Distortion.jpg, RT_RCDATA, Distortion, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Dominant_Shadows.jpg, RT_RCDATA, Dominant_Shadows, 0
 #AutoIt3Wrapper_Res_File_Add=Resource\HelpText\Drop_Shadows.jpg, RT_RCDATA, Drop_Shadows, 0
@@ -244,7 +245,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.7.6"
+Global Const $ProgramVersion = "1.3.7.7"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -403,6 +404,8 @@ If @Error = 0 and $Version <= "1.2.2" Then
 	RegDelete("HKCU\Software\SMITE Optimizer\","ProgramPath")
 EndIf
 
+RegDelete("HKCU\Software\SMITE Optimizer\","ConfigVerifyIntegrityOnApply") ;- Unused v1.3.7.7 and up.
+
 
 Global $bProperClose = RegRead("HKCU\Software\SMITE Optimizer\","NotClosedProperly")
 If not @Error Then
@@ -413,8 +416,6 @@ EndIf
 
 Global $CheckForUpdates = RegRead("HKCU\Software\SMITE Optimizer\","ConfigCheckForUpdates")
 If @Error Then $CheckForUpdates = "1"
-Global $VerifyIntegrityOnApply = RegRead("HKCU\Software\SMITE Optimizer\","ConfigVerifyIntegrityOnApply")
-If @Error Then $VerifyIntegrityOnApply = "1"
 Global $SettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 If @Error Then $SettingsPath = $sEmpty
 Global $SystemSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
@@ -1684,6 +1685,11 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 		Global $MainGUIFixesLabelDisableJump = GUICtrlCreateLabelTransparentBG("Disable Jumping",98,158,140,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 
+		Global $MainGUIFixesCheckboxDisableFog = GUICtrlCreateCheckboxTransparentBG(80,174,15,21)
+			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+		Global $MainGUIFixesLabelDisableFog = GUICtrlCreateLabelTransparentBG("Disable Fog",98,178,140,13)
+			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
+
 
 		Global $MainGUIFixesButtonCreateQuicklaunch = GUICtrlCreateButtonSO($MainGUI,"Create quicklaunch bypass",386,401,150,35)
 			GUICtrlSetOnEvent($MainGUIFixesButtonCreateQuicklaunch,"ButtonPressLogic")
@@ -1722,6 +1728,11 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 			GUICtrlSetData($MainGUIFixesInputMaxFPS,$Split[0])
 			GUICtrlSetData($MainGUIFixesComboAudioFix,$Split[1])
 			GUICtrlSetState($MainGUIFixesCheckboxDisableJump,Internal_ConvertMagicNumber($Split[2]))
+
+
+			If uBound($Split) > 3 Then ;- OldCookieCompat.
+				GUICtrlSetState($MainGUIFixesCheckboxDisableFog,Internal_ConvertMagicNumber($Split[3]))
+			EndIf
 
 		EndIf
 
@@ -1967,12 +1978,6 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 		Global $MainGUIDebugLabelCheckForUpdates = GUICtrlCreateLabelTransparentBG("Automatic updates",646,383,150,13)
 			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
-		Global $MainGUIDebugCheckboxRepairIntegrity = GUICtrlCreateCheckboxTransparentBG(627,363,13,13)
-			GUICtrlSetOnEvent($MainGUIDebugCheckboxRepairIntegrity,"ButtonPressLogic")
-			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-			If $VerifyIntegrityOnApply = "1" Then GUICtrlSetState($MainGUIDebugCheckboxRepairIntegrity,$GUI_CHECKED)
-		Global $MainGUIDebugLabelRepairIntegrity = GUICtrlCreateLabelTransparentBG("Check integrity/repair",646,363,150,13)
-			GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
 		;- If there is an update available, we want to display an extra button!
 		Global $MainGUIDebugButtonPerformUpdate = NULL
@@ -2374,6 +2379,8 @@ EndFunc
 		GUICtrlSetState($MainGUIFixesComboAudioFix,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesCheckboxDisableJump,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesLabelDisableJump,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesCheckboxDisableFog,$GUI_SHOW)
+		GUICtrlSetState($MainGUIFixesLabelDisableFog,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonCreateQuicklaunch,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_SHOW)
 		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_SHOW)
@@ -2392,6 +2399,8 @@ EndFunc
 		GUICtrlSetState($MainGUIFixesComboAudioFix,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesCheckboxDisableJump,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesLabelDisableJump,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesCheckboxDisableFog,$GUI_HIDE)
+		GUICtrlSetState($MainGUIFixesLabelDisableFog,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesButtonCreateQuicklaunch,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_HIDE)
 		GUICtrlSetState($MainGUIFixesButtonApply,$GUI_HIDE)
@@ -2538,9 +2547,7 @@ EndFunc
 		GUICtrlSetState($MainGUIDebugButtonCommonIssues,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugButtonResetConfigPaths,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_SHOW)
-		GUICtrlSetState($MainGUIDebugCheckboxRepairIntegrity,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugLabelCheckForUpdates,$GUI_SHOW)
-		GUICtrlSetState($MainGUIDebugLabelRepairIntegrity,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugLabelReportABug,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugLabelCreateDebugInfo,$GUI_SHOW)
 		GUICtrlSetState($MainGUIDebugPicDebugFooterFooter,$GUI_SHOW)
@@ -2556,9 +2563,7 @@ EndFunc
 		GUICtrlSetState($MainGUIDebugButtonCommonIssues,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugButtonResetConfigPaths,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_HIDE)
-		GUICtrlSetState($MainGUIDebugCheckboxRepairIntegrity,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugLabelCheckForUpdates,$GUI_HIDE)
-		GUICtrlSetState($MainGUIDebugLabelRepairIntegrity,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugLabelReportABug,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugLabelCreateDebugInfo,$GUI_HIDE)
 		GUICtrlSetState($MainGUIDebugPicDebugFooterFooter,$GUI_HIDE)
@@ -3226,6 +3231,7 @@ EndFunc
 		Local $WinWidth = WinGetPos($MainGUI)[2]
 
 
+		GUISwitch($MainGUI) ;- Fix one-time crash.
 		GUICtrlDelete($MainGUILabelProgramState) ;- Fix position and size.
 		Global $MainGUILabelProgramState = GUICtrlCreateLabelTransparentBG("("&$Text&" mode)",-1000,17,-1,25,$SS_RIGHT)
 			Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelProgramState)[2] + 25
@@ -3554,23 +3560,6 @@ EndFunc
 						RegDelete("HKCU\Software\SMITE Optimizer\","ConfigCheckForUpdates") ;- The key shouldn't exist when the setting is set to default!
 					EndIf
 
-				Case $MainGUIDebugCheckboxRepairIntegrity
-					Local $CDHState = GUICtrlRead($MainGUIDebugCheckboxRepairIntegrity)
-
-					If $CDHState <> $GUI_CHECKED Then
-						fSendMetric("action_automatic_repair_disabled")
-
-						RegWrite("HKCU\Software\SMITE Optimizer\","ConfigVerifyIntegrityOnApply","REG_SZ","0") ;- Disable.
-
-						$VerifyIntegrityOnApply = 0
-					Else
-						fSendMetric("action_automatic_repair_enabled")
-
-						RegDelete("HKCU\Software\SMITE Optimizer\","ConfigVerifyIntegrityOnApply") ;- The key shouldn't exist when the setting is set to default!
-
-						$VerifyIntegrityOnApply = 1
-					EndIf
-
 				Case $MainGUIDebugButtonPerformUpdate
 					fSendMetric("action_manualupdate_pressed")
 					RegWrite("HKCU\Software\SMITE Optimizer\","DebugForceUpdate","REG_SZ","1")
@@ -3637,51 +3626,39 @@ EndFunc
 
 								If FileExists(@TempDir & "\optimizerdebugdump\config\GameSettings.ini") Then
 
-									Local $Read = FileRead(@TempDir & "\optimizerdebugdump\config\GameSettings.ini")
-									Local $Split = StringSplit($Read,@CR)
-										_ArrayDelete($Split,0)
+									Local $Read[0]
+										_FileReadToArray(@TempDir & "\optimizerdebugdump\config\GameSettings.ini",$Read)
 
 
-									;- Tag [TgClientBase.TgGameLaunchBase]
+									;- Remove all entries starting with these lines.
+									Local $aFilter[9] = [ _
+										"LoginName", _
+										"LoginPwd", _
+										"SaveLoginName", _
+										"m_bKeepLoggedIn", _
+										"m_dwLastLoginPortalId", _
+										"m_dwLastLoginAccountId", _
+										"m_sLastLoginAccessToken", _
+										"m_sLastLoginAccessTokenExpiration" _
+									]
 
-									For $I = 0 To uBound($Split) - 1 Step 1
-										If StringMid($Split[$I],2,10) = "LoginName=" Then
+									For $I = 0 To uBound($aFilter) - 1 Step 1
 
-											_ArrayDelete($Split,$I) ;- Name
-											_ArrayDelete($Split,$I) ;- Password
-;~ 											_ArrayDelete($Split,$I) ;- Save information
-											;- This is replaced with the thing below this comment, doing it this way preserves a space between the keys.
+										Local $iLen = StringLen($aFilter[$I])
 
-											$Split[$I] = @CRLF & ";{INFORMATION REPLACED FOR SECURITY REASONS}"
-
-											ExitLoop
-										EndIf
+										For $B = 0 To uBound($Read) - 1 Step 1
+											If StringLeft($Read[$B],$iLen) = $aFilter[$I] Then
+												$Read[$B] = ";{INFORMATION REPLACED FOR SECURITY REASONS}"
+												ExitLoop
+											EndIf
+										Next
 									Next
 
 
-									;- Tag [PlatformCommon.PComPlayerController]
+									;- Write the new data to the file.
 
-									For $I = 0 To uBound($Split) - 1 Step 1
-										If StringMid($Split[$I],2,16) = "m_bKeepLoggedIn=" Then
+									_FileWriteFromArray(@TempDir & "\optimizerdebugdump\config\GameSettings.ini",$Read)
 
-											_ArrayDelete($Split,$I) ;- Stay logged in?
-											_ArrayDelete($Split,$I) ;- Portal ID
-											_ArrayDelete($Split,$I) ;- Account ID
-											_ArrayDelete($Split,$I) ;- Access Token
-											_ArrayDelete($Split,$I) ;- Token Expiration Date
-
-											$Split[$I] = @CRLF & ";{INFORMATION REPLACED FOR SECURITY REASONS}"
-
-											ExitLoop
-										EndIf
-									Next
-
-
-									;- Write the new data to the file
-
-									$Split = _ArrayToString($Split,$sEmpty)
-
-									FileWrite(@TempDir & "\optimizerdebugdump\config\GameSettings.ini",$Split)
 
 								EndIf
 
@@ -4189,7 +4166,8 @@ EndFunc
 
 		$Settings_Fixes = $Settings_Fixes & GUICtrlRead($MainGUIFixesInputMaxFPS) & "|"
 		$Settings_Fixes = $Settings_Fixes & GUICtrlRead($MainGUIFixesComboAudioFix) & "|"
-		$Settings_Fixes = $Settings_Fixes & Internal_ConvertMagicNumberSave(GUICtrlRead($MainGUIFixesCheckboxDisableJump))
+		$Settings_Fixes = $Settings_Fixes & Internal_ConvertMagicNumberSave(GUICtrlRead($MainGUIFixesCheckboxDisableJump)) & "|"
+		$Settings_Fixes = $Settings_Fixes & Internal_ConvertMagicNumberSave(GUICtrlRead($MainGUIFixesCheckboxDisableFog))
 
 		RegWrite("HKCU\Software\SMITE Optimizer\","ConfigCookieFixes","REG_SZ",$Settings_Fixes)
 
@@ -4580,14 +4558,12 @@ EndFunc
 	EndFunc
 
 	;- Optimizer functions
-	Func Interal_VerifyAndFixConfiguration($FileReadArray,$Hive) ;- This function verifies and fixes any issues with a supplied configuration file. (Except nonsense variables.)
+	Func Interal_VerifyAndFixConfiguration($FileReadArray,$Hive) ;- This function ensures that the optimizer can apply all changes without any issues.
 
-		Local $HiveX = uBound($Hive,1)
-		Local $HiveY = uBound($Hive,2)
+		;- It used to fix corruption and missing variables, but we leave that up to the game now.
+		;- It doesn't work when the file is completely empty, which we consider a critical failure.
+		;- In which case it's not our problem. If it's that bad, the person affected most likely has to deal with something much worse.
 
-		;~ The following code verifies the integrity of the supplied configuration files.
-		;~ It is capable of fixing almost any error and should be able to repair broken or corrupted files.
-		;~ The only thing it cannot fix are variables that are set to nonsense.
 
 		;~ Group = The "group" of values, such as "[URL]"
 		;~ Keyname = The name of a variable within a group, such as "Game="
@@ -4595,278 +4571,252 @@ EndFunc
 		;~ [URL] < Group
 		;~ Game=SMITE < Keyname=Keyvalue
 
-		;~ If any keynames are missing, it will add them to the group using the hives as a reference.
-		;~ This works with duplicates, as we use their keyvalues as a reference instead.
-		;~ Duplicates within the .ini that do not exist in the hive will be removed from the .ini as they would be useless.
 
-		;~ Here we replace all "TRUE" and "true" with "True" and all "FALSE" and "false" with "False"
-		;~ This does not really have any effect other than making the file look nicer and more consistent.
-		;~ We want the file to be as "fixed/repaired" as possible, meaning inconsistency is something we definitely do not want.
+		;- Remove carriage returns, and new lines.
 
-
-		For $I = 0 To uBound($FileReadArray) - 1 Step 1 ;- Replace all "TRUE" and "true" with "True"
-			Local $C = StringInStr($FileReadArray[$I],"=TRUE")
-			If not @Error and $C <> 0 Then
-				$FileReadArray[$I] = StringLeft($FileReadArray[$I],$C)&"True"
-				ContinueLoop
-			EndIf
-
-			Local $C = StringInStr($FileReadArray[$I],"=true")
-			If not @Error and $C <> 0 Then
-				$FileReadArray[$I] = StringLeft($FileReadArray[$I],$C)&"True"
-			EndIf
+		For $I = uBound($FileReadArray) - 1 To 0 Step -1
+			$FileReadArray[$I] = StringReplace($FileReadArray[$I],@CR,$sEmpty)
+			$FileReadArray[$I] = StringReplace($FileReadArray[$I],@LF,$sEmpty)
 		Next
 
-		For $I = 0 To uBound($FileReadArray) - 1 Step 1 ;- Replace all "FALSE" and "false" with "False"
-			Local $C = StringInStr($FileReadArray[$I],"=FALSE")
-			If not @Error and $C <> 0 Then
-				$FileReadArray[$I] = StringLeft($FileReadArray[$I],$C)&"False"
-				ContinueLoop
-			EndIf
 
-			Local $C = StringInStr($FileReadArray[$I],"=false")
-			If not @Error and $C <> 0 Then
-				$FileReadArray[$I] = StringLeft($FileReadArray[$I],$C)&"False"
-			EndIf
-		Next
-
-		;~ Here, we remove spaces between keys from bad formatting.
-		;~ Normally you would go through this backwards, but that would have meant that I needed to rewrite it completely, which I could not be bothered to do.
-		;~ We instead have a tiny bit of inefficiency and cache the indexes, respectively, to remove them after we get them all.
-		;~ If you know AutoIt and can be bothered to fix this, feel free to do so and submit a pull request on GitHub.
-		;~ Keep in mind that a duplicate of this function will exist later. (Function definitions inside a function are not possible in AutoIt)
-
-		Local $ToRemove[0]
-		For $I = 0 To uBound($FileReadArray) - 1 Step 1 ;- Loop through every line of the file.
-			Local $Bounds = uBound($FileReadArray) - 1
-
-			If StringLeft($FileReadArray[$I],1) = "[" and StringRight($FileReadArray[$I],1) = "]" Then ;- Group start found.
-				For $B = $I+1 To $Bounds Step 1 ;- Loop through the rest of the file until a new group is found or the end of the file is reached.
-					If ($B+1) > $Bounds Then ExitLoop ;- We reached the end of the file.
-					If StringLeft($FileReadArray[$B+1],1) = "[" and StringRight($FileReadArray[$B+1],1) = "]" Then ExitLoop ;- We reached the end of the group.
-
-					If $FileReadArray[$B] = $sEmpty and not (($I+1) > $Bounds or StringLeft($FileReadArray[$B+1],1) = "[" and StringRight($FileReadArray[$B+1],1) = "]") Then ;- Invalid or empty line was found.
-						Local $Count = uBound($ToRemove)
-						ReDim $ToRemove[$Count+1]
-						$ToRemove[$Count] = $B - $Count ;- Add it to the cache with respective index.
-					EndIf
-				Next
-			EndIf
-		Next
-
-		For $I = 0 To uBound($ToRemove) - 1 Step 1 ;- And here we remove the entries from the array.
-			_ArrayDelete($FileReadArray,$ToRemove[$I])
-		Next
-
-		;- Here we remove all invalid lines. These lines could be simple text or a comment not containing a "=" and are not the start of a group.
-		;- Basically, lines that only contain words or characters and do not define anything, are invalid.
+		;- Remove comments, empty lines, and invalid lines.
 
 		For $I = uBound($FileReadArray) - 1 To 0 Step -1
 
-			;- The line is not empty, but it also does not define anything and is not the start of a group, which means it is invalid!
-			If $FileReadArray[$I] <> $sEmpty and not StringInStr($FileReadArray[$I],"=") and not (StringLeft($FileReadArray[$I],1) = "[" and StringRight($FileReadArray[$I],1) = "]") Then
+			Local $sLeft1 = StringLeft($FileReadArray[$I],1)
+
+			If $sLeft1 = ";" Or $sLeft1 = "/" Or $sLeft1 = "#" Or $sLeft1 = $sEmpty Then
 				_ArrayDelete($FileReadArray,$I)
 			EndIf
 		Next
 
-		;- Here we remove empty groups. Groups that do not contain any keys that define something. They are pointless and only take up space.
 
-		For $I = uBound($FileReadArray) - 1 To 0 Step -1
-			If StringLeft($FileReadArray[$I],1) = "[" and StringRight($FileReadArray[$I],1) = "]" Then ;- The start of the group
-				If $FileReadArray[$I+1] = $sEmpty Then ;- Check whether the line underneath it is empty; if it is, remove the pointless group.
+		;- Remove empty groups.
+
+		Local $iStartBounds = (uBound($FileReadArray) - 1)
+
+		For $I = $iStartBounds To 0 Step -1
+
+			If StringLeft($FileReadArray[$I],1) = "[" Then
+
+				If ($I > 0 And StringLeft($FileReadArray[$I-1],1) = "[") Then
+					_ArrayDelete($FileReadArray,$I-1)
+				ElseIf $I = $iStartBounds Then
 					_ArrayDelete($FileReadArray,$I)
 				EndIf
 			EndIf
 		Next
 
-		;- Since the code above produces double spaces, we need to re-run the removing spaces code.
-		;- The code has to be run twice, as additional spaces have to be removed inside of groups for the empty group remover code to function.
-		;- If there was an additional space underneath a group definition, but it had keys, the code above would still detect it as empty and cause problems!
-		;- I had to copy-paste this code since function definitions inside a function are not possible in AutoIt.
 
-		Local $ToRemove[0]
-		For $I = 0 To uBound($FileReadArray) - 1 Step 1 ;- Loop through every line of the file.
-			Local $Bounds = uBound($FileReadArray) - 1
+		;- Remove duplicates.
+		;- This avoids potential conflicts. The first occurrence is kept, since duplicates after that are not used by the game.
+		;- This preserves any settings the user might have made that do not get changed by the optimizer.
+		;- This also includes changes like login information, tracking, cookies, etc.
 
-			If StringLeft($FileReadArray[$I],1) = "[" and StringRight($FileReadArray[$I],1) = "]" Then ;- Group start found.
-				For $B = $I+1 To $Bounds Step 1 ;- Loop through the rest of the file until a new group is found or the end of file is reached.
-					If ($B+1) > $Bounds Then ExitLoop ;- We reached the end of the file.
-					If StringLeft($FileReadArray[$B+1],1) = "[" and StringRight($FileReadArray[$B+1],1) = "]" Then ExitLoop ;- We reached the end of the group.
 
-					If $FileReadArray[$B] = $sEmpty and not (($I+1) > $Bounds or StringLeft($FileReadArray[$B+1],1) = "[" and StringRight($FileReadArray[$B+1],1) = "]") Then ;- Invalid or empty line found.
-						Local $Count = uBound($ToRemove)
-						ReDim $ToRemove[$Count+1]
-						$ToRemove[$Count] = $B - $Count ;- Add it to the cache with respective index.
-					EndIf
-				Next
+		Local $aGroups[0] ;- Cache groups.
+
+		For $I = 0 To uBound($FileReadArray) - 1 Step 1
+
+			If StringLeft($FileReadArray[$I],1) = "[" Then
+
+				Local $iSize = uBound($aGroups)
+				ReDim $aGroups[$iSize + 1]
+
+				$aGroups[$iSize] = $FileReadArray[$I]
+
 			EndIf
 		Next
 
-		For $I = 0 To uBound($ToRemove) - 1 Step 1 ;- And here we remove the entries from the array.
-			_ArrayDelete($FileReadArray,$ToRemove[$I])
-		Next
 
-		;- Here is where the real magic happens. We make sure all groups and keys exist in our supplied configuration. If not, we create them using the information supplied by the hive.
-		;- This works with duplicate keynames and keyvalues.
-		;- This algorithm may not be the most efficient in terms of code, but it is smart enough to detect file corruption even though there should not be any anymore.
-		;- This algorithm also does not care about the order of the groups. Meaning, if we have a group that is normally at the start of the file but is at the end of our file for whatever reason, the algorithm has no issues working with it.
+		Local $aGroupDupes[0] ;- Cache duplicate groups.
 
-		Local $I = 0
-		Local $DuplicatesHandled[0][2]
-		While ($I < $HiveX)
-			Local $Key = $Hive[$I][0] ;- The group we are checking.
-			Local $Start = 0, $End = 0
+		For $I = 0 To uBound($aGroups) - 1 Step 1
 
-			;- This loop checks whether the group from the hive exists in the supplied config file as well; if so, it sets the start and end lines.
-			For $Z = 0 To uBound($FileReadArray) - 1 Step 1 ;- Check if the group exists in the configuration.
-				If StringInStr($FileReadArray[$Z],$Key) Then ;- If it does, get the start array index.
-					$Start = $Z+1
+			For $B = ($I + 1) To uBound($aGroups) - 1 Step 1
 
-					Local $CCCount = uBound($FileReadArray) - 1
-					For $AZ = $Z+1 To $CCCount Step 1
-						If (StringLeft($FileReadArray[$AZ],1) = "[" and StringRight($FileReadArray[$AZ],1) = "]") or $AZ = $CCCount Then ;- ... And where it ends.
-							$End = $AZ
+				If $aGroups[$I] = $aGroups[$B] Then
+
+					;- Check if this one is cached already; if so, skip it.
+					For $C = 0 To uBound($aGroupDupes) - 1 Step 1
+						If $aGroupDupes[$C] = $aGroups[$B] Then
 							ExitLoop(2)
 						EndIf
 					Next
+
+					Local $iSize = uBound($aGroupDupes)
+					ReDim $aGroupDupes[$iSize + 1]
+
+					$aGroupDupes[$iSize] = $aGroups[$I]
+
+					ExitLoop
+
+				EndIf
+			Next
+		Next
+
+
+		;- Iterate through duplicate groups and cache ranges that we need to delete.
+
+		Local $aCachedRanges[0]
+		Local $iBounds = (uBound($FileReadArray) - 1)
+
+		For $I = 0 To uBound($aGroupDupes) - 1 Step 1
+
+			Local $iLastOccurance = 0
+
+
+			For $A = $iBounds To 0 Step -1
+				If $FileReadArray[$A] = $aGroupDupes[$I] Then
+					$iLastOccurance = ($A - 1)
+					ExitLoop
 				EndIf
 			Next
 
-			If $Start <> 0 and $End <> 0 Then ;- The start of the group and the end have been found; now check whether all keys exist in the supplied configuration; if not, add them!
-				Local $Insertions = 0
+			For $A = 0 To $iLastOccurance Step 1
 
-				For $B = 1 To $HiveY-1 Step 1 ;- If it exists, we check whether all keys also exist in the supplied config file; if not, we add them.
-					If $Hive[$I][$B] = $sEmpty Then ExitLoop ;- We looped through all keys in the hive from the supplied group, so we go to the next group.
+				If $FileReadArray[$A] = $aGroupDupes[$I] Then  ;- Additional occurance.
 
-					Local $HiveKName = StringMid($Hive[$I][$B],1,StringInStr($Hive[$I][$B],"=")) ;- The key from the hive to find in the supplied config.
-					Local $HiveKLength = StringLen($HiveKName)
 
-					Local $KeyExists = False
-					For $C = $Start To $End Step 1
-						If StringLeft($FileReadArray[$C],$HiveKLength) = $HiveKName Then ;- The key exists!
-							$KeyExists = True
+					;- Find the next group or the end of the file.
+
+					Local $IEnd = $iLastOccurance
+
+					For $B = ($A + 1) To $iLastOccurance Step 1 ;- Clamps itself (start > end.)
+
+						If StringLeft($FileReadArray[$B],1) = "[" Then
+							$IEnd = ($B - 1) ;- Get range of the next group start.
 							ExitLoop
 						EndIf
 					Next
 
-					If not $KeyExists Then ;- The key does not exist in the remote group. What a shame.
-						_ArrayInsert($FileReadArray,$Start,$HiveKName&StringMid($Hive[$I][$B],$HiveKLength+1))
-						$Insertions = $Insertions + 1
-					EndIf
-				Next
 
-				;- Duplicate handling.
+					;- Cache found range.
+					Local $iSize = uBound($aCachedRanges)
+					ReDim $aCachedRanges[$iSize + 1]
 
-				For $SP = $Start To $End + $Insertions Step 1
-					Local $FullLine = $FileReadArray[$SP]
-					Local $EqualStart = StringInStr($FileReadArray[$SP],"=")
-					If $EqualStart = 0 Then ContinueLoop
-					Local $KeyName = StringLeft($FileReadArray[$SP],$EqualStart)
+					$aCachedRanges[$iSize] = ($A & "-" & $IEnd)
 
-					Local $DidWeHandleThatOneAlready = False
-					For $ZA = 0 To uBound($DuplicatesHandled) - 1 Step 1 ;- Prevent any further code from running if we have already taken care of this duplicate. (For optimization's sake.)
-						If $DuplicatesHandled[$ZA][0] = $Hive[$I][0] and $DuplicatesHandled[$ZA][1] = $KeyName Then
-							$DidWeHandleThatOneAlready = True
-							ExitLoop
-						EndIf
-					Next
+				EndIf
+			Next
+		Next
 
-					If not $DidWeHandleThatOneAlready Then ;- Check whether duplicates exist in the hive for that keyname.
-						Local $DuplicateCount = 0
+		;- Remove ranges in the array.
 
-						For $A = 0 To $HiveY-1 Step 1 ;- Count how many duplicates exist for this keyname within the hive.
-							If $Hive[$I][$A] = $sEmpty Then ExitLoop ;- End of HiveY reached.
+		For $I = uBound($aCachedRanges) - 1 To 0 Step -1
+			_ArrayDelete($FileReadArray,$aCachedRanges[$I])
+		Next
 
-							If StringLeft($Hive[$I][$A],StringInStr($Hive[$I][$A],"=")) = $KeyName Then
-								$DuplicateCount = $DuplicateCount + 1
-							EndIf
-						Next
 
-						If $DuplicateCount > 1 Then ;- Duplicates have been found!
-							Local $Count = uBound($DuplicatesHandled) ;- Prevent the same keyname from being detected in the same group again.
-							ReDim $DuplicatesHandled[$Count+1][2]
-							$DuplicatesHandled[$Count][0] = $Key
-							$DuplicatesHandled[$Count][1] = $KeyName
+		;- Restore missing groups and keynames that the SMITE Optimizer is capable of modifying.
 
-							Local $KeyValuesInHive[0]
-							For $A = 0 To $HiveY-1 Step 1 ;- We extract all values for that keyname from the hive and store them for later use.
-								If $Hive[$I][$A] = $sEmpty Then ExitLoop ;- End of HiveY reached.
+		;- Restore missing groups.
 
-								If StringLeft($Hive[$I][$A],StringInStr($Hive[$I][$A],"=")) = $KeyName Then
-									Local $RCount = uBound($KeyValuesInHive)
-									ReDim $KeyValuesInHive[$RCount+1]
-									$KeyValuesInHive[$RCount] = $Hive[$I][$A]
-								EndIf
-							Next
+		For $I = 0 To uBound($Hive,1) - 1 Step 1 ;- Rows.
 
-							Local $AddedDuplicates = 0
-							For $Tarantel = 0 To uBound($KeyValuesInHive) - 1 Step 1
-								Local $DoesItExistInSuppliedGroup = False
+			Local $sGroup = $Hive[$I][0]
 
-								For $A = $Start To $End+$AddedDuplicates Step 1 ;- Now we check whether the extracted Keynames + Keyvalues exist in our supplied configuration group.
-									If $FileReadArray[$A] = $KeyValuesInHive[$Tarantel] Then
-										$DoesItExistInSuppliedGroup = True
-										ExitLoop
-									EndIf
-								Next
-
-								If not $DoesItExistInSuppliedGroup Then ;- The keyname + keyvalue we checked do not exist in our supplied configuration, so we add them!
-									_ArrayInsert($FileReadArray,$Start,$KeyValuesInHive[$Tarantel])
-									$AddedDuplicates = $AddedDuplicates + 1
-								EndIf
-							Next
-						Else
-
-							;- This keyname does not seem to be a duplicate, but we have to check whether it exists multiple times within the group. If it does, it would be useless and waste space!
-							;- This part has a slight issue as it also tends to delete intended duplicates when an intended duplicate is missing within the same group. However, it gets re-added later, so it is never missing!
-
-							Local $INIGroupDuplicates = 0
-							For $A = $Start To $End Step 1 ;- Count the duplicates.
-								If StringLeft($FileReadArray[$A],StringInStr($FileReadArray[$A],"=")) = $KeyName Then
-									$INIGroupDuplicates = $INIGroupDuplicates + 1
-								EndIf
-							Next
-
-							If $INIGroupDuplicates > 1 Then ;- Check if there are duplicates of that keyname within the group.
-								Local $Removals = 0
-
-								For $A = 0 To $INIGroupDuplicates-2 Step 1 ;- Since there could be multiple duplicates, we have to loop through the group multiple times.
-									For $Dup = $End-$Removals To $Start Step -1
-										If StringLeft($FileReadArray[$Dup],StringInStr($FileReadArray[$Dup],"=")) = $KeyName Then
-											_ArrayDelete($FileReadArray,$Dup)
-											$Removals = $Removals + 1
-											ExitLoop
-										EndIf
-									Next
-								Next
-							EndIf
-						EndIf
-					EndIf
-				Next
-			ElseIf $Start = 0 Then ;- The whole group is missing! So we load it from the Hive!
-				For $IDK = 0 To $HiveY - 1 Step 1 ;- Insert the name of the group and the keynames.
-					If $Hive[$I][$IDK] = $sEmpty Then ;- The end of the HiveY has been reached; insert one more space and then exit the loop.
-						_ArrayInsert($FileReadArray,$IDK,$sEmpty)
-						ExitLoop
-					EndIf
-
-					;- Since the order does not matter in the .ini file, we insert it at the very start of the file since it is a lot easier to code.
-					_ArrayInsert($FileReadArray,$IDK,$Hive[$I][$IDK])
-				Next
+			If $sGroup = "" Then ;- HiveX end reached; continue with the next row.
+				ExitLoop
 			EndIf
 
-			$I = $I + 1
-		WEnd
 
-		For $I = uBound($FileReadArray) - 1 To 1 Step -1 ;- After we're done with most of the black magic, we need to make sure that before every group, there is at least one empty line.
-			If $I = 0 Then ExitLoop ;- We reached the start of the file.
+			;- Add the group if it is missing!
 
-			If StringLeft($FileReadArray[$I],1) = "[" and StringRight($FileReadArray[$I],1) = "]" and $FileReadArray[$I-1] <> $sEmpty Then
-				_ArrayInsert($FileReadArray,$I,$sEmpty)
+			Local $iBounds = uBound($FileReadArray) - 1
+
+			For $B = 0 To $iBounds Step 1
+
+				If $FileReadArray[$B] = $sGroup Then ;- Group start.
+					ExitLoop
+				ElseIf $B = $iBounds Then ;- Group is missing; add it back!
+					_ArrayAdd($FileReadArray,$sGroup)
+				EndIf
+			Next
+		Next
+
+
+		;- Add missing keynames to groups.
+
+		;- Restore keynames.
+		_ArrayAdd($FileReadArray,"") ;- Cheeky hack that is needed.
+
+
+		For $I = 0 To uBound($Hive,1) - 1 Step 1 ;- Rows.
+
+			Local $sGroup = $Hive[$I][0]
+
+			If $sGroup = "" Then ;- HiveX end reached; continue with the next row.
+				ExitLoop
+			EndIf
+
+
+			For $B = 1 To uBound($Hive,2) - 1 Step 1 ;- Columns, iterate through all keynames.
+
+				Local $sKeyName = $Hive[$I][$B]
+				Local $iLen = StringLen($sKeyName)
+
+				If $sKeyName = "" or $iLen = 0 Then ;- HiveY end reached; continue with the next row.
+					ExitLoop
+				EndIf
+
+
+				;- Retrieve the start of the group.
+
+				Local $bGroupFound = False
+				Local $iGroupStart
+
+				For $C = 0 To uBound($FileReadArray) - 1 Step 1
+					If $FileReadArray[$C] = $sGroup Then
+						$bGroupFound = True
+						$iGroupStart = $C+1
+						ExitLoop
+					EndIf
+				Next
+
+
+				If $bGroupFound Then
+
+					;- Since we can potentially extend the file past its bounds, we have an open boundary and escape before a crash could occur.
+
+					For $C = $iGroupStart To 2^31 Step 1 ;- Spicy. What could possibly go wrong?
+
+						If $C > (uBound($FileReadArray) - 1) Then ;- Panic escape // safety.
+							ExitLoop
+						EndIf
+
+
+						If StringLeft($FileReadArray[$C],$iLen) = $sKeyName Then ;- KeyName was found; no changes were needed.
+							ExitLoop
+						EndIf
+
+						If StringLeft($FileReadArray[$C],1) = "[" Or StringLeft($FileReadArray[$C],1) = "" Then ;- We hit a group or the end of the file.
+
+							;- Insert KeyName into the group.
+							_ArrayInsert($FileReadArray,$iGroupStart,$sKeyName&"=")
+
+							ExitLoop
+
+						EndIf
+
+					Next
+				EndIf
+			Next
+		Next
+
+
+		;- Insert 1 empty line above each group, except the top of the array.
+
+		For $I = uBound($FileReadArray) - 1 To 1 Step -1
+			If $I > 1 and StringLeft($FileReadArray[$I],1) = "[" Then
+				_ArrayInsert($FileReadArray,$I,"")
 			EndIf
 		Next
 
-		Return $FileReadArray ;- We finished this expensive process!
+
+		Return $FileReadArray
+
 	EndFunc
 
 	Func Internal_GetQualityLevel($Data) ;- Used to determine the quality level selected.
@@ -4907,7 +4857,7 @@ EndFunc
 		Return $Array
 	EndFunc
 
-	Func Internal_ApplySingleKey($Array,$KeyName,$KeyValue) ;- Used to write key settings in the main group.
+	Func Internal_ApplySystemKey($Array,$KeyName,$KeyValue) ;- Used to write key settings to the [SystemSettings] group.
 
 		Local $KeyLength = StringLen($KeyName)
 		Local $FoundGroup = False
@@ -4917,8 +4867,11 @@ EndFunc
 				If $Array[$A] = "[SystemSettings]" Then
 					$FoundGroup = True
 				EndIf
-			ElseIf StringLeft($Array[$A],$KeyLength) = $KeyName Then ;- Replace the first occurrence of that key within the .INI with the value from the TextureHive.
-				$Array[$A] = $KeyName&$KeyValue
+			ElseIf StringLeft($Array[$A],$KeyLength) = $KeyName Then ;- Group was found, and this is the keyvalue we want to modify, so modify it.
+
+				$Array[$A] = $KeyName&$KeyValue ;- This changes all occurrences within the group.
+
+			ElseIf $FoundGroup And StringLeft($Array[$A],1) = "[" Then ;- End of the group was reached.
 				ExitLoop
 			EndIf
 		Next
@@ -5019,15 +4972,15 @@ EndFunc
 		ElseIf $State = "SystemSettings" Then
 
 			;- Even though depth of field seems to be enabled by default on max settings (need confirmation), it causes a lot of problems and artifacts, especially in assault.
-			$Array = Internal_ApplyKey($Array,"DepthOfField=","False") ;- So we simply disable it by default.
+			$Array = Internal_ApplySystemKey($Array,"DepthOfField=","False") ;- So we simply disable it by default.
 
-			$Array = Internal_ApplyKey($Array,"DirectionalLightmaps=","True") ;- Default. (We are setting this to true to prevent crashes.)
+			$Array = Internal_ApplySystemKey($Array,"DirectionalLightmaps=","True") ;- Default. (We are setting this to true to prevent crashes.)
 
 			;- The following settings don't have any effect, but we disable them anyway since it could still run extra instructions.
-			$Array = Internal_ApplyKey($Array,"MotionBlur=","False")
-			$Array = Internal_ApplyKey($Array,"MotionBlurPause=","False")
-			$Array = Internal_ApplyKey($Array,"MotionBlurSkinning=","1") ;- Default.
-			$Array = Internal_ApplyKey($Array,"MaxFilterBlurSampleCount=","4") ;- Default.
+			$Array = Internal_ApplySystemKey($Array,"MotionBlur=","False")
+			$Array = Internal_ApplySystemKey($Array,"MotionBlurPause=","False")
+			$Array = Internal_ApplySystemKey($Array,"MotionBlurSkinning=","1") ;- Default.
+			$Array = Internal_ApplySystemKey($Array,"MaxFilterBlurSampleCount=","4") ;- Default.
 
 			If $ProgramHomeState = "Simple" Then
 
@@ -5051,29 +5004,29 @@ EndFunc
 					;- Animated trees, light shafts, fog detail, Depth of Field, Texture based filter distortions.
 
 					If $Quality > 2 Then ;- If lower than high.
-						$Array = Internal_ApplyKey($Array,"SpeedTreeWind=","False")
-						$Array = Internal_ApplyKey($Array,"SpeedTreeLeaves=","False")
-						$Array = Internal_ApplyKey($Array,"SpeedTreeFronds=","False")
-						$Array = Internal_ApplyKey($Array,"SpeedTreeLODBias=","0")
+						$Array = Internal_ApplySystemKey($Array,"SpeedTreeWind=","False")
+						$Array = Internal_ApplySystemKey($Array,"SpeedTreeLeaves=","False")
+						$Array = Internal_ApplySystemKey($Array,"SpeedTreeFronds=","False")
+						$Array = Internal_ApplySystemKey($Array,"SpeedTreeLODBias=","0")
 
-						$Array = Internal_ApplyKey($Array,"bAllowLightShafts=","False")
+						$Array = Internal_ApplySystemKey($Array,"bAllowLightShafts=","False")
 
-						$Array = Internal_ApplyKey($Array,"FogVolumes=","False")
+						$Array = Internal_ApplySystemKey($Array,"FogVolumes=","False")
 
-						$Array = Internal_ApplyKey($Array,"Distortion=","False")
-						$Array = Internal_ApplyKey($Array,"FilteredDistortion=","False")
+						$Array = Internal_ApplySystemKey($Array,"Distortion=","False")
+						$Array = Internal_ApplySystemKey($Array,"FilteredDistortion=","False")
 					Else
-						$Array = Internal_ApplyKey($Array,"SpeedTreeWind=","True") ;- Default.
-						$Array = Internal_ApplyKey($Array,"SpeedTreeLeaves=","True") ;- Default.
-						$Array = Internal_ApplyKey($Array,"SpeedTreeFronds=","True") ;- Default.
-						$Array = Internal_ApplyKey($Array,"SpeedTreeLODBias=","2") ;- 2 Is the default value.
+						$Array = Internal_ApplySystemKey($Array,"SpeedTreeWind=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"SpeedTreeLeaves=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"SpeedTreeFronds=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"SpeedTreeLODBias=","2") ;- 2 Is the default value.
 
-						$Array = Internal_ApplyKey($Array,"bAllowLightShafts=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"bAllowLightShafts=","True") ;- Default.
 
-						$Array = Internal_ApplyKey($Array,"FogVolumes=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"FogVolumes=","True") ;- Default.
 
-						$Array = Internal_ApplyKey($Array,"Distortion=","True") ;- Default.
-						$Array = Internal_ApplyKey($Array,"FilteredDistortion=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"Distortion=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"FilteredDistortion=","True") ;- Default.
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5118,15 +5071,15 @@ EndFunc
 					;- Drop shadows, image based shadows, smooth bounds, shadows based on light reflections.
 
 					If $Quality > 2 Then ;- If lower than high.
-						$Array = Internal_ApplyKey($Array,"bAllowDropShadows=","False")
-						$Array = Internal_ApplyKey($Array,"bAllowWholeSceneDominantShadows=","False")
-						$Array = Internal_ApplyKey($Array,"bUseConservativeShadowBounds=","False")
-						$Array = Internal_ApplyKey($Array,"LightEnvironmentShadows=","False")
+						$Array = Internal_ApplySystemKey($Array,"bAllowDropShadows=","False")
+						$Array = Internal_ApplySystemKey($Array,"bAllowWholeSceneDominantShadows=","False")
+						$Array = Internal_ApplySystemKey($Array,"bUseConservativeShadowBounds=","False")
+						$Array = Internal_ApplySystemKey($Array,"LightEnvironmentShadows=","False")
 					Else
-						$Array = Internal_ApplyKey($Array,"bAllowDropShadows=","True")
-						$Array = Internal_ApplyKey($Array,"bAllowWholeSceneDominantShadows=","True")
-						$Array = Internal_ApplyKey($Array,"bUseConservativeShadowBounds=","True")
-						$Array = Internal_ApplyKey($Array,"LightEnvironmentShadows=","True")
+						$Array = Internal_ApplySystemKey($Array,"bAllowDropShadows=","True")
+						$Array = Internal_ApplySystemKey($Array,"bAllowWholeSceneDominantShadows=","True")
+						$Array = Internal_ApplySystemKey($Array,"bUseConservativeShadowBounds=","True")
+						$Array = Internal_ApplySystemKey($Array,"LightEnvironmentShadows=","True")
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5155,21 +5108,21 @@ EndFunc
 
 					;- Set Particle Quality. ProgramSetting (Ingame Setting)
 					If $Quality = 0 Then ;- 0 = Best (Maximum)
-						$Array = Internal_ApplySingleKey($Array,"DropParticleDistortion=","False")
-						$Array = Internal_ApplySingleKey($Array,"ParticleLODBias=","0")
-						$Array = Internal_ApplySingleKey($Array,"PerfScalingBias=","0")
+						$Array = Internal_ApplySystemKey($Array,"DropParticleDistortion=","False")
+						$Array = Internal_ApplySystemKey($Array,"ParticleLODBias=","0")
+						$Array = Internal_ApplySystemKey($Array,"PerfScalingBias=","0")
 					ElseIf $Quality = 1 Then ;- 1 = High (High)
-						$Array = Internal_ApplySingleKey($Array,"DropParticleDistortion=","True")
-						$Array = Internal_ApplySingleKey($Array,"ParticleLODBias=","1")
-						$Array = Internal_ApplySingleKey($Array,"PerfScalingBias=","0.1")
+						$Array = Internal_ApplySystemKey($Array,"DropParticleDistortion=","True")
+						$Array = Internal_ApplySystemKey($Array,"ParticleLODBias=","1")
+						$Array = Internal_ApplySystemKey($Array,"PerfScalingBias=","0.1")
 					ElseIf $Quality = 2 Then ;- 2 = Medium (Medium)
-						$Array = Internal_ApplySingleKey($Array,"DropParticleDistortion=","True")
-						$Array = Internal_ApplySingleKey($Array,"ParticleLODBias=","2")
-						$Array = Internal_ApplySingleKey($Array,"PerfScalingBias=","0.2")
+						$Array = Internal_ApplySystemKey($Array,"DropParticleDistortion=","True")
+						$Array = Internal_ApplySystemKey($Array,"ParticleLODBias=","2")
+						$Array = Internal_ApplySystemKey($Array,"PerfScalingBias=","0.2")
 					ElseIf $Quality >= 3 Then ;- 10 = Low (Low)
-						$Array = Internal_ApplySingleKey($Array,"DropParticleDistortion=","True")
-						$Array = Internal_ApplySingleKey($Array,"ParticleLODBias=","10")
-						$Array = Internal_ApplySingleKey($Array,"PerfScalingBias=","0.2")
+						$Array = Internal_ApplySystemKey($Array,"DropParticleDistortion=","True")
+						$Array = Internal_ApplySystemKey($Array,"ParticleLODBias=","10")
+						$Array = Internal_ApplySystemKey($Array,"PerfScalingBias=","0.2")
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5186,8 +5139,8 @@ EndFunc
 					Local $ScreenResX = Number($SplitC[0])
 					Local $ScreenResY = Number($SplitC[1])
 
-					$Array = Internal_ApplyKey($Array,"ResX=",$ScreenResX)
-					$Array = Internal_ApplyKey($Array,"ResY=",$ScreenResY)
+					$Array = Internal_ApplySystemKey($Array,"ResX=",$ScreenResX)
+					$Array = Internal_ApplySystemKey($Array,"ResY=",$ScreenResY)
 
 				;- ----- ----- ----- ----- -----
 
@@ -5196,17 +5149,17 @@ EndFunc
 
 					Local $Mode = GUICtrlRead($MainGUIHomeSimpleComboWindowmode)
 					If $Mode = "Fullscreen" Then
-						$Array = Internal_ApplyKey($Array,"Fullscreen=","True")
-						$Array = Internal_ApplyKey($Array,"FullscreenWindowed=","False")
-						$Array = Internal_ApplyKey($Array,"Borderless=","False")
+						$Array = Internal_ApplySystemKey($Array,"Fullscreen=","True")
+						$Array = Internal_ApplySystemKey($Array,"FullscreenWindowed=","False")
+						$Array = Internal_ApplySystemKey($Array,"Borderless=","False")
 					ElseIf $Mode = "Borderless Window" Then
-						$Array = Internal_ApplyKey($Array,"Fullscreen=","False")
-						$Array = Internal_ApplyKey($Array,"FullscreenWindowed=","False")
-						$Array = Internal_ApplyKey($Array,"Borderless=","True")
+						$Array = Internal_ApplySystemKey($Array,"Fullscreen=","False")
+						$Array = Internal_ApplySystemKey($Array,"FullscreenWindowed=","False")
+						$Array = Internal_ApplySystemKey($Array,"Borderless=","True")
 					ElseIf $Mode = "Windowed" Then
-						$Array = Internal_ApplyKey($Array,"Fullscreen=","False")
-						$Array = Internal_ApplyKey($Array,"FullscreenWindowed=","False")
-						$Array = Internal_ApplyKey($Array,"Borderless=","False")
+						$Array = Internal_ApplySystemKey($Array,"Fullscreen=","False")
+						$Array = Internal_ApplySystemKey($Array,"FullscreenWindowed=","False")
+						$Array = Internal_ApplySystemKey($Array,"Borderless=","False")
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5216,11 +5169,11 @@ EndFunc
 
 					Local $RsEn = GUICtrlRead($MainGUIHomeSimpleSliderScreenResScale)
 					If $RsEn <> 100 Then ;- Make sure this setting is actually enabled.
-						$Array = Internal_ApplyKey($Array,"ScreenPercentage=",$RsEn)
-						$Array = Internal_ApplyKey($Array,"UpscaleScreenPercentage=","True") ;- Upscaling is a lot faster than actually rendering the game at X% resolution and nearly has the same quality. (It's also on by default.)
+						$Array = Internal_ApplySystemKey($Array,"ScreenPercentage=",$RsEn)
+						$Array = Internal_ApplySystemKey($Array,"UpscaleScreenPercentage=","True") ;- Upscaling is a lot faster than actually rendering the game at X% resolution and nearly has the same quality. (It's also on by default.)
 					Else
-						$Array = Internal_ApplyKey($Array,"ScreenPercentage=","100")
-						$Array = Internal_ApplyKey($Array,"UpscaleScreenPercentage=","False")
+						$Array = Internal_ApplySystemKey($Array,"ScreenPercentage=","100")
+						$Array = Internal_ApplySystemKey($Array,"UpscaleScreenPercentage=","False")
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5234,15 +5187,15 @@ EndFunc
 					If @OSVersion = "WIN_XP" or @OSVersion = "WIN_VISTA" or @OSVersion = "WIN_XPe" or @OSVersion = "WIN_2008R2" or @OSVersion = "WIN_2008" or @OSVersion = "WIN_2003" Then $DX11Read = "False"
 
 					If $DX11Read = $GUI_UNCHECKED Then
-						$Array = Internal_ApplyKey($Array,"UseDX11=","False") ;- Default.
-						$Array = Internal_ApplyKey($Array,"AllowD3D11=","False") ;- Default.
-						$Array = Internal_ApplyKey($Array,"PreferD3D11=","False") ;- Default.
-						$Array = Internal_ApplyKey($Array,"UseD3D11Beta=","False") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"UseDX11=","False") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"AllowD3D11=","False") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"PreferD3D11=","False") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"UseD3D11Beta=","False") ;- Default.
 					ElseIf $DX11Read = $GUI_CHECKED Then
-						$Array = Internal_ApplyKey($Array,"UseDX11=","True") ;- This is for future-proofing when DX11 SMITE goes out of beta.
-						$Array = Internal_ApplyKey($Array,"AllowD3D11=","True")
-						$Array = Internal_ApplyKey($Array,"PreferD3D11=","True")
-						$Array = Internal_ApplyKey($Array,"UseD3D11Beta=","True") ;- This is what enables it.
+						$Array = Internal_ApplySystemKey($Array,"UseDX11=","True") ;- This is for future-proofing when DX11 SMITE goes out of beta.
+						$Array = Internal_ApplySystemKey($Array,"AllowD3D11=","True")
+						$Array = Internal_ApplySystemKey($Array,"PreferD3D11=","True")
+						$Array = Internal_ApplySystemKey($Array,"UseD3D11Beta=","True") ;- This is what enables it.
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5262,7 +5215,7 @@ EndFunc
 						$AARead = 3
 					EndIf
 
-					$Array = Internal_ApplyKey($Array,"FXAAQuality=",$AARead)
+					$Array = Internal_ApplySystemKey($Array,"FXAAQuality=",$AARead)
 
 				;- ----- ----- ----- ----- -----
 
@@ -5277,7 +5230,7 @@ EndFunc
 						$AFRead = StringReplace($AFRead,"x",$sEmpty)
 					EndIf
 
-					$Array = Internal_ApplyKey($Array,"MaxAnisotropy=",$AFRead)
+					$Array = Internal_ApplySystemKey($Array,"MaxAnisotropy=",$AFRead)
 
 				;- ----- ----- ----- ----- -----
 
@@ -5286,16 +5239,16 @@ EndFunc
 
 					Local $DecalsRead = GUICtrlRead($MainGUIHomeSimpleCheckboxDecals)
 
-					$Array = Internal_ApplyKey($Array,"MaxActiveDecals=","0") ;- Default.
+					$Array = Internal_ApplySystemKey($Array,"MaxActiveDecals=","0") ;- Default.
 
 					If $DecalsRead = $GUI_UNCHECKED Then
-						$Array = Internal_ApplyKey($Array,"StaticDecals=","False")
-						$Array = Internal_ApplyKey($Array,"DynamicDecals=","False")
-						$Array = Internal_ApplyKey($Array,"UnbatchedDecals=","False")
+						$Array = Internal_ApplySystemKey($Array,"StaticDecals=","False")
+						$Array = Internal_ApplySystemKey($Array,"DynamicDecals=","False")
+						$Array = Internal_ApplySystemKey($Array,"UnbatchedDecals=","False")
 					ElseIf $DecalsRead = $GUI_CHECKED Then
-						$Array = Internal_ApplyKey($Array,"StaticDecals=","True");- Default.
-						$Array = Internal_ApplyKey($Array,"DynamicDecals=","True") ;- Default.
-						$Array = Internal_ApplyKey($Array,"UnbatchedDecals=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"StaticDecals=","True");- Default.
+						$Array = Internal_ApplySystemKey($Array,"DynamicDecals=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"UnbatchedDecals=","True") ;- Default.
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5306,15 +5259,15 @@ EndFunc
 					Local $DASRead = GUICtrlRead($MainGUIHomeSimpleCheckboxDynamicLightShadows)
 
 					If $DASRead = $GUI_UNCHECKED Then
-						$Array = Internal_ApplyKey($Array,"DynamicLights=","False")
-						$Array = Internal_ApplyKey($Array,"CompositeDynamicLights=","False")
-						$Array = Internal_ApplyKey($Array,"SHSecondaryLighting=","False")
-						$Array = Internal_ApplyKey($Array,"DynamicShadows=","False")
+						$Array = Internal_ApplySystemKey($Array,"DynamicLights=","False")
+						$Array = Internal_ApplySystemKey($Array,"CompositeDynamicLights=","False")
+						$Array = Internal_ApplySystemKey($Array,"SHSecondaryLighting=","False")
+						$Array = Internal_ApplySystemKey($Array,"DynamicShadows=","False")
 					ElseIf $DASRead = $GUI_CHECKED Then
-						$Array = Internal_ApplyKey($Array,"DynamicLights=","True") ;- Default.
-						$Array = Internal_ApplyKey($Array,"CompositeDynamicLights=","True") ;- Default.
-						$Array = Internal_ApplyKey($Array,"SHSecondaryLighting=","True") ;- Default.
-						$Array = Internal_ApplyKey($Array,"DynamicShadows=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"DynamicLights=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"CompositeDynamicLights=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"SHSecondaryLighting=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"DynamicShadows=","True") ;- Default.
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5325,11 +5278,11 @@ EndFunc
 					Local $ReflectionsRead = GUICtrlRead($MainGUIHomeSimpleCheckboxReflections)
 
 					If $ReflectionsRead = $GUI_UNCHECKED Then
-						$Array = Internal_ApplyKey($Array,"AllowImageReflections=","False")
-						$Array = Internal_ApplyKey($Array,"AllowImageReflectionShadowing=","False")
+						$Array = Internal_ApplySystemKey($Array,"AllowImageReflections=","False")
+						$Array = Internal_ApplySystemKey($Array,"AllowImageReflectionShadowing=","False")
 					ElseIf $ReflectionsRead = $GUI_CHECKED Then
-						$Array = Internal_ApplyKey($Array,"AllowImageReflections=","True") ;- Default.
-						$Array = Internal_ApplyKey($Array,"AllowImageReflectionShadowing=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"AllowImageReflections=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"AllowImageReflectionShadowing=","True") ;- Default.
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5344,28 +5297,28 @@ EndFunc
 					$FPSRead = 999
 				EndIf
 
-				$Array = Internal_ApplyKey($Array,"TargetFrameRate=",$FPSRead)
+				$Array = Internal_ApplySystemKey($Array,"TargetFrameRate=",$FPSRead)
 
 
 				Local $DetailModeRead = GUICtrlRead($MainGUIHomeSimpleComboDetailMode) ;- DetailMode.
-				$Array = Internal_ApplyKey($Array,"DetailMode=",$DetailModeRead)
+				$Array = Internal_ApplySystemKey($Array,"DetailMode=",$DetailModeRead)
 
 				Local $UseVsyncRead = Internal_CheckboxToStrBool($MainGUIHomeSimpleCheckboxVSync) ;- Vertical Synchronisation.
-				$Array = Internal_ApplyKey($Array,"UseVsync=",$UseVsyncRead)
-				$Array = Internal_ApplyKey($Array,"VsyncPresentInterval=","1")
+				$Array = Internal_ApplySystemKey($Array,"UseVsync=",$UseVsyncRead)
+				$Array = Internal_ApplySystemKey($Array,"VsyncPresentInterval=","1")
 
 				Local $PhysXRead = Internal_CheckboxToStrBool($MainGUIHomeSimpleCheckboxRagdollPhysics) ;- PhysX.
-				$Array = Internal_ApplyKey($Array,"bAllowRagdolling=",$PhysXRead)
+				$Array = Internal_ApplySystemKey($Array,"bAllowRagdolling=",$PhysXRead)
 
 				Local $BloomRead = Internal_CheckboxToStrBool($MainGUIHomeSimpleCheckboxBloom) ;- Bloom.
-				$Array = Internal_ApplyKey($Array,"Bloom=",$BloomRead)
+				$Array = Internal_ApplySystemKey($Array,"Bloom=",$BloomRead)
 
 				Local $LensFlareRead = Internal_CheckboxToStrBool($MainGUIHomeSimpleCheckboxLensflares) ;- Lensflares.
-				$Array = Internal_ApplyKey($Array,"LensFlares=",$LensFlareRead)
+				$Array = Internal_ApplySystemKey($Array,"LensFlares=",$LensFlareRead)
 
 				Local $UncompTextRead = Internal_CheckboxToStrBool($MainGUIHomeSimpleCheckboxHighQualityMats) ;- High Quality Textures.
-				$Array = Internal_ApplyKey($Array,"bAllowHighQualityMaterials=",$UncompTextRead)
-				$Array = Internal_ApplyKey($Array,"bUseLowQualMaterials=",not $UncompTextRead) ;- This is always the opposite of the checkbox.
+				$Array = Internal_ApplySystemKey($Array,"bAllowHighQualityMaterials=",$UncompTextRead)
+				$Array = Internal_ApplySystemKey($Array,"bUseLowQualMaterials=",not $UncompTextRead) ;- This is always the opposite of the checkbox.
 
 			ElseIf $ProgramHomeState = "Advanced" Then
 
@@ -5459,21 +5412,21 @@ EndFunc
 
 					;- Set Particle Quality. ProgramSetting (Ingame Setting)
 					If $PQ_LevelRead = "Best" Then ;- Best (Maximum)
-						$Array = Internal_ApplySingleKey($Array,"DropParticleDistortion=","False")
-						$Array = Internal_ApplySingleKey($Array,"ParticleLODBias=","0")
-						$Array = Internal_ApplySingleKey($Array,"PerfScalingBias=","0")
+						$Array = Internal_ApplySystemKey($Array,"DropParticleDistortion=","False")
+						$Array = Internal_ApplySystemKey($Array,"ParticleLODBias=","0")
+						$Array = Internal_ApplySystemKey($Array,"PerfScalingBias=","0")
 					ElseIf $PQ_LevelRead = "High" Then ;- High (High)
-						$Array = Internal_ApplySingleKey($Array,"DropParticleDistortion=","True")
-						$Array = Internal_ApplySingleKey($Array,"ParticleLODBias=","1")
-						$Array = Internal_ApplySingleKey($Array,"PerfScalingBias=","0.1")
+						$Array = Internal_ApplySystemKey($Array,"DropParticleDistortion=","True")
+						$Array = Internal_ApplySystemKey($Array,"ParticleLODBias=","1")
+						$Array = Internal_ApplySystemKey($Array,"PerfScalingBias=","0.1")
 					ElseIf $PQ_LevelRead = "Medium" Then ;- Medium (Medium)
-						$Array = Internal_ApplySingleKey($Array,"DropParticleDistortion=","True")
-						$Array = Internal_ApplySingleKey($Array,"ParticleLODBias=","2")
-						$Array = Internal_ApplySingleKey($Array,"PerfScalingBias=","0.2")
+						$Array = Internal_ApplySystemKey($Array,"DropParticleDistortion=","True")
+						$Array = Internal_ApplySystemKey($Array,"ParticleLODBias=","2")
+						$Array = Internal_ApplySystemKey($Array,"PerfScalingBias=","0.2")
 					ElseIf $PQ_LevelRead = "Low" Then ;- Low (Low)
-						$Array = Internal_ApplySingleKey($Array,"DropParticleDistortion=","True")
-						$Array = Internal_ApplySingleKey($Array,"ParticleLODBias=","10")
-						$Array = Internal_ApplySingleKey($Array,"PerfScalingBias=","0.2")
+						$Array = Internal_ApplySystemKey($Array,"DropParticleDistortion=","True")
+						$Array = Internal_ApplySystemKey($Array,"ParticleLODBias=","10")
+						$Array = Internal_ApplySystemKey($Array,"PerfScalingBias=","0.2")
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5490,8 +5443,8 @@ EndFunc
 					Local $ScreenResX = Number($SplitC[0])
 					Local $ScreenResY = Number($SplitC[1])
 
-					$Array = Internal_ApplyKey($Array,"ResX=",$ScreenResX)
-					$Array = Internal_ApplyKey($Array,"ResY=",$ScreenResY)
+					$Array = Internal_ApplySystemKey($Array,"ResX=",$ScreenResX)
+					$Array = Internal_ApplySystemKey($Array,"ResY=",$ScreenResY)
 
 				;- ----- ----- ----- ----- -----
 
@@ -5500,17 +5453,17 @@ EndFunc
 
 					Local $Mode = GUICtrlRead($MainGUIHomeAdvancedComboWindowmode)
 					If $Mode = "Fullscreen" Then
-						$Array = Internal_ApplyKey($Array,"Fullscreen=","True")
-						$Array = Internal_ApplyKey($Array,"FullscreenWindowed=","False")
-						$Array = Internal_ApplyKey($Array,"Borderless=","False")
+						$Array = Internal_ApplySystemKey($Array,"Fullscreen=","True")
+						$Array = Internal_ApplySystemKey($Array,"FullscreenWindowed=","False")
+						$Array = Internal_ApplySystemKey($Array,"Borderless=","False")
 					ElseIf $Mode = "Borderless Window" Then
-						$Array = Internal_ApplyKey($Array,"Fullscreen=","False")
-						$Array = Internal_ApplyKey($Array,"FullscreenWindowed=","False")
-						$Array = Internal_ApplyKey($Array,"Borderless=","True")
+						$Array = Internal_ApplySystemKey($Array,"Fullscreen=","False")
+						$Array = Internal_ApplySystemKey($Array,"FullscreenWindowed=","False")
+						$Array = Internal_ApplySystemKey($Array,"Borderless=","True")
 					ElseIf $Mode = "Windowed" Then
-						$Array = Internal_ApplyKey($Array,"Fullscreen=","False")
-						$Array = Internal_ApplyKey($Array,"FullscreenWindowed=","False")
-						$Array = Internal_ApplyKey($Array,"Borderless=","False")
+						$Array = Internal_ApplySystemKey($Array,"Fullscreen=","False")
+						$Array = Internal_ApplySystemKey($Array,"FullscreenWindowed=","False")
+						$Array = Internal_ApplySystemKey($Array,"Borderless=","False")
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5520,11 +5473,11 @@ EndFunc
 
 					Local $RsEn = GUICtrlRead($MainGUIHomeAdvancedSliderScreenResScale)
 					If $RsEn <> 100 Then ;- Make sure this setting is actually enabled.
-						$Array = Internal_ApplyKey($Array,"ScreenPercentage=",$RsEn)
-						$Array = Internal_ApplyKey($Array,"UpscaleScreenPercentage=","True") ;- Upscaling is a lot faster than actually rendering the game at X% resolution and nearly has the same quality. (It's also on by default.)
+						$Array = Internal_ApplySystemKey($Array,"ScreenPercentage=",$RsEn)
+						$Array = Internal_ApplySystemKey($Array,"UpscaleScreenPercentage=","True") ;- Upscaling is a lot faster than actually rendering the game at X% resolution and nearly has the same quality. (It's also on by default.)
 					Else
-						$Array = Internal_ApplyKey($Array,"ScreenPercentage=","100")
-						$Array = Internal_ApplyKey($Array,"UpscaleScreenPercentage=","False")
+						$Array = Internal_ApplySystemKey($Array,"ScreenPercentage=","100")
+						$Array = Internal_ApplySystemKey($Array,"UpscaleScreenPercentage=","False")
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5544,7 +5497,7 @@ EndFunc
 						$AARead = 3
 					EndIf
 
-					$Array = Internal_ApplyKey($Array,"FXAAQuality=",$AARead)
+					$Array = Internal_ApplySystemKey($Array,"FXAAQuality=",$AARead)
 
 				;- ----- ----- ----- ----- -----
 
@@ -5559,7 +5512,7 @@ EndFunc
 						$AFRead = StringReplace($AFRead,"x",$sEmpty)
 					EndIf
 
-					$Array = Internal_ApplyKey($Array,"MaxAnisotropy=",$AFRead)
+					$Array = Internal_ApplySystemKey($Array,"MaxAnisotropy=",$AFRead)
 
 				;- ----- ----- ----- ----- -----
 
@@ -5572,15 +5525,15 @@ EndFunc
 					If @OSVersion = "WIN_XP" or @OSVersion = "WIN_VISTA" or @OSVersion = "WIN_XPe" or @OSVersion = "WIN_2008R2" or @OSVersion = "WIN_2008" or @OSVersion = "WIN_2003" Then $DX11Read = "False"
 
 					If $DX11Read = $GUI_UNCHECKED Then
-						$Array = Internal_ApplyKey($Array,"UseDX11=","False") ;- Default.
-						$Array = Internal_ApplyKey($Array,"AllowD3D11=","False") ;- Default.
-						$Array = Internal_ApplyKey($Array,"PreferD3D11=","False") ;- Default.
-						$Array = Internal_ApplyKey($Array,"UseD3D11Beta=","False") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"UseDX11=","False") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"AllowD3D11=","False") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"PreferD3D11=","False") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"UseD3D11Beta=","False") ;- Default.
 					ElseIf $DX11Read = $GUI_CHECKED Then
-						$Array = Internal_ApplyKey($Array,"UseDX11=","True") ;- This is for future-proofing when DX11 SMITE goes out of beta.
-						$Array = Internal_ApplyKey($Array,"AllowD3D11=","True")
-						$Array = Internal_ApplyKey($Array,"PreferD3D11=","True")
-						$Array = Internal_ApplyKey($Array,"UseD3D11Beta=","True") ;- This is what enables it.
+						$Array = Internal_ApplySystemKey($Array,"UseDX11=","True") ;- This is for future-proofing when DX11 SMITE goes out of beta.
+						$Array = Internal_ApplySystemKey($Array,"AllowD3D11=","True")
+						$Array = Internal_ApplySystemKey($Array,"PreferD3D11=","True")
+						$Array = Internal_ApplySystemKey($Array,"UseD3D11Beta=","True") ;- This is what enables it.
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5591,11 +5544,11 @@ EndFunc
 					Local $ReflectionsRead = GUICtrlRead($MainGUIHomeAdvancedCheckboxReflections)
 
 					If $ReflectionsRead = $GUI_UNCHECKED Then
-						$Array = Internal_ApplyKey($Array,"AllowImageReflections=","False")
-						$Array = Internal_ApplyKey($Array,"AllowImageReflectionShadowing=","False")
+						$Array = Internal_ApplySystemKey($Array,"AllowImageReflections=","False")
+						$Array = Internal_ApplySystemKey($Array,"AllowImageReflectionShadowing=","False")
 					ElseIf $ReflectionsRead = $GUI_CHECKED Then
-						$Array = Internal_ApplyKey($Array,"AllowImageReflections=","True") ;- Default.
-						$Array = Internal_ApplyKey($Array,"AllowImageReflectionShadowing=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"AllowImageReflections=","True") ;- Default.
+						$Array = Internal_ApplySystemKey($Array,"AllowImageReflectionShadowing=","True") ;- Default.
 					EndIf
 
 				;- ----- ----- ----- ----- -----
@@ -5610,85 +5563,85 @@ EndFunc
 					$FPSRead = 999
 				EndIf
 
-				$Array = Internal_ApplyKey($Array,"TargetFrameRate=",$FPSRead)
+				$Array = Internal_ApplySystemKey($Array,"TargetFrameRate=",$FPSRead)
 
 
 				Local $UseVsyncRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxVSync) ;- Vertical Synchronisation.
-				$Array = Internal_ApplyKey($Array,"UseVsync=",$UseVsyncRead)
-				$Array = Internal_ApplyKey($Array,"VsyncPresentInterval=","1")
+				$Array = Internal_ApplySystemKey($Array,"UseVsync=",$UseVsyncRead)
+				$Array = Internal_ApplySystemKey($Array,"VsyncPresentInterval=","1")
 
 				Local $PhysXRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxPhysX) ;- PhysX.
-				$Array = Internal_ApplyKey($Array,"bAllowRagdolling=",$PhysXRead)
+				$Array = Internal_ApplySystemKey($Array,"bAllowRagdolling=",$PhysXRead)
 
 				Local $BloomRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxBloom) ;- Bloom.
-				$Array = Internal_ApplyKey($Array,"Bloom=",$BloomRead)
+				$Array = Internal_ApplySystemKey($Array,"Bloom=",$BloomRead)
 
 				Local $SpeedTreeWindRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxSpeedTreeWind) ;- SpeedTreeWind.
-				$Array = Internal_ApplyKey($Array,"SpeedTreeWind=",$SpeedTreeWindRead)
+				$Array = Internal_ApplySystemKey($Array,"SpeedTreeWind=",$SpeedTreeWindRead)
 
 				Local $SpeedTreeLeavesRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxSpeedTreeLeaves) ;- SpeedTreeLeaves.
-				$Array = Internal_ApplyKey($Array,"SpeedTreeLeaves=",$SpeedTreeLeavesRead)
+				$Array = Internal_ApplySystemKey($Array,"SpeedTreeLeaves=",$SpeedTreeLeavesRead)
 
 				Local $SpeedTreeFrondsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxSpeedTreeFronds) ;- SpeedTreeFronds.
-				$Array = Internal_ApplyKey($Array,"SpeedTreeFronds=",$SpeedTreeFrondsRead)
+				$Array = Internal_ApplySystemKey($Array,"SpeedTreeFronds=",$SpeedTreeFrondsRead)
 
 				Local $SpeedTreeLODBiasRead = GUICtrlRead($MainGUIHomeAdvancedComboSpeedTreeLODBias) ;- SpeedTreeLODBias.
-				$Array = Internal_ApplyKey($Array,"SpeedTreeLODBias=",$SpeedTreeLODBiasRead)
+				$Array = Internal_ApplySystemKey($Array,"SpeedTreeLODBias=",$SpeedTreeLODBiasRead)
 
 				Local $DetailModeRead = GUICtrlRead($MainGUIHomeAdvancedComboDetailMode) ;- DetailMode.
-				$Array = Internal_ApplyKey($Array,"DetailMode=",$DetailModeRead)
+				$Array = Internal_ApplySystemKey($Array,"DetailMode=",$DetailModeRead)
 
 				Local $LensflaresRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxLensflares) ;- Lensflares.
-				$Array = Internal_ApplyKey($Array,"LensFlares=",$LensflaresRead)
+				$Array = Internal_ApplySystemKey($Array,"LensFlares=",$LensflaresRead)
 
 				Local $LightEnvShadowsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxLightEnvShadows) ;- LightEnvironmentShadows.
-				$Array = Internal_ApplyKey($Array,"LightEnvironmentShadows=",$LightEnvShadowsRead)
+				$Array = Internal_ApplySystemKey($Array,"LightEnvironmentShadows=",$LightEnvShadowsRead)
 
 				Local $LightShaftsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxLightShafts) ;- LightShafts.
-				$Array = Internal_ApplyKey($Array,"bAllowLightShafts=",$LightShaftsRead)
+				$Array = Internal_ApplySystemKey($Array,"bAllowLightShafts=",$LightShaftsRead)
 
 				Local $FogVolumesRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxFogVolumes) ;- FogVolumes.
-				$Array = Internal_ApplyKey($Array,"FogVolumes=",$FogVolumesRead)
+				$Array = Internal_ApplySystemKey($Array,"FogVolumes=",$FogVolumesRead)
 
 				Local $DistortionRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxDistortion) ;- Distortion.
-				$Array = Internal_ApplyKey($Array,"Distortion=",$DistortionRead)
+				$Array = Internal_ApplySystemKey($Array,"Distortion=",$DistortionRead)
 
 				Local $FilteredDistortionRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxFilteredDistortion) ;- FilteredDistortion.
-				$Array = Internal_ApplyKey($Array,"FilteredDistortion=",$FilteredDistortionRead)
+				$Array = Internal_ApplySystemKey($Array,"FilteredDistortion=",$FilteredDistortionRead)
 
 				Local $DropShadowsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxDropShadows) ;- DropShadows.
-				$Array = Internal_ApplyKey($Array,"bAllowDropShadows=",$DropShadowsRead)
+				$Array = Internal_ApplySystemKey($Array,"bAllowDropShadows=",$DropShadowsRead)
 
 				Local $WholeSceneShadowsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxWholeSceneShadows) ;- bAllowWholeSceneDominantShadows.
-				$Array = Internal_ApplyKey($Array,"bAllowWholeSceneDominantShadows=",$WholeSceneShadowsRead)
+				$Array = Internal_ApplySystemKey($Array,"bAllowWholeSceneDominantShadows=",$WholeSceneShadowsRead)
 
 				Local $ConservShadowBoundsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxConservShadowBounds) ;- bUseConservativeShadowBounds.
-				$Array = Internal_ApplyKey($Array,"bUseConservativeShadowBounds=",$ConservShadowBoundsRead)
+				$Array = Internal_ApplySystemKey($Array,"bUseConservativeShadowBounds=",$ConservShadowBoundsRead)
 
 				Local $StaticDecalsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxStaticDecals) ;- StaticDecals.
-				$Array = Internal_ApplyKey($Array,"StaticDecals=",$StaticDecalsRead)
+				$Array = Internal_ApplySystemKey($Array,"StaticDecals=",$StaticDecalsRead)
 
 				Local $DynamicDecalsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxDynamicDecals) ;- DynamicDecals.
-				$Array = Internal_ApplyKey($Array,"DynamicDecals=",$DynamicDecalsRead)
+				$Array = Internal_ApplySystemKey($Array,"DynamicDecals=",$DynamicDecalsRead)
 
 				Local $UnbatchedDecalsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxUnbatchedDecals) ;- UnbatchedDecals.
-				$Array = Internal_ApplyKey($Array,"UnbatchedDecals=",$UnbatchedDecalsRead)
+				$Array = Internal_ApplySystemKey($Array,"UnbatchedDecals=",$UnbatchedDecalsRead)
 
 				Local $DynamicLightsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxDynamicLights) ;- DynamicLights.
-				$Array = Internal_ApplyKey($Array,"DynamicLights=",$DynamicLightsRead)
+				$Array = Internal_ApplySystemKey($Array,"DynamicLights=",$DynamicLightsRead)
 
 				Local $CompositeDynamicLightsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxCompDynamicLights) ;- CompositeDynamicLights.
-				$Array = Internal_ApplyKey($Array,"CompositeDynamicLights=",$CompositeDynamicLightsRead)
+				$Array = Internal_ApplySystemKey($Array,"CompositeDynamicLights=",$CompositeDynamicLightsRead)
 
 				Local $SHSecondaryLightingRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxSHSecondaryLighting) ;- SHSecondaryLighting.
-				$Array = Internal_ApplyKey($Array,"SHSecondaryLighting=",$SHSecondaryLightingRead)
+				$Array = Internal_ApplySystemKey($Array,"SHSecondaryLighting=",$SHSecondaryLightingRead)
 
 				Local $DynamicShadowsRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxDynamicShadows) ;- DynamicShadows.
-				$Array = Internal_ApplyKey($Array,"DynamicShadows=",$DynamicShadowsRead)
+				$Array = Internal_ApplySystemKey($Array,"DynamicShadows=",$DynamicShadowsRead)
 
 				Local $UncompTextRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxUncText) ;- High Quality Textures.
-				$Array = Internal_ApplyKey($Array,"bAllowHighQualityMaterials=",$UncompTextRead)
-				$Array = Internal_ApplyKey($Array,"bUseLowQualMaterials=",not $UncompTextRead) ;- This is always the opposite of the checkbox.
+				$Array = Internal_ApplySystemKey($Array,"bAllowHighQualityMaterials=",$UncompTextRead)
+				$Array = Internal_ApplySystemKey($Array,"bUseLowQualMaterials=",not $UncompTextRead) ;- This is always the opposite of the checkbox.
 
 			EndIf
 
@@ -5750,7 +5703,22 @@ EndFunc
 				$FPSRead = 999
 			EndIf
 
-			$Array = Internal_ApplyKey($Array,"TargetFrameRate=",$FPSRead)
+			$Array = Internal_ApplySystemKey($Array,"TargetFrameRate=",$FPSRead)
+
+
+			Local $bFogState = GUICtrlRead($MainGUIFixesCheckboxDisableFog)
+
+			If $bFogState = $GUI_CHECKED Then
+				$Array = Internal_ApplySystemKey($Array,"bAllowFog=","False")
+				$Array = Internal_ApplySystemKey($Array,"FogVolumes=","False")
+				$Array = Internal_ApplySystemKey($Array,"MobileFog=","False")
+				$Array = Internal_ApplySystemKey($Array,"MobileHeightFog=","False")
+			Else
+				$Array = Internal_ApplySystemKey($Array,"bAllowFog=","True")
+				$Array = Internal_ApplySystemKey($Array,"FogVolumes=","True")
+				$Array = Internal_ApplySystemKey($Array,"MobileFog=","True")
+				$Array = Internal_ApplySystemKey($Array,"MobileHeightFog=","True")
+			EndIf
 
 
 			fSendMetric("event_applyfixes_system_complete")
@@ -5764,6 +5732,7 @@ EndFunc
 			Else
 				$Array = Internal_ApplyKey($Array,"bJumpEnabled=","True")
 			EndIf
+
 
 			fSendMetric("event_applyfixes_game_complete")
 
@@ -5896,27 +5865,13 @@ EndFunc
 
 				$PState = $PState + 1
 			ElseIf $PState = 2 Then ;- Verify Files
-				If $VerifyIntegrityOnApply = 1 Then
+				Local $EngineSF = Interal_VerifyAndFixConfiguration($EngineFile,$EngineSettingsClearHive)
+				Local $SystemSF = Interal_VerifyAndFixConfiguration($SystemFile,$SystemSettingsClearHive)
+				Local $GameSF = Interal_VerifyAndFixConfiguration($GameFile,$GameSettingsClearHive)
 
-					Local $EngineSF = Interal_VerifyAndFixConfiguration($EngineFile,$EngineSettingsClearHive)
-					Local $SystemSF = Interal_VerifyAndFixConfiguration($SystemFile,$SystemSettingsClearHive)
-					Local $GameSF = Interal_VerifyAndFixConfiguration($GameFile,$GameSettingsClearHive)
-
-					GUICtrlSetData($ProcessUIProgress,60)
-					GUICtrlSetColor($ProcessUILabelStatusVerify,0x00FF00)
-					GUICtrlSetData($ProcessUILabelStatusVerify,"[✓] Verifying and repairing integrity")
-
-				Else
-
-					Local $EngineSF = $EngineFile
-					Local $SystemSF = $SystemFile
-					Local $GameSF = $GameFile
-
-					GUICtrlSetData($ProcessUIProgress,60)
-					GUICtrlSetColor($ProcessUILabelStatusVerify,0x0000FF)
-					GUICtrlSetData($ProcessUILabelStatusVerify,"[X] Verifying and repairing integrity (Skipped)")
-
-				EndIf
+				GUICtrlSetData($ProcessUIProgress,60)
+				GUICtrlSetColor($ProcessUILabelStatusVerify,0x00FF00)
+				GUICtrlSetData($ProcessUILabelStatusVerify,"[✓] Verifying and repairing integrity")
 
 				$PState = $PState + 1
 			ElseIf $PState = 3 Then ;- Apply changes
@@ -6387,17 +6342,21 @@ EndFunc
 							Local $sPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")
 
 							If @Error Then
+								If FileExists("C:\Program Files (x86)\Steam\steamapps\common\SMITE") Then ;- Check for the default SMITE install location. - Community Contribution.
+									$sPath = "C:\Program Files (x86)\Steam\steamapps\common\SMITE"
+								Else
+									fSendMetric("error_quickbypass_nosteamfound")
+									MsgBox($MB_OK,"Error!","Steam Installation not found!" & @CRLF & "You can find out more by reading the 'Common Issues' in the debug tab.") ;- Improved comment. - Community Contribution.
 
-								fSendMetric("error_quickbypass_nosteamfound")
-								MsgBox($MB_OK,"Error!","Steam Installation not found!")
-
-								ExitLoop(1)
+									ExitLoop(1)
+								EndIf
 							EndIf
 
-							If $sPath = $sEmpty or not FileExists($sPath) Then ;- Community Contribution
+
+							If $sPath = $sEmpty or not FileExists($sPath) Then ;- Community Contribution.
 
 								fSendMetric("error_quickbypass_nosteamfound_path")
-								MsgBox($MB_OK,"Error!","Steam installation was found but is invalid! You can find out more by reading the 'Common Issues' in the debug tab.")
+								MsgBox($MB_OK,"Error!","Steam installation was found but is invalid!" & @CRLF & "You can find out more by reading the 'Common Issues' in the debug tab.")
 
 								ExitLoop(1)
 							EndIf
@@ -6779,7 +6738,11 @@ EndFunc
 
 		Local $sPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")
 
-		If @Error Or $sPath = $sEmpty or not FileExists($sPath) Then ;- Not steam?
+		If @Error Or $sPath = $sEmpty Then
+			$sPath = "C:\Program Files (x86)\Steam\steamapps\common\SMITE" ;- Check for the default SMITE install location. - Community Contribution.
+		EndIf
+
+		If not FileExists($sPath) Then ;- Not steam?
 
 			;- Attempt retrieval of EGS path
 
@@ -7274,6 +7237,8 @@ While True ;- Main program routine.
 							DisplayHoverImage(95,101,200,42,$MainResourcePath & "HelpText/Audio_Channels.jpg",300,40,345,317) ;- Audio Fix
 						ElseIf InRange2D($MousePos,120,153,320,176) Then
 							DisplayHoverImage(95,153,200,23,$MainResourcePath & "HelpText/Disable_Jumping.jpg",300,40,345,184) ;- Disable Jumping
+						ElseIf InRange2D($MousePos,120,173,320,196) Then
+							DisplayHoverImage(95,173,200,23,$MainResourcePath & "HelpText/Disable_Fog.jpg",300,40,345,184) ;- Disable Fog
 						EndIf
 					ElseIf $ProgramHomeState = "Simple" Then
 						If InRange2D($MousePos,95,71,295,114) Then
@@ -7662,606 +7627,430 @@ WEnd
 
 ;- They are defined at the very bottom of the file, as the hives are so big that it causes the AutoIt debugger to report incorrect lines when encountering an error or crash!
 
-#Region ;- Reference Hives. (Do NOT Indent these. Compiling WILL fail due to line length limits! - (MAX_LINESIZE = 4095) ) - Last Updated - Sep. 2023
+;- Prevent Au3Stripper from optimizing our used variables into the abyss.
+;- Not sure which part of this breaks the Au3Stripper.
+#Au3Stripper_Off
 
-Func fInitHives()
+#Region ;- Reference Hives.
 
-Global Const $EngineSettingsClearHive[110][181] = [ _
-	['[URL]','Protocol=unreal','Name=Player','Map=lobbymap','LocalMap=lobbymap','LocalOptions=','TransitionMap=Entry','MapExt=tgm','EXEName=unreal.exe','DebugEXEName=DEBUG-unreal.exe','SaveExt=usa','Port=7000','PeerPort=7778','GameName=Smite','GameNameShort=Smite','MenuLevel=lobbymap'], _
-	['[Engine.ScriptPackages]','EngineNativePackages=Core','EngineNativePackages=Engine','EngineNativePackages=GFxUI','EngineNativePackages=IpDrv','EngineNativePackages=GameFramework','NetNativePackages=IpDrv','NetNativePackages=WinDrv','EditorPackages=UnrealEd','ScaleformEditorPackages=GFxUIEditor','EngineNativePackages=PlatformCommon','EngineNativePackages=TgGame','NativePackages=TgClientBase','NativePackages=TgClient','NativePackages=BattleGame','NativePackages=BattleClient','EditorPackages=TgEditor','EditorPackages=BattleEditor','NonNativePackages=TgGameContent','EngineNativePackages=Vivox'], _
-	['[Engine.Engine]','NetworkDevice=PlatformCommon.PComNetDriver','FallbackNetworkDevice=IpDrv.TcpNetDriver','ConsoleClassName=Engine.Console','GameViewportClientClassName=TgClient.TgGameViewportClient','LocalPlayerClassName=Engine.LocalPlayer','DataStoreClientClassName=Engine.DataStoreClient','Language=INT','bAllowMatureLanguage=FALSE','GameEngine=TgGame.TgGameEngine','EditorEngine=TgEditor.TgEditorEngine','UnrealEdEngine=TgEditor.TgEditorEngine','Client=WinDrv.WindowsClient','Render=Render.Render','Input=Engine.Input','Canvas=Engine.Canvas','TinyFontName=EngineFonts.TinyFont','SmallFontName=EngineFonts.SmallFont', _
-	'MediumFontName=EngineFonts.SmallFont','LargeFontName=EngineFonts.SmallFont','SubtitleFontName=EngineFonts.SmallFont','WireframeMaterialName=EngineDebugMaterials.WireframeMaterial','DefaultMaterialName=EngineMaterials.DefaultMaterial','DefaultDecalMaterialName=EngineMaterials.DefaultDecalMaterial','DefaultTextureName=EngineMaterials.DefaultDiffuse','EmissiveTexturedMaterialName=EngineMaterials.EmissiveTexturedMaterial','GeomMaterialName=EngineDebugMaterials.GeomMaterial','DefaultFogVolumeMaterialName=EngineMaterials.FogVolumeMaterial','TickMaterialName=EditorMaterials.Tick_Mat','CrossMaterialName=EditorMaterials.Cross_Mat', _
-	'DefaultUICaretMaterialName=EngineMaterials.BlinkingCaret','SceneCaptureReflectActorMaterialName=EngineMaterials.ScreenMaterial','SceneCaptureCubeActorMaterialName=EngineMaterials.CubeMaterial','ScreenDoorNoiseTextureName=EngineMaterials.Good64x64TilingNoiseHighFreq','ImageGrainNoiseTextureName=EngineMaterials.Good64x64TilingNoiseHighFreq','RandomAngleTextureName=EngineMaterials.RandomAngles','RandomNormalTextureName=EngineMaterials.RandomNormal2','RandomMirrorDiscTextureName=EngineMaterials.RandomMirrorDisc','WeightMapPlaceholderTextureName=EngineMaterials.WeightMapPlaceholderTexture','LightMapDensityTextureName=EngineMaterials.DefaultWhiteGrid', _
-	'LightMapDensityNormalName=EngineMaterials.DefaultNormal','LevelColorationLitMaterialName=EngineDebugMaterials.LevelColorationLitMaterial','LevelColorationUnlitMaterialName=EngineDebugMaterials.LevelColorationUnlitMaterial','LightingTexelDensityName=EngineDebugMaterials.MAT_LevelColorationLitLightmapUVs','ShadedLevelColorationUnlitMaterialName=EngineDebugMaterials.ShadedLevelColorationUnlitMaterial','ShadedLevelColorationLitMaterialName=EngineDebugMaterials.ShadedLevelColorationLitMaterial','RemoveSurfaceMaterialName=EngineMaterials.RemoveSurfaceMaterial','VertexColorMaterialName=EngineDebugMaterials.VertexColorMaterial', _
-	'VertexColorViewModeMaterialName_ColorOnly=EngineDebugMaterials.VertexColorViewMode_ColorOnly','VertexColorViewModeMaterialName_AlphaAsColor=EngineDebugMaterials.VertexColorViewMode_AlphaAsColor','VertexColorViewModeMaterialName_RedOnly=EngineDebugMaterials.VertexColorViewMode_RedOnly','VertexColorViewModeMaterialName_GreenOnly=EngineDebugMaterials.VertexColorViewMode_GreenOnly','VertexColorViewModeMaterialName_BlueOnly=EngineDebugMaterials.VertexColorViewMode_BlueOnly','HeatmapMaterialName=EngineDebugMaterials.HeatmapMaterial','BoneWeightMaterialName=EngineDebugMaterials.BoneWeightMaterial','TangentColorMaterialName=EngineDebugMaterials.TangentColorMaterial', _
-	'MobileEmulationMasterMaterialName=MobileEngineMaterials.MobileMasterMaterial','EditorBrushMaterialName=EngineMaterials.EditorBrushMaterial','DefaultPhysMaterialName=EngineMaterials.DefaultPhysicalMaterial','LandscapeHolePhysMaterialName=EngineMaterials.LandscapeHolePhysicalMaterial','TextureStreamingBoundsMaterialName=EditorMaterials.Utilities.TextureStreamingBounds_MATInst','TerrainErrorMaterialName=EngineDebugMaterials.MaterialError_Mat','ProcBuildingSimpleMaterialName=EngineBuildings.ProcBuildingSimpleMaterial','BuildingQuadStaticMeshName=EngineBuildings.BuildingQuadMesh','ProcBuildingLODColorTexelsPerWorldUnit=0.075','ProcBuildingLODLightingTexelsPerWorldUnit=0.015', _
-	'MaxProcBuildingLODColorTextureSize=1024','MaxProcBuildingLODLightingTextureSize=256','UseProcBuildingLODTextureCropping=True','ForcePowerOfTwoProcBuildingLODTextures=True','bCombineSimilarMappings=False','MaxRMSDForCombiningMappings=6.0','ImageReflectionTextureSize=1024','TerrainMaterialMaxTextureCount=16','TerrainTessellationCheckCount=6','TerrainTessellationCheckBorder=2.0','TerrainTessellationCheckDistance=4096.0','BeginUPTryCount=200000','bStaticDecalsEnabled=True','bDynamicDecalsEnabled=True','bForceStaticTerrain=False','LightingOnlyBrightness=(R=0.3,G=0.3,B=0.3,A=1.0)','LightComplexityColors=(R=0,G=0,B=0,A=1)','LightComplexityColors=(R=0,G=255,B=0,A=1)', _
-	'LightComplexityColors=(R=63,G=191,B=0,A=1)','LightComplexityColors=(R=127,G=127,B=0,A=1)','LightComplexityColors=(R=191,G=63,B=0,A=1)','LightComplexityColors=(B=0,G=0,R=255,A=1)','ShaderComplexityColors=(R=0.0,G=1.0,B=0.127,A=1.0)','ShaderComplexityColors=(R=0.0,G=1.0,B=0.0,A=1.0)','ShaderComplexityColors=(R=0.046,G=0.52,B=0.0,A=1.0)','ShaderComplexityColors=(R=0.215,G=0.215,B=0.0,A=1.0)','ShaderComplexityColors=(R=0.52,G=0.046,B=0.0,A=1.0)','ShaderComplexityColors=(R=0.7,G=0.0,B=0.0,A=1.0)','ShaderComplexityColors=(R=1.0,G=0.0,B=0.0,A=1.0)','ShaderComplexityColors=(R=1.0,G=0.0,B=0.5,A=1.0)','ShaderComplexityColors=(R=1.0,G=0.9,B=0.9,A=1.0)','MaxPixelShaderAdditiveComplexityCount=900','TimeBetweenPurgingPendingKillObjects=30.000000','MaxTimeBetweenPurgingPendingKillObjects=30.000000','GarbageCollectionDelayMinimumMemoryMB=512','bUseTextureStreaming=True','bUseBackgroundLevelStreaming=True','bSubtitlesEnabled=True','bSubtitlesForcedOff=FALSE','ScoutClassName=TgGame.TgAIScout','DefaultPostProcessName=TgPostProcess.PostProcess.PP_Hit','DefaultUIScenePostProcessName=EngineMaterials.DefaultUIPostProcess','ThumbnailSkeletalMeshPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','ThumbnailParticleSystemPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','ThumbnailMaterialPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','DefaultSoundName=EngineSounds.WhiteNoise','bOnScreenKismetWarnings=false','bEnableKismetLogging=FALSE','bUseRecastNavMesh=TRUE','bAllowDebugViewmodesOnConsoles=FALSE','CameraRotationThreshold=45.0','CameraTranslationThreshold=10000','PrimitiveProbablyVisibleTime=8.0','PercentUnoccludedRequeries=0.125','MaxOcclusionPixelsFraction=0.1','MinTextureDensity=0.0','IdealTextureDensity=13.0','MaxTextureDensity=55.0','MinLightMapDensity=0.0','IdealLightMapDensity=0.05','MaxLightMapDensity=0.2','RenderLightMapDensityGrayscaleScale=1.0','RenderLightMapDensityColorScale=1.0','bRenderLightMapDensityGrayscale=false','LightMapDensityVertexMappedColor=(R=0.65,G=0.65,B=0.25,A=1.0)','LightMapDensitySelectedColor=(R=1.0,G=0.2,B=1.0,A=1.0)','bDisablePhysXHardwareSupport=True','DemoRecordingDevice=Engine.DemoRecDriver','bPauseOnLossOfFocus=FALSE','MaxFluidNumVerts=1048576','FluidSimulationTimeLimit=30.0','MaxParticleResize=1024','MaxParticleResizeWarn=10240','bCheckParticleRenderSize=True','MaxParticleVertexMemory=131972','NetClientTicksPerSecond=200','MaxTrackedOcclusionIncrement=0.10','TrackedOcclusionStepSize=0.10','MipFadeInSpeed0=0.3','MipFadeOutSpeed0=0.1','MipFadeInSpeed1=2.0','MipFadeOutSpeed1=1.0','StatColorMappings=(StatName="AverageFPS",ColorMap=((In=15.0,Out=(R=255)),(In=30,Out=(R=255,G=255)),(In=45.0,Out=(G=255))))','StatColorMappings=(StatName="Frametime",ColorMap=((In=1.0,Out=(G=255)),(In=25.0,Out=(G=255)),(In=29.0,Out=(R=255,G=255)),(In=33.0,Out=(R=255))))','StatColorMappings=(StatName="Streaming fudge factor",ColorMap=((In=0.0,Out=(G=255)),(In=1.0,Out=(G=255)),(In=2.5,Out=(R=255,G=255)),(In=5.0,Out=(R=255)),(In=10.0,Out=(R=255))))','PhysXGpuHeapSize=32','PhysXMeshCacheSize=8','bShouldGenerateSimpleLightmaps=FALSE','bUseNormalMapsForSimpleLightMaps=TRUE','bSmoothFrameRate=TRUE','MinSmoothedFrameRate=22','MaxSmoothedFrameRate=62','bCheckForMultiplePawnsSpawnedInAFrame=FALSE','NumPawnsAllowedToBeSpawnedInAFrame=2','DefaultSelectedMaterialColor=(R=0.04,G=0.02,B=0.24,A=1.0)','DefaultHoveredMaterialColor=(R=0.02,G=0.02,B=0.02,A=1.0)','bEnableOnScreenDebugMessages=false','AllowScreenDoorFade=true','AllowScreenDoorLODFading=false','AllowNvidiaStereo3d=False','EnableMatineePostProcessMaterialParam=False','IgnoreSimulatedFuncWarnings=Tick','NearClipPlane=10.0','bUseStreamingPause=false','bKeepAllMaterialQualityLevelsLoaded=False','bAllowTimeLapseDriver=FALSE','bUsePostProcessEffects=False','bRenderTerrainCollisionAsOverlay=False','TimeAsyncLoadingBlocksGarbageCollection=10.000000','AllowShadowVolumes=TRUE','bEnableColorClear=False','UseStreaming=True','PeerNetworkDevice=PlatformCommon.PComNetDriver','bSuppressMapWarnings=True','bUseDestColorFix=TRUE'], _
-	['[PlatformInterface]','CloudStorageInterfaceClassName=','FacebookIntegrationClassName=','InGameAdManagerClassName='], _
-	['[Engine.SeqAct_Interp]','RenderingOverrides=(bAllowAmbientOcclusion=False,bAllowDominantWholeSceneDynamicShadows=False,bAllowMotionBlurSkinning=False,bAllowTemporalAA=True,bAllowLightShafts=True)'], _
-	['[Engine.StreamingMovies]','RenderPriorityPS3=1001','SuspendGameIO=True'], _
-	['[Engine.ISVHacks]','bInitializeShadersOnDemand=False','DisableATITextureFilterOptimizationChecks=True','UseMinimalNVIDIADriverShaderOptimization=True','PumpWindowMessagesWhenRenderThreadStalled=False'], _
-	['[Engine.GameEngine]','MaxDeltaTime=0','bSmoothFrameRate=TRUE','MinSmoothedFrameRate=22.000000','MaxSmoothedFrameRate=150.000000','bClearAnimSetLinkupCachesOnLoadMap=TRUE','LocalPlayerClassName=TgGame.TgLocalPlayer','bUseSound=True','bUseTextureStreaming=True','bUseBackgroundLevelStreaming=True','bSubtitlesEnabled=True','bSubtitlesForcedOff=False','bForceStaticTerrain=False','bForceCPUSkinning=False','bUsePostProcessEffects=True','bOnScreenKismetWarnings=True','bEnableKismetLogging=False','bAllowMatureLanguage=False','bEnableVSMShadows=False','bEnableBranchingPCFShadows=False','bRenderTerrainCollisionAsOverlay=False','bDisablePhysXHardwareSupport=True','bPauseOnLossOfFocus=False','DefaultPostProcessName=TgPostProcess.PostProcess.PP_Hit','ThumbnailSkeletalMeshPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','ThumbnailParticleSystemPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','ThumbnailMaterialPostProcessName=EngineMaterials.DefaultThumbnailPostProcess','DefaultUIScenePostProcessName=EngineMaterials.DefaultUIPostProcess','TimeBetweenPurgingPendingKillObjects=30.000000','TimeAsyncLoadingBlocksGarbageCollection=10.000000','MaxTimeBetweenPurgingPendingKillObjects=30.000000','ScoutClassName=Engine.Scout','ShadowFilterRadius=2.000000','DepthBias=0.012000','ModShadowFadeDistanceExponent=0.200000','CameraRotationThreshold=45.000000','CameraTranslationThreshold=1600.000000','PrimitiveProbablyVisibleTime=8.000000','PercentUnoccludedRequeries=0.125000','ShadowVolumeLightRadiusThreshold=1000.000000','ShadowVolumePrimitiveScreenSpacePercentageThreshold=0.250000','MaxParticleResize=1024','MaxParticleResizeWarn=10240','BeginUPTryCount=200000'], _
-	['[Engine.DemoRecDriver]','AllowDownloads=True','DemoSpectatorClass=TgGame.TgDemoRecSpectator','MaxClientRate=25000','ConnectionTimeout=15.0','InitialConnectTimeout=30.0','AckTimeout=1.0','KeepAliveTime=1.0','SimLatency=0','RelevantTimeout=5.0','SpawnPrioritySeconds=1.0','ServerTravelPause=4.0','NetServerMaxTickRate=27','LanServerMaxTickRate=30','MaxRewindPoints=400','RewindPointInterval=30.0','NumRecentRewindPoints=120','ProtectedRewindPointInterval=1800','MaxEventPoints=0','EventPointInterval=3.0','MinEventBuffer=3.0'], _
-	['[Engine.StartupPackages]','bSerializeStartupPackagesFromMemory=TRUE','bFullyCompressStartupPackages=FALSE','Package=EngineMaterials','Package=EngineDebugMaterials','Package=EngineSounds','Package=EngineFonts','Package=TgSoundModes','Package=GOD_CommonAssets','Package=FX_GEN','Package=FX_GEN_Fire','Package=FX_GEN_Diamond','Package=FX_Common','Package=MDL_PseudoMesh','Package=AUD_UI','Package=TgPostProcess','Package=SoundClassesAndModes'], _
-	['[Engine.PackagesToForceCookPerMap]','Map=Conquest_P_S6','Package=FX_GC_S6','Map=CH11_P','Package=FX_AD11_General','Package=AUD_UI.Ability'], _
-	['[Core.System]','MaxObjectsNotConsideredByGC=60000','SizeOfPermanentObjectPool=0','StaleCacheDays=30','MaxStaleCacheSize=10','MaxOverallCacheSize=30','PackageSizeSoftLimit=800','AsyncIOBandwidthLimit=0','CachePath=..\Cache','CacheExt=.uxx','Paths=..\..\Engine\Content','ScriptPaths=..\..\BattleGame\Script','FRScriptPaths=..\..\BattleGame\Script','CutdownPaths=..\..\BattleGame\CutdownPackages','CutdownPaths=..\..\BattleGame\Script','ScreenShotPath=..\..\BattleGame\ScreenShots','LocalizationPaths=..\..\Engine\Localization','Extensions=upk','Extensions=u','Extensions=umap','SaveLocalizedCookedPackagesInSubdirectories=FALSE','TextureFileCacheExtension=tfc','bDisablePromptToRebuildScripts=FALSE','Suppress=Dev','Suppress=DevAbsorbFuncs','Suppress=DevAnim','Suppress=DevAssetDataBase','Suppress=DevAudio','Suppress=DevAudioVerbose','Suppress=DevBind','Suppress=DevBsp','Suppress=DevCamera','Suppress=DevCollision','Suppress=DevCompile','Suppress=DevComponents','Suppress=DevConfig','Suppress=DevCooking','Suppress=DevCrossLevel','Suppress=DevDataStore','Suppress=DevDecals','Suppress=DevFaceFX','Suppress=DevGFxUI','Suppress=DevGFxUIWarning','Suppress=DevGarbage','Suppress=DevKill','Suppress=DevLevelTools','Suppress=DevLightmassSolver','Suppress=DevLoad','Suppress=DevMovie','Suppress=DevNavMesh','Suppress=DevNavMeshWarning','Suppress=DevNetTraffic','Suppress=DevNetTrafficDetail','Suppress=DevOnline','Suppress=DevPath','Suppress=DevReplace','Suppress=DevSHA','Suppress=DevSave','Suppress=DevShaders','Suppress=DevShadersDetailed','Suppress=DevSound','Suppress=DevStats','Suppress=DevStreaming','Suppress=DevTick','Suppress=DevUI','Suppress=DevUIAnimation','Suppress=DevUIFocus','Suppress=DevUIStates','Suppress=DevUIStyles','Suppress=DevMCP','Suppress=DevHTTP','Suppress=DevHttpRequest','Suppress=DevBeacon','Suppress=DevBeaconGame','Suppress=DevOnlineGame','Suppress=DevMatchmaking','Suppress=DevMovieCapture','Suppress=GameStats','Suppress=Init','Suppress=Input','Suppress=Inventory','Suppress=Localization','Suppress=LocalizationWarning','Suppress=PlayerManagement','Suppress=PlayerMove','Suppress=DevReplication','Suppress=TgDevGFxUIVerbose','Suppress=AILog','Extensions=tgm','PurgeCacheDays=30','SavePath=..\..\BattleGame\Save','SeekFreePCPaths=..\..\BattleGame\CookedPC','SeekFreePCExtensions=upk','SeekFreePCExtensions=tgm','SeekFreePCExtensions=u','Paths=..\..\BattleGame\Content','Paths=..\..\BattleGame\GUI\Shared','Paths=..\..\BattleGame\GUI\PC','Paths=..\..\BattleGame\Script','Paths=..\..\BattleGame\__Trashcan','CutdownPaths=..\..\Engine\Content','BakeMapPaths=..\..\BattleGame\Content','BakeMapPaths=..\..\BattleGame\Baked','RunBakedPaths=..\..\BattleGame\Baked','LocalizationPaths=..\..\BattleGame\Localization'], _
-	['[Engine.Client]','DisplayGamma=2.2','MinDesiredFrameRate=35.000000','InitialButtonRepeatDelay=0.2','ButtonRepeatDelay=0.1'], _
-	['[WinDrv.WindowsClient]','AudioDeviceClass=XAudio2.XAudio2Device','MinAllowableResolutionX=800','MinAllowableResolutionY=600','MaxAllowableResolutionX=0','MaxAllowableResolutionY=0','MinAllowableRefreshRate=0','MaxAllowableRefreshRate=0','ParanoidDeviceLostChecking=1','AllowJoystickInput=1'], _
-	['[WinDrv.HttpRequestWindowsMcp]','AppID=UDK','AppSecret=Your_app_secret_here'], _
-	['[XAudio2.XAudio2Device]','MaxChannels=32','CommonAudioPoolSize=0','MinCompressedDurationGame=1.5','MinCompressedDurationEditor=4','LowPassFilterResonance=0.9','DefaultAudioDevice='], _
-	['[ALAudio.ALAudioDevice]','MaxChannels=32','CommonAudioPoolSize=0','MinCompressedDurationGame=5','MinCompressedDurationEditor=4','LowPassFilterResonance=0.9','UseEffectsProcessing=True','TimeBetweenHWUpdates=15','MinOggVorbisDurationGame=5','MinOggVorbisDurationEditor=4','DeviceName=Generic Software'], _
-	['[CoreAudio.CoreAudioDevice]','MaxChannels=32','CommonAudioPoolSize=0','MinCompressedDurationGame=5','MinCompressedDurationEditor=4','LowPassFilterResonance=0.9'], _
-	['[Engine.Player]','ConfiguredInternetSpeed=25000','ConfiguredLanSpeed=25000','PP_DesaturationMultiplier=1.0','PP_HighlightsMultiplier=1.0','PP_MidTonesMultiplier=1.0','PP_ShadowsMultiplier=1.0'], _
-	['[IpDrv.TcpNetDriver]','AllowDownloads=False','AllowPeerConnections=False','AllowPeerVoice=False','ConnectionTimeout=25.0','InitialConnectTimeout=500.0','LoadingConnectionTimeout=200.0','AckTimeout=1.0','KeepAliveTime=0.2','MaxClientRate=24000','MaxInternetClientRate=24000','RelevantTimeout=5.0','SpawnPrioritySeconds=1.0','ServerTravelPause=4.0','NetServerMaxTickRate=27','LanServerMaxTickRate=35','DownloadManagers=IpDrv.HTTPDownload','DownloadManagers=Engine.ChannelDownload','NetConnectionClassName=PlatformCommon.PComNetConn','InitialHandshakeTimeout=45.0','P2PConnectionTimeout=10.0','PeerNetConnectionClassName=PlatformCommon.PComNetConn'], _
-	['[OnlineSubsystemSteamworks.IpNetDriverSteamworks]','NetConnectionClassName=OnlineSubsystemSteamworks.IpNetConnectionSteamworks','bSteamSocketsOnly=False'], _
-	['[IpServer.UdpServerQuery]','GameName=ut'], _
-	['[IpDrv.UdpBeacon]','DoBeacon=True','BeaconTime=0.50','BeaconTimeout=5.0','BeaconProduct=ut','ServerBeaconPort=8777','BeaconPort=9777'], _
-	['[TextureStreaming]','MinTextureResidentMipCount=7','PoolSize=158','MemoryMargin=20','MemoryLoss=0','HysteresisLimit=20','DropMipLevelsLimit=16','StopIncreasingLimit=12','StopStreamingLimit=8','MinEvictSize=10','MinFudgeFactor=0.5','FudgeFactorIncreaseRateOfChange=0.5','FudgeFactorDecreaseRateOfChange=-0.4','MinRequestedMipsToConsider=11','MinTimeToGuaranteeMinMipCount=2','MaxTimeToGuaranteeMinMipCount=12','UseTextureFileCache=false','LoadMapTimeLimit=20.0','LightmapStreamingFactor=0.04','ShadowmapStreamingFactor=0.04','MaxLightmapRadius=2000.0','AllowStreamingLightmaps=True','TextureFileCacheBulkDataAlignment=1','UsePriorityStreaming=True','bAllowSwitchingStreamingSystem=False','UseDynamicStreaming=True','bEnableAsyncDefrag=False','bEnableAsyncReallocation=False','MaxDefragRelocations=256','MaxDefragDownShift=128','BoostPlayerTextures=3.0','TemporalAAMemoryReserve=4.0','MenuLevelPoolBoost=60'], _
-	['[StreamByURL]','PostLoadPause=6.0'], _
-	['[UnrealEd.EditorEngine]','LocalPlayerClassName=TgEditor.TgEditorPlayer','bSubtitlesEnabled=True','GridEnabled=True','SnapScaleEnabled=True','ScaleGridSize=5','SnapVertices=False','SnapDistance=10.000000','GridSize=(X=16.000000,Y=16.000000,Z=16.000000)','RotGridEnabled=True','RotGridSize=(Pitch=1024,Yaw=1024,Roll=1024)','GameCommandLine=-log','FOVAngle=90.000000','GodMode=True','AutoSaveDir=..\..\BattleGame\Content\Autosaves','InvertwidgetZAxis=True','UseAxisIndicator=True','MatineeCurveDetail=0.1','Client=WinDrv.WindowsClient','CurrentGridSz=4','bUseMayaCameraControls=True','bPrefabsLocked=True','HeightMapExportClassName=TerrainHeightMapExporterTextT3D','EditorOnlyContentPackages=EditorMeshes','EditorOnlyContentPackages=EditorMaterials','EditorOnlyContentPackages=EditorResources','EditorOnlyContentPackages=EditorLandscapeResources','EditorOnlyContentPackages=EditorShellMaterials','EditorOnlyContentPackages=MobileEngineMaterials','EditPackagesInPath=..\..\Development\Src','EditPackages=Core','EditPackages=Engine','EditPackages=IpDrv','EditPackages=GFxUI','EditPackages=AkAudio','EditPackages=GameFramework','EditPackages=UnrealEd','EditPackages=GFxUIEditor','EditPackages=WinDrv','EditPackages=OnlineSubsystemPC','EditPackages=OnlineSubsystemSteamworks','EditPackages=OnlineSubsystemDiscord','EditPackages=OnlineSubsystemEpic','EditPackages=OnlineSubsystemLuna','EditPackages=OnlineSubsystemDingo','EditPackages=OnlineSubsystemNP','EditPackages=OnlineSubsystemNintendo','bBuildReachSpecs=FALSE','bGroupingActive=TRUE','bCustomCameraAlignEmitter=TRUE','CustomCameraAlignEmitterDistance=100.0','bDrawSocketsInGMode=FALSE','bSmoothFrameRate=FALSE','MinSmoothedFrameRate=5','MaxSmoothedFrameRate=120','FarClippingPlane=0','TemplateMapFolders=..\..\Engine\Content\Maps\Templates','UseOldStyleMICEditorGroups=true','EditPackagesOutPath=..\..\BattleGame\Script','FRScriptOutputPath=..\..\BattleGame\Script','GFxImportDirectory=Flash','GFxImportSaveDirectory=GUI\PC\GFx\','EditPackages=PlatformCommon','EditPackages=TgGame','EditPackages=TgClientBase','EditPackages=TgClient','EditPackages=TgEditor','EditPackages=BattleGame','EditPackages=BattleClient','EditPackages=BattleEditor','EditPackages=TgGameContent','EditPackages=Vivox','InEditorGameURLOptions=?quickstart=1?numplay=1?Team=1?ReloadAssemblyFile=0?RunDBExport=0?RunBehaviorExport=0?Platform=PC','bOnScreenKismetWarnings=true'], _
-	['[UnrealEd.UnrealEdEngine]','AutoSaveIndex=0','PackagesToBeFullyLoadedAtStartup=EditorMaterials','PackagesToBeFullyLoadedAtStartup=EditorMeshes','PackagesToBeFullyLoadedAtStartup=EditorResources','PackagesToBeFullyLoadedAtStartup=EngineMaterials','PackagesToBeFullyLoadedAtStartup=EngineFonts','PackagesToBeFullyLoadedAtStartup=EngineResources','PackagesToBeFullyLoadedAtStartup=Engine_MI_Shaders','PackagesToBeFullyLoadedAtStartup=MapTemplateIndex'], _
-	['[Engine.DataStoreClient]','GlobalDataStoreClasses=Engine.UIDataStore_GameResource','GlobalDataStoreClasses=Engine.UIDataStore_Fonts','GlobalDataStoreClasses=Engine.UIDataStore_Registry','GlobalDataStoreClasses=Engine.UIDataStore_InputAlias'], _
-	['[DevOptions.Shaders]','AutoReloadChangedShaders=True','bAllowMultiThreadedShaderCompile=True','bAllowDistributedShaderCompile=False','bAllowDistributedShaderCompileForBuildPCS=False','NumUnusedShaderCompilingThreads=1','ThreadedShaderCompileThreshold=1','MaxShaderJobBatchSize=30','PrecompileShadersJobThreshold=40000','bDumpShaderPDBs=False','bPromptToRetryFailedShaderCompiles=True'], _
-	['[DevOptions.Debug]','ShowSelectedLightmap=False'], _
-	['[StatNotifyProviders]','BinaryFileStatNotifyProvider=true','XmlStatNotifyProvider=false','CsvStatNotifyProvider=false','StatsNotifyProvider_UDP=true','PIXNamedCounterProvider=false','StatsNotifyProvider_Windows=false'], _
-	['[StatNotifyProviders.StatNotifyProvider_UDP]','ListenPort=13000'], _
-	['[RemoteControl]','SuppressRemoteControlAtStartup=False'], _
-	['[LogFiles]','PurgeLogsDays=14','LogTimes=True'], _
-	['[AnimationCompression]','CompressCommandletVersion=3','DefaultCompressionAlgorithm=AnimationCompressionAlgorithm_PerTrackCompression','TranslationCompressionFormat=0','RotationCompressionFormat=1','AlternativeCompressionThreshold=1.f','ForceRecompression=False','bOnlyCheckForMissingSkeletalMeshes=False','KeyEndEffectorsMatchName=IK','KeyEndEffectorsMatchName=eye','KeyEndEffectorsMatchName=weapon','KeyEndEffectorsMatchName=hand','KeyEndEffectorsMatchName=attach','KeyEndEffectorsMatchName=camera'], _
-	['[IpDrv.OnlineSubsystemCommonImpl]','MaxLocalTalkers=1','MaxRemoteTalkers=16','bIsUsingSpeechRecognition=false'], _
-	['[IpDrv.OnlineGameInterfaceImpl]','LanAnnouncePort=14001','LanQueryTimeout=5.0'], _
-	['[OnlineSubsystemLive.OnlineSubsystemLive]','LanAnnouncePort=14001','VoiceNotificationDelta=0.2'], _
-	['[OnlineSubsystemDingo.OnlineSubsystemDingo]','VoiceNotificationDelta=0.2'], _
-	['[Engine.StaticMeshCollectionActor]','bCookOutStaticMeshActors=TRUE','MaxStaticMeshComponents=100'], _
-	['[Engine.StaticLightCollectionActor]','bCookOutStaticLightActors=TRUE','MaxLightComponents=100'], _
-	['[LiveSock]','bUseVDP=True','bUseSecureConnections=true','MaxDgramSockets=64','MaxStreamSockets=16','DefaultRecvBufsizeInK=256','DefaultSendBufsizeInK=256','SystemLinkPort=14000'], _
-	['[CustomStats]','LD=Streaming fudge factor','LD=FrameTime','LD=Terrain Smooth Time','LD=Terrain Render Time','LD=Decal Render Time','LD=Terrain Triangles','LD=Decal Triangles','LD=Decal Draw Calls','LD=Static Mesh Tris','LD=Skel Mesh Tris','LD=Skel Verts CPU Skin','LD=Skel Verts GPU Skin','LD=30+ FPS','LD=Total CPU rendering time','LD=Total GPU rendering time','LD=Occluded primitives','LD=Projected shadows','LD=Visible static mesh elements','LD=Visible dynamic primitives','LD=Texture Pool Size','LD=Physical Memory Used','LD=Virtual Memory Used','LD=Audio Memory Used','LD=Texture Memory Used','LD=360 Texture Memory Used','LD=Animation Memory','LD=Vertex Lighting Memory','LD=StaticMesh Vertex Memory','LD=StaticMesh Index Memory','LD=SkeletalMesh Vertex Memory','LD=SkeletalMesh Index Memory','LD=Decal Vertex Memory','LD=Decal Index Memory','LD=Decal Interaction Memory','MEMLEAN=Virtual Memory Used','MEMLEAN=Audio Memory Used','MEMLEAN=Animation Memory','MEMLEAN=FaceFX Cur Mem','MEMLEAN=Vertex Lighting Memory','MEMLEAN=StaticMesh Vertex Memory','MEMLEAN=StaticMesh Index Memory','MEMLEAN=SkeletalMesh Vertex Memory','MEMLEAN=SkeletalMesh Index Memory','MEMLEAN=Decal Vertex Memory','MEMLEAN=Decal Index Memory','MEMLEAN=Decal Interaction Memory','MEMLEAN=VertexShader Memory','MEMLEAN=PixelShader Memory','GameThread=Async Loading Time','GameThread=Audio Update Time','GameThread=FrameTime','GameThread=HUD Time','GameThread=Input Time','GameThread=Kismet Time','GameThread=Move Actor Time','GameThread=RHI Game Tick','GameThread=RedrawViewports','GameThread=Script time','GameThread=Tick Time','GameThread=Update Components Time','GameThread=World Tick Time','GameThread=Async Work Wait','GameThread=PerFrameCapture','GameThread=DynamicLightEnvComp Tick','Mobile=ES2 Draw Calls','Mobile=ES2 Draw Calls (UP)','Mobile=ES2 Triangles Drawn','Mobile=ES2 Triangles Drawn (UP)','Mobile=ES2 Program Count','Mobile=ES2 Program Count (PP)','Mobile=ES2 Program Changes','Mobile=ES2 Uniform Updates (Bytes)','Mobile=ES2 Base Texture Binds','Mobile=ES2 Detail Texture Binds','Mobile=ES2 Lightmap Texture Binds','Mobile=ES2 Environment Texture Binds','Mobile=ES2 Bump Offset Texture Binds','Mobile=Frustum Culled primitives','Mobile=Statically occluded primitives','SplitScreen=Processed primitives','SplitScreen=Mesh draw calls','SplitScreen=Mesh Particles','SplitScreen=Particle Draw Calls'], _
-	['[MemorySplitClassesToTrack]','Class=AnimSequence','Class=AudioComponent','Class=AudioDevice','Class=BrushComponent','Class=CylinderComponent','Class=DecalComponent','Class=DecalManager','Class=DecalMaterial','Class=Font','Class=Level','Class=Material','Class=MaterialInstanceConstant','Class=MaterialInstanceTimeVarying','Class=Model','Class=ModelComponent','Class=MorphTarget','Class=NavigationMeshBase','Class=ParticleModule','Class=ParticleSystemComponent','Class=PathNode','Class=ProcBuilding_SimpleLODActor','Class=RB_BodyInstance','Class=RB_BodySetup','Class=ReachSpec','Class=Sequence','Class=SkeletalMesh','Class=SkeletalMeshComponent','Class=SoundCue','Class=SoundNode','Class=SoundNodeWave','Class=StaticMesh','Class=StaticMeshActor','Class=StaticMeshCollectionActor','Class=StaticMeshComponent','Class=Terrain','Class=TerrainComponent','Class=Texture2D','Class=UIRoot'], _
-	['[MemLeakCheckExtraExecsToRun]','Cmd=obj list class=StaticMesh -Alphasort -DetailedInfo','Cmd=obj list class=StaticMeshActor -ALPHASORT -DetailedInfo','Cmd=obj list class=StaticMeshCollectionActor -ALPHASORT -DetailedInfo','Cmd=obj list class=TextureMovie -Alphasort -DetailedInfo','Cmd=obj list class=Level -ALPHASORT -DetailedInfo','Cmd=lightenv list volumes','Cmd=lightenv list transition','Cmd=ListThreads'], _
-	['[ConfigCoalesceFilter]','FilterOut=BattleEngine.ini','FilterOut=BattleEditor.ini','FilterOut=BattleInput.ini','FilterOut=BattleLightmass.ini','FilterOut=BattleGame.ini','FilterOut=BattleGameDedicatedServer.ini','FilterOut=BattleUI.ini','FilterOut=BattleSystemSettings.ini','FilterOut=BattleEngineG4WLive.ini','FilterOut=BattleEngineG4WLiveDedicatedServer.ini','FilterOut=BattleEngineNoLive.ini','FilterOut=BattleEngineNoLiveDedicatedServer.ini','FilterOut=BattleEditorKeyBindings.ini','FilterOut=BattleEditorUserSettings.ini','FilterOut=BattleEngineGameSpy.ini','FilterOut=BattleEngineSteamworks.ini','FilterOut=BattleEngineDiscord.ini','FilterOut=Descriptions.int','FilterOut=Editor.int','FilterOut=EditorTips.int','FilterOut=UnrealEd.int','FilterOut=WinDrv.int','FilterOut=XWindow.int','FilterOut=GfxUIEditor.int','FilterOut=Properties.int'], _
-	['[TaskPerfTracking]','bUseTaskPerfTracking=FALSE','RemoteConnectionIP=10.1.10.83','ConnectionString=Provider=sqloledb;Data Source=DB-02;Initial Catalog=EngineTaskPerf;Trusted_Connection=Yes','RemoteConnectionStringOverride=Data Source=DB-02;Initial Catalog=EngineTaskPerf;Integrated Security=True;Pooling=False;Asynchronous Processing=True;Network Library=dbmssocn'], _
-	['[FPSChartTracking]','ShouldTrackFPSWhenNonInteractive=False'], _
-	['[TaskPerfMemDatabase]','bUseTaskPerfMemDatabase=FALSE','RemoteConnectionIP=10.1.10.83','ConnectionString=Provider=sqloledb;Data Source=DEVDB-01;Initial Catalog=PerfMem;Trusted_Connection=Yes','RemoteConnectionStringOverride=Data Source=DEVDB-01;Initial Catalog=PerfMem;Integrated Security=True;Pooling=True;Asynchronous Processing=True;Network Library=dbmssocn'], _
-	['[MemoryPools]','FLightPrimitiveInteractionInitialBlockSize=512','FModShadowPrimitiveInteractionInitialBlockSize=512'], _
-	['[MobileMaterialCookSettings]','SkinningOnlyMaterials=','NoLightmapOnlyMaterials='], _
-	['[Engine.PhysicsLODVerticalEmitter]','ParticlePercentage=100'], _
-	['[Engine.OnlineSubsystem]','NamedInterfaceDefs=(InterfaceName="RecentPlayersList",InterfaceClassName="Engine.OnlineRecentPlayersList")','AsyncMinCompletionTime=0.0'], _
-	['[Engine.OnlineRecentPlayersList]','MaxRecentPlayers=100','MaxRecentParties=5'], _
-	['[VoIP]','VolumeThreshold=0.2','bHasVoiceEnabled=true'], _
-	['[FullScreenMovie]','bForceNoMovies=FALSE','StartupMovies=GAPeach_Console.swf'], _
-	['[IPDrv.WebConnection]','MaxValueLength=512','MaxLineLength=4096'], _
-	['[IPDrv.WebServer]','ApplicationPaths[0]=/ServerAdmin','ApplicationPaths[1]=/images','ListenPort=80','MaxConnections=18','ExpirationSeconds=86400','bEnabled=false'], _
-	['[IPDrv.WebResponse]','IncludePath=/Web','CharSet=iso-8859-1'], _
-	['[AnimNotify]','Trail_MaxSampleRate=200.0'], _
-	['[Engine.UIDataStore_OnlinePlayerData]','PartyChatProviderClassName=Engine.UIDataProvider_OnlinePartyChatList'], _
-	['[Engine.LocalPlayer]','AspectRatioAxisConstraint=AspectRatio_MaintainYFOV'], _
-	['[MobileSupport]','bShouldCachePVRTCTextures=False','bShouldCacheATITCTextures=False','bShouldCacheETCTextures=False','bShouldCacheFlashTextures=False','bShouldFlattenMaterials=True','FlattenedTextureResolutionBias=0','UDKRemotePort=41765','UDKRemotePortPIE=41766'], _
-	['[Engine.GameViewportClient]','bDebugNoGFxUI=FALSE'], _
-	['[ContentComparisonReferenceTypes]','+Class=AnimSet','+Class=SkeletalMesh','+Class=SoundCue','+Class=StaticMesh','+Class=ParticleSystem','+Class=Texture2D'], _
-	['[UnitTesting]','UnitTestPath=..\..\Engine\UnitTests','UnitTestPackageName=UnitTestPackage'], _
-	['[Engine.HttpFactory]','HttpRequestClassName=WinDrv.HttpRequestWindows'], _
-	['[IpDrv.OnlineImageDownloaderWeb]','MaxSimultaneousDownloads=8'], _
-	['[IpDrv.McpServiceConfig]','Protocol=http','Domain=localhost:8888'], _
-	['[IpDrv.McpServiceBase]','McpConfigClassName=IpDrv.McpServiceConfig'], _
-	['[IpDrv.McpServerTimeBase]','McpServerTimeClassName=IpDrv.McpServerTimeManager'], _
-	['[IpDrv.McpServerTimeManager]','TimeStampUrl=/timestamp'], _
-	['[IpDrv.McpGroupsBase]','McpGroupsManagerClassName=IpDrv.McpGroupsManager'], _
-	['[IpDrv.McpGroupsManager]','CreateGroupUrl=/groupcreate','DeleteGroupUrl=/groupdelete','QueryGroupsUrl=/grouplist','QueryGroupMembersUrl=/groupmembers','AddGroupMembersUrl=/groupmembers','RemoveGroupMembersUrl=/groupmembers','DeleteGroupUrl=/groupdelete','DeleteAllGroupsUrl=/groupdeletebyownerid','QueryGroupInvitesUrl=/groupinvite','AcceptGroupInviteUrl=/groupinvite','RejectGroupInviteUrl=/groupinvite'], _
-	['[IpDrv.McpMessageBase]','McpMessageManagerClassName=IpDrv.McpMessageManager'], _
-	['[IpDrv.McpMessageManager]','CompressionType=MMCT_LZO','CreateMessageUrl=/messagecreate','DeleteMessageUrl=/messagedelete','QueryMessagesUrl=/messagelist','QueryMessageContentsUrl=/messagecontents'], _
-	['[IpDrv.McpIdMappingBase]','McpIdMappingClassName=IpDrv.McpIdMappingManager'], _
-	['[IpDrv.McpIdMappingManager]','AddMappingUrl=/useraddaccountmapping','QueryMappingUrl=/userresolveaccountmappings'], _
-	['[IpDrv.McpUserManagerBase]','McpUserManagerClassName=IpDrv.McpUserManager'], _
-	['[IpDrv.McpUserManager]','RegisterUserMcpUrl=/registerusermcp','RegisterUserFacebookUrl=/registeruserfacebook','QueryUserUrl=/userstatus','QueryUsersUrl=/usermultiplestatus','DeleteUserUrl=/deleteuser','McpAuthUrl=/authenticateusermcp','FacebookAuthUrl=/authenticateuserfacebook'], _
-	['[IpDrv.McpUserCloudFileDownload]','EnumerateCloudFilesUrl=/cloudstoragelist','ReadCloudFileUrl=/cloudstoragecontents','WriteCloudFileUrl=/cloudstoragesave','DeleteCloudFileUrl=/cloudstoragedelete'], _
-	['[IpDrv.McpClashMobBase]','McpClashMobClassName=IpDrv.McpClashMobManager'], _
-	['[IpDrv.McpClashMobManager]','ChallengeListUrl=/challengelist','ChallengeStatusUrl=/challengestatus','ChallengeMultiStatusUrl=/challengemultiplestatus','AcceptChallengeUrl=/acceptchallenge','UpdateChallengeProgressUrl=/updatechallenge','UpdateRewardProgressUrl=/updatereward'], _
-	['[IpDrv.McpManagedValueManagerBase]','McpManagedValueManagerClassName=IpDrv.McpManagedValueManager'], _
-	['[IpDrv.McpManagedValueManager]','CreateSaveSlotUrl=/createvalues','ReadSaveSlotUrl=/listvalues','UpdateValueUrl=/updatevalue','DeleteValueUrl=/deletevalue'], _
-	['[IpDrv.McpUserInventoryBase]','McpUserInventoryClassName=IpDrv.McpUserInventoryManager'], _
-	['[IpDrv.McpUserInventoryManager]','CreateSaveSlotUrl=/createsaveslot','DeleteSaveSlotUrl=/deletesaveslot','ListSaveSlotUrl=/listsaveslot','ListItemsUrl=/listitems','PurchaseItemUrl=/purchaseitem','SellItemUrl=/sellitem','EarnItemUrl=/earnitem','ConsumeItemUrl=/consumeitem','DeleteItemUrl=/deleteitem','IapRecordUrl=/recordiap'], _
-	['[IpDrv.McpClashMobFileDownload]','RequestFileURL=/challengefile'], _
-	['[IpDrv.OnlineTitleFileDownloadWeb]','RequestFileURL=/downloadfile','RequestFileListURL=/listfiles','TimeOut=10.0'], _
-	['[OnlineSubsystem]','PollingIntervalInMs=50','bAllowAsyncBlocking=true','DebugTaskDelayInMs=0'], _
-	['[SubstanceAir]','MipCountAfterCooking=7','MemBudgetMb=2048','FreeCore=0','bForceTextureBaking=FALSE','bInstallTimeGeneration=FALSE'], _
-	['[Engine.SupportedShaderPlatforms]','DX9=TRUE','DX11=TRUE'], _
-	['[Cooker.GeneralOptions]','HirezShaderStoragePlatforms=pc','HirezShaderStoragePlatforms=pcconsole','HirezShaderStoragePlatforms=mac','HirezShaderStoragePlatforms=macconsole','bUseTFCsForNonSeekfreePackages=true','DisallowedLocalizationPlatforms=pc','DisallowedLocalizationPlatforms=pcconsole','DisallowedLocalizationPlatforms=mac','DisallowedLocalizationPlatforms=macconsole','DisallowedLocalizationPlatforms=pcserver','CreateAnimNotifyDataPlatforms=pc','CreateAnimNotifyDataPlatforms=pcconsole','CreateAnimNotifyDataPlatforms=pcserver','CreateAnimNotifyDataPlatforms=mac','CreateAnimNotifyDataPlatforms=macconsole'], _
-	['[Windows.StandardUser]','MyDocumentsSubDirName=Smite'], _
-	['[Engine.AdditionalLaunchMaps]','Map=Roman_Arena_S5_P','Map=Chinese_Joust_P','Map=Arena_Tutorial_V3_Short_RA_P'], _
-	['[Engine.AdditionalLaunchBots]','Bot=Neith','Bot=Ra','Bot=Ymir','Bot=Odin','Bot=Guan_Yu','Bot=Thor','Bot=Anubis','Bot=Hercules','Bot=Artemis','Bot=Kali','Bot=Sobek','Bot=Fenrir'], _
-	['[TgGame.TgDistributionFloatSoundAttenuation]','AttenuationGroups=(GroupName=Sm_foley,AttenuationDistance=1600.0)','AttenuationGroups=(GroupName=Lg_foley,AttenuationDistance=3200.0)','AttenuationGroups=(GroupName=Melee_hit,AttenuationDistance=6400.0)','AttenuationGroups=(GroupName=Sm_gun,AttenuationDistance=4800.0)','AttenuationGroups=(GroupName=Med_gun,AttenuationDistance=12800.0)','AttenuationGroups=(GroupName=Lg_gun,AttenuationDistance=48000.0)','AttenuationGroups=(GroupName=Sm_exp,AttenuationDistance=14400.0)','AttenuationGroups=(GroupName=Med_exp,AttenuationDistance=80000.0)','AttenuationGroups=(GroupName=Lg_exp,AttenuationDistance=144000.0)'], _
-	['[Engine.SeqAct_CrowdSpawner]','m_CrowdSpawnNumMultiplier=1.0','m_bCrowdShadows=true'], _
-	['[Engine.AudioDevice]','DefaultAudioComponentClassName=TgGame.TgAudioComponent'], _
-	['[Engine.FractureManager]','FSMPartPoolSize=0'], _
-	['[GFxUI.GFxEngine]','ForceGarbageCollectUponReleaseTextures=LoginBackground_ID3'], _
-	['[OnlineSubsystemEpic.OnlineSubsystemEpic]','LogLevel=600','ProductId=f71b1231985f48d1af3de723e0a6acdd','SandboxId=076207fa2b5c4803a636af606c3c28b7','ClientId=xyza78918YNGI50bi5auWYXPWq22hyzc','DeploymentId=e03ac5a2b3444159b50aded07f1ed69b'], _
-	['[OnlineSubsystemLuna.OnlineSubsystemLuna]','LogLevel=600','ProductId=LunaProduct','SandboxId=LunaSandbox','ClientId=LunaClient','DeploymentId=LunaDeployment'], _
-	['[OnlineSubsystemSteamworks.OnlineSubsystemSteamworks]','DefaultSessionTemplateName=Game','PartySessionTemplateName=Party','bHasVoiceEnabled=false'], _
-	['[Vivox]','Enabled=True','ResetMutePreferencePerChannel=false','CheckOSSPermissions=false','AutoVAD=false'], _
-	['[HavokNavMesh]','bLoadOnClient=false'], _
-	['[Experimental]','bUnloadUIScenesOnTransition=True','ParticleDynamicDataRingBufferSizeMB=32','ParticleBulkDataCollapseThreshold=0.2','bSpecialFxCanUseEmitterPool=TRUE','bAllowDeferredParticleTicking=TRUE','bParticleSystemOuterGCOptimization=TRUE','bPassthroughAimArray=TRUE'], _
-	['[Discord]','AppID=511658855466401793','RichPresenceAppId=511658855466401793','RichPresenceDefaultLargeIcon=smitelogo','RichPresenceDefaultSmallIcon='], _
-	['[EventTracking]','try_count=3','retry_interval_seconds=30','bad_state_retry_interval_seconds=120','send_bulk=yes','bulk_send_threshold_count=50','timed_send_threshold_seconds=30','game_running_keepalive_seconds=180','identifier_for_vendors=HiRez Studios, Inc.','enable_events=yes','game_id=300','event_url=https://collect.analytics.unity3d.com/collect/api/project/f9c4fd88-9e67-4f1d-bc96-1dd57ba01f53/production','project_id=f9c4fd88-9e67-4f1d-bc96-1dd57ba01f53'], _
-	['[IniVersion]','0=1643128201.000000','1=1689110406.000000'''] _
-]
+	Func fInitHives()
 
-Global Const $SystemSettingsClearHive[35][246] = [ _
-	['[SystemSettings]','MaxActiveDecals=0','GameSettingsVersion=-1','StaticDecals=True','DynamicDecals=True','UnbatchedDecals=True','DecalCullDistanceScale=1.000000','DynamicLights=True','DynamicShadows=True','LightEnvironmentShadows=True','CompositeDynamicLights=True','SHSecondaryLighting=True','DirectionalLightmaps=True','MotionBlur=False','MotionBlurPause=True','MotionBlurSkinning=1','DepthOfField=True','AmbientOcclusion=False','Bloom=True','bAllowLightShafts=True','Distortion=True','FilteredDistortion=True','DropParticleDistortion=True','bMergeModulatedShadows=False','bAllowDownsampledTranslucency=False','SpeedTreeLeaves=True','SpeedTreeFronds=True','OnlyStreamInTextures=False','LensFlares=True','FogVolumes=True','FogAccumulationDownsampleFactor=1','FloatingPointRenderTargets=True','OneFrameThreadLag=True','UseVsync=False','AllowDoubleRenderFrames=False','ModulatedShadowStartFadeDistance=0.000000','ModulatedShadowFullyFadeDistance=0.000000','VsyncPresentInterval=1','UseCinematicMipCalculations=TRUE','bUseTripleBuffering=False','UpscaleScreenPercentage=True','Fullscreen=True','FullscreenWindowed=False','MeshScreenPixelAreaThreshold=16.000000','OctreeScreenPixelAreaThreshold=0.000000','AllowOpenGL=False','AllowRadialBlur=True','UseDX11=True','UseD3D11Beta=True','bAllowTexturePack=true','AllowSubsurfaceScattering=False','AllowImageReflections=True','AllowImageReflectionShadowing=True','bAllowSeparateTranslucency=False','bAllowPostprocessMLAA=False','bAllowHighQualityMaterials=True','MaxFilterBlurSampleCount=16','SkeletalMeshLODBias=0','ParticleLODBias=1','DetailMode=2','MaxDrawDistanceScale=1.200000','ShadowFilterQualityBias=1','MaxAnisotropy=16','MaxMultisamples=1','bAllowD3D9MSAA=False','bAllowTemporalAA=False','TemporalAA_MinDepth=500.000000','TemporalAA_StartDepthVelocityScale=100.000000','MinShadowResolution=32','MinPreShadowResolution=8','MaxShadowResolution=512','MobileShadowTextureResolution=1120','MaxWholeSceneDominantShadowResolution=4096','ShadowFadeResolution=128','PreShadowFadeResolution=16','ShadowFadeExponent=0.250000','ResX=1920','ResY=1080','ScreenPercentage=100.000000','SceneCaptureStreamingMultiplier=1.000000','ShadowTexelsPerPixel=2.000000','PreShadowResolutionFactor=0.500000','bEnableBranchingPCFShadows=False','bAllowHardwareShadowFiltering=False','TessellationAdaptivePixelsPerTriangle=48.000000','bEnableForegroundShadowsOnWorld=False','bEnableForegroundSelfShadowing=False','bAllowWholeSceneDominantShadows=True','bUseConservativeShadowBounds=False','ShadowFilterRadius=2.000000','ShadowDepthBias=0.012000','PerObjectShadowTransition=60.000000','PerSceneShadowTransition=600.000000','CSMSplitPenumbraScale=0.500000','CSMSplitSoftTransitionDistanceScale=4.000000','CSMSplitDepthBiasScale=0.500000','CSMMinimumFOV=40.000000','CSMFOVRoundFactor=4.000000','UnbuiltWholeSceneDynamicShadowRadius=20000.000000','UnbuiltNumWholeSceneDynamicShadowCascades=3','WholeSceneShadowUnbuiltInteractionThreshold=50','bAllowFracturedDamage=True','NumFracturedPartsScale=1.000000','FractureDirectSpawnChanceScale=1.000000','FractureRadialSpawnChanceScale=1.000000','FractureCullDistanceScale=1.000000','bForceCPUAccessToGPUSkinVerts=false','bDisableSkeletalInstanceWeights=false','HighPrecisionGBuffers=False','AllowSecondaryDisplays=False','SecondaryDisplayMaximumWidth=1280','SecondaryDisplayMaximumHeight=720','AllowLogitechLedSdk=True','AllowPerFrameSleep=True','AllowPerFrameYield=True','MobileFeatureLevel=0','MobileFog=True','MobileHeightFog=False','MobileSpecular=True','MobileBumpOffset=True','MobileNormalMapping=True','MobileEnvMapping=True','MobileRimLighting=True','MobileColorBlending=True','MobileColorGrading=False','MobileVertexMovement=True','MobileOcclusionQueries=False','MobileGlobalGammaCorrection=False','MobileAllowGammaCorrectionWorldOverride=True', _
-	'MobileAllowDepthPrePass=False','MobileGfxGammaCorrection=False','MobileLODBias=-0.5','MobileBoneCount=75','MobileBoneWeightCount=2','MobileUsePreprocessedShaders=True','MobileFlashRedForUncachedShaders=False','MobileWarmUpPreprocessedShaders=True','MobileCachePreprocessedShaders=False','MobileProfilePreprocessedShaders=False','MobileUseCPreprocessorOnShaders=True','MobileLoadCPreprocessedShaders=True','MobileSharePixelShaders=True','MobileShareVertexShaders=True','MobileShareShaderPrograms=True','MobileEnableMSAA=False','MobileContentScaleFactor=1.0','MobileVertexScratchBufferSize=150','MobileIndexScratchBufferSize=10','MobileLightShaftScale=2.0','MobileLightShaftFirstPass=0.5','MobileLightShaftSecondPass=1.0','MobileModShadows=True','MobileTiltShift=False','MobileMaxMemory=300','MobilePostProcessBlurAmount=32.0','bMobileUsingHighResolutionTiming=True','MobileTiltShiftPosition=0.5','MobileTiltShiftFocusWidth=0.3','MobileTiltShiftTransitionWidth=0.5','MobileMaxShadowRange=500.0','MobileBloomTint=(R=1.0,G=0.75,B=0.0,A=1.0)','MobileClearDepthBetweenDPG=False','MobileSceneDepthResolveForShadows=TRUE','MobileLandscapeLodBias=0','MobileUseShaderGroupForStartupObjects=FALSE','MobileMinimizeFogShaders=FALSE','MobileFXAAQuality=0','ApexLODResourceBudget=1000000000000000000000.0','ApexDestructionMaxChunkIslandCount=2500','ApexDestructionMaxShapeCount=0','ApexDestructionMaxChunkSeparationLOD=1.0','ApexDestructionMaxActorCreatesPerFrame=-1','ApexDestructionMaxFracturesProcessedPerFrame=-1','ApexDestructionSortByBenefit=True','ApexGRBEnable=false','ApexGRBGPUMemSceneSize=128','ApexGRBGPUMemTempDataSize=128','ApexGRBMeshCellSize=7.5','ApexGRBNonPenSolverPosIterCount=9','ApexGRBFrictionSolverPosIterCount=3','ApexGRBFrictionSolverVelIterCount=3','ApexGRBSkinWidth=0.025','ApexGRBMaxLinearAcceleration=1000000.0','bEnableParallelAPEXClothingFetch=True','bApexClothingAsyncFetchResults=False','ApexClothingAvgSimFrequencyWindow=60','ApexClothingAllowAsyncCooking=True','ApexClothingAllowApexWorkBetweenSubsteps=FALSE','TargetFrameRate=60','TEXTUREGROUP_World=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_WorldNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_WorldSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=2048,LODBias=2,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)', _
-	'TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_VehicleNormalMap=(MinLODSize=512,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_Cinematic=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_Effects=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_Skybox=(MinLODSize=2048,MaxLODSize=2048,MaxLODSizeTexturePack=8192,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_UI=(MinLODSize=1,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_Lightmap=(MinLODSize=512,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_Shadowmap=(MinLODSize=512,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_RenderTarget=(MinLODSize=1,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_MobileFlattened=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_ProcBuilding_Face=(MinLODSize=1,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_ProcBuilding_LightMap=(MinLODSize=1,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_Blur5)', _
-	'TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_UIStreamable=(MinLODSize=1,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)','bAllowRagdolling=true','bAllowParticleSystemPerfBias=True','bAllowPerfThrottling=false','PerfScalingFramerateStart=30.000000','PerfScalingFramerateRange=20.000000','PerfScalingMaxReduction=0.600000','PerfScalingBias=0.100000','Borderless=False','StaticMeshLODBias=0','bAllowDropShadows=True','SpeedTreeLODBias=0','bUseLowQualMaterials=False','bUseSpectatorTextureSettings=False','TexturePoolSize=900','AllowD3D11=True','PreferD3D11=False','FXAAQuality=3','AllowScreenDoorFade=True','AllowScreenDoorLODFading=True','bAllowFog=true','MaterialQualityLevel=0','SettingsVersion=11','SpeedTreeWind=True','TEXTUREGROUP_NPC=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_NPCNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_NPCSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_WorldDetail=(MinLODSize=512,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_ColorLookupTable=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=1,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)','TEXTUREGROUP_TitleScreenPreview=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=1,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)'], _
-	['[SystemSettingsBucket1]','BasedOn=SystemSettings','StaticDecals=False','DynamicDecals=False','UnbatchedDecals=True','DecalCullDistanceScale=0.4','DynamicShadows=False','LightEnvironmentShadows=False','MotionBlur=False','DepthOfField=False','AmbientOcclusion=False','Bloom=False','bAllowLightShafts=False','Distortion=False','DropParticleDistortion=True','LensFlares=False','AllowRadialBlur=False','bAllowSeparateTranslucency=False','bAllowPostprocessMLAA=False','bAllowHighQualityMaterials=False','SkeletalMeshLODBias=1','DetailMode=0','MaxDrawDistanceScale=0.8','MaxAnisotropy=0','MaxShadowResolution=256','MaxWholeSceneDominantShadowResolution=256','ScreenPercentage=100.000000','ShadowTexelsPerPixel=2.0','bAllowWholeSceneDominantShadows=False','bUseConservativeShadowBounds=True','bAllowFracturedDamage=False','FractureCullDistanceScale=0.25','DynamicLights=False','bAllowDropShadows=False','CompositeDynamicLights=False','SHSecondaryLighting=False','bAllowFog=True','DirectionalLightmaps=True','bAllowParticleSystemPerfBias=True','bAllowParticleSystemPerfThrottling=True','AllowSubsurfaceScattering=False','AllowImageReflections=False','StaticMeshLODBias=1','ParticleLODBias=10','PerfScalingBias=0.2','ShadowFilterQualityBias=-1','MaxMultisamples=1','FXAAQuality=0','bAllowRagdolling=False','SpeedTreeLODBias=2','AllowScreenDoorFade=False','AllowScreenDoorLODFading=False','bUseLowQualMaterials=True','TexturePoolSize=450','MaterialQualityLevel=1','SpeedTreeWind=False','FogAccumulationDownsampleFactor=2','TEXTUREGROUP_World=(MinLODSize=64,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldNormalMap=(MinLODSize=64,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)', _
-	'TEXTUREGROUP_WorldSpecular=(MinLODSize=32,MaxLODSize=256,LODBias=3,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Vehicle=(MinLODSize=128,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_VehicleNormalMap=(MinLODSize=128,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_VehicleSpecular=(MinLODSize=128,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Cinematic=(MinLODSize=128,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Effects=(MinLODSize=64,MaxLODSize=256,LODBias=2,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=64,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Skybox=(MinLODSize=256,MaxLODSize=256,LODBias=3,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_UI=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_UIStreamable=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=-1)','TEXTUREGROUP_Lightmap=(MinLODSize=128,MaxLODSize=512,LODBias=3,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Shadowmap=(MinLODSize=128,MaxLODSize=512,LODBias=3,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=3)','TEXTUREGROUP_RenderTarget=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_MobileFlattened=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_ProcBuilding_Face=(MinLODSize=1,MaxLODSize=1024,LODBias=1,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_ProcBuilding_LightMap=(MinLODSize=1,MaxLODSize=256,LODBias=1,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=4096,LODBias=1,MinMagFilter=linear,MipFilter=linear,MipGenSettings=TMGS_Blur5)','TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,LODBias=1,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_NPC=(MinLODSize=128,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_NPCNormalMap=(MinLODSize=128,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_NPCSpecular=(MinLODSize=128,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldDetail=(MinLODSize=256,MaxLODSize=256,LODBias=3,MinMagFilter=aniso,MipFilter=point)'], _
-	['[SystemSettingsBucket2]','BasedOn=SystemSettings','StaticDecals=False','DynamicDecals=False','UnbatchedDecals=True','DecalCullDistanceScale=0.5','DynamicShadows=False','LightEnvironmentShadows=False','MotionBlur=False','DepthOfField=False','AmbientOcclusion=False','Bloom=False','bAllowLightShafts=False','Distortion=False','DropParticleDistortion=True','LensFlares=False','AllowRadialBlur=False','bAllowSeparateTranslucency=False','bAllowPostprocessMLAA=False','bAllowHighQualityMaterials=False','SkeletalMeshLODBias=1','DetailMode=0','MaxDrawDistanceScale=0.9','MaxAnisotropy=0','MaxShadowResolution=512','MaxWholeSceneDominantShadowResolution=512','ScreenPercentage=100.000000','ShadowTexelsPerPixel=2.0','bAllowWholeSceneDominantShadows=False','bUseConservativeShadowBounds=True','bAllowFracturedDamage=False','FractureCullDistanceScale=0.5','DynamicLights=True','bAllowDropShadows=True','CompositeDynamicLights=True','SHSecondaryLighting=False','bAllowFog=True','DirectionalLightmaps=True','bAllowParticleSystemPerfBias=True','bAllowParticleSystemPerfThrottling=True','AllowSubsurfaceScattering=False','AllowImageReflections=False','StaticMeshLODBias=1','ParticleLODBias=2','PerfScalingBias=0.2','ShadowFilterQualityBias=-1','MaxMultisamples=1','FXAAQuality=0','bAllowRagdolling=False','SpeedTreeLODBias=2','AllowScreenDoorFade=False','AllowScreenDoorLODFading=False','bUseLowQualMaterials=True','TexturePoolSize=450','MaterialQualityLevel=1','SpeedTreeWind=False','FogAccumulationDownsampleFactor=2','TEXTUREGROUP_World=(MinLODSize=64,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldNormalMap=(MinLODSize=128,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldSpecular=(MinLODSize=64,MaxLODSize=256,LODBias=3,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_VehicleNormalMap=(MinLODSize=256,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Cinematic=(MinLODSize=128,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Effects=(MinLODSize=128,MaxLODSize=512,LODBias=2,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=128,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Skybox=(MinLODSize=512,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_UI=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_UIStreamable=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=-1)','TEXTUREGROUP_Lightmap=(MinLODSize=256,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Shadowmap=(MinLODSize=256,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=3)','TEXTUREGROUP_RenderTarget=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point)', _
-	'TEXTUREGROUP_MobileFlattened=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_ProcBuilding_Face=(MinLODSize=1,MaxLODSize=1024,LODBias=0,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_ProcBuilding_LightMap=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=4096,LODBias=0,MinMagFilter=linear,MipFilter=linear,MipGenSettings=TMGS_Blur5)','TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_NPC=(MinLODSize=128,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_NPCNormalMap=(MinLODSize=128,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_NPCSpecular=(MinLODSize=128,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldDetail=(MinLODSize=256,MaxLODSize=256,LODBias=3,MinMagFilter=aniso,MipFilter=point)'], _
-	['[SystemSettingsBucket3]','BasedOn=SystemSettings','StaticDecals=True','DynamicDecals=True','UnbatchedDecals=True','DecalCullDistanceScale=0.6','DynamicShadows=False','LightEnvironmentShadows=True','MotionBlur=False','DepthOfField=True','AmbientOcclusion=False','Bloom=True','bAllowLightShafts=False','Distortion=True','DropParticleDistortion=True','LensFlares=True','AllowRadialBlur=True','bAllowSeparateTranslucency=False','bAllowPostprocessMLAA=False','bAllowHighQualityMaterials=True','SkeletalMeshLODBias=0','DetailMode=1','MaxDrawDistanceScale=1.0','MaxAnisotropy=4','MaxShadowResolution=512','MaxWholeSceneDominantShadowResolution=1280','ScreenPercentage=100.000000','ShadowTexelsPerPixel=2.0','bAllowWholeSceneDominantShadows=True','bUseConservativeShadowBounds=False','bAllowFracturedDamage=True','FractureCullDistanceScale=1.0','DynamicLights=True','bAllowDropShadows=True','CompositeDynamicLights=True','SHSecondaryLighting=True','bAllowFog=True','DirectionalLightmaps=True','bAllowParticleSystemPerfBias=True','bAllowParticleSystemPerfThrottling=True','AllowSubsurfaceScattering=False','AllowImageReflections=False','StaticMeshLODBias=0','ParticleLODBias=1','PerfScalingBias=0.1','ShadowFilterQualityBias=0','MaxMultisamples=1','FXAAQuality=0','bAllowRagdolling=True','SpeedTreeLODBias=2','AllowScreenDoorFade=True','AllowScreenDoorLODFading=True','bUseLowQualMaterials=False','TexturePoolSize=450','MaterialQualityLevel=2','SpeedTreeWind=True','TEXTUREGROUP_World=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldNormalMap=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldSpecular=(MinLODSize=256,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=256,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_VehicleNormalMap=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=512,LODBias=2,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Cinematic=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Effects=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Skybox=(MinLODSize=1024,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_UI=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_UIStreamable=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=-1)','TEXTUREGROUP_Lightmap=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Shadowmap=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=3)','TEXTUREGROUP_RenderTarget=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point)', _
-	'TEXTUREGROUP_MobileFlattened=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_ProcBuilding_Face=(MinLODSize=1,MaxLODSize=1024,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_ProcBuilding_LightMap=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear,MipGenSettings=TMGS_Blur5)','TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_NPC=(MinLODSize=256,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_NPCNormalMap=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_NPCSpecular=(MinLODSize=256,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldDetail=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)'], _
-	['[SystemSettingsBucket4]','BasedOn=SystemSettings','StaticDecals=True','DynamicDecals=True','UnbatchedDecals=True','DecalCullDistanceScale=0.8','DynamicShadows=True','LightEnvironmentShadows=True','MotionBlur=False','DepthOfField=True','AmbientOcclusion=False','Bloom=True','bAllowLightShafts=True','Distortion=True','DropParticleDistortion=False','LensFlares=True','AllowRadialBlur=True','bAllowSeparateTranslucency=False','bAllowPostprocessMLAA=False','bAllowHighQualityMaterials=True','SkeletalMeshLODBias=0','DetailMode=2','MaxDrawDistanceScale=1.1','MaxAnisotropy=4','MaxShadowResolution=512','MaxWholeSceneDominantShadowResolution=2048','ScreenPercentage=100.000000','ShadowTexelsPerPixel=2.0','bAllowWholeSceneDominantShadows=True','bUseConservativeShadowBounds=False','bAllowFracturedDamage=True','FractureCullDistanceScale=1.5','DynamicLights=True','bAllowDropShadows=True','CompositeDynamicLights=True','SHSecondaryLighting=True','bAllowFog=True','DirectionalLightmaps=True','bAllowParticleSystemPerfBias=True','bAllowParticleSystemPerfThrottling=True','AllowSubsurfaceScattering=False','AllowImageReflections=True','StaticMeshLODBias=0','ParticleLODBias=0','PerfScalingBias=0.0','ShadowFilterQualityBias=0','MaxMultisamples=1','FXAAQuality=0','bAllowRagdolling=True','SpeedTreeLODBias=1','AllowScreenDoorFade=True','AllowScreenDoorLODFading=True','bUseLowQualMaterials=False','TexturePoolSize=600','MaterialQualityLevel=0','SpeedTreeWind=True','TEXTUREGROUP_World=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldNormalMap=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=2,LODBiasTexturePack=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=1024,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=1024,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_VehicleNormalMap=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Cinematic=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Effects=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Skybox=(MinLODSize=1024,MaxLODSize=2048,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_UI=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_UIStreamable=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=-1)', _
-	'TEXTUREGROUP_Lightmap=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Shadowmap=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=3)','TEXTUREGROUP_RenderTarget=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_MobileFlattened=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_ProcBuilding_Face=(MinLODSize=1,MaxLODSize=1024,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_ProcBuilding_LightMap=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear,MipGenSettings=TMGS_Blur5)','TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_NPC=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_NPCNormalMap=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_NPCSpecular=(MinLODSize=256,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldDetail=(MinLODSize=256,MaxLODSize=1024,LODBias=0,MinMagFilter=aniso,MipFilter=point)'], _
-	['[SystemSettingsBucket5]','BasedOn=SystemSettings','StaticDecals=True','DynamicDecals=True','UnbatchedDecals=True','DecalCullDistanceScale=1.0','DynamicShadows=True','LightEnvironmentShadows=True','MotionBlur=False','DepthOfField=True','AmbientOcclusion=False','Bloom=True','bAllowLightShafts=True','Distortion=True','DropParticleDistortion=False','LensFlares=True','AllowRadialBlur=True','bAllowSeparateTranslucency=False','bAllowPostprocessMLAA=False','bAllowHighQualityMaterials=True','SkeletalMeshLODBias=0','DetailMode=2','MaxDrawDistanceScale=1.2','MaxAnisotropy=16','MaxShadowResolution=512','MaxWholeSceneDominantShadowResolution=4096','ScreenPercentage=100.000000','ShadowTexelsPerPixel=2.0','bAllowWholeSceneDominantShadows=True','bUseConservativeShadowBounds=False','bAllowFracturedDamage=True','FractureCullDistanceScale=2.0','DynamicLights=True','bAllowDropShadows=True','CompositeDynamicLights=True','SHSecondaryLighting=True','bAllowFog=True','DirectionalLightmaps=True','bAllowParticleSystemPerfBias=True','bAllowParticleSystemPerfThrottling=True','AllowSubsurfaceScattering=False','AllowImageReflections=True','StaticMeshLODBias=0','ParticleLODBias=0','PerfScalingBias=0.0','ShadowFilterQualityBias=1','MaxMultisamples=4','FXAAQuality=0','bAllowRagdolling=True','SpeedTreeLODBias=0','AllowScreenDoorFade=True','AllowScreenDoorLODFading=True','bUseLowQualMaterials=False','TexturePoolSize=900','MaterialQualityLevel=0','SpeedTreeWind=True','TEXTUREGROUP_World=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=2048,LODBias=2,LODBiasTexturePack=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=1024,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_VehicleNormalMap=(MinLODSize=512,MaxLODSize=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Cinematic=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Effects=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,MinMagFilter=aniso,MipFilter=linear)', _
-	'TEXTUREGROUP_Skybox=(MinLODSize=2048,MaxLODSize=2048,MaxLODSizeTexturePack=4098,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_UI=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_UIStreamable=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=-1)','TEXTUREGROUP_Lightmap=(MinLODSize=512,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Shadowmap=(MinLODSize=512,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear,NumStreamedMips=3)','TEXTUREGROUP_RenderTarget=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_MobileFlattened=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ProcBuilding_Face=(MinLODSize=1,MaxLODSize=1024,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ProcBuilding_LightMap=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear,MipGenSettings=TMGS_Blur5)','TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_NPC=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_NPCNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_NPCSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldDetail=(MinLODSize=512,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)'], _
-	['[SystemSettingsScreenshot]','BasedOn=SystemSettings','MaxAnisotropy=16','ShadowFilterQualityBias=1','MinShadowResolution=16','ShadowFadeResolution=1','MinPreShadowResolution=16','PreShadowFadeResolution=1','ShadowTexelsPerPixel=4.0f','PreShadowResolutionFactor=1.0','MaxShadowResolution=4096','MaxWholeSceneDominantShadowResolution=4096','CompositeDynamicLights=FALSE','TEXTUREGROUP_World=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldNormalMap=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldSpecular=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Character=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_CharacterNormalMap=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_CharacterSpecular=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Weapon=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WeaponNormalMap=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WeaponSpecular=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Vehicle=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_VehicleNormalMap=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_VehicleSpecular=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Cinematic=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Effects=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Skybox=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_UI=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Lightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Shadowmap=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_RenderTarget=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_MobileFlattened=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ProcBuilding_Face=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ProcBuilding_LightMap=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=-1000,MinMagFilter=aniso,MipFilter=linear)'], _
-	['[SystemSettingsEditor]','BasedOn=SystemSettingsBucket5'], _
-	['[SystemSettingsSplitScreen2]','BasedOn=SystemSettings','bAllowWholeSceneDominantShadows=False','bAllowLightShafts=False','DetailMode=1'], _
-	['[SystemSettingsMobile]','BasedOn=SystemSettings','Fullscreen=True','DirectionalLightmaps=False','DynamicLights=False','SHSecondaryLighting=False','StaticDecals=True','DynamicDecals=False','UnbatchedDecals=False','MotionBlur=FALSE','MotionBlurPause=FALSE','DepthOfField=FALSE','AmbientOcclusion=FALSE','Bloom=FALSE','Distortion=FALSE','FilteredDistortion=FALSE','DropParticleDistortion=TRUE','FloatingPointRenderTargets=FALSE','MaxAnisotropy=2','bAllowLightShafts=FALSE','MobileModShadows=False','MobileClearDepthBetweenDPG=False','MaxFilterBlurSampleCount=4','DynamicShadows=False','MobileMaxMemory=300','MobileLandscapeLodBias=0','AllowRadialBlur=False'], _
-	['[SystemSettingsMobilePreviewer]','BasedOn=SystemSettingsMobile','Fullscreen=False'], _
-	['[SystemSettingsMobileTextureBias]','BasedOn=SystemSettingsMobile','TEXTUREGROUP_World=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldNormalMap=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WorldSpecular=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Character=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_CharacterNormalMap=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_CharacterSpecular=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Weapon=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WeaponNormalMap=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_WeaponSpecular=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Vehicle=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_VehicleNormalMap=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_VehicleSpecular=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Cinematic=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Effects=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=linear,MipFilter=point)','TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Skybox=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_UI=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Lightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Shadowmap=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=3)','TEXTUREGROUP_RenderTarget=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_MobileFlattened=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_ProcBuilding_Face=(MinLODSize=1,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_ProcBuilding_LightMap=(MinLODSize=1,MaxLODSize=256,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)','TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=1,MinMagFilter=aniso,MipFilter=point)'], _
-	['[SystemSettingsAndroid]','BasedOn=SystemSettingsMobileTextureBias'], _
-	['[SystemSettingsAndroid_Performance1_MemoryLow]','BasedOn=SystemSettingsMobileTextureBias','MobileFeatureLevel=1','MobileFog=False','MobileSpecular=False','MobileBumpOffset=False','MobileNormalMapping=False','MobileEnvMapping=False','MobileRimLighting=False','MobileContentScaleFactor=0.9375'], _
-	['[SystemSettingsAndroid_Performance2_MemoryLow]','BasedOn=SystemSettingsMobileTextureBias','MobileBumpOffset=False','MobileNormalMapping=False','MobileContentScaleFactor=0.9375'], _
-	['[SystemSettingsAndroid_Performance1_Memory1024]','BasedOn=SystemSettingsMobile','MobileFeatureLevel=1','MobileFog=False','MobileSpecular=False','MobileBumpOffset=False','MobileNormalMapping=False','MobileEnvMapping=False','MobileRimLighting=False','MobileContentScaleFactor=0.9375'], _
-	['[SystemSettingsAndroid_Performance2_Memory1024]','BasedOn=SystemSettingsMobile','MobileBumpOffset=False','MobileNormalMapping=False','MobileContentScaleFactor=0.9375'], _
-	['[SystemSettingsFlash]','BasedOn=SystemSettingsMobileTextureBias','MotionBlur=FALSE','MotionBlurPause=FALSE','DepthOfField=FALSE','AmbientOcclusion=FALSE','Bloom=FALSE','Distortion=FALSE','FilteredDistortion=FALSE','bAllowLightShafts=FALSE','MobileModShadows=True','DynamicShadows=True','MobileClearDepthBetweenDPG=True','DirectionalLightmaps=False','MobileHeightFog=False'], _
-	['[SystemSettingsIPhone]','BasedOn=SystemSettingsMobileTextureBias','bMobileUsingHighResolutionTiming=False'], _
-	['[SystemSettingsIPhone3GS]','BasedOn=SystemSettingsMobileTextureBias','LensFlares=False','DetailMode=1','MobileEnableMSAA=True','MobileMaxMemory=100','bMobileUsingHighResolutionTiming=False','MobileLandscapeLodBias=2'], _
-	['[SystemSettingsIPhone4]','BasedOn=SystemSettingsMobile','MobileContentScaleFactor=2.0','LensFlares=False','bMobileUsingHighResolutionTiming=False','MobileLandscapeLodBias=1'], _
-	['[SystemSettingsIPhone4S]','BasedOn=SystemSettingsMobile','MobileEnableMSAA=True','bAllowLightShafts=True','MobileModShadows=True','DynamicShadows=False','ShadowDepthBias=0.025','MobileContentScaleFactor=2.0','MaxShadowResolution=256','MobileShadowTextureResolution=256'], _
-	['[SystemSettingsIPhone5]','BasedOn=SystemSettingsMobile','MobileEnableMSAA=True','bAllowLightShafts=True','MobileModShadows=True','DynamicShadows=False','ShadowDepthBias=0.025','MobileContentScaleFactor=2.0','MaxShadowResolution=256','MobileShadowTextureResolution=1024','AllowRadialBlur=True'], _
-	['[SystemSettingsIPodTouch4]','BasedOn=SystemSettingsMobileTextureBias','MobileContentScaleFactor=2.0','LensFlares=False','MobileMaxMemory=100','bMobileUsingHighResolutionTiming=False','MobileLandscapeLodBias=2'], _
-	['[SystemSettingsIPodTouch5]','BasedOn=SystemSettingsMobile','MobileEnableMSAA=True','bAllowLightShafts=True','MobileModShadows=True','DynamicShadows=False','ShadowDepthBias=0.025','MobileContentScaleFactor=2.0','MaxShadowResolution=256','MobileShadowTextureResolution=256'], _
-	['[SystemSettingsIPad]','BasedOn=SystemSettingsMobileTextureBias','MobileFeatureLevel=1','MobileFog=False','MobileSpecular=False','MobileBumpOffset=False','MobileNormalMapping=False','MobileEnvMapping=False','MobileRimLighting=False','MobileMaxMemory=100','bMobileUsingHighResolutionTiming=False','MobileLandscapeLodBias=1','MobileContentScaleFactor=0.9375'], _
-	['[SystemSettingsIPad2]','BasedOn=SystemSettingsMobile','MobileEnableMSAA=False','bAllowLightShafts=True','MobileModShadows=True','DynamicShadows=False','ShadowDepthBias=0.016','MobileContentScaleFactor=1.0','MaxShadowResolution=256','MobileShadowTextureResolution=256'], _
-	['[SystemSettingsIPad3]','BasedOn=SystemSettingsMobile','MobileEnableMSAA=False','bAllowLightShafts=True','MobileModShadows=True','DynamicShadows=True','ShadowDepthBias=0.016','MobileContentScaleFactor=1.40625','MaxShadowResolution=256','MobileShadowTextureResolution=256','MobileMaxMemory=500'], _
-	['[SystemSettingsIPad4]','BasedOn=SystemSettingsMobile','MobileEnableMSAA=False','bAllowLightShafts=True','MobileModShadows=True','DynamicShadows=True','ShadowDepthBias=0.016','MobileContentScaleFactor=2.0','MaxShadowResolution=512','MobileShadowTextureResolution=512','MobileMaxMemory=500','AllowRadialBlur=True'], _
-	['[SystemSettingsIPadMini]','BasedOn=SystemSettingsMobile','MobileEnableMSAA=False','bAllowLightShafts=True','MobileModShadows=True','DynamicShadows=False','ShadowDepthBias=0.016','MobileContentScaleFactor=1.0','MaxShadowResolution=256','MobileShadowTextureResolution=256'], _
-	['[SystemSettingsIPad2_Detail]','BasedOn=SystemSettingsIPad2'], _
-	['[OpenAutomateBenchmarks]','Benchmark=NightAndDayMap','Benchmark=DM-Deck?CauseEvent=FlyThrough'], _
-	['[TextureSettingsSpectator]','TEXTUREGROUP_World=(MinLODSize=128,MaxLODSize=128,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldNormalMap=(MinLODSize=128,MaxLODSize=128,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldSpecular=(MinLODSize=128,MaxLODSize=128,LODBias=2,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Character=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_CharacterNormalMap=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_CharacterSpecular=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=512,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=2048,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_VehicleNormalMap=(MinLODSize=512,MaxLODSize=2048,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=2048,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Cinematic=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Effects=(MinLODSize=256,MaxLODSize=1024,LODBias=1,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=256,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Skybox=(MinLODSize=2048,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_UI=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_UIStreamable=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=point,NumStreamedMips=-1)','TEXTUREGROUP_Lightmap=(MinLODSize=512,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Shadowmap=(MinLODSize=512,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear,NumStreamedMips=3)','TEXTUREGROUP_RenderTarget=(MinLODSize=1,MaxLODSize=2048,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_MobileFlattened=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ProcBuilding_Face=(MinLODSize=1,MaxLODSize=1024,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ProcBuilding_LightMap=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=4096,LODBias=0,MinMagFilter=aniso,MipFilter=linear,MipGenSettings=TMGS_Blur5)','TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,LODBias=0,MinMagFilter=linear,MipFilter=linear)','TEXTUREGROUP_NPC=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_NPCNormalMap=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_NPCSpecular=(MinLODSize=128,MaxLODSize=512,LODBias=0,MinMagFilter=aniso,MipFilter=linear)','TEXTUREGROUP_WorldDetail=(MinLODSize=128,MaxLODSize=128,LODBias=0,MinMagFilter=aniso,MipFilter=linear)'], _
-	['[IniVersion]','0=1555521695.000000','1=1652790058.000000'], _
-	['[SettingsCheck]','Initialized=True'''] _
-]
+		Global Const $EngineSettingsClearHive[9][95] = [ _
+			['[Engine.Engine]','bSmoothFrameRate','MaxSmoothedFrameRate','MinSmoothedFrameRate'], _
+			['[Engine.GameEngine]','bSmoothFrameRate','MaxSmoothedFrameRate','MinSmoothedFrameRate'], _
+			['[Engine.Client]','MinDesiredFrameRate'], _
+			['[XAudio2.XAudio2Device]','MaxChannels'], _
+			['[ALAudio.ALAudioDevice]','MaxChannels'], _
+			['[CoreAudio.CoreAudioDevice]','MaxChannels'], _
+			['[TextureStreaming]','LoadMapTimeLimit','UseDynamicStreaming'], _
+			['[UnrealEd.EditorEngine]','bSmoothFrameRate','MaxSmoothedFrameRate','MinSmoothedFrameRate'] _
+		]
 
-Global Const $GameSettingsClearHive[52][158] = [ _
-	['[Engine.GameInfo]','DefaultGame=TgClient.TgGameLaunch','DefaultServerGame=TgGame.TgGame','bAdminCanPause=false','MaxPlayers=32','GameDifficulty=4.000000','bChangeLevels=True','MaxSpectators=2','MaxIdleTime=180.000000','MaxTimeMargin=0.000000','TimeMarginSlack=1.350000','MinTimeMargin=0.000000','TotalNetBandwidth=32000','MaxDynamicBandwidth=7000','MinDynamicBandwidth=4000','PlayerControllerClassName=TgGame.TgPlayerController','bKickLiveIdlers=true','GameInfoClassAliases[0]=(ShortName="Testing", GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases[1]=(ShortName="Conquest", GameClassName="TgGame.TgGame_Battle_Conquest")','GameInfoClassAliases[2]=(ShortName="Arena", GameClassName="TgGame.TgGame_Arena")','GameInfoClassAliases[3]=(ShortName="Assault", GameClassName="TgGame.TgGame_Battle_Aram")','GameInfoClassAliases[4]=(ShortName="Siege", GameClassName="TgGame.TgGame_Battle_Conquest_Erez")','GameInfoClassAliases[5]=(ShortName="Domination", GameClassName="TgGame.TgGame_Domination")','GameInfoClassAliases[6]=(ShortName="Joust", GameClassName="TgGame.TgGame_Battle_Joust")','GameInfoClassAliases[7]=(ShortName="ArenaEscort", GameClassName="TgGame.TgGame_Arena_Escort")','GameInfoClassAliases[8]=(ShortName="ArenaCoop", GameClassName="TgGame.TgGame_Arena_Practice")','GameInfoClassAliases[9]=(ShortName="ArenaEscortCoop", GameClassName="TgGame.TgGame_Arena_Escort_Practice")','GameInfoClassAliases[10]=(ShortName="JoustCoop", GameClassName="TgGame.TgGame_Battle_Joust_Practice")','GameInfoClassAliases[11]=(ShortName="ConquestCoop", GameClassName="TgGame.TgGame_Battle_Conquest_Practice")','GameInfoClassAliases[12]=(ShortName="ArenaPractice", GameClassName="TgGame.TgGame_Arena_Practice")','GameInfoClassAliases[13]=(ShortName="ArenaEscortPractice", GameClassName="TgGame.TgGame_Arena_Escort_Practice")','GameInfoClassAliases[14]=(ShortName="JoustPractice", GameClassName="TgGame.TgGame_Battle_Joust_Practice")','GameInfoClassAliases[15]=(ShortName="ConquestPractice", GameClassName="TgGame.TgGame_Battle_Conquest_Practice")','GameInfoClassAliases[16]=(ShortName="Battle", GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases[17]=(ShortName="Basic", GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases[18]=(ShortName="Clash", GameClassName="TgGame.TgGame_Battle_Clash")','GameInfoClassAliases[19]=(ShortName="ClashCoop", GameClassName="TgGame.TgGame_Battle_Clash_Practice")','GameInfoClassAliases[20]=(ShortName="AssaultCoop", GameClassName="TgGame.TgGame_Battle_Aram_Practice")','GameInfoClassAliases[21]=(ShortName="Racer", GameClassName="TgGame.TgGame_Battle_Racer")','GameInfoClassAliases[22]=(ShortName="MMO", GameClassName="TgGame.TgGame_Battle_Adventure")','MeshId=28','ArbitrationHandshakeTimeout=0.000000','GoreLevel=0'], _
-	['[Engine.AccessControl]','IPPolicies=ACCEPT;*','bAuthenticateClients=True','bAuthenticateServer=True','bAuthenticateListenHost=True','MaxAuthRetryCount=3','AuthRetryDelay=5'], _
-	['[DefaultPlayer]','Name=Player','Team=255','DefaultCharacter=TgGame.TgCharacter'], _
-	['[Engine.HUD]','bMessageBeep=true','HudCanvasScale=0.95','ConsoleMessageCount=4','ConsoleFontSize=5','MessageFontOffset=0','bShowHUD=true','bShowDirectorInfoDebug=false','bShowDirectorInfoHUD=false','DebugDisplay=AI'], _
-	['[Engine.PlayerController]','bAimingHelp=false','InteractDistance=512','bCheckRelevancyThroughPortals=true','MaxConcurrentHearSounds=32','bLogHearSoundOverflow=FALSE','bShowKismetDrawText=True','bNeverSwitchOnPickup=False'], _
-	['[Engine.Weapon]','Priority=-1.0'], _
-	['[Engine.WorldInfo]','DefaultGravityZ=-520.0','RBPhysicsGravityScaling=2.0','MaxPhysicsSubsteps=5','SquintModeKernelSize=128.0','EmitterPoolClassPath=Engine.EmitterPool','SecondaryEmitterPoolClassPath=TgGame.TgSpecialFxEmitterPool','DecalManagerClassPath=Engine.DecalManager','FractureManagerClassPath=Engine.FractureManager','FracturedMeshWeaponDamage=1.0','ChanceOfPhysicsChunkOverride=1.0','bEnableChanceOfPhysicsChunkOverride=FALSE','FractureExplosionVelScale=1.0','DefaultAmbientZoneSettings=(bIsWorldInfo=true)','bPersistPostProcessToNextLevel=TRUE','bAllowHostMigration=FALSE','HostMigrationTimeout=15','bAllowTemporalAA=True','bNoMobileMapWarnings=True','DefaultPostProcessSettings=(Bloom_Scale=0.4,DOF_BlurKernelSize=12.0,DOF_MaxNearBlurAmount=0.0,DOF_MaxNearBlurAmount=0.0,DOF_FocusInnerRadius=2000.0,DOF_FocusDistance=0.0,)'], _
-	['[Engine.AutoTestManager]','NumMinutesPerMap=50'], _
-	['[Engine.DecalManager]','DecalLifeSpan=30.0'], _
-	['[Engine.UIDataStore_GameResource]','ElementProviderTypes=(ProviderTag="GameTypes",ProviderClassName="Engine.UIGameInfoSummary")'], _
-	['[GameFramework.GameCheatManager]','DebugCameraControllerClassName=GameFramework.DebugCameraController'], _
-	['[GameFramework.MobileHud]','bShowMobileHud=true','bShowGameHud=false'], _
-	['[GameFramework.MobileInputZone]','RenderColor=(R=255,G=255,B=255,A=255)','InactiveAlpha=0.5','SizeX=100','SizeY=100','VertMultiplier=1.0','HorizMultiplier=1.0','bUseGentleTransitions=true','ResetCenterAfterInactivityTime=3.0','ActivateTime=0.6','DeactivateTime=0.2','TapDistanceConstraint=5','bApplyGlobalScaleToActiveSizes=true','AuthoredGlobalScale=2.0'], _
-	['[GameFramework.FrameworkGame]','RequiredMobileInputConfigs=(GroupName="DebugGroup",RequireZoneNames=("DebugStickMoveZone","DebugStickLookZone","DebugLookZone"))'], _
-	['[DebugLookZone MobileInputZone]','InputKey=MouseY','HorizontalInputKey=MouseX','TapInputKey=MOBILE_Fire','Type=ZoneType_Trackball','bRelativeSizeX=true','bRelativeSizeY=true','X=0','Y=0','SizeX=1.0','SizeY=1.0','VertMultiplier=-0.0007','HorizMultiplier=0.001','Acceleration=12.0','Smoothing=1.0','EscapeVelocityStrength=0.85','bIsInvisible=1','TapDistanceConstraint=32'], _
-	['[DebugStickMoveZone MobileInputZone]','InputKey=MOBILE_AForward','HorizontalInputKey=MOBILE_AStrafe','Type=ZoneType_Joystick','bRelativeX=true','bRelativeY=true','bRelativeSizeX=true','bRelativeSizeY=true','X=0.05','Y=-0.4','SizeX=0.1965','SizeY=1.0','bSizeYFromSizeX=true','VertMultiplier=-1.0','HorizMultiplier=1.0','bScalePawnMovement=true','RenderColor=(R=255,G=255,B=255,A=255)','InactiveAlpha=0.25','bUseGentleTransitions=true','ResetCenterAfterInactivityTime=3.0','ActivateTime=0.6','DeactivateTime=0.2','TapDistanceConstraint=5'], _
-	['[DebugStickLookZone MobileInputZone]','InputKey=MOBILE_ALookUp','HorizontalInputKey=MOBILE_ATurn','Type=ZoneType_Joystick','bRelativeX=true','bRelativeY=true','bRelativeSizeX=true','bRelativeSizeY=true','VertMultiplier=-0.5','HorizMultiplier=0.35','X=-0.2465','Y=-0.4','SizeX=0.1965','SizeY=1.0','bSizeYFromSizeX=true','RenderColor=(R=255,G=255,B=255,A=255)','InactiveAlpha=0.25','bUseGentleTransitions=true','ResetCenterAfterInactivityTime=3.0','ActivateTime=0.6','DeactivateTime=0.2','TapDistanceConstraint=5'], _
-	['[Engine.EmitterPool]','bLogPoolOverflow=true','bLogPoolOverflowList=false'], _
-	['[TgGame.TgPlayerController]','c_bAllowSpecialMaterialEffects=False','m_bContextNotifiesEnabled=true','Login2StartTime=','Login3StartTime=','m_nMaxPartyPublicConnections=0','bShowKismetDrawText=True','ForceFeedbackManagerClassName=','InteractDistance=512.000000'], _
-	['[TgGame.TgSpectatorController]','m_bIgnoreCullDistanceVolumes=true','c_vMouseClickDeprojectionExtent=(X=50,Y=50,Z=50)','m_fOverviewCenterpointOffset=0.0','m_fMouseCursorVisibleTime=2.0'], _
-	['[TgGame.TgGame]','bWeaponStay=true','BotRatio=+1.0','GoalScore=0','bTournament=false','bPlayersMustBeReady=false','NetWait=5','RestartWait=30','MinNetPlayers=1','bWaitForNetPlayers=true','SpawnProtectionTime=+2.0','LateEntryLives=1','TimeLimit=0','GameDifficulty=+5.0','EndTimeDelay=4.0','GameStatsClass=TgGame.TgGameStats'], _
-	['[TgGame.TgHUD]','bCrosshairShow=false'], _
-	['[TgEditor.EdGame]','PIEPawnClass=TgPawn','PawnClass=TgGame.TgPawn_Character','m_PIEPawnMeshType=1','MeshId=2848'], _
-	['[DebugWindows]','RemoteControlX=100','RemoteControlY=100','RemoteControlWidth=200','RemoteControlHeight=300'], _
-	['[TgGame.TgSpecialFxLightManager]','c_FxLightsEnabled=true','c_FxLightsUnconstrained=false','c_FxLightsMaxActive=1','c_FxLightsMaxDying=1'], _
-	['[TgGame.TgClientSettings]','MasterVolume=1.000000','SFXVolume=1.000000','MusicVolume=1.000000','VoiceVolume=1.000000','AmbientMusicVolume=1.000000','UIScaling=1.000000','HUDScaling=1.000000','CombatTextScaling=1.800000','ChatScaling=1.000000','ShowWardPings=true','ChatFadeout=2.000000','OverlayGodName=NPN_GodName','SelectedColorBlindOption=CB_None','OverlayShowLocalPlayer=false','ColorBlindMode=false','ColorBlindModeShader=false','ColorBlindModeShaderType=1','ColorBlindModeIntensity=1.000000','DisableHelpMessages=false','AutoPurchase=true','AutoSkill=true','ShowInHandTargeting=true','VerticalTargetingPreviews=true','DisableTargetingAid=false','CastMode=CM_Default','bUseCastQueueing=false','CastQueueTime=0.000000','DisableProfanityFilter=false','PlayNowTabId=-1','ShowTeamTags=true','TeamTagFormat=0','MatchNotifierVolume=0.300000','SpectateDamage=false','SpectateHeals=false','SpectateCrits=false','SpectateGold=false','SpectateXP=false','SpectateOutlines=false','SpectateExpertMode=false','SpectateAutoSlomo=false','SpectateDefaultSkins=false','NewUserPromptTutorialMatch=true','NewUserFinished=false','ShowFriendStateNotifications=FSN_Always','ShowRentNotification=true','MasterMute=false','SFXMute=false','MusicMute=false','VoiceMute=false','MatchNotifierMute=false','AllPlayerMute=false','ChatNotifierMute=true','LicensedMusicMute=false','VendorStoreTabId=0','VendorStoreTopTier=true','VendorStoreDefaultTab=0','MinimapOpacity=0.700000','bUseFixedPitchMode=true','FixedPitchLowerBoundDegrees=-45.000000','FixedPitchUpperBoundDegrees=-8.000000','TargetingLineStyle=TLS_None','TargetingPreviewStyle=TPS_None','TargetingReticleStyle=TRS_X','TargetingHighlightStyle=THS_Silhouette','bTargetingAlwaysShowPreview=true','LoadAssistModeSubLevel=true','bEnableHelpPopups=true','bShowManaUsage=true','VPSelection=0','TransformSettings=','TransformSettingsV2=','LandingPanelMinimized=false','NamePlateTargetingStyle=1','GodPageDisplayCard=false','bUseHudv1=true','bEnableChatTrayPopup=false','bEnableFriendsTrayPopup=false','ClientSettingsVersion=TCSV_Final','HealthBarOpacity=100','HealthBarScale=100','VivoxEnabled=true','VivoxVolume=0.500000','VivoxMute=false','VivoxMicVolume=1.000000','VivoxMicMute=false','VivoxInputType=0','VivoxInputKey=LeftControl','DisableCrossplay=false','PCInputIsKeyboard=true','ConsoleInputIsKeyboard=false','CrossplayMatchInput=false','nCachedEventActiveQuests=0','SelfMuteChat=false','SelfMuteVGS=false','PreferredControls=0','ShowClanStateNotifications=FSN_Always','bEnableChatTimestamps=false','EnableControllerFeedback=TRUE','EnableBasicAttackControllerFeedback=FALSE','DisableAimAssist=FALSE','LookSensitivity=7.000000','LookSensitivityY=7.000000','InvertY=FALSE','PlayerMute=FALSE','bJumpEnabled=true','bPublicParty=false','bOptInNewFeatures=false','bResetSensitivity=False','LookFriction=0.400000','LookFrictionY=0.500000','nSelectedPreset=4','HideOthersNamesInMatches=False','HideMyNameInMatches=False','MuteAllPlayers=False','ShowVGSMute=False','UseExperimentalHUD=False','UseExperimentalItemStore=False','UseExperimentalHUDController=False','UseExperimentalItemStoreController=False','bHideEventQuestNotice=False','bIsVsAI=False','bIsPractice=False','QueueWaitRegion=False','QueueWaitSolo=False','BotPracticeMode=False','PCInputIsGamepad=False','ConsoleInputIsGamepad=False','AutoFilter=False','ShowGameTips=False','ShowRoleGuides=False','ShowAllRecommendedBuilds=False','DisableJoystickInput=False','bAllowLogitechLedSdk=False','SpectateBottomBarSize=0','VendorStoreTypeId=0','VendorStoreTypeRecId=0','OdysseySeenFlags=0','ChestTutorialSeen=0','FavoriteGameModes=','DailyDealTracking=','LastSeenLoginBlocker=','LastSeenPatchOverview=','qwLastSeenGiftAcquisitionId=(A=0,B=0)','PlayFeaturedQueue=','LastSeen=(sStoreDeals=,sStoreChests=,sStoreGodsSkins=)','queueA=0','queueB=0','NewHudTransformSettingsKBM=','NewHudTransformSettingsGMP=','Gamma=0.000000','GammaHandheld=0.000000','BotDifficulty=0','LookAccelSpeed=3.000000','LeftDeadZone=0.300000','RightDeadZone=0.200000','RangeRotationLimitSq=0.000000','nCachedEventActiveQuestChain=0'], _
-	['[TgGame.TgGame_Mission]','m_nShutdownXpBonus=150','m_nShutdownGoldBonus=35','m_nFlatXpPerKill=50','m_nXpPerLevelPerKill=30','m_fKillBonusXpModifier=0.3','m_fKillPenaltyXpModifier=0.15'], _
-	['[TgGame.TgGame_PointCapture]','GoalScore=400'], _
-	['[TgGame.TgGame_Domination]','GoalScore=500'], _
-	['[TgGame.TgGame_SinglePointCaptureAndHold]','GoalScore=100'], _
-	['[TgGame.TgGame_Arena]','GoalScore=500','m_nKillValueHero=5','m_nKillValueMinion=1','m_nKillValueTower=15','m_nKillValueNeutralBoss=10'], _
-	['[TgGame.TgGame_Arena_Practice]','GoalScore=500'], _
-	['[TgGame.TgGame_Arena_Training]','GoalScore=100','m_nScoreCap=30'], _
-	['[TgGame.TgCameraModule_SpectatorOverview]','PawnTargetSpringDamping=1.7','FreeCamSpringDamping=0.0','IgnoreSpringDistance=3000.0','FOV=55.0','ZoomIncrement=25.0','MinZoom=30.0','MaxZoom=70.0','ZoomInterpTime=3.0','fMinAutoZoomDistance=0.0','fMaxAutoZoomDistance=900.0','fMinAutoZoomFOVAngle=35.0','fMaxAutoZoomFOVAngle=50.0','fAutoZoomInSpeed=5','fAutoZoomOutSpeed=15.0','fAutoZoomInLockOutTime=2.0','fAutoZoomOutLockOutTime=2.0','fAutoZoomDetectionRadius=1400.0','bAutoZoomEnabled=false'], _
-	['[TgGame.TgCameraModule_SpectatorFreeCam]','ZoomIncrement=256','SpringAmount=10'], _
-	['[TgGame.TgControlModule_Spectator]','RotationLimit=65536','SpectatorStallZ=850.0','SpectatorMinStallZ=85.0','bIgnoreCameraHeightRestriction=false'], _
-	['[TgGame.TgControlModule_SpectatorFreeCam]','m_RotationAccelWeightPitch=5.0','m_RotationAccelWeightYaw=5.0','m_RotationDecelWeightPitch=5.0','m_RotationDecelWeightYaw=5.0'], _
-	['[TgGame.TgControlModule_TopDown]','SpectatorStallZ=850.0','SpectatorMinStallZ=350.0','DefaultStartHeight=700.0'], _
-	['[TgGame.TgControlModule_SpectatorOverview]','SpectatorStallZ=2000.0','SpectatorMinStallZ=750.0','DirectorModeSpectatorStallZ=2000.0','DirectorModeSpectatorMinStallZ=750.0'], _
-	['[TgGame.TgDemoRecSpectator]','m_fActionListenerRadius=900.0','m_fActionListenerHeight=1000.0','m_nActionListenerRatingThreshold=1','m_fAutoSlomoExpirationTime=0.75','m_nAutoSlomoSpeedIndex=1','m_nAutoSlomoNearbyPlayersNum=0','m_nSyncFrameThreshold=10','m_nSyncFrameCheckThreshold=20','m_nSyncAheadFrameThreshold=90','m_fAutoSlomoFrequency=30.0','m_bReceiveCamSync=false'], _
-	['[TgGame.TgBattleCheatManager]','DebugCameraControllerClassName=TgGame.TgDebugCameraController'], _
-	['[PlatformCommon.PComPerformanceCaptureBase]','FOV=80.0','StatsToCollect=STAT_MeshDrawCalls','StatsToCollect=STAT_StaticDrawListMeshDrawCalls','StatsToCollect=STAT_InitViewsTime','StatsToCollect=STAT_TotalSceneRenderingTime','StatsToCollect=STAT_VirtualAllocSize','StatsToCollect=STAT_StaticMeshTotalMemory','StatsToCollect=STAT_StaticMeshVertexMemory','StatsToCollect=STAT_StaticMeshIndexMemory','StatsToCollect=STAT_AnimationMemory','StatsToCollect=STAT_PixelShaderMemory','StatsToCollect=STAT_VertexShaderMemory','StatsToCollect=STAT_VertexLightingAndShadowingMemory','StatsToCollect=STAT_TextureMemory','StatsToCollect=STAT_TextureLightmapMemory','StatsToCollect=STAT_DepthDrawTime','StatsToCollect=STAT_BasePassDrawTime','StatsToCollect=STAT_TranslucencyDrawTime','StatsToCollect=STAT_ProjectedShadowDrawTime','StatsToCollect=STAT_GameEngineTick','StatsToCollect=STAT_TickTime','StatsToCollect=STAT_ParticleManagerUpdateData','StatsToCollect=STAT_UnrealScriptTime','StatsToCollect=STAT_KismetTime','StatsToCollect=STAT_RedrawViewports','StatsToCollect=STAT_AudioMemory','StatsToCollect=STAT_SkeletalMeshVertexMemory','StatsToCollect=STAT_SkeletalMeshIndexMemory','StatsToCollect=STAT_ProcessedPrimitives','StatsToCollect=STAT_DynamicPathMeshDrawCalls','Profiles=(ProfileName="Min0", ScalabilityBucket=1, ResolutionX=1366, ResolutionY=768)','Profiles=(ProfileName="Min1", ScalabilityBucket=1, ResolutionX=1366, ResolutionY=768)','Profiles=(ProfileName="Med2", ScalabilityBucket=3, ResolutionX=1600, ResolutionY=900)','Profiles=(ProfileName="Med3", ScalabilityBucket=3, ResolutionX=1600, ResolutionY=900)','Profiles=(ProfileName="Med4", ScalabilityBucket=3, ResolutionX=1600, ResolutionY=900)','Profiles=(ProfileName="Max5", ScalabilityBucket=5, ResolutionX=1920, ResolutionY=1080)','Profiles=(ProfileName="Max6", ScalabilityBucket=5, ResolutionX=1920, ResolutionY=1200)','Profiles=(ProfileName="0LowA", ScalabilityBucket=1, ResolutionX=1366, ResolutionY=768)','Profiles=(ProfileName="1MedA", ScalabilityBucket=3, ResolutionX=1600, ResolutionY=900)','Profiles=(ProfileName="2HighA", ScalabilityBucket=5, ResolutionX=1920, ResolutionY=1080)','Profiles=(ProfileName="3UltraA", ScalabilityBucket=5, ResolutionX=1920, ResolutionY=1200)','Profiles=(ProfileName="ConsoleDev")','Profiles=(ProfileName="SmiteDev")','Profiles=(ProfileName="Xbox")','Profiles=(ProfileName="Switch")'], _
-	['[PlatformCommon.PComMcts]','AllowDefaultMapGameSoftReload=true'], _
-	['[PlatformCommon.PComOpenBroadcaster]','FacebookAppId=958422817557131','FacebookApprovedDomain=www.smitegame.com'], _
-	['[PlatformCommon.PComTrayPopup]','MatchReadyInputLightingPreset=MatchReadyTrayPopup'], _
-	['[PlatformCommon.PComInputLightingEffect]','bAllowLogitechSdk=true','Presets=(PresetName="HiRezLogo", Curve=(Points=((InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=2.0, OutVal=(R=0.0, G=0.08, B=0.39), InterpMode=CIM_CurveAuto), (InVal=2.35, OutVal=(R=1.0, G=1.0, B=1.0), InterpMode=CIM_CurveAuto), (InVal=3.3333, OutVal=(R=0.235, G=0.56, B=1.0), InterpMode=CIM_CurveAuto), (InVal=4.5, OutVal=(R=0.235, G=0.56, B=1.0), InterpMode=CIM_CurveAuto), (InVal=4.7, OutVal=(R=0.0, G=0.023, B=0.302), InterpMode=CIM_CurveAuto), (InVal=6.04, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=6.25, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto))))','Presets=(PresetName="EnabledInputEffects", BlendInTime=0.066, LoopCount=5, Curve=(Points=( (InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=1.0, G=1.0, B=1.0)), (InVal=0.3, OutVal=(R=1.0, G=1.0, B=1.0)) )))', _
-	'Presets=(PresetName="MatchReadyTrayPopup", BlendInTime=0.066, LoopCount=5, Curve=(Points=( (InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=1.0, G=1.0, B=1.0)), (InVal=0.3, OutVal=(R=1.0, G=1.0, B=1.0)) )))','Presets=(PresetName="LevelUpPreset", BlendInTime=0.066, Curve=(Points=((InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.125, OutVal=(R=0.337, G=0.447, B=1.0), InterpMode=CIM_CurveAuto), (InVal=0.25, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.375, OutVal=(R=0.337, G=0.447, B=1.0), InterpMode=CIM_CurveAuto), (InVal=0.5, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.625, OutVal=(R=0.337, G=0.447, B=1.0), InterpMode=CIM_CurveAuto), (InVal=0.75, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.875, OutVal=(R=0.337, G=0.447, B=1.0), InterpMode=CIM_CurveAuto), (InVal=1.0, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto))))','Presets=(PresetName="RespawnTimerTick", BlendInTime=0.033, Curve=(Points=((InVal=0.0, OutVal=(R=1.0, G=1.0, B=1.0)), (InVal=1.5, OutVal=(R=0.0, G=0.0, B=0.0)))))','Presets=(PresetName="Death", Priority=2, BlendInTime=0.033, Curve=(Points=((InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.033, OutVal=(R=1.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.7, OutVal=(R=1.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto), (InVal=1.5, OutVal=(R=0.0, G=0.0, B=0.0), InterpMode=CIM_CurveAuto) )))','Presets=(PresetName="MatchTimerTickGreen", BlendInTime=0.033, Curve=(Points=((InVal=0.0, OutVal=(R=0.03, G=0.2, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.033, OutVal=(R=0.13, G=0.80, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.6, OutVal=(R=0.03, G=0.2, B=0.0), InterpMode=CIM_CurveAuto), (InVal=1.5, OutVal=(R=0.03, G=0.2, B=0.0), InterpMode=CIM_CurveAuto))))','Presets=(PresetName="MatchTimerTickYellow", BlendInTime=0.033, Curve=(Points=((InVal=0.0, OutVal=(R=0.25, G=0.195, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.033, OutVal=(R=1.0, G=0.78, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.6, OutVal=(R=0.25, G=0.195, B=0.0), InterpMode=CIM_CurveAuto), (InVal=1.5, OutVal=(R=0.25, G=0.195, B=0.0), InterpMode=CIM_CurveAuto))))','Presets=(PresetName="MatchTimerTickRed", BlendInTime=0.033, Curve=(Points=((InVal=0.0, OutVal=(R=0.25, G=0.025, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.033, OutVal=(R=1.0, G=0.11, B=0.0), InterpMode=CIM_CurveAuto), (InVal=0.6, OutVal=(R=0.25, G=0.025, B=0.0), InterpMode=CIM_CurveAuto), (InVal=1.5, OutVal=(R=0.25, G=0.025, B=0.0), InterpMode=CIM_CurveAuto))))','Presets=(PresetName="TeamGoldFuryKill", Priority=1, BlendInTime=0.066, LoopCount=4, Curve=(Points=( (InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=1.0, G=0.78, B=0.0)), (InVal=0.3, OutVal=(R=1.0, G=0.78, B=0.0) ))))','Presets=(PresetName="TeamFireGiantKill", Priority=1, BlendInTime=0.066, LoopCount=2, Curve=(Points=( (InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=1.0, G=0.27, B=0.0)), (InVal=0.3, OutVal=(R=1.0, G=0.27, B=0.0)), (InVal=0.3, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.45, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.45, OutVal=(R=1.0, G=0.78, B=0.0)), (InVal=0.6, OutVal=(R=1.0, G=0.78, B=0.0)), (InVal=0.6, OutVal=(R=0.0, G=0.0, B=0.0)) )))','Presets=(PresetName="TeamTowerKill", Priority=1, BlendInTime=0.066, LoopCount=2, Curve=(Points=( (InVal=0.0, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.15, OutVal=(R=0.2, G=0.26, B=0.58)), (InVal=0.3, OutVal=(R=0.2, G=0.26, B=0.58)), (InVal=0.3, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.45, OutVal=(R=0.0, G=0.0, B=0.0)), (InVal=0.45, OutVal=(R=1.0, G=1.0, B=1.0)), (InVal=0.6, OutVal=(R=1.0, G=1.0, B=1.0)), (InVal=0.6, OutVal=(R=0.0, G=0.0, B=0.0)) )))'], _
-	['[PlatformCommon.PComRepInfo_Game]','m_MusicThemePlayerClassName=TgGame.TgMusicThemePlayer'], _
-	['[PlatformCommon.PComConfig]','Setting=Example.EnableReferral=True'], _
-	['[TgClientBase.TgClientHUD]','MainSwfMovie=TgClient.TgGameMoviePlayer','MainSwfPath=MenuManager.MenuManager'], _
-	['[GlobalGameVars]','nConfigurableMeshID=0'], _
-	['[IniVersion]','0=1555521316.000000','1=1691493926.000000'], _
-	['[TgClient.TgGameLaunch]','bIsStandbyCheckingEnabled=False','GoalScore=0','MaxLives=0','TimeLimit=0','StandbyRxCheatTime=0.000000','StandbyTxCheatTime=0.000000','BadPingThreshold=0','PercentMissingForRxStandby=0.000000','PercentMissingForTxStandby=0.000000','PercentForBadPing=0.000000','JoinInProgressStandbyWaitTime=0.000000','GameInfoClassAliases=(ShortName="Testing",GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases=(ShortName="Conquest",GameClassName="TgGame.TgGame_Battle_Conquest")','GameInfoClassAliases=(ShortName="Arena",GameClassName="TgGame.TgGame_Arena")','GameInfoClassAliases=(ShortName="Assault",GameClassName="TgGame.TgGame_Battle_Aram")','GameInfoClassAliases=(ShortName="Siege",GameClassName="TgGame.TgGame_Battle_Conquest_Erez")','GameInfoClassAliases=(ShortName="Domination",GameClassName="TgGame.TgGame_Domination")','GameInfoClassAliases=(ShortName="Joust",GameClassName="TgGame.TgGame_Battle_Joust")','GameInfoClassAliases=(ShortName="ArenaEscort",GameClassName="TgGame.TgGame_Arena_Escort")','GameInfoClassAliases=(ShortName="ArenaCoop",GameClassName="TgGame.TgGame_Arena_Practice")','GameInfoClassAliases=(ShortName="ArenaEscortCoop",GameClassName="TgGame.TgGame_Arena_Escort_Practice")','GameInfoClassAliases=(ShortName="JoustCoop",GameClassName="TgGame.TgGame_Battle_Joust_Practice")','GameInfoClassAliases=(ShortName="ConquestCoop",GameClassName="TgGame.TgGame_Battle_Conquest_Practice")','GameInfoClassAliases=(ShortName="ArenaPractice",GameClassName="TgGame.TgGame_Arena_Practice")','GameInfoClassAliases=(ShortName="ArenaEscortPractice",GameClassName="TgGame.TgGame_Arena_Escort_Practice")','GameInfoClassAliases=(ShortName="JoustPractice",GameClassName="TgGame.TgGame_Battle_Joust_Practice")','GameInfoClassAliases=(ShortName="ConquestPractice",GameClassName="TgGame.TgGame_Battle_Conquest_Practice")','GameInfoClassAliases=(ShortName="Battle",GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases=(ShortName="Basic",GameClassName="TgGame.TgGame_Battle")','GameInfoClassAliases=(ShortName="Clash",GameClassName="TgGame.TgGame_Battle_Clash")','GameInfoClassAliases=(ShortName="ClashCoop",GameClassName="TgGame.TgGame_Battle_Clash_Practice")','GameInfoClassAliases=(ShortName="AssaultCoop",GameClassName="TgGame.TgGame_Battle_Aram_Practice")','GameInfoClassAliases=(ShortName="Racer",GameClassName="TgGame.TgGame_Battle_Racer")','GameInfoClassAliases=(ShortName="MMO",GameClassName="TgGame.TgGame_Battle_Adventure")','DefaultGameType=','AnimTreePoolSize=0'''] _
-]
 
-Global Const $TextureQualityHive[9][8][4] = _
-[	_
-	[ _	;World
-		[ _ ;Best
-			"TEXTUREGROUP_World=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1,LODBias=2048,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=2048,LODBias=2,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldDetail=(MinLODSize=512,MaxLODSize=4096,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;High
-			"TEXTUREGROUP_World=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=2,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldDetail=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Medium
-			"TEXTUREGROUP_World=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldSpecular=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldDetail=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Low
-			"TEXTUREGROUP_World=(MinLODSize=64,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldNormalMap=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldSpecular=(MinLODSize=64,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldDetail=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Very Low
-			"TEXTUREGROUP_World=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldNormalMap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldSpecular=(MinLODSize=32,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldDetail=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Minimum
-			"TEXTUREGROUP_World=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldNormalMap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldSpecular=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldDetail=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Potato
-			"TEXTUREGROUP_World=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldNormalMap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldSpecular=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldDetail=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Lowest Possible
-			"TEXTUREGROUP_World=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldNormalMap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldSpecular=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WorldDetail=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"] _
-	],[ _ ;Character
-		[ _ ;Best
-			"TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;High
-			"TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Medium
-			"TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Low
-			"TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Very Low
-			"TEXTUREGROUP_Character=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterSpecular=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Minimum
-			"TEXTUREGROUP_Character=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterSpecular=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Potato
-			"TEXTUREGROUP_Character=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterSpecular=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Lowest Possible
-			"TEXTUREGROUP_Character=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_CharacterSpecular=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""] _
-	],[ _ ;Terrain
-		[ _ ;Best
-			"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;High
-			"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Medium
-			"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Low
-			"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Very Low
-			"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Minimum
-			"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Potato
-			"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Lowest Possible
-			"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""] _
-	],[ _ ;NPC
-		[ _ ;Best
-			"TEXTUREGROUP_NPC=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;High
-			"TEXTUREGROUP_NPC=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Medium
-			"TEXTUREGROUP_NPC=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCSpecular=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Low
-			"TEXTUREGROUP_NPC=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCNormalMap=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCSpecular=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Very Low
-			"TEXTUREGROUP_NPC=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCNormalMap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCSpecular=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Minimum
-			"TEXTUREGROUP_NPC=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCNormalMap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCSpecular=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Potato
-			"TEXTUREGROUP_NPC=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCNormalMap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCSpecular=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Lowest Possible
-			"TEXTUREGROUP_NPC=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCNormalMap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_NPCSpecular=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""] _
-	],[ _ ;Weapon
-		[ _ ;Best
-			"TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;High
-			"TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Medium
-			"TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Low
-			"TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Very Low
-			"TEXTUREGROUP_Weapon=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponSpecular=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Minimum
-			"TEXTUREGROUP_Weapon=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponSpecular=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Potato
-			"TEXTUREGROUP_Weapon=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponSpecular=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Lowest Possible
-			"TEXTUREGROUP_Weapon=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_WeaponSpecular=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""] _
-	],[ _ ;Vehicle
-		[ _ ;Best
-			"TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=512,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;High
-			"TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Medium
-			"TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Low
-			"TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Very Low
-			"TEXTUREGROUP_Vehicle=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleSpecular=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Minimum
-			"TEXTUREGROUP_Vehicle=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleSpecular=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Potato
-			"TEXTUREGROUP_Vehicle=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleSpecular=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""], _
-			[ _ ;Lowest Possible
-			"TEXTUREGROUP_Vehicle=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_VehicleSpecular=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			""] _
-	],[ _ ;Shadows
-		[ _ ;Best
-			"TEXTUREGROUP_Lightmap=(MinLODSize=512,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Shadowmap=(MinLODSize=512,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
-			"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;High
-			"TEXTUREGROUP_Lightmap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Shadowmap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
-			"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Medium
-			"TEXTUREGROUP_Lightmap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Shadowmap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
-			"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Low
-			"TEXTUREGROUP_Lightmap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Shadowmap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
-			"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Very Low
-			"TEXTUREGROUP_Lightmap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Shadowmap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
-			"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Minimum
-			"TEXTUREGROUP_Lightmap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Shadowmap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
-			"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Potato
-			"TEXTUREGROUP_Lightmap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Shadowmap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
-			"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
-			[ _ ;Lowest Possible
-			"TEXTUREGROUP_Lightmap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_Shadowmap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
-			"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"] _
-	],[ _ ;Skybox
-		[ _ ;Best
-			"TEXTUREGROUP_Skybox=(MinLODSize=2048,MaxLODSize=2048,MaxLODSizeTexturePack=8192,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			"", _
-			""], _
-			[ _ ;High
-			"TEXTUREGROUP_Skybox=(MinLODSize=1024,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			"", _
-			""], _
-			[ _ ;Medium
-			"TEXTUREGROUP_Skybox=(MinLODSize=1024,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			"", _
-			""], _
-			[ _ ;Low
-			"TEXTUREGROUP_Skybox=(MinLODSize=512,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			"", _
-			""], _
-			[ _ ;Very Low
-			"TEXTUREGROUP_Skybox=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			"", _
-			""], _
-			[ _ ;Minimum
-			"TEXTUREGROUP_Skybox=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			"", _
-			""], _
-			[ _ ;Potato
-			"TEXTUREGROUP_Skybox=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			"", _
-			""], _
-			[ _ ;Lowest Possible
-			"TEXTUREGROUP_Skybox=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			"", _
-			""] _
-	],[ _ ;Effects
-		[ _ ;Best
-			"TEXTUREGROUP_Effects=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;High
-			"TEXTUREGROUP_Effects=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Medium
-			"TEXTUREGROUP_Effects=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Low
-			"TEXTUREGROUP_Effects=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Very Low
-			"TEXTUREGROUP_Effects=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Minimum
-			"TEXTUREGROUP_Effects=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Potato
-			"TEXTUREGROUP_Effects=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""], _
-			[ _ ;Lowest Possible
-			"TEXTUREGROUP_Effects=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
-			"", _
-			""] _
-	] _
-]
+		Global Const $SystemSettingsClearHive[21][95] = [ _
+			['[SystemSettings]','AllowD3D11','AllowImageReflections','AllowImageReflections','AllowImageReflectionShadowing','bAllowDropShadows','bAllowHighQualityMaterials','bAllowLightShafts','bAllowRagdolling','bAllowWholeSceneDominantShadows','Bloom','Borderless','bUseConservativeShadowBounds','bUseLowQualMaterials','CompositeDynamicLights','DepthOfField','DetailMode','DirectionalLightmaps','Distortion','DropParticleDistortion','DynamicDecals','DynamicLights','DynamicShadows','FilteredDistortion','FogVolumes','Fullscreen','Fullscreen','FullscreenWindowed','FXAAQuality','LensFlares','LightEnvironmentShadows','MaxActiveDecals','MaxAnisotropy','MaxFilterBlurSampleCount','MotionBlur','MotionBlur','MotionBlur','MotionBlurPause','MotionBlurSkinning','ParticleLODBias','PerfScalingBias','PreferD3D11','ResX','ResY','ScreenPercentage','SHSecondaryLighting','SpeedTreeFronds','SpeedTreeLeaves','SpeedTreeLODBias','SpeedTreeWind','StaticDecals','TargetFrameRate','TEXTUREGROUP_Bokeh','TEXTUREGROUP_Character','TEXTUREGROUP_Character','TEXTUREGROUP_Character','TEXTUREGROUP_CharacterNormalMap','TEXTUREGROUP_CharacterSpecular','TEXTUREGROUP_Effects','TEXTUREGROUP_Effects','TEXTUREGROUP_EffectsNotFiltered','TEXTUREGROUP_ImageBasedReflection','TEXTUREGROUP_Lightmap','TEXTUREGROUP_NPC','TEXTUREGROUP_NPC','TEXTUREGROUP_NPC','TEXTUREGROUP_NPCNormalMap','TEXTUREGROUP_NPCSpecular','TEXTUREGROUP_Shadowmap','TEXTUREGROUP_Skybox','TEXTUREGROUP_Terrain_Heightmap','TEXTUREGROUP_Terrain_Weightmap','TEXTUREGROUP_Vehicle','TEXTUREGROUP_Vehicle','TEXTUREGROUP_Vehicle','TEXTUREGROUP_VehicleNormalMap','TEXTUREGROUP_VehicleSpecular','TEXTUREGROUP_Weapon','TEXTUREGROUP_Weapon','TEXTUREGROUP_Weapon','TEXTUREGROUP_WeaponNormalMap','TEXTUREGROUP_WeaponSpecular','TEXTUREGROUP_World','TEXTUREGROUP_World','TEXTUREGROUP_World','TEXTUREGROUP_World','TEXTUREGROUP_WorldDetail','TEXTUREGROUP_WorldNormalMap','TEXTUREGROUP_WorldSpecular','UnbatchedDecals','UpscaleScreenPercentage','UseD3D11Beta','UseDX11','UseVsync','VsyncPresentInterval'], _
+			['[SystemSettingsBucket1]','AllowImageReflections','bAllowDropShadows','bAllowHighQualityMaterials','bAllowLightShafts','bAllowRagdolling','bAllowWholeSceneDominantShadows','Bloom','bUseConservativeShadowBounds','bUseLowQualMaterials','CompositeDynamicLights','DepthOfField','DetailMode','DirectionalLightmaps','Distortion','DropParticleDistortion','DynamicDecals','DynamicLights','DynamicShadows','FXAAQuality','LensFlares','LightEnvironmentShadows','MaxAnisotropy','MotionBlur','ParticleLODBias','PerfScalingBias','ScreenPercentage','SHSecondaryLighting','SpeedTreeLODBias','SpeedTreeWind','StaticDecals','UnbatchedDecals'], _
+			['[SystemSettingsBucket2]','AllowImageReflections','bAllowDropShadows','bAllowHighQualityMaterials','bAllowLightShafts','bAllowRagdolling','bAllowWholeSceneDominantShadows','Bloom','bUseConservativeShadowBounds','bUseLowQualMaterials','CompositeDynamicLights','DepthOfField','DetailMode','DirectionalLightmaps','Distortion','DropParticleDistortion','DynamicDecals','DynamicLights','DynamicShadows','FXAAQuality','LensFlares','LightEnvironmentShadows','MaxAnisotropy','MotionBlur','ParticleLODBias','PerfScalingBias','ScreenPercentage','SHSecondaryLighting','SpeedTreeLODBias','SpeedTreeWind','StaticDecals','UnbatchedDecals'], _
+			['[SystemSettingsBucket3]','AllowImageReflections','bAllowDropShadows','bAllowHighQualityMaterials','bAllowLightShafts','bAllowRagdolling','bAllowWholeSceneDominantShadows','Bloom','bUseConservativeShadowBounds','bUseLowQualMaterials','CompositeDynamicLights','DepthOfField','DetailMode','DirectionalLightmaps','Distortion','DropParticleDistortion','DynamicDecals','DynamicLights','DynamicShadows','FXAAQuality','LensFlares','LightEnvironmentShadows','MaxAnisotropy','MotionBlur','ParticleLODBias','PerfScalingBias','ScreenPercentage','SHSecondaryLighting','SpeedTreeLODBias','SpeedTreeWind','StaticDecals','UnbatchedDecals'], _
+			['[SystemSettingsBucket4]','AllowImageReflections','bAllowDropShadows','bAllowHighQualityMaterials','bAllowLightShafts','bAllowRagdolling','bAllowWholeSceneDominantShadows','Bloom','bUseConservativeShadowBounds','bUseLowQualMaterials','CompositeDynamicLights','DepthOfField','DetailMode','DirectionalLightmaps','Distortion','DropParticleDistortion','DynamicDecals','DynamicLights','DynamicShadows','FXAAQuality','LensFlares','LightEnvironmentShadows','MaxAnisotropy','MotionBlur','ParticleLODBias','PerfScalingBias','ScreenPercentage','SHSecondaryLighting','SpeedTreeLODBias','SpeedTreeWind','StaticDecals','UnbatchedDecals'], _
+			['[SystemSettingsBucket5]','AllowImageReflections','bAllowDropShadows','bAllowHighQualityMaterials','bAllowLightShafts','bAllowRagdolling','bAllowWholeSceneDominantShadows','Bloom','bUseConservativeShadowBounds','bUseLowQualMaterials','CompositeDynamicLights','DepthOfField','DetailMode','DirectionalLightmaps','Distortion','DropParticleDistortion','DynamicDecals','DynamicLights','DynamicShadows','FXAAQuality','LensFlares','LightEnvironmentShadows','MaxAnisotropy','MotionBlur','ParticleLODBias','PerfScalingBias','ScreenPercentage','SHSecondaryLighting','SpeedTreeLODBias','SpeedTreeWind','StaticDecals','UnbatchedDecals'], _
+			['[SystemSettingsScreenshot]','CompositeDynamicLights','MaxAnisotropy'], _
+			['[SystemSettingsSplitScreen2]','bAllowLightShafts','bAllowWholeSceneDominantShadows','DetailMode'], _
+			['[SystemSettingsMobile]','bAllowLightShafts','Bloom','DepthOfField','DirectionalLightmaps','Distortion','DropParticleDistortion','DynamicDecals','DynamicLights','DynamicShadows','FilteredDistortion','Fullscreen','MaxAnisotropy','MaxFilterBlurSampleCount','MotionBlur','MotionBlur','MotionBlurPause','SHSecondaryLighting','StaticDecals','UnbatchedDecals'], _
+			['[SystemSettingsMobilePreviewer]','Fullscreen'], _
+			['[SystemSettingsFlash]','bAllowLightShafts','Bloom','DepthOfField','DirectionalLightmaps','Distortion','DynamicShadows','FilteredDistortion','MotionBlur','MotionBlur','MotionBlurPause'], _
+			['[SystemSettingsIPhone3GS]','DetailMode','LensFlares'], _
+			['[SystemSettingsIPhone4]','LensFlares'], _
+			['[SystemSettingsIPhone4S]','bAllowLightShafts','DynamicShadows'], _
+			['[SystemSettingsIPhone5]','bAllowLightShafts','DynamicShadows'], _
+			['[SystemSettingsIPodTouch4]','LensFlares'], _
+			['[SystemSettingsIPodTouch5]','bAllowLightShafts','DynamicShadows'], _
+			['[SystemSettingsIPad2]','bAllowLightShafts','DynamicShadows'], _
+			['[SystemSettingsIPad3]','bAllowLightShafts','DynamicShadows'], _
+			['[SystemSettingsIPad4]','bAllowLightShafts','DynamicShadows'], _
+			['[SystemSettingsIPadMini]','bAllowLightShafts','DynamicShadows'] _
+		]
 
-EndFunc
+
+		Global Const $GameSettingsClearHive[1][95] = [ _
+			['[TgGame.TgClientSettings]','bJumpEnabled'] _
+		]
+
+
+		Global Const $TextureQualityHive[9][8][4] = _
+		[	_
+			[ _	;World
+				[ _ ;Best
+					"TEXTUREGROUP_World=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1,LODBias=2048,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=2048,LODBias=2,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldDetail=(MinLODSize=512,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;High
+					"TEXTUREGROUP_World=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=2,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldDetail=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Medium
+					"TEXTUREGROUP_World=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldSpecular=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldDetail=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Low
+					"TEXTUREGROUP_World=(MinLODSize=64,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldNormalMap=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldSpecular=(MinLODSize=64,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldDetail=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Very Low
+					"TEXTUREGROUP_World=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldNormalMap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldSpecular=(MinLODSize=32,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldDetail=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Minimum
+					"TEXTUREGROUP_World=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldNormalMap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldSpecular=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldDetail=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Potato
+					"TEXTUREGROUP_World=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldNormalMap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldSpecular=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldDetail=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Lowest Possible
+					"TEXTUREGROUP_World=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldNormalMap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldSpecular=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WorldDetail=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)"] _
+			],[ _ ;Character
+				[ _ ;Best
+					"TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;High
+					"TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Medium
+					"TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Low
+					"TEXTUREGROUP_Character=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterSpecular=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Very Low
+					"TEXTUREGROUP_Character=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterSpecular=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Minimum
+					"TEXTUREGROUP_Character=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterSpecular=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Potato
+					"TEXTUREGROUP_Character=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterSpecular=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Lowest Possible
+					"TEXTUREGROUP_Character=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterNormalMap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_CharacterSpecular=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""] _
+			],[ _ ;Terrain
+				[ _ ;Best
+					"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;High
+					"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Medium
+					"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Low
+					"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Very Low
+					"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Minimum
+					"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Potato
+					"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Lowest Possible
+					"TEXTUREGROUP_Terrain_Heightmap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Terrain_Weightmap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""] _
+			],[ _ ;NPC
+				[ _ ;Best
+					"TEXTUREGROUP_NPC=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;High
+					"TEXTUREGROUP_NPC=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Medium
+					"TEXTUREGROUP_NPC=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCSpecular=(MinLODSize=256,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Low
+					"TEXTUREGROUP_NPC=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCNormalMap=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCSpecular=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Very Low
+					"TEXTUREGROUP_NPC=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCNormalMap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCSpecular=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Minimum
+					"TEXTUREGROUP_NPC=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCNormalMap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCSpecular=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Potato
+					"TEXTUREGROUP_NPC=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCNormalMap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCSpecular=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Lowest Possible
+					"TEXTUREGROUP_NPC=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCNormalMap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_NPCSpecular=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""] _
+			],[ _ ;Weapon
+				[ _ ;Best
+					"TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;High
+					"TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Medium
+					"TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Low
+					"TEXTUREGROUP_Weapon=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponSpecular=(MinLODSize=128,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Very Low
+					"TEXTUREGROUP_Weapon=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponSpecular=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Minimum
+					"TEXTUREGROUP_Weapon=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponSpecular=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Potato
+					"TEXTUREGROUP_Weapon=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponSpecular=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Lowest Possible
+					"TEXTUREGROUP_Weapon=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponNormalMap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_WeaponSpecular=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""] _
+			],[ _ ;Vehicle
+				[ _ ;Best
+					"TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=512,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;High
+					"TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Medium
+					"TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Low
+					"TEXTUREGROUP_Vehicle=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleSpecular=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Very Low
+					"TEXTUREGROUP_Vehicle=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleSpecular=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Minimum
+					"TEXTUREGROUP_Vehicle=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleSpecular=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Potato
+					"TEXTUREGROUP_Vehicle=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleSpecular=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""], _
+					[ _ ;Lowest Possible
+					"TEXTUREGROUP_Vehicle=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleNormalMap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_VehicleSpecular=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					""] _
+			],[ _ ;Shadows
+				[ _ ;Best
+					"TEXTUREGROUP_Lightmap=(MinLODSize=512,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Shadowmap=(MinLODSize=512,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=4096,MaxLODSizeTexturePack=4096,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
+					"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;High
+					"TEXTUREGROUP_Lightmap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Shadowmap=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
+					"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Medium
+					"TEXTUREGROUP_Lightmap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Shadowmap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
+					"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Low
+					"TEXTUREGROUP_Lightmap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Shadowmap=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
+					"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=256,MaxLODSizeTexturePack=256,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Very Low
+					"TEXTUREGROUP_Lightmap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Shadowmap=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
+					"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Minimum
+					"TEXTUREGROUP_Lightmap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Shadowmap=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
+					"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Potato
+					"TEXTUREGROUP_Lightmap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Shadowmap=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
+					"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"], _
+					[ _ ;Lowest Possible
+					"TEXTUREGROUP_Lightmap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_Shadowmap=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,NumStreamedMips=3,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_ImageBasedReflection=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_Blur5)", _
+					"TEXTUREGROUP_Bokeh=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)"] _
+			],[ _ ;Skybox
+				[ _ ;Best
+					"TEXTUREGROUP_Skybox=(MinLODSize=2048,MaxLODSize=2048,MaxLODSizeTexturePack=8192,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					"", _
+					""], _
+					[ _ ;High
+					"TEXTUREGROUP_Skybox=(MinLODSize=1024,MaxLODSize=2048,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					"", _
+					""], _
+					[ _ ;Medium
+					"TEXTUREGROUP_Skybox=(MinLODSize=1024,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					"", _
+					""], _
+					[ _ ;Low
+					"TEXTUREGROUP_Skybox=(MinLODSize=512,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					"", _
+					""], _
+					[ _ ;Very Low
+					"TEXTUREGROUP_Skybox=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					"", _
+					""], _
+					[ _ ;Minimum
+					"TEXTUREGROUP_Skybox=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					"", _
+					""], _
+					[ _ ;Potato
+					"TEXTUREGROUP_Skybox=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					"", _
+					""], _
+					[ _ ;Lowest Possible
+					"TEXTUREGROUP_Skybox=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=3,LODBiasTexturePack=3,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					"", _
+					""] _
+			],[ _ ;Effects
+				[ _ ;Best
+					"TEXTUREGROUP_Effects=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=2048,LODBias=1,LODBiasTexturePack=0,MinMagFilter=Linear,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=1024,LODBias=0,LODBiasTexturePack=0,MinMagFilter=Aniso,MipFilter=Linear,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;High
+					"TEXTUREGROUP_Effects=(MinLODSize=256,MaxLODSize=1024,MaxLODSizeTexturePack=1024,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=256,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Medium
+					"TEXTUREGROUP_Effects=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=1,LODBiasTexturePack=1,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Low
+					"TEXTUREGROUP_Effects=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=128,MaxLODSize=512,MaxLODSizeTexturePack=512,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Very Low
+					"TEXTUREGROUP_Effects=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=64,MaxLODSize=64,MaxLODSizeTexturePack=64,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Minimum
+					"TEXTUREGROUP_Effects=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=32,MaxLODSize=32,MaxLODSizeTexturePack=32,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Potato
+					"TEXTUREGROUP_Effects=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=16,MaxLODSize=16,MaxLODSizeTexturePack=16,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""], _
+					[ _ ;Lowest Possible
+					"TEXTUREGROUP_Effects=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Linear,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"TEXTUREGROUP_EffectsNotFiltered=(MinLODSize=1,MaxLODSize=1,MaxLODSizeTexturePack=1,LODBias=2,LODBiasTexturePack=2,MinMagFilter=Aniso,MipFilter=Point,MipGenSettings=TMGS_SimpleAverage)", _
+					"", _
+					""] _
+			] _
+		]
+
+	EndFunc
 
 #EndRegion

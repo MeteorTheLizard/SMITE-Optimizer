@@ -20,9 +20,6 @@
 
 		This DevTool wipes all SMITE-Optimizer related registry entries to perform a full-reset!
 
-		Issues:
-
-
 	#comments-end
 
 

@@ -1,8 +1,23 @@
+
+
+
+	#comments-start
+
+		This script is part of the SMITE Optimizer and licensed under the GPL-3.0 License.
+		Copyright (C) 2024 - Mario "Meteor Thuri" Schien.
+
+		Contact: MrRangerLP (at) gmx.de
+		License: https://www.gnu.org/licenses/gpl-3.0.en.html
+
+
+		This script creates a resource append list.
+		The code is rather meh but it works for my use case so whatever.
+
+	#comments-end
+
+
+
 #NoTrayIcon
-
-;- This script creates a resource append list.
-;- The code is rather meh but it works for my use case so whatever.
-
 #Include <Array.au3>
 #Include <File.au3>
 

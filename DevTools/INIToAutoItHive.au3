@@ -3,8 +3,11 @@
 
 	#comments-start
 
+		;- DEPRECATED -;
+
+
 		This script is part of the SMITE Optimizer and licensed under the GPL-3.0 License.
-		Copyright (C) 2020 - Mario "Meteor Thuri" Schien.
+		Copyright (C) 2024 - Mario "Meteor Thuri" Schien.
 
 		Contact: MrRangerLP (at) gmx.de
 		License: https://www.gnu.org/licenses/gpl-3.0.en.html

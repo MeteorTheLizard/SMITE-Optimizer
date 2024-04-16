@@ -57,16 +57,6 @@
 
 <br>
 
-<h2 align="center"><strong>Using the Standalone Launcher post 9.4.</strong></h2>
-
-<p align="center">You can install the old legacy launcher with the SMITE Optimizer using the official installation files provided by Hi-Rez Studios.</p>
-<br>
-<p align="center"><strong>We highly recommend using the quicklaunch bypass instead, though!</strong></p>
-<br>
-<p align="center">Tutorial: https://www.youtube.com/watch?v=CfyWE6LwJVU</p>
-
-<br>
-
 <h2 align="center"><strong>How to install & use the program</strong></h2>
 
 <p align="center">You can download the program here: <a href="https://github.com/MeteorTheLizard/SMITE-Optimizer/releases">(releases)</a>. If you're unsure whether you need 64-bit or 32-bit, download the 64-bit version; if it doesn't run, try the 32-bit version.</p>

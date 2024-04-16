@@ -3092,7 +3092,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.7.7"
+Global Const $ProgramVersion = "1.3.7.8"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3186,9 +3186,6 @@ Global $DebugIconHoverHideBool = False
 Global $SteamBtnHoverHideBool = False
 Global $EGSBtnHoverHideBool = False
 Global $LegacyBtnHoverHideBool = False
-Global $KofiBtnHoverHideBool = False
-Global $PatreonBtnHoverHideBool = False
-Global $PayPalBtnHoverHideBool = False
 Global $ViewOnlineChangesBtnHoverBool = False
 Global $WebsiteOpenHoverBool = False
 Global $LicenseLabelHoverBool = False
@@ -3961,10 +3958,8 @@ Global $MainGUIHomeSimpleCheckboxDirectX11 = GUICtrlCreateCheckboxTransparentBG(
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeSimpleLabelDirectX11 = GUICtrlCreateLabelTransparentBG("Use DirectX11",613,128,235,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-If @OSVersion = "WIN_XP" or @OSVersion = "WIN_VISTA" or @OSVersion = "WIN_XPe" or @OSVersion = "WIN_2008R2" or @OSVersion = "WIN_2008" or @OSVersion = "WIN_2003" Then
-fSendMetric("no_directx_11")
 GUICtrlSetState($MainGUIHomeSimpleCheckboxDirectX11,$GUI_DISABLE)
-EndIf
+GUICtrlSetState($MainGUIHomeSimpleCheckboxDirectX11,$GUI_CHECKED)
 Global $MainGUIHomeSimpleCheckboxBloom = GUICtrlCreateCheckboxTransparentBG(595,152,15,21)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeSimpleLabelBloom = GUICtrlCreateLabelTransparentBG("Bloom",613,156,235,13)
@@ -4109,10 +4104,8 @@ Global $MainGUIHomeAdvancedCheckboxDX11 = GUICtrlCreateCheckboxTransparentBG(455
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeAdvancedLabelDX11 = GUICtrlCreateLabelTransparentBG("Use DirectX11",473,253,140,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-If @OSVersion = "WIN_XP" or @OSVersion = "WIN_VISTA" or @OSVersion = "WIN_XPe" or @OSVersion = "WIN_2008R2" or @OSVersion = "WIN_2008" or @OSVersion = "WIN_2003" Then
-fSendMetric("no_directx_11")
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxDX11,$GUI_DISABLE)
-EndIf
+GUICtrlSetState($MainGUIHomeAdvancedCheckboxDX11,$GUI_CHECKED)
 Global $MainGUIHomeAdvancedCheckboxBloom = GUICtrlCreateCheckboxTransparentBG(455,269,15,21)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIHomeAdvancedLabelBloom = GUICtrlCreateLabelTransparentBG("Bloom",473,273,140,13)
@@ -4272,23 +4265,6 @@ GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"The dates shown are in the following format: DD_MM_YYYY_HH_MM_SS."&@CRLF&"Day, month, year, hour, minute, seconds.",57,283,425,41)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 Local $Year = 2024
-Global $MainGUIDonatePicHeart = GUICtrlCreatePic($sEmpty,230,55,400,379)
-LoadImageResource($MainGUIDonatePicHeart,$MainResourcePath & "Heart_BG.jpg","Heart_BG")
-GUICtrlSetOnEvent($MainGUIDonatePicHeart,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-GUICtrlSetState($MainGUIDonatePicHeart,$GUI_DISABLE)
-Global $MainGUIDonateButtonKofi = GUICtrlCreatePic($sEmpty,136,118,250,110)
-LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
-GUICtrlSetOnEvent($MainGUIDonateButtonKofi,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-Global $MainGUIDonateButtonPatreon = GUICtrlCreatePic($sEmpty,474,118,250,110)
-LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
-GUICtrlSetOnEvent($MainGUIDonateButtonPatreon,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-Global $MainGUIDonateButtonPaypal = GUICtrlCreatePic($sEmpty,305,260,250,110)
-LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
-GUICtrlSetOnEvent($MainGUIDonateButtonPaypal,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 Global $MainGUIChangelogRichEdit = GUICtrlCreateEdit($ChangelogText,55,41,$MinWidth-60,$MinHeight-46,BitOr($ES_READONLY,$WS_VSCROLL))
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM)
@@ -4466,7 +4442,6 @@ UnDrawMainGUIHomeConfigDiscovery()
 EndIf
 UnDrawMainGUIFixes(True)
 UnDrawMainGUIRestoreConfigs()
-UnDrawMainGUIDonate()
 UnDrawMainGUIChangelog()
 UnDrawMainGUICopyright()
 UnDrawMainGUIDebug()
@@ -4883,18 +4858,6 @@ GUICtrlSetState($MainGUIRestoreConfigurationsButtonRefreshList,$GUI_HIDE)
 GUICtrlSetState($MainGUIRestoreConfigurationsCheckboxAskForConfirmation,$GUI_HIDE)
 GUICtrlSetState($MainGUIRestoreConfigurationsLabelAskForConfirmation,$GUI_HIDE)
 GUICtrlSetState($MainGUIRestoreConfigurationsLabelBackupInfo,$GUI_HIDE)
-EndFunc
-Func DrawMainGUIDonate()
-GUICtrlSetState($MainGUIDonatePicHeart,$GUI_SHOW)
-GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_SHOW)
-GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_SHOW)
-GUICtrlSetState($MainGUIDonateButtonPaypal,$GUI_SHOW)
-EndFunc
-Func UnDrawMainGUIDonate()
-GUICtrlSetState($MainGUIDonatePicHeart,$GUI_HIDE)
-GUICtrlSetState($MainGUIDonateButtonKofi,$GUI_HIDE)
-GUICtrlSetState($MainGUIDonateButtonPatreon,$GUI_HIDE)
-GUICtrlSetState($MainGUIDonateButtonPaypal,$GUI_HIDE)
 EndFunc
 Func DrawMainGUIChangelog()
 ControlFocus($MainGUI,$sEmpty,$MainGUIChangelogRichEdit)
@@ -5551,10 +5514,8 @@ $MenuSelected = 3
 ToggleMenuState("RestoreConfigs")
 EndIf
 Case $DonateIcon, $DonateIconHover
-If $MenuSelected <> 4 Then
-$MenuSelected = 4
-ToggleMenuState("Donate")
-EndIf
+fSendMetric("action_donate_mtl_pressed")
+ShellExecute("https://donate.meteorthelizard.com")
 Case $ChangelogIcon, $ChangelogIconHover
 If $MenuSelected <> 5 Then
 $MenuSelected = 5
@@ -5696,18 +5657,6 @@ EndIf
 EndIf
 EndIf
 EndIf
-Case $MainGUIDonateButtonKofi
-fSendMetric("action_kofi_pressed")
-ShellExecute("https://ko-fi.com/meteorthelizard")
-LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
-Case $MainGUIDonateButtonPatreon
-fSendMetric("action_patreon_pressed")
-ShellExecute("https://www.patreon.com/MeteorTheLizard")
-LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
-Case $MainGUIDonateButtonPaypal
-fSendMetric("action_paypal_pressed")
-ShellExecute("https://www.paypal.com/paypalme/MeteorTheLizard")
-LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
 Case $MainGUIChangelogButtonViewOnline, $MainGUIChangelogButtonViewOnlineBG
 fSendMetric("action_changelog_pressed")
 ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer/commits/master")
@@ -6170,7 +6119,6 @@ _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboMaxAnisotropy,$Split[10])
 _GUICtrlComboBox_SelectString($MainGUIHomeSimpleComboDetailMode,$Split[11])
 GUICtrlSetState($MainGUIHomeSimpleCheckboxVSync,Internal_ConvertMagicNumber($Split[12]))
 GUICtrlSetState($MainGUIHomeSimpleCheckboxRagdollPhysics,Internal_ConvertMagicNumber($Split[13]))
-GUICtrlSetState($MainGUIHomeSimpleCheckboxDirectX11,Internal_ConvertMagicNumber($Split[14]))
 GUICtrlSetState($MainGUIHomeSimpleCheckboxBloom,Internal_ConvertMagicNumber($Split[15]))
 GUICtrlSetState($MainGUIHomeSimpleCheckboxDecals,Internal_ConvertMagicNumber($Split[16]))
 GUICtrlSetState($MainGUIHomeSimpleCheckboxDynamicLightShadows,Internal_ConvertMagicNumber($Split[17]))
@@ -6237,7 +6185,6 @@ _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboSpeedTreeLODBias,$Split[1
 _GUICtrlComboBox_SelectString($MainGUIHomeAdvancedComboDetailMode,$Split[20])
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxVSync,Internal_ConvertMagicNumber($Split[21]))
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxPhysX,Internal_ConvertMagicNumber($Split[22]))
-GUICtrlSetState($MainGUIHomeAdvancedCheckboxDX11,Internal_ConvertMagicNumber($Split[23]))
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxBloom,Internal_ConvertMagicNumber($Split[24]))
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxLensflares,Internal_ConvertMagicNumber($Split[25]))
 GUICtrlSetState($MainGUIHomeAdvancedCheckboxReflections,Internal_ConvertMagicNumber($Split[26]))
@@ -6647,19 +6594,10 @@ Else
 $Array = Internal_ApplySystemKey($Array,"ScreenPercentage=","100")
 $Array = Internal_ApplySystemKey($Array,"UpscaleScreenPercentage=","False")
 EndIf
-Local $DX11Read = GUICtrlRead($MainGUIHomeSimpleCheckboxDirectX11)
-If @OSVersion = "WIN_XP" or @OSVersion = "WIN_VISTA" or @OSVersion = "WIN_XPe" or @OSVersion = "WIN_2008R2" or @OSVersion = "WIN_2008" or @OSVersion = "WIN_2003" Then $DX11Read = "False"
-If $DX11Read = $GUI_UNCHECKED Then
-$Array = Internal_ApplySystemKey($Array,"UseDX11=","False")
-$Array = Internal_ApplySystemKey($Array,"AllowD3D11=","False")
-$Array = Internal_ApplySystemKey($Array,"PreferD3D11=","False")
-$Array = Internal_ApplySystemKey($Array,"UseD3D11Beta=","False")
-ElseIf $DX11Read = $GUI_CHECKED Then
 $Array = Internal_ApplySystemKey($Array,"UseDX11=","True")
 $Array = Internal_ApplySystemKey($Array,"AllowD3D11=","True")
 $Array = Internal_ApplySystemKey($Array,"PreferD3D11=","True")
 $Array = Internal_ApplySystemKey($Array,"UseD3D11Beta=","True")
-EndIf
 Local $AARead = GUICtrlRead($MainGUIHomeSimpleComboAntialiasing)
 If $AARead = "Off" Then
 $AARead = 0
@@ -6833,19 +6771,10 @@ Else
 $AFRead = StringReplace($AFRead,"x",$sEmpty)
 EndIf
 $Array = Internal_ApplySystemKey($Array,"MaxAnisotropy=",$AFRead)
-Local $DX11Read = GUICtrlRead($MainGUIHomeAdvancedCheckboxDX11)
-If @OSVersion = "WIN_XP" or @OSVersion = "WIN_VISTA" or @OSVersion = "WIN_XPe" or @OSVersion = "WIN_2008R2" or @OSVersion = "WIN_2008" or @OSVersion = "WIN_2003" Then $DX11Read = "False"
-If $DX11Read = $GUI_UNCHECKED Then
-$Array = Internal_ApplySystemKey($Array,"UseDX11=","False")
-$Array = Internal_ApplySystemKey($Array,"AllowD3D11=","False")
-$Array = Internal_ApplySystemKey($Array,"PreferD3D11=","False")
-$Array = Internal_ApplySystemKey($Array,"UseD3D11Beta=","False")
-ElseIf $DX11Read = $GUI_CHECKED Then
 $Array = Internal_ApplySystemKey($Array,"UseDX11=","True")
 $Array = Internal_ApplySystemKey($Array,"AllowD3D11=","True")
 $Array = Internal_ApplySystemKey($Array,"PreferD3D11=","True")
 $Array = Internal_ApplySystemKey($Array,"UseD3D11Beta=","True")
-EndIf
 Local $ReflectionsRead = GUICtrlRead($MainGUIHomeAdvancedCheckboxReflections)
 If $ReflectionsRead = $GUI_UNCHECKED Then
 $Array = Internal_ApplySystemKey($Array,"AllowImageReflections=","False")
@@ -7336,246 +7265,10 @@ EndIf
 EndIf
 EndFunc
 Func Internal_CreateQuicklaunchBypass()
-GUISetState(@SW_DISABLE,$MainGUI)
-Local $S_Title = $ProgramName & " Quicklaunch Creator"
-Local $RootDir = $sEmpty
-Local $Type = $sEmpty
-Local $Bits = $sEmpty
-Local $GUI_Quicklaunch = GUICreate($S_Title,320,80,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW)
-GUISwitch($GUI_Quicklaunch)
-GUISetBkColor($cAccentColor,$GUI_Quicklaunch)
-Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select version to create a bypass for:",7,5,313,35)
-GUICtrlSetFont(-1,12,Default,Default,$WindowsUIFont)
-Local $GUI_ButtonSteam = GUICtrlCreateButtonSO($MainGUI,"Steam",5,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
-Local $GUI_ButtonEGS = GUICtrlCreateButtonSO($MainGUI,"Epic Game Store",110,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
-Local $GUI_ButtonCancel = GUICtrlCreateButtonSO($MainGUI,"Cancel",215,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
-GUISetState()
-While True
-Local $CursorInfo = GUIGetCursorInfo($GUI_Quicklaunch)
-If WinGetTitle("[active]") = $S_Title and @Error = 0 Then
-If _IsPressed("1B") Then
-ExitLoop(1)
-EndIf
-If _IsPressed("01") Then
-While _IsPressed("01")
-Sleep(10)
-WEnd
-Switch $CursorInfo[4]
-Case $GUI_ButtonSteam
-Local $sPath = RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 386360\","InstallLocation")
-If @Error Then
-If FileExists("C:\Program Files (x86)\Steam\steamapps\common\SMITE") Then
-$sPath = "C:\Program Files (x86)\Steam\steamapps\common\SMITE"
-Else
-fSendMetric("error_quickbypass_nosteamfound")
-MsgBox($MB_OK,"Error!","Steam Installation not found!" & @CRLF & "You can find out more by reading the 'Common Issues' in the debug tab.")
-ExitLoop(1)
-EndIf
-EndIf
-If $sPath = $sEmpty or not FileExists($sPath) Then
-fSendMetric("error_quickbypass_nosteamfound_path")
-MsgBox($MB_OK,"Error!","Steam installation was found but is invalid!" & @CRLF & "You can find out more by reading the 'Common Issues' in the debug tab.")
-ExitLoop(1)
-EndIf
-$RootDir = $sPath
-$Type = "Steam"
-ExitLoop(1)
-Case $GUI_ButtonEGS
-Local $sPath = "C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests"
-Local $Files = _FileListToArray($sPath,"*.item",1,True)
-_ArrayDelete($Files,0)
-For $I = 0 To uBound($Files) - 1 Step 1
-Local $Read = FileReadToArray($Files[$I])
-For $B = 0 To uBound($Read) - 1 Step 1
-Local $Str = StringLeft($Read[$B],20)
-If $Str == @TAB&'"InstallLocation": ' and StringInStr($Read[$B],"SMITE",0,1) <> 0 Then
-Local $NewStr = StringReplace($Read[$B],"\\","\")
-$NewStr = StringReplace($NewStr,'"InstallLocation": "',$sEmpty)
-$NewStr = StringReplace($NewStr,'",',$sEmpty)
-$NewStr = StringReplace($NewStr,@TAB,$sEmpty)
-$sPath = $NewStr
-ExitLoop(2)
-EndIf
-Next
-Next
-If not FileExists($sPath) Then
-fSendMetric("error_quickbypass_noegsfound")
-MsgBox($MB_OK,"Error!","Epic Game Store Installation not found!")
-ExitLoop(1)
-EndIf
-$RootDir = $sPath
-$Type = "EGS"
-ExitLoop(1)
-Case $GUI_ButtonCancel
-ExitLoop(1)
-EndSwitch
-EndIf
-Sleep(10)
-Else
-If WinGetTitle("[active]") = $ProgramName Then WinActivate($GUI_Quicklaunch)
-Sleep(100)
-EndIf
-WEnd
-If $RootDir <> $sEmpty and $Type <> $sEmpty Then
-Local $GUI_Quicklaunch_Bits = GUICreate($S_Title,320,80,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW)
-GUISwitch($GUI_Quicklaunch_Bits)
-GUISetBkColor($cAccentColor,$GUI_Quicklaunch_Bits)
-Local $GUI_LabelInfo = GUICtrlCreateLabelTransparentBG("Select an architecture:" & @CRLF & "('Automatic' if you don't know what you're doing!)",7,5,313,35)
-Local $GUI_Button_32 = GUICtrlCreateButtonSO($MainGUI,"32-Bit",5,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
-Local $GUI_Button_64 = GUICtrlCreateButtonSO($MainGUI,"64-Bit",110,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
-Local $GUI_ButtonAuto = GUICtrlCreateButtonSO($MainGUI,"Automatic",215,40,100,35,$cAccentColor,$cTextColor,$cBackgroundColor)
-GUISetState()
-While True
-Local $CursorInfo = GUIGetCursorInfo($GUI_Quicklaunch_Bits)
-If WinGetTitle("[active]") = $S_Title and @Error = 0 Then
-If _IsPressed("1B") Then
-ExitLoop(1)
-EndIf
-If _IsPressed("01") Then
-While _IsPressed("01")
-Sleep(10)
-WEnd
-Switch $CursorInfo[4]
-Case $GUI_Button_32
-$Bits = "32"
-ExitLoop(1)
-Case $GUI_Button_64
-$Bits = "64"
-ExitLoop(1)
-Case $GUI_ButtonAuto
-$Bits = StringRight(@CPUArch,2)
-ExitLoop(1)
-EndSwitch
-EndIf
-Sleep(10)
-Else
-If WinGetTitle("[active]") = $ProgramName Then WinActivate($GUI_Quicklaunch_Bits)
-Sleep(100)
-EndIf
-WEnd
-EndIf
-If $Bits <> $sEmpty and $Type <> $sEmpty Then
-If FileExists(@DesktopDir & "\SMITE - Quicklaunch (Steam).lnk") Then
-FileDelete(@DesktopDir & "\SMITE - Quicklaunch (Steam).lnk")
-EndIf
-If FileExists(@DesktopDir & "\SMITE - Quicklaunch (EGS).lnk") Then
-FileDelete(@DesktopDir & "\SMITE - Quicklaunch (EGS).lnk")
-EndIf
-Sleep(100)
-If $Type = "Steam" Then
-If $Bits = "32" Then
-FileCreateShortcut($RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe",@DesktopDir & "\SMITE - Quicklaunch (Steam)",$RootDir & "\Binaries",'-eac_launcher_settings "Settings.json" -EACALT -eac_dir "..\\EasyAntiCheat\\" -seekfreeloadingpcconsole -LANGUAGE=ENG -HiCommand -pid=017',"(SMITE Optimizer) - Quicklaunch Bypass - MeteorTheLizard",$RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe")
-Else
-FileCreateShortcut($RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe",@DesktopDir & "\SMITE - Quicklaunch (Steam)",$RootDir & "\Binaries",'-eac_launcher_settings "Settings64.json" -EACALT -eac_dir "..\\EasyAntiCheat\\" -seekfreeloadingpcconsole -allow64 -LANGUAGE=ENG -HiCommand -pid=017',"(SMITE Optimizer) - Quicklaunch Bypass - MeteorTheLizard",$RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe")
-EndIf
-Sleep(100)
-If FileExists(@DesktopDir & "\SMITE - Quicklaunch (Steam).lnk") Then
-fSendMetric("event_quickbypass_successsteam")
-MsgBox($MB_OK,"Success!","Successfully created a quick launch shortcut on your desktop!" & @CRLF & "You can use this shortcut to launch SMITE just like the legacy launcher!")
-Else
-fSendMetric("error_quickbypass_code17")
-MsgBox($MB_OK,"Error!","Quicklaunch could not be created! Code: 017")
-EndIf
-ElseIf $Type = "EGS" Then
-If $Bits = "32" Then
-FileCreateShortcut($RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe",@DesktopDir & "\SMITE - Quicklaunch (EGS)",$RootDir & "\Binaries",'-eac_launcher_settings "Settings.json" -EACALT -eac_dir "..\\EasyAntiCheat\\" -seekfreeloadingpcconsole -LANGUAGE=ENG -HiCommand -pid=017',"(SMITE Optimizer) - Quicklaunch Bypass - MeteorTheLizard",$RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe")
-Else
-FileCreateShortcut($RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe",@DesktopDir & "\SMITE - Quicklaunch (EGS)",$RootDir & "\Binaries",'-eac_launcher_settings "Settings64.json" -EACALT -eac_dir "..\\EasyAntiCheat\\" -seekfreeloadingpcconsole -allow64 -LANGUAGE=ENG -HiCommand -pid=017',"(SMITE Optimizer) - Quicklaunch Bypass - MeteorTheLizard",$RootDir & "\Binaries\Win" & $Bits & "\SmiteEAC.exe")
-EndIf
-Sleep(100)
-If FileExists(@DesktopDir & "\SMITE - Quicklaunch (EGS).lnk") Then
-fSendMetric("event_quickbypass_successegs")
-MsgBox($MB_OK,"Success!","Successfully created a quick launch shortcut on your desktop!" & @CRLF & "You can use this shortcut to launch SMITE just like the legacy launcher!")
-Else
-fSendMetric("error_quickbypass_code18")
-MsgBox($MB_OK,"Error!","Quicklaunch could not be created! Code: 018")
-EndIf
-EndIf
-EndIf
-GUIDelete($GUI_Quicklaunch)
-If IsDeclared("GUI_Quicklaunch_Bits") Then GUIDelete($GUI_Quicklaunch_Bits)
-GUISwitch($MainGUI)
-GUISetState(@SW_ENABLE,$MainGUI)
-WinActivate($MainGUI)
+MsgBox(0,$ProgramName,'Patch 11.4 removed "-nosteam" and "-noepic" functionality which broke this feature.' & @CRLF & "It cannot be restored to a working state.")
 EndFunc
 Func Internal_InstallLegacyLauncher()
-If @OSVersion <> "WIN_XP" and IsAdmin() == 0 Then
-MsgBox($MB_OK,"Information","SMITE Optimizer needs administrator privileges to install the Legacy Launcher.")
-Return
-EndIf
-Local $obj_Info = MsgBox(0,"Information","Hi-Rez Studios ended their Legacy Launcher support with the 9.4 'The Jade Emperor' update." & @CRLF & @CRLF & "You will no longer receive updates through the launcher. You can still perform updates manually by copying Steam or Epic Game Store game files into the legacy installation game folder." & @CRLF & @CRLF & "The launcher will eventually stop working completely, it is recommended to use the Quick Launch Bypass instead." & @CRLF & "> Requires SMITE to be installed through Steam or the Epic Game Store.")
-Local $bContinue = MsgBox($MB_YESNO,"Information","This feature will not work if you have previously installed the Legacy Launcher on your system."&@CRLF&@CRLF&"Installation requires user input."&@CRLF&@CRLF&"Would you like to continue?")
-If $bContinue = $IDYES Then
-GUISwitch($MainGUI)
-GUISetState(@SW_MINIMIZE)
-GUISetState(@SW_DISABLE)
-Global $SplashScreenGUI = GUICreate($ProgramName,600,125,-1,-1,$WS_POPUP,$WS_EX_TOOLWINDOW)
-Local $SplashScreenGUIAnimation
-If @Compiled Then
-$SplashScreenGUIAnimation = GUICtrlCreateGIF( _Resource_GetAsImage("SO_LoopGIF") ,0,0,600,100,90,10,True)[0]
-Else
-$SplashScreenGUIAnimation = GUICtrlCreateGIF($MainResourcePath & "Splash_Loop.gif",0,0,600,100,90,10)[0]
-EndIf
-Global $SplashScreenGUIProgress = GUiCtrlCreateProgress(0,100,600,25)
-GUICtrlSetColor(-1,$cAccentColor)
-DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",$sEmpty,"wstr",$sEmpty)
-Global $SplashScreenGUILabelStatusBG = GUICtrlCreateLabelTransparentBG("Initializing..",1,106,600,20,$SS_CENTER)
-GUICtrlSetColor(-1,$cTextShadowColor)
-Global $SplashScreenGUILabelStatus = GUICtrlCreateLabelTransparentBG("Initializing..",0,105,600,20,$SS_CENTER)
-GUISetState(@SW_SHOWNOACTIVATE,$SplashScreenGUI)
-_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_TOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
-_WinAPI_SetWindowPos($SplashScreenGUI,$HWND_NOTOPMOST,0,0,0,0,BitOR($SWP_NOACTIVATE,$SWP_NOMOVE,$SWP_NOSIZE))
-SplashScreenWriteStatus(0,"Preparing to download the required Files..")
-Local $aInfo[3][4] = [ ["https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer/master/SMITE/InstallHirezService.exe",@TempDir & "/HiService.exe","014","InstallHirezService.exe"], ["https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer/master/SMITE/SetupPatcherFix.exe",@TempDir & "/HiFix.exe","015","SetupPatcherFix.exe"], ["https://raw.githubusercontent.com/MeteorTheLizard/SMITE-Optimizer/master/SMITE/UE3Redist_vs2012.exe",@TempDir & "/HiReq.exe","016","UE3Redist_vs2012.exe"] ]
-For $I = 0 To 2 Step 1
-Local $NewFileSize = INetGetSize($aInfo[$I][0],$INET_FORCERELOAD)
-Local $NewFile = INetGet($aInfo[$I][0],$aInfo[$I][1],BitOr($INET_FORCERELOAD,$INET_IGNORESSL),$INET_DOWNLOADBACKGROUND)
-Local $LastPercent = 0
-Local $Percent = 0
-Do
-Local $Bytes = INetGetInfo($NewFile,0)
-$Percent = Floor((100 / $NewFileSize) * $Bytes)
-If $Percent <> $LastPercent Then
-SplashScreenWriteStatus($Percent,"Downloading " & $aInfo[$I][3] & " ( "&$Percent&"% - " & Floor($Bytes/1024) & " / " & Floor($NewFileSize/1024) & " KB. )")
-$LastPercent = $Percent
-EndIf
-Sleep(10)
-Until INetGetInfo($NewFile,2)
-INetClose($NewFile)
-If not FileExists($aInfo[$I][1]) Then
-MsgBox($MB_OK,"Error","There was an unexpected error during the download process. Code: "&$aInfo[$I][2]&@CRLF&"GitHub may not be available right now.")
-WinActivate($SplashScreenGUI)
-ExitLoop
-ElseIf $I = 2 Then
-SplashScreenWriteStatus(100,"Installing.. InstallHirezService.exe (Requires User Input)")
-RunWait(@TempDir & "/HiService.exe")
-SplashScreenWriteStatus(100,"Installing.. SetupPatcherFix.exe")
-RunWait(@TempDir & "/HiFix.exe")
-SplashScreenWriteStatus(100,"Installing.. UE3Redist_vs2012.exe (Requires User Input)")
-RunWait(@TempDir & "/HiReq.exe")
-Local $sRootPath = RegRead("HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{3C87E0FF-BC0A-4F5E-951B-68DC3F8DF1FC}","InstallLocation")
-If FileExists($sRootPath) Then
-fSendMetric("event_oldlauncher_installsuccess")
-FileCreateShortcut($sRootPath & "/HiRezLauncherUI.exe",@DesktopDir & "/SMITE - Legacy",Default,"game=300 product=17",Default,@ScriptFullPath,Default,2)
-MsgBox($MB_OK,"Information","A shortcut has been created on your desktop!"&@CRLF&@CRLF&"When using the legacy version of SMITE, you might have to reset the configuration paths to make the SMITE Optimizer aware of the new paths. You can do so in the debug tab."&@CRLF&@CRLF&"Enjoy the legacy launcher! <3")
-Else
-fSendMetric("error_oldlauncher_installfailed")
-MsgBox(0,"Error","An error occurred when trying to create a shortcut for SMITE."&@CRLF&"You can manually create a shortcut by following these steps:"&@CRLF&"Locate HiRezLauncherUI.exe and create a shortcut to it on the desktop, then add these parameters at the end of the destination path: game=300 product=17")
-EndIf
-EndIf
-Next
-Sleep(1000)
-FileDelete(@TempDir & "/HiService.exe")
-FileDelete(@TempDir & "/HiFix.exe")
-FileDelete(@TempDir & "/HiReq.exe")
-GUICtrlDeleteGIF($SplashScreenGUIAnimation)
-GUIDelete($SplashScreenGUI)
-$SplashScreenGUI = NULL
-GUISwitch($MainGUI)
-GUISetState(@SW_RESTORE)
-GUISetState(@SW_ENABLE)
-WinActivate($MainGUI)
-EndIf
+MsgBox(0,$ProgramName,'Patch 11.4 removed "-nosteam" and "-noepic" functionality which broke this feature.' & @CRLF & "It cannot be restored to a working state.")
 EndFunc
 Func Internal_FixEAC()
 If @OSVersion <> "WIN_XP" and IsAdmin() == 0 Then
@@ -7621,13 +7314,17 @@ DisplayErrorMessage("Error",$MainGUI,"Failed to retrieve game location!")
 Return
 EndIf
 EndIf
-$sPath = $sPath & "\Binaries\EasyAntiCheat\EasyAntiCheat_Setup.exe"
+$sPath = $sPath & "\EasyAntiCheat\EasyAntiCheat_EOS_Setup.exe"
 If not FileExists($sPath) Then
-fSendMetric("error_fixes_eac_nosetup")
-DisplayErrorMessage("Error",$MainGUI,"Failed to retrieve location of EasyAntiCheat_Setup.exe!")
+fSendMetric("error_fixes_eac_nosetup_eos")
+$sPath = $sPath & "\EasyAntiCheat\EasyAntiCheat_Setup.exe"
+If not FileExists($sPath) Then
+fSendMetric("error_fixes_eac_nosetup_both")
+DisplayErrorMessage("Error",$MainGUI,"Failed to retrieve location of EasyAntiCheat installer!")
 Return
 EndIf
-ShellExecuteWait($sPath,"install 140 -console")
+EndIf
+ShellExecuteWait($sPath,"install f71b1231985f48d1af3de723e0a6acdd")
 RunWait(@ComSpec & " /c " & 'sc config "EasyAntiCheat" start= demand',$sEmpty,@SW_HIDE)
 fSendMetric("action_fixes_eac_success")
 MsgBox(0,"Information","Repaired EasyAntiCheat successfully.")
@@ -7782,15 +7479,6 @@ UndoMenuHoverState()
 LoadImageResource($DebugIconHover,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
 LoadImageResource($DebugIcon,$MainResourcePath & "DebugIconInactive.jpg","DebugIconInactive")
 $DebugIconHoverHideBool = False
-ElseIf $KofiBtnHoverHideBool Then
-LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnInActive.jpg","KofiBtnInActive")
-$KofiBtnHoverHideBool = False
-ElseIf $PatreonBtnHoverHideBool Then
-LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnInActive.jpg","PatreonBtnInActive")
-$PatreonBtnHoverHideBool = False
-ElseIf $PayPalBtnHoverHideBool Then
-LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnInActive.jpg","PayPalBtnInActive")
-$PayPalBtnHoverHideBool = False
 ElseIf $ViewOnlineChangesBtnHoverBool Then
 UndoMenuHoverState()
 LoadImageResource($MainGUIChangelogButtonViewOnlineBG,$MainResourcePath & "MenuItemBG.jpg","MenuItemBG")
@@ -8182,24 +7870,6 @@ MenuHoverState("Debug",280,124,279)
 LoadImageResource($DebugIconHover,$MainResourcePath & "HoverMenuBG.jpg","HoverMenuBG")
 LoadImageResource($DebugIcon,$MainResourcePath & "DebugIconActive.jpg","DebugIconActive")
 $DebugIconHoverHideBool = True
-EndIf
-Case $MainGUIDonateButtonKofi
-If $KofiBtnHoverHideBool = False Then
-_FixMenuSwitch()
-LoadImageResource($MainGUIDonateButtonKofi,$MainResourcePath & "KofiBtnActive.jpg","KofiBtnActive")
-$KofiBtnHoverHideBool = True
-EndIf
-Case $MainGUIDonateButtonPatreon
-If $PatreonBtnHoverHideBool = False Then
-_FixMenuSwitch()
-LoadImageResource($MainGUIDonateButtonPatreon,$MainResourcePath & "PatreonBtnActive.jpg","PatreonBtnActive")
-$PatreonBtnHoverHideBool = True
-EndIf
-Case $MainGUIDonateButtonPaypal
-If $PayPalBtnHoverHideBool = False Then
-_FixMenuSwitch()
-LoadImageResource($MainGUIDonateButtonPaypal,$MainResourcePath & "PayPalBtnActive.jpg","PayPalBtnActive")
-$PayPalBtnHoverHideBool = True
 EndIf
 Case $MainGUIChangelogButtonViewOnline, $MainGUIChangelogButtonViewOnlineBG
 If $ViewOnlineChangesBtnHoverBool = False Then

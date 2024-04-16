@@ -1,3 +1,24 @@
+SMITE Optimizer Version 1.3.7.8
+
+Starting note:
+	Hi-Rez Studios has modernized SMITE drastically with patch 11.4. They have merged both the Steam version and the Epic Game Store version of the game into one repository. Both integrations are loaded now if you have both Steam and Epic Game Store installed on your system. The "-nosteam" and "-noepic" parameter were removed, and the log-in functionality of the game has been restricted to only authenticate when launching through Steam or Epic Game Store. This broke the Quicklaunch Bypass and Legacy Launcher of the SMITE Optimizer. It is possible to still launch the game without any integrations with some small tweaks to the shortcut that is created by the SMITE Optimizer, but you are not able to log in. It will always give you an error. On top of this, Hi-Rez is no longer supporting Windows 7, 8, and 8.1. This includes DirectX9 and 32-Bit support.
+	> TL;DR: DirectX11 and 64-Bit is now mandatory. Quicklaunch bypass is broken forever.
+
+- Removed "Quicklaunch Bypass" feature. (See starting note.)
+- Removed "Install Legacy Launcher" feature. (See starting note.)
+- DirectX11 and 64-Bit are now mandatory and forced to be enabled wherever applicable. (See starting note.)
+
+- Fixed and updated the "Repair EasyAntiCheat" feature. (Community Contribution - Testing - Research)
+- The donation tab now redirects to https://donate.meteorthelizard.com when clicked.
+> All other donation tab code and resources were removed.
+
+- Added new metrics: "error_fixes_eac_nosetup_eos", "error_fixes_eac_nosetup_both", and "action_donate_mtl_pressed"
+- Metrics "error_fixes_eac_nosetup", "error_oldlauncher_installfailed", "error_quickbypass_code17", "error_quickbypass_code18", "error_quickbypass_noegsfound", "error_quickbypass_nosteamfound", "error_quickbypass_nosteamfound_path", "event_oldlauncher_installsuccess", "event_quickbypass_successegs", "event_quickbypass_successsteam", "action_kofi_pressed", "action_patreon_pressed", and "action_paypal_pressed" are now marked as deprecated and no longer used.
+
+
+
+
+
 SMITE Optimizer Version 1.3.7.7
 - Added new setting "Disable Fog" to the fixes tab.
 - Improved replacing of login information from the debug dump feature for improved security.

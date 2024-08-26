@@ -8,7 +8,7 @@
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=SMITE Optimizer
-#AutoIt3Wrapper_Res_Fileversion=1.3.7.8
+#AutoIt3Wrapper_Res_Fileversion=1.3.7.9
 #AutoIt3Wrapper_Res_LegalCopyright=Made by MeteorTheLizard - All Rights Reserved.
 #AutoIt3Wrapper_Res_Icon_Add=Resource\SmiteIcon.ico
 #AutoIt3Wrapper_Res_File_Add=Resource\MainFont.ttf, RT_FONT, MainFont, 0
@@ -238,7 +238,7 @@ Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
 
 
-Global Const $ProgramVersion = "1.3.7.8"
+Global Const $ProgramVersion = "1.3.7.9"
 
 ;- Internal Vars
 Global Const $ScrW = @DesktopWidth
@@ -1801,7 +1801,7 @@ Func InitGUI() ;- In this function, we draw every element of the GUI in advance 
 		Global $MainGUICopyrightLabelLogoCopyright = GUICtrlCreateLabelTransparentBG("Logos used are subject to copyright and were used under the 'Fair Use' agreement.",181,288,600,18)
 			GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 			GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-		Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("Contact: MrRangerLP (at) gmx.de",103,317,250,20)
+		Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("contact@meteorthelizard.com",103,317,250,20)
 			GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 			GUICtrlSetFont(-1,11,500,Default,$MenuFontName)
 
@@ -6311,7 +6311,11 @@ EndFunc
 		EndIf
 
 
-		;- Run the installer
+		;- Uninstall EasyAntiCheat
+		ShellExecuteWait($sPath,"uninstall f71b1231985f48d1af3de723e0a6acdd") ;- Community contribution
+										;- Second parameter is the app-identifier for SMITE
+
+		;- Install EasyAntiCheat
 		ShellExecuteWait($sPath,"install f71b1231985f48d1af3de723e0a6acdd") ;- Parameters taken from installscript.vdf
 									  ;- Second parameter is the app-identifier for SMITE
 
@@ -6782,7 +6786,7 @@ While True ;- Main program routine.
 						ElseIf InRange2D($MousePos,590,103,790,126) Then
 							DisplayHoverImage(590,103,200,23,$MainResourcePath & "HelpText/Ragdoll_Physics.gif",185,40,400,286,True) ;- Use Ragdoll Physics.
 						ElseIf InRange2D($MousePos,590,123,790,146) Then
-							DisplayHoverImage(590,123,200,23,$MainResourcePath & "HelpText/DirectX_11.jpg",240,40,345,300) ;- Use DirectX11.
+							DisplayHoverImage(590,123,200,23,$MainResourcePath & "HelpText/DirectX_11.jpg",240,40,345,159) ;- Use DirectX11.
 						ElseIf InRange2D($MousePos,590,151,790,174) Then
 							DisplayHoverImage(590,151,200,23,$MainResourcePath & "HelpText/Bloom.jpg",185,40,400,350) ;- Bloom.
 						ElseIf InRange2D($MousePos,590,171,790,194) Then
@@ -6844,7 +6848,7 @@ While True ;- Main program routine.
 						ElseIf InRange2D($MousePos,495,228,660,251) Then
 							DisplayHoverImage(495,228,165,23,$MainResourcePath & "HelpText/Ragdoll_Physics.gif",95,40,400,286,True) ;- Use Ragdoll Physics.
 						ElseIf InRange2D($MousePos,495,248,660,271) Then
-							DisplayHoverImage(495,248,165,23,$MainResourcePath & "HelpText/DirectX_11.jpg",145,40,345,300) ;- Use DirectX11.
+							DisplayHoverImage(495,248,165,23,$MainResourcePath & "HelpText/DirectX_11.jpg",145,40,345,159) ;- Use DirectX11.
 						ElseIf InRange2D($MousePos,495,268,660,291) Then
 							DisplayHoverImage(495,268,165,23,$MainResourcePath & "HelpText/Bloom.jpg",95,40,400,350) ;- Bloom.
 						ElseIf InRange2D($MousePos,495,288,660,311) Then

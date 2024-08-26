@@ -3092,7 +3092,7 @@ AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
 Global $ProgramName = "SMITE Optimizer (X84)"
 If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.7.8"
+Global Const $ProgramVersion = "1.3.7.9"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -4299,7 +4299,7 @@ GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
 Global $MainGUICopyrightLabelLogoCopyright = GUICtrlCreateLabelTransparentBG("Logos used are subject to copyright and were used under the 'Fair Use' agreement.",181,288,600,18)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("Contact: MrRangerLP (at) gmx.de",103,317,250,20)
+Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("contact@meteorthelizard.com",103,317,250,20)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 GUICtrlSetFont(-1,11,500,Default,$MenuFontName)
 Global $MainGUICopyrightLabelWebsite = GUICtrlCreateLabelTransparentBG("https://www.meteorthelizard.com",103,337,250,20)
@@ -7324,6 +7324,7 @@ DisplayErrorMessage("Error",$MainGUI,"Failed to retrieve location of EasyAntiChe
 Return
 EndIf
 EndIf
+ShellExecuteWait($sPath,"uninstall f71b1231985f48d1af3de723e0a6acdd")
 ShellExecuteWait($sPath,"install f71b1231985f48d1af3de723e0a6acdd")
 RunWait(@ComSpec & " /c " & 'sc config "EasyAntiCheat" start= demand',$sEmpty,@SW_HIDE)
 fSendMetric("action_fixes_eac_success")
@@ -7666,7 +7667,7 @@ DisplayHoverImage(590,83,200,23,$MainResourcePath & "HelpText/Vertical_Synchroni
 ElseIf InRange2D($MousePos,590,103,790,126) Then
 DisplayHoverImage(590,103,200,23,$MainResourcePath & "HelpText/Ragdoll_Physics.gif",185,40,400,286,True)
 ElseIf InRange2D($MousePos,590,123,790,146) Then
-DisplayHoverImage(590,123,200,23,$MainResourcePath & "HelpText/DirectX_11.jpg",240,40,345,300)
+DisplayHoverImage(590,123,200,23,$MainResourcePath & "HelpText/DirectX_11.jpg",240,40,345,159)
 ElseIf InRange2D($MousePos,590,151,790,174) Then
 DisplayHoverImage(590,151,200,23,$MainResourcePath & "HelpText/Bloom.jpg",185,40,400,350)
 ElseIf InRange2D($MousePos,590,171,790,194) Then
@@ -7728,7 +7729,7 @@ DisplayHoverImage(495,208,165,23,$MainResourcePath & "HelpText/Vertical_Synchron
 ElseIf InRange2D($MousePos,495,228,660,251) Then
 DisplayHoverImage(495,228,165,23,$MainResourcePath & "HelpText/Ragdoll_Physics.gif",95,40,400,286,True)
 ElseIf InRange2D($MousePos,495,248,660,271) Then
-DisplayHoverImage(495,248,165,23,$MainResourcePath & "HelpText/DirectX_11.jpg",145,40,345,300)
+DisplayHoverImage(495,248,165,23,$MainResourcePath & "HelpText/DirectX_11.jpg",145,40,345,159)
 ElseIf InRange2D($MousePos,495,268,660,291) Then
 DisplayHoverImage(495,268,165,23,$MainResourcePath & "HelpText/Bloom.jpg",95,40,400,350)
 ElseIf InRange2D($MousePos,495,288,660,311) Then

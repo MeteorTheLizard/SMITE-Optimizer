@@ -2244,9 +2244,6 @@ _GDIPlus_GraphicsDispose($obj_Graphic0)
 _GDIPlus_BitmapDispose($obj_Graphic1)
 Return $obj_Button
 EndFunc
-Global Const $INET_FORCERELOAD = 1
-Global Const $INET_IGNORESSL = 2
-Global Const $INET_DOWNLOADBACKGROUND = 1
 Func _GUICtrlMenu_DestroyMenu($hMenu)
 Local $aCall = DllCall("user32.dll", "bool", "DestroyMenu", "handle", $hMenu)
 If @error Then Return SetError(@error, @extended, False)
@@ -3061,24 +3058,6 @@ EndFunc
 Func _Zip_PathStripSlash($sString)
 Return StringRegExpReplace($sString, "(^\\+|\\+$)", "")
 EndFunc
-Local $sMetricsServer = "https://metrics-so.meteorthelizard.com/"
-Local $bMetricsReachable = False
-Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
-$oHTTP.Open("GET",$sMetricsServer & "418",False)
-$oHTTP.Send()
-If $oHTTP.Status == 200 Then
-$bMetricsReachable = True
-EndIf
-$oHTTP = NULL
-Func fSendMetric($sType)
-If not $bMetricsReachable or(not @Compiled and $sType <> "event_running_uncompiled") Then Return
-Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
-$oHTTP.Open("GET",$sMetricsServer & $sType,False)
-$oHTTP.setRequestHeader("User-Agent","SMITE_SO/1.0")
-$oHTTP.Option(4) = 13056
-$oHTTP.Send()
-$oHTTP = NULL
-EndFunc
 Func LoadImageResource($Ctrl,$PathDir,$ResourceName)
 If FileExists($PathDir) Then
 GUICtrlSetImage($Ctrl,$PathDir)
@@ -3090,9 +3069,9 @@ AutoItSetOption("GUIOnEventMode",1)
 AutoItSetOption("MouseCoordMode",0)
 AutoItSetOption("MustDeclareVars",1)
 Global Const $MainResourcePath = @ScriptDir & "\Resource\"
-Global $ProgramName = "SMITE Optimizer (X84)"
-If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64)"
-Global Const $ProgramVersion = "1.3.7.9"
+Global $ProgramName = "SMITE Optimizer (X84) - EOL"
+If @AutoItX64 == 1 Then $ProgramName = "SMITE Optimizer (X64) - EOL"
+Global Const $ProgramVersion = "1.3.8.0"
 Global Const $ScrW = @DesktopWidth
 Global Const $ScrH = @DesktopHeight
 Global Const $MinWidth = 810
@@ -3101,30 +3080,23 @@ Global Const $sEmpty = ""
 Global Const $ChangelogText = _Resource_GetAsString("ChangelogText")
 _Resource_LoadFont("MainFont")
 If @Error and @Compiled Then
-fSendMetric("error_font_code10")
 MsgBox(0,"Error!","Critical error while loading the fonts! Code: 010")
 Exit
 EndIf
 _Resource_LoadFont("MenuFont")
 If @Error and @Compiled Then
-fSendMetric("error_font_code11")
 MsgBox(0,"Error!","Critical error while loading the fonts! Code: 011")
 Exit
 EndIf
 _Resource_LoadFont("InttFont")
 If @Error and @Compiled Then
-fSendMetric("error_font_code21")
 MsgBox(0,"Error!","Critical error while loading the fonts! Code: 021")
 Exit
 EndIf
 _Resource_LoadFont("ResCFont")
 If @Error and @Compiled Then
-fSendMetric("error_font_code22")
 MsgBox(0,"Error!","Critical error while loading the fonts! Code: 022")
 Exit
-EndIf
-If not @Compiled Then
-fSendMetric("event_running_uncompiled")
 EndIf
 Global Const $MainFontName = "Monofonto"
 Global Const $MenuFontName = "Montserrat"
@@ -3143,8 +3115,6 @@ Global $ProcessingRequest = False
 Global $ResPromptGUI = NULL
 Global $HomeSimpleComboResLastIndex
 Global $HomeAdvancedComboResLastIndex
-Global $UpdateTimer = NULL
-Global $UpdateColorState = False
 Global $bDiscordIconState = False
 Global $DiscordFlashTimer = NULL
 Global $bShouldFlashDiscordIcon = False
@@ -3191,9 +3161,6 @@ Global $WebsiteOpenHoverBool = False
 Global $LicenseLabelHoverBool = False
 Global $SourceLabelHoverBool = False
 Global $AutoItLicenseLabelHoverBool = False
-Global $PrivacyPolicyLabelHoverBool = False
-Global $GDPRLabelHoverBool = False
-Global $WebsiteMetricsLabelHoverBool = False
 Global $iCurrentFrameCopyrightGIF = 0
 Global $MainGUICopyrightAnimatedLogoID = NULL
 Global $MainGUIDebugLabelHoverBool = False
@@ -3205,12 +3172,11 @@ Global $cTextColor = 0xF3F6FB
 Global $cTextShadowColor = 0x00
 Global $cURLColor = 0x4F89EA
 Global $cURLHoverColor = 0x0645AD
-Global $sDiscordURL = "https://discord.gg/h2g7R9rt7F"
-Global $sAlert = ""
+Global $sDiscordURL = "https://discord.meteorthelizard.com"
+Global $sAlert = "SMITE-Optimizer is now end-of-life. See the 'Changelog' tab for details."
 fInitHives()
 Global $Version = RegRead("HKCU\Software\SMITE Optimizer\","ProgramVersion")
 If @Error = 0 and $Version <= "1.2.2" Then
-fSendMetric("event_oldversion_compat")
 RegDelete("HKCU\Software\SMITE Optimizer\","BlockDonations")
 RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPath")
 RegDelete("HKCU\Software\SMITE Optimizer\","DonateInfoStatus")
@@ -3221,11 +3187,8 @@ EndIf
 RegDelete("HKCU\Software\SMITE Optimizer\","ConfigVerifyIntegrityOnApply")
 Global $bProperClose = RegRead("HKCU\Software\SMITE Optimizer\","NotClosedProperly")
 If not @Error Then
-fSendMetric("error_notclosed_properly")
 MsgBox(0,"Information","SMITE Optimizer did not close properly. If you experience issues when applying the settings, we recommend disabling the integrity check in the debug tab." & @CRLF & @CRLF & "We also recommend checking out the 'common issues' in the debug tab for help.")
 EndIf
-Global $CheckForUpdates = RegRead("HKCU\Software\SMITE Optimizer\","ConfigCheckForUpdates")
-If @Error Then $CheckForUpdates = "1"
 Global $SettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 If @Error Then $SettingsPath = $sEmpty
 Global $SystemSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
@@ -3241,7 +3204,6 @@ If @Error Then $ConfigBackupPath = RegRead("HKEY_CURRENT_USER\Software\Microsoft
 Global $ProgramHomeHelpState = RegRead("HKCU\Software\SMITE Optimizer\","ConfigShowHints")
 If @Error Then $ProgramHomeHelpState = 1
 If(($SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $GameSettingsPath = $sEmpty) or not FileExists($SettingsPath) or not FileExists($SystemSettingsPath) or not FileExists($GameSettingsPath)) and RegRead("HKCU\Software\SMITE Optimizer\","ProgramVersion") <> $sEmpty Then
-fSendMetric("error_missing_config_files")
 RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
 RegDelete("HKCU\Software\SMITE Optimizer\","ConfigPathGame")
@@ -3466,7 +3428,6 @@ Local $bProperOnce = False
 Func ProperExit()
 If not $bProperOnce Then
 $bProperOnce = True
-fSendMetric("event_exit")
 EndIf
 If IsDeclared("IndexerPID") Then ProcessClose($IndexerPID)
 If FileExists(@TempDir & "\SO_Index.bat") Then FileDelete(@TempDir & "\SO_Index.bat")
@@ -3522,136 +3483,6 @@ GUICtrlDeleteGIF($SplashScreenGUIAnimationStart)
 ExitLoop
 EndIf
 WEnd
-fSendMetric("event_start")
-Func _IniMem_Read($s_ini,$s_Section,$s_key,$s_default = $sEmpty)
-$s_ini = StringSplit($s_ini,@CRLF)
-For $x = 1 To $s_ini[0]
-If $s_ini[$x] = "[" & $s_Section & "]" Then ExitLoop
-Next
-If $x < $s_ini[0] Then
-For $i = $x+1 To $s_ini[0]
-If StringLeft($s_ini[$i],1) = "[" and StringRight($s_ini[$i],1) = "]" Then ExitLoop
-If $s_ini[$i] = $sEmpty Then ContinueLoop
-If StringLeft($s_ini[$i],StringLen($s_key)) = $s_key Then
-$s_default = StringTrimLeft($s_ini[$i],StringLen($s_key) + 1)
-ExitLoop
-EndIf
-Next
-EndIf
-If StringLeft($s_default,1) = '"' Then $s_default = StringTrimLeft($s_default,1)
-If StringRight($s_default,1) = '"' Then $s_default = StringTrimRight($s_default,1)
-Return $s_default
-EndFunc
-Global $UpdateAvailable = False
-If $CheckForUpdates = "1" Then SplashScreenWriteStatus(25,"Checking for Updates")
-fSendMetric("updater_init")
-Local $agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0"
-Local $sUpdateProvider = "update-so.meteorthelizard.com"
-SplashScreenWriteStatus(25,"Checking for Updates (update-so.meteorthelizard.com)")
-Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
-$oHTTP.Open("GET","https://update-so.meteorthelizard.com/update.ini",False)
-$oHTTP.setRequestHeader("User-Agent",$agent)
-$oHTTP.Option(4) = 13056
-$oHTTP.Send()
-Local $UpdateGet = $oHTTP.ResponseText
-$oHTTP = NULL
-If not $UpdateGet Then
-fSendMetric("error_updater_mtl_failed")
-SplashScreenWriteStatus(25,"Checking for Updates (meteorthelizard.github.io)")
-Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
-$oHTTP.Open("GET","https://meteorthelizard.github.io/SMITE-Optimizer-Update/",False)
-$oHTTP.setRequestHeader("User-Agent",$agent)
-$oHTTP.Option(4) = 13056
-$oHTTP.Send()
-$UpdateGet = $oHTTP.ResponseText
-$oHTTP = NULL
-$sUpdateProvider = "meteorthelizard.github.io"
-If not $UpdateGet Then
-fSendMetric("error_updater_github_failed")
-SplashScreenWriteStatus(25,"Checking for Updates (pastebin.com)")
-Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
-$oHTTP.Open("GET","https://pastebin.com/raw/SXnHTU9H",False)
-$oHTTP.setRequestHeader("User-Agent",$agent)
-$oHTTP.Option(4) = 13056
-$oHTTP.Send()
-$UpdateGet = $oHTTP.ResponseText
-$oHTTP = NULL
-$sUpdateProvider = "pastebin.com"
-If not $UpdateGet Then
-fSendMetric("error_updater_failed_connect")
-MsgBox($MB_OK,"Error","Could not connect to the update servers.")
-WinActivate($SplashScreenGUI)
-EndIf
-EndIf
-EndIf
-If $UpdateGet Then
-fSendMetric("updater_retrieve_success")
-$UpdateGet = BinaryToString($UpdateGet)
-Local $RemoteVersion = _IniMem_Read($UpdateGet,"Version","Version",$ProgramVersion)
-Local $RemoteDownload32 = _IniMem_Read($UpdateGet,"Download","Download32",$sEmpty)
-Local $RemoteDownload64 = _IniMem_Read($UpdateGet,"Download","Download64",$sEmpty)
-Local $RemoteMessage = _IniMem_Read($UpdateGet,"Message","Message",$sEmpty)
-Local $RemoteAlert = _IniMem_Read($UpdateGet,"Alert","Alert",$sEmpty)
-Local $RemoteURL = _IniMem_Read($UpdateGet,"URL","URL",$sEmpty)
-If $RemoteAlert <> $sEmpty Then
-$sAlert = $RemoteAlert
-EndIf
-If $RemoteURL <> $sEmpty Then
-$sDiscordURL = $RemoteURL
-EndIf
-If $RemoteVersion > $ProgramVersion Then
-$UpdateTimer = TimerInit()
-$UpdateAvailable = True
-Local $ForceUpdate = RegRead("HKCU\Software\SMITE Optimizer\","DebugForceUpdate")
-If @Error Then
-$ForceUpdate = False
-Else
-$ForceUpdate = True
-EndIf
-If $CheckForUpdates = "1" or $ForceUpdate Then
-fSendMetric("updater_can_update")
-RegDelete("HKCU\Software\SMITE Optimizer\","DebugForceUpdate")
-RegWrite("HKCU\Software\SMITE Optimizer\","UpdateProvider",$sUpdateProvider)
-SplashScreenWriteStatus(0,"Preparing to download an update..")
-Local $NewFileSize, $NewFile
-If @AutoItX64 = 1 Then
-$NewFileSize = INetGetSize($RemoteDownload64,$INET_FORCERELOAD)
-$NewFile = INetGet($RemoteDownload64,@TempDir & "/SO_UpdatedVer.exe",BitOr($INET_FORCERELOAD,$INET_IGNORESSL),$INET_DOWNLOADBACKGROUND)
-Else
-$NewFileSize = INetGetSize($RemoteDownload32,$INET_FORCERELOAD)
-$NewFile = INetGet($RemoteDownload32,@TempDir & "/SO_UpdatedVer.exe",BitOr($INET_FORCERELOAD,$INET_IGNORESSL),$INET_DOWNLOADBACKGROUND)
-EndIf
-Local $LastPercent = 0
-Local $Percent = 0
-Do
-Local $Bytes = INetGetInfo($NewFile,0)
-$Percent = Floor((100 / $NewFileSize) * $Bytes)
-If $Percent <> $LastPercent Then
-SplashScreenWriteStatus($Percent,"Downloading Update ( "&$Percent&"% - " & Floor($Bytes/1024) & " / " & Floor($NewFileSize/1024) & " KB. )")
-$LastPercent = $Percent
-EndIf
-Sleep(10)
-Until INetGetInfo($NewFile,2)
-INetClose($NewFile)
-If FileExists(@TempDir & "/SO_UpdatedVer.exe") Then
-fSendMetric("updater_preparing_for_update")
-FileWrite(@TempDir & "\SO_Update.bat","CHCP 65001"&@CRLF&"@echo off"&@CRLF&"Cls"&@CRLF&"timeout /t 0.5 /nobreak"&@CRLF&'del "'&@ScriptFullPath&'" /f /q'&@CRLF&'copy /Y "'&@TempDir & '\SO_UpdatedVer.exe"'&' "'&@ScriptFullPath&'" >nul'&@CRLF&'start "" "'&@ScriptFullPath&'"'&@CRLF&'del "'&@TempDir & "\SO_Update.bat"&'" /f /q'&@CRLF&"Exit")
-If FileExists(@TempDir & "\SO_Update.bat") Then
-Run(@TempDir & "\SO_Update.bat",$sEmpty,@SW_HIDE)
-Exit
-Else
-fSendMetric("error_updater_code7")
-MsgBox($MB_OK,"Error","There was an unexpected error during the update process. Code: 007"&@CRLF&"If this error is persistent, please try to update manually.")
-WinActivate($SplashScreenGUI)
-EndIf
-Else
-fSendMetric("error_updater_code6")
-MsgBox($MB_OK,"Error","There was an unexpected error during the update process. Code: 006"&@CRLF&"If this error is persistent, please try to update manually.")
-WinActivate($SplashScreenGUI)
-EndIf
-EndIf
-EndIf
-EndIf
 Local $WindowsUIFont = "Segoe UI"
 If @OSVersion <> "WIN_VISTA" and @OSVersion <> "WIN_7" and @OSVersion <> "WIN_8" and @OSVersion <> "WIN_81" and @OSVersion <> "WIN_10" and @OSVersion <> "WIN_11" Then
 $WindowsUIFont = $MenuFontName
@@ -3728,7 +3559,7 @@ GUICtrlSetState(-1,$GUI_DISABLE)
 Global $MainGUIMenuTitleIcon = GUICtrlCreatePic($sEmpty,18,9,16,16)
 LoadImageResource($MainGUIMenuTitleIcon,$MainResourcePath & "SMITEOptimizerIcon.jpg","SMITEOptimizerIcon")
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-Global $MainGUIMenuTitle = GUICtrlCreateLabelTransparentBG($ProgramName,50,9,130,15)
+Global $MainGUIMenuTitle = GUICtrlCreateLabelTransparentBG($ProgramName,50,9,180,15)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
 Global $MainGUIButtonClose = GUICtrlCreatePic($sEmpty,$MinWidth - 34,0,34,34)
@@ -3754,9 +3585,7 @@ Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelProgramState)[2] + 25
 GUICtrlSetPos(-1,$MinWidth - $Width - 144,17,$Width,25)
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
-Local $Text = "v"&$ProgramVersion
-If $UpdateAvailable Then $Text = "(Update available) v"&$ProgramVersion
-Global $MainGUILabelVersion = GUICtrlCreateLabelTransparentBG($Text,-1000,3,-1,14,$SS_RIGHT)
+Global $MainGUILabelVersion = GUICtrlCreateLabelTransparentBG("v"&$ProgramVersion,-1000,3,-1,14,$SS_RIGHT)
 Local $Width = ControlGetPos($MainGUI,$sEmpty,$MainGUILabelVersion)[2] + 25
 GUICtrlSetPos(-1,$MinWidth - $Width - 146,3,$Width,14)
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
@@ -3796,13 +3625,11 @@ $SplashScreenGUI = NULL
 WinMove($MainGUI,$sEmpty,$ScrW/2 -($MinWidth/2),$ScrH/2 -($MinHeight/2))
 GUISetState(@SW_SHOWNOACTIVATE,$MainGUI)
 If $Bool_DisplaySetupError Then
-fSendMetric("error_not_launched_smite_before")
 DisplayErrorMessage("Please make sure to launch the game at least once before using the program!" & @CRLF & @CRLF & "Choosing anything before doing that will cause problems!",$MainGUI,"IMPORTANT!")
 EndIf
 If $sAlert <> $sEmpty Then
 Local $bShouldDisplay = RegRead("HKCU\Software\SMITE Optimizer\","sLastAlert")
 If $bShouldDisplay <> $sAlert Then
-fSendMetric("event_displayed_developer_message")
 DisplayErrorMessage($sAlert,$MainGUI,"Message from the developers!")
 RegWrite("HKCU\Software\SMITE Optimizer\","sLastAlert","REG_SZ",$sAlert)
 EndIf
@@ -4204,12 +4031,6 @@ Global $MainGUIFixesCheckboxDisableFog = GUICtrlCreateCheckboxTransparentBG(80,1
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 Global $MainGUIFixesLabelDisableFog = GUICtrlCreateLabelTransparentBG("Disable Fog",98,178,140,13)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKTOP + $GUI_DOCKSIZE)
-Global $MainGUIFixesButtonCreateQuicklaunch = GUICtrlCreateButtonSO($MainGUI,"Create quicklaunch bypass",386,401,150,35)
-GUICtrlSetOnEvent($MainGUIFixesButtonCreateQuicklaunch,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-Global $MainGUIFixesButtonInstallLegacy = GUICtrlCreateButtonSO($MainGUI,"Install legacy launcher",541,401,150,35)
-GUICtrlSetOnEvent($MainGUIFixesButtonInstallLegacy,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 Global $MainGUIFixesButtonApply = GUICtrlCreateButtonSO($MainGUI,"Apply fixes",696,401,100,35)
 GUICtrlSetOnEvent($MainGUIFixesButtonApply,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
@@ -4219,7 +4040,7 @@ GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_D
 Global $MainGUIFixesButtonImportHUD = GUICtrlCreateButtonSO($MainGUI,"Import HUD settings",596,141,150,35)
 GUICtrlSetOnEvent($MainGUIFixesButtonImportHUD,"Internal_ImportSettings")
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-Global $MainGUIFixesButtonRepairEAC = GUICtrlCreateButtonSO($MainGUI,"Repair EasyAntiCheat",386,361,150,35)
+Global $MainGUIFixesButtonRepairEAC = GUICtrlCreateButtonSO($MainGUI,"Repair EasyAntiCheat",541,401,150,35)
 GUICtrlSetOnEvent($MainGUIFixesButtonRepairEAC,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 Local $Int_Settings = RegRead("HKCU\Software\SMITE Optimizer\","ConfigCookieFixes")
@@ -4264,7 +4085,6 @@ Global $MainGUIRestoreConfigurationsLabelAskForConfirmation = GUICtrlCreateLabel
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 Global $MainGUIRestoreConfigurationsLabelBackupInfo = GUICtrlCreateLabelTransparentBG("Backups of your configuration files are created automagically for you."&@CRLF&"The dates shown are in the following format: DD_MM_YYYY_HH_MM_SS."&@CRLF&"Day, month, year, hour, minute, seconds.",57,283,425,41)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-Local $Year = 2024
 Global $MainGUIChangelogRichEdit = GUICtrlCreateEdit($ChangelogText,55,41,$MinWidth-60,$MinHeight-46,BitOr($ES_READONLY,$WS_VSCROLL))
 DllCall("UxTheme.dll","int","SetWindowTheme","hwnd",GUICtrlGetHandle(-1),"wstr",0,"wstr",0)
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM)
@@ -4278,25 +4098,16 @@ GUICtrlSetOnEvent($MainGUIChangelogButtonViewOnline,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKLEFT + $GUI_DOCKTOP + $GUI_DOCKSIZE)
 GUICtrlSetStyle(-1,$WS_EX_TOPMOST)
 Global $MainGUICopyrightAnimatedLogo
-Global $MainGUICopyrightLabelInfo = GUICtrlCreateLabelTransparentBG("A project brought to life by MeteorTheLizard in 2017 and still being maintained in "&$Year&".",88,160,730,18)
-GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-GUICtrlSetFont(-1,12,500,Default,$MenuFontName)
-Global $MainGUICopyrightLabelLicense = GUICtrlCreateLabelTransparentBG('SMITE Optimizer v1.3 and newer are licensed under the "GNU GPL-3.0" License.',195,189,735,18)
+Global $MainGUICopyrightLabelLicense = GUICtrlCreateLabelTransparentBG('SMITE Optimizer v1.3 - 1.3.8.0 are licensed under the "GNU GPL-3.0" License.',203,194,735,18)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-Global $MainGUICopyrightLabelLicense2 = GUICtrlCreateLabelTransparentBG("Earlier versions than 1.3 may not be copied, shared, modified, or distributed without permission.",143,207,615,18)
+Global $MainGUICopyrightLabelLicense2 = GUICtrlCreateLabelTransparentBG("Earlier versions than 1.3 may not be copied, shared, modified, or distributed without permission.",143,212,615,18)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-Global $MainGUICopyrightLabelCopyright = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.0 - 1.2.2, Copyright (C) 2019 - Mario "Meteor Thuri" Schien.',177,234,600,18)
+Global $MainGUICopyrightLabelCopyright = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.0 - 1.2.2 Copyright (C) 2019 - Mario "Meteor Thuri" Schien.',178,239,600,18)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-Global $MainGUICopyrightLabelCopyright2 = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version 1.3 and newer, Copyright (C) '&$Year&' - Mario "Meteor Thuri" Schien.',161,252,600,18)
-GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-Global $MainGUICopyrightLabelSMITECopyright = GUICtrlCreateLabelTransparentBG("SMITE(R), Battleground of the Gods(TM) Copyright (C) "&$Year&" Hi-Rez Studios, Inc. All rights reserved.",134,270,600,18)
-GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
-Global $MainGUICopyrightLabelLogoCopyright = GUICtrlCreateLabelTransparentBG("Logos used are subject to copyright and were used under the 'Fair Use' agreement.",181,288,600,18)
+Global $MainGUICopyrightLabelCopyright2 = GUICtrlCreateLabelTransparentBG('SMITE Optimizer Version v1.3 - 1.3.8.0 Copyright (C) 2024 - Mario "Meteor Thuri" Schien.',168,257,600,18)
 GUICtrlSetResizing(-1,$GUI_DOCKHCENTER + $GUI_DOCKVCENTER + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetFont(-1,9,500,Default,$MenuFontName)
 Global $MainGUICopyrightLabelContact = GUICtrlCreateLabelTransparentBG("contact@meteorthelizard.com",103,317,250,20)
@@ -4339,24 +4150,6 @@ GUICtrlSetOnEvent($MainGUICopyrightLabelAutoitLicenseLink,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
 GUICtrlSetColor(-1,$cURLColor)
 GUICtrlSetFont(-1,15,500,Default,$MainFontName)
-GUICtrlSetCursor(-1,0)
-Global $MainGUICopyrightLabelPrivacyPolicy = GUICtrlCreateLabelTransparentBG("Privacy Policy",461,312,100,20)
-GUICtrlSetOnEvent($MainGUICopyrightLabelPrivacyPolicy,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-GUICtrlSetFont(-1,11,500,Default,$MenuFontName)
-GUICtrlSetColor(-1,$cURLColor)
-GUICtrlSetCursor(-1,0)
-Global $MainGUICopyrightLabelGDPR = GUICtrlCreateLabelTransparentBG("GDPR",578,312,45,20)
-GUICtrlSetOnEvent($MainGUICopyrightLabelGDPR,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-GUICtrlSetFont(-1,11,500,Default,$MenuFontName)
-GUICtrlSetColor(-1,$cURLColor)
-GUICtrlSetCursor(-1,0)
-Global $MainGUICopyrightLabelWebsiteMetrics = GUICtrlCreateLabelTransparentBG("View SO-Metrics Online",455,338,175,20)
-GUICtrlSetOnEvent($MainGUICopyrightLabelWebsiteMetrics,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKSIZE)
-GUICtrlSetFont(-1,11,500,Default,$MenuFontName)
-GUICtrlSetColor(-1,$cURLColor)
 GUICtrlSetCursor(-1,0)
 Local $TempN = @AutoItExe
 $TempN = StringSplit($TempN,"\")
@@ -4421,19 +4214,6 @@ GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_D
 Global $MainGUIDebugButtonResetConfigPaths = GUICtrlCreateButtonSO($MainGUI,"Reset configuration paths",626,401,170,35)
 GUICtrlSetOnEvent($MainGUIDebugButtonResetConfigPaths,"ButtonPressLogic")
 GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-Global $MainGUIDebugCheckboxCheckForUpdates = GUICtrlCreateCheckboxTransparentBG(627,383,13,13)
-GUICtrlSetOnEvent($MainGUIDebugCheckboxCheckForUpdates,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-If $CheckForUpdates = "1" Then GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_CHECKED)
-Global $MainGUIDebugLabelCheckForUpdates = GUICtrlCreateLabelTransparentBG("Automatic updates",646,383,150,13)
-GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-Global $MainGUIDebugButtonPerformUpdate = NULL
-If $UpdateAvailable Then
-fSendMetric("event_automaticupdates_aredisabled")
-$MainGUIDebugButtonPerformUpdate = GUICtrlCreateButtonSO($MainGUI,"Perform Update",514,401,100,35)
-GUICtrlSetOnEvent($MainGUIDebugButtonPerformUpdate,"ButtonPressLogic")
-GUICtrlSetResizing(-1,$GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
-EndIf
 If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $ProgramState = $sEmpty Then
 $MainGUIHomeDiscoveryDrawn = True
 UnDrawMainGUIHome()
@@ -4799,8 +4579,6 @@ GUICtrlSetState($MainGUIFixesCheckboxDisableJump,$GUI_SHOW)
 GUICtrlSetState($MainGUIFixesLabelDisableJump,$GUI_SHOW)
 GUICtrlSetState($MainGUIFixesCheckboxDisableFog,$GUI_SHOW)
 GUICtrlSetState($MainGUIFixesLabelDisableFog,$GUI_SHOW)
-GUICtrlSetState($MainGUIFixesButtonCreateQuicklaunch,$GUI_SHOW)
-GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_SHOW)
 GUICtrlSetState($MainGUIFixesButtonApply,$GUI_SHOW)
 GUICtrlSetState($MainGUIFixesButtonImportHUD,$GUI_SHOW)
 GUICtrlSetState($MainGUIFixesButtonExportHUD,$GUI_SHOW)
@@ -4819,8 +4597,6 @@ GUICtrlSetState($MainGUIFixesCheckboxDisableJump,$GUI_HIDE)
 GUICtrlSetState($MainGUIFixesLabelDisableJump,$GUI_HIDE)
 GUICtrlSetState($MainGUIFixesCheckboxDisableFog,$GUI_HIDE)
 GUICtrlSetState($MainGUIFixesLabelDisableFog,$GUI_HIDE)
-GUICtrlSetState($MainGUIFixesButtonCreateQuicklaunch,$GUI_HIDE)
-GUICtrlSetState($MainGUIFixesButtonInstallLegacy,$GUI_HIDE)
 GUICtrlSetState($MainGUIFixesButtonApply,$GUI_HIDE)
 GUICtrlSetState($MainGUIFixesButtonImportHUD,$GUI_HIDE)
 GUICtrlSetState($MainGUIFixesButtonExportHUD,$GUI_HIDE)
@@ -4883,13 +4659,10 @@ $MainGUICopyrightAnimatedLogoID = $aRet[1]
 $__g_GIFExtended_aStoreCache[$MainGUICopyrightAnimatedLogoID][13] = $iCurrentFrameCopyrightGIF
 GUICtrlSetResizing(-1,$GUI_DOCKTOP + $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKRIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 GUICtrlSetState(-1,$GUI_DISABLE)
-GUICtrlSetState($MainGUICopyrightLabelInfo,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelLicense,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelLicense2,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelCopyright,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelCopyright2,$GUI_SHOW)
-GUICtrlSetState($MainGUICopyrightLabelSMITECopyright,$GUI_SHOW)
-GUICtrlSetState($MainGUICopyrightLabelLogoCopyright,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelContact,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelWebsite,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightPicBGLeft,$GUI_SHOW)
@@ -4899,20 +4672,14 @@ GUICtrlSetState($MainGUICopyrightLabelSourceLink,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightPicBGRight,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelAutoItCopyright,$GUI_SHOW)
 GUICtrlSetState($MainGUICopyrightLabelAutoitLicenseLink,$GUI_SHOW)
-GUICtrlSetState($MainGUICopyrightLabelPrivacyPolicy,$GUI_SHOW)
-GUICtrlSetState($MainGUICopyrightLabelGDPR,$GUI_SHOW)
-GUICtrlSetState($MainGUICopyrightLabelWebsiteMetrics,$GUI_SHOW)
 EndFunc
 Func UnDrawMainGUICopyright()
 $iCurrentFrameCopyrightGIF = $__g_GIFExtended_aStoreCache[$MainGUICopyrightAnimatedLogoID][13]
 GUICtrlDeleteGIF($MainGUICopyrightAnimatedLogo)
-GUICtrlSetState($MainGUICopyrightLabelInfo,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelLicense,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelLicense2,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelCopyright,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelCopyright2,$GUI_HIDE)
-GUICtrlSetState($MainGUICopyrightLabelSMITECopyright,$GUI_HIDE)
-GUICtrlSetState($MainGUICopyrightLabelLogoCopyright,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelContact,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelWebsite,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightPicBGLeft,$GUI_HIDE)
@@ -4922,9 +4689,6 @@ GUICtrlSetState($MainGUICopyrightLabelSourceLink,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightPicBGRight,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelAutoItCopyright,$GUI_HIDE)
 GUICtrlSetState($MainGUICopyrightLabelAutoitLicenseLink,$GUI_HIDE)
-GUICtrlSetState($MainGUICopyrightLabelPrivacyPolicy,$GUI_HIDE)
-GUICtrlSetState($MainGUICopyrightLabelGDPR,$GUI_HIDE)
-GUICtrlSetState($MainGUICopyrightLabelWebsiteMetrics,$GUI_HIDE)
 EndFunc
 Func DrawMainGUIDebug()
 GUICtrlSetState($MainGUIDebugLabelEngineSettings,$GUI_SHOW)
@@ -4934,12 +4698,9 @@ GUICtrlSetState($MainGUIDebugLabelConfigBackupPath,$GUI_SHOW)
 GUICtrlSetState($MainGUIDebugEditSystemInfo,$GUI_SHOW)
 GUICtrlSetState($MainGUIDebugButtonCommonIssues,$GUI_SHOW)
 GUICtrlSetState($MainGUIDebugButtonResetConfigPaths,$GUI_SHOW)
-GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_SHOW)
-GUICtrlSetState($MainGUIDebugLabelCheckForUpdates,$GUI_SHOW)
 GUICtrlSetState($MainGUIDebugLabelReportABug,$GUI_SHOW)
 GUICtrlSetState($MainGUIDebugLabelCreateDebugInfo,$GUI_SHOW)
 GUICtrlSetState($MainGUIDebugPicDebugFooterFooter,$GUI_SHOW)
-If $MainGUIDebugButtonPerformUpdate <> NULL Then GUICtrlSetState($MainGUIDebugButtonPerformUpdate,$GUI_SHOW)
 EndFunc
 Func UnDrawMainGUIDebug()
 GUICtrlSetState($MainGUIDebugLabelEngineSettings,$GUI_HIDE)
@@ -4949,12 +4710,9 @@ GUICtrlSetState($MainGUIDebugLabelConfigBackupPath,$GUI_HIDE)
 GUICtrlSetState($MainGUIDebugEditSystemInfo,$GUI_HIDE)
 GUICtrlSetState($MainGUIDebugButtonCommonIssues,$GUI_HIDE)
 GUICtrlSetState($MainGUIDebugButtonResetConfigPaths,$GUI_HIDE)
-GUICtrlSetState($MainGUIDebugCheckboxCheckForUpdates,$GUI_HIDE)
-GUICtrlSetState($MainGUIDebugLabelCheckForUpdates,$GUI_HIDE)
 GUICtrlSetState($MainGUIDebugLabelReportABug,$GUI_HIDE)
 GUICtrlSetState($MainGUIDebugLabelCreateDebugInfo,$GUI_HIDE)
 GUICtrlSetState($MainGUIDebugPicDebugFooterFooter,$GUI_HIDE)
-If $MainGUIDebugButtonPerformUpdate <> NULL Then GUICtrlSetState($MainGUIDebugButtonPerformUpdate,$GUI_HIDE)
 EndFunc
 Global $LastMenu = "Home"
 Func ToggleMenuState($State)
@@ -5320,14 +5078,12 @@ If FileExists(@TempDir & "\SO_Index.bat") Then FileDelete(@TempDir & "\SO_Index.
 If FileExists(@TempDir & "\SO_Index.txt") Then FileDelete(@TempDir & "\SO_Index.txt")
 FileWrite(@TempDir & "\SO_Index.bat","CHCP 65001"&@CRLF&"@echo off"&@CRLF&"Cls"&@CRLF&$FixedDrives[$DriveIndex]&":"&@CRLF&"cd.."&@CRLF&"dir /s /b /a:-d /o:n > "&@TempDir&"\SO_Index.txt")
 If not FileExists(@TempDir & "\SO_Index.bat") Then
-fSendMetric("error_autosearch_nobat")
 ReturnToMainGUI()
 DisplayErrorMessage("Failed to write index batch file!")
 ExitLoop(2)
 EndIf
 $IndexerPID = Run(@TempDir & "\SO_Index.bat",$sEmpty,@SW_HIDE)
 If @Error <> 0 Then
-fSendMetric("error_autosearch_run")
 ReturnToMainGUI()
 DisplayErrorMessage("An error occurred when attempting to run the index function.")
 ExitLoop(2)
@@ -5337,21 +5093,18 @@ ElseIf not ProcessExists($IndexerPID) Then
 GUICtrlSetPos($GUIMoreOptionsLabelScanState,11,124,400,50)
 GUICtrlSetData($GUIMoreOptionsLabelScanState,"Processing index of drive "&$FixedDrives[$DriveIndex]&":\")
 If not FileExists(@TempDir&"\SO_Index.txt") Then
-fSendMetric("error_autosearch_read")
 ReturnToMainGUI()
 DisplayErrorMessage("Failed to read index output!")
 ExitLoop(2)
 EndIf
 $DriveIndex = $DriveIndex + 1
 If $DriveIndex > uBound($FixedDrives)-1 Then
-fSendMetric("error_autosearch_nofiles")
 ReturnToMainGUI()
 DisplayErrorMessage("Could not find any configuration files on your system.")
 ExitLoop(2)
 EndIf
 Local $File = FileReadToArray(@TempDir & "\SO_Index.txt")
 If @Error <> 0 Then
-fSendMetric("error_autosearch_readindex")
 ReturnToMainGUI()
 DisplayErrorMessage("Failed to read index output!")
 ExitLoop(2)
@@ -5368,7 +5121,6 @@ EndIf
 If $SettingsEnginePath <> $sEmpty and $SettingsSystemPath <> $sEmpty and $SettingsGamePath <> $sEmpty Then ExitLoop
 Next
 If $SettingsEnginePath <> $sEmpty and $SettingsSystemPath <> $sEmpty and $SettingsGamePath <> $sEmpty Then
-fSendMetric("event_autosearch_success")
 RegWrite("HKCU\Software\SMITE Optimizer\","ConfigProgramState","REG_SZ","Custom Files")
 RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathEngine","REG_SZ",$SettingsEnginePath)
 RegWrite("HKCU\Software\SMITE Optimizer\","ConfigPathSystem","REG_SZ",$SettingsSystemPath)
@@ -5452,7 +5204,6 @@ EndIf
 WEnd
 EndSwitch
 If not $Found Then Return
-fSendMetric("event_configfiles_foundsuccess")
 $ProgramState = RegRead("HKCU\Software\SMITE Optimizer\","ConfigProgramState")
 $SettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathEngine")
 $SystemSettingsPath = RegRead("HKCU\Software\SMITE Optimizer\","ConfigPathSystem")
@@ -5494,7 +5245,6 @@ EndIf
 Case $MainGUIButtonMinimize
 WinSetState($MainGUI,$sEmpty,@SW_MINIMIZE)
 Case $MainGUIButtonDiscord
-fSendMetric("action_discord_pressed")
 ShellExecute($sDiscordURL)
 RegWrite("HKCU\Software\SMITE Optimizer\","bShouldFlashDiscord","REG_SZ","1")
 $bShouldFlashDiscordIcon = False
@@ -5514,7 +5264,6 @@ $MenuSelected = 3
 ToggleMenuState("RestoreConfigs")
 EndIf
 Case $DonateIcon, $DonateIconHover
-fSendMetric("action_donate_mtl_pressed")
 ShellExecute("https://donate.meteorthelizard.com")
 Case $ChangelogIcon, $ChangelogIconHover
 If $MenuSelected <> 5 Then
@@ -5532,10 +5281,8 @@ $MenuSelected = 7
 ToggleMenuState("Debug")
 EndIf
 Case $MainGUIHomeButtonApply
-fSendMetric("action_applyconfig_pressed")
 Internal_ProcessRequest(True)
 Case $MainGUIHomeButtonFixConfig
-fSendMetric("action_verify_pressed")
 Internal_ProcessRequest()
 Case $MainGUIHomeSwitchModeSimple
 If GUICtrlRead($MainGUIHomeSwitchModeSimple) = $GUI_CHECKED and $ProgramHomeState <> "Simple" Then
@@ -5554,34 +5301,20 @@ $ProgramHomeState = "Advanced"
 DrawMainGUIHome()
 EndIf
 Case $MainGUIHomeButtonRestoreDefaults
-fSendMetric("action_defaults_pressed")
 Internal_LoadSettingCookies(True)
 Case $MainGUIHomeButtonUseMaxPerformance
-fSendMetric("action_maxperformance_pressed")
 Internal_LoadSettingCookies(True,True)
 Case $MainGUIHomeCheckboxDisplayHints
 Local $CDHState = GUICtrlRead($MainGUIHomeCheckboxDisplayHints)
 $ProgramHomeHelpState = $CDHState
 RegWrite("HKCU\Software\SMITE Optimizer\","ConfigShowHints","REG_SZ",$CDHState)
-If $CDHState == $GUI_UNCHECKED Then
-fSendMetric("action_helptips_disabled")
-Else
-fSendMetric("action_helptips_enabled")
-EndIf
 If $ProgramHomeHelpState = $GUI_UNCHECKED Then
 GUICtrlSetPos($MainGUIHomeHelpBackground,-$MinWidth,-$MinHeight,1,1)
 $HoverBGDrawn = False
 WinMove($HoverInfoGUI,$sEmpty,-$ScrW*2,-$ScrH*2,0,0)
 $HoverImageDrawn = False
 EndIf
-Case $MainGUIFixesButtonCreateQuicklaunch
-fSendMetric("action_quicklaunch_pressed")
-Internal_CreateQuicklaunchBypass()
-Case $MainGUIFixesButtonInstallLegacy
-fSendMetric("action_installlegacy_pressed")
-Internal_InstallLegacyLauncher()
 Case $MainGUIFixesButtonApply
-fSendMetric("action_applyfixes_pressed")
 Internal_ProcessRequest(True,True)
 Case $MainGUIFixesButtonRepairEAC
 Internal_FixEAC()
@@ -5612,7 +5345,6 @@ EndIf
 If $MsgB = $IDYES Then
 Local $Error = DirRemove($ConfigBackupPath&$TPath,$DIR_REMOVE)
 If $Error = 0 Then
-fSendMetric("error_restorebackup_filesgone")
 DisplayErrorMessage("The selected backup could not be deleted!"&@CRLF&"It appears it was already deleted by another program, or maybe by you?")
 EndIf
 Internal_UpdateRestoreConfigList()
@@ -5628,28 +5360,22 @@ Else
 $MsgB = $IDYES
 EndIf
 If $MsgB = $IDYES Then
-fSendMetric("action_restore_backup")
 If not FileExists($ConfigBackupPath&$TPath&"\Engine.ini") or not FileExists($ConfigBackupPath&$TPath&"\SystemSettings.ini") or not FileExists($ConfigBackupPath&$TPath&"\GameSettings.ini") Then
-fSendMetric("error_restorebackup_code9")
 DisplayErrorMessage("Attempted to restore the backup, but it appears to be missing or corrupt! Code: 009")
 Internal_UpdateRestoreConfigList()
 Else
 Local $CopySucc = FileCopy($ConfigBackupPath&$TPath&"\Engine.ini",$SettingsPath,$FC_OVERWRITE)
 If $CopySucc = 0 Then
-fSendMetric("error_restorebackup_code1")
 DisplayErrorMessage("There was an error copying one of the files! (Engine) Code: 001")
 Else
 Local $CopySucc = FileCopy($ConfigBackupPath&$TPath&"\SystemSettings.ini",$SystemSettingsPath,$FC_OVERWRITE)
 If $CopySucc = 0 Then
-fSendMetric("error_restorebackup_code2")
 DisplayErrorMessage("There was an error copying one of the files! (System) Code: 002")
 Else
 Local $CopySucc = FileCopy($ConfigBackupPath&$TPath&"\GameSettings.ini",$GameSettingsPath,$FC_OVERWRITE)
 If $CopySucc = 0 Then
-fSendMetric("error_restorebackup_code12")
 DisplayErrorMessage("There was an error copying one of the files! (Game) Code: 012")
 Else
-fSendMetric("event_restorebackup_success")
 DirRemove($ConfigBackupPath&$TPath,$DIR_REMOVE)
 Internal_UpdateRestoreConfigList()
 EndIf
@@ -5658,48 +5384,21 @@ EndIf
 EndIf
 EndIf
 Case $MainGUIChangelogButtonViewOnline, $MainGUIChangelogButtonViewOnlineBG
-fSendMetric("action_changelog_pressed")
 ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer/commits/master")
 Case $MainGUICopyrightLabelWebsite
-fSendMetric("action_visit_website")
 ShellExecute("https://meteorthelizard.com")
 Case $MainGUICopyrightLabelLicenseLink
 _Resource_SaveToFile(@TempDir & "\GPL_License.txt","GPL_License")
 If FileExists(@TempDir & "\GPL_License.txt") Then ShellExecute(@TempDir & "\GPL_License.txt")
 Case $MainGUICopyrightLabelSourceLink
-fSendMetric("action_visit_github")
 ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer")
 Case $MainGUICopyrightLabelAutoitLicenseLink
 _Resource_SaveToFile(@TempDir & "\AutoIt_License.txt","AutoIt_License")
 If FileExists(@TempDir & "\AutoIt_License.txt") Then ShellExecute(@TempDir & "\AutoIt_License.txt")
-Case $MainGUICopyrightLabelPrivacyPolicy
-_Resource_SaveToFile(@TempDir & "\Privacy_Policy.txt","Privacy_Policy")
-If FileExists(@TempDir & "\Privacy_Policy.txt") Then ShellExecute(@TempDir & "\Privacy_Policy.txt")
-Case $MainGUICopyrightLabelGDPR
-_Resource_SaveToFile(@TempDir & "\GDPR.txt","GDPR")
-If FileExists(@TempDir & "\GDPR.txt") Then ShellExecute(@TempDir & "\GDPR.txt")
-Case $MainGUICopyrightLabelWebsiteMetrics
-ShellExecute($sMetricsServer)
 Case $MainGUIDebugButtonCommonIssues
-fSendMetric("action_commonissues_pressed")
 _Resource_SaveToFile(@TempDir & "\CommonIssues.txt","CommonIssues")
 If FileExists(@TempDir & "\CommonIssues.txt") Then ShellExecute(@TempDir & "\CommonIssues.txt")
-Case $MainGUIDebugCheckboxCheckForUpdates
-Local $CDHState = GUICtrlRead($MainGUIDebugCheckboxCheckForUpdates)
-If $CDHState <> $GUI_CHECKED Then
-fSendMetric("action_automatic_updates_disabled")
-RegWrite("HKCU\Software\SMITE Optimizer\","ConfigCheckForUpdates","REG_SZ","0")
-Else
-fSendMetric("action_automatic_updates_enabled")
-RegDelete("HKCU\Software\SMITE Optimizer\","ConfigCheckForUpdates")
-EndIf
-Case $MainGUIDebugButtonPerformUpdate
-fSendMetric("action_manualupdate_pressed")
-RegWrite("HKCU\Software\SMITE Optimizer\","DebugForceUpdate","REG_SZ","1")
-Run(@ScriptFullPath)
-Exit
 Case $MainGUIDebugLabelReportABug
-fSendMetric("action_reportabug_pressed")
 ShellExecute("https://github.com/MeteorTheLizard/SMITE-Optimizer/issues")
 Case $MainGUIDebugLabelCreateDebugInfo
 Local $sDirSelect = FileSelectFolder("Choose a folder to save the debug dump into",@DesktopDir)
@@ -5763,7 +5462,6 @@ local $file_Zip = _Zip_Create($sDirSelect & "\SMITE_Optimizer_Debug.zip",1)
 _Zip_AddItem($file_Zip,@TempDir & "\optimizerdebugdump\")
 DirRemove(@TempDir & "\optimizerdebugdump",$DIR_REMOVE)
 GUICtrlDelete($LabelDebugDumpWorking)
-fSendMetric("action_debugdump_created")
 MsgBox(0,"Success","Debug dump successfully created!")
 EndIf
 EndIf
@@ -5789,7 +5487,6 @@ GUICtrlSetFont(-1,9,Default,Default,$WindowsUIFont)
 GUICtrlSetData($MainGUIDebugLabelEngineSettings,"EngineSettings: Not yet defined")
 GUICtrlSetData($MainGUIDebugLabelSystemSettings,"SystemSettings: Not yet defined")
 GUICtrlSetData($MainGUIDebugLabelGameSettings,"GameSettings: Not yet defined")
-fSendMetric("action_configpaths_reset")
 $MenuSelected = 1
 ToggleMenuState("Home")
 EndIf
@@ -6234,7 +5931,6 @@ Next
 EndIf
 EndFunc
 Func Internal_CreateConfigBackup()
-fSendMetric("event_configbackup_create")
 Local $SubPath = $ConfigBackupPath & @MDAY & "_" & @MON & "_" & @YEAR & "_" & @HOUR & "_" & @MIN & "_" & @SEC
 Local $CreateDir = DirCreate($SubPath)
 If $CreateDir = 0 Then Return False
@@ -6480,7 +6176,6 @@ $Array = Internal_ApplyKey($Array,"MaximumPoolSize=","0")
 $Array = Internal_ApplyKey($Array,"MinimumPoolSize=","255")
 $Array = Internal_ApplyKey($Array,"LoadMapTimeLimit=","1")
 $Array = Internal_ApplyKey($Array,"UseDynamicStreaming=","True")
-fSendMetric("event_applychanges_engine_complete")
 ElseIf $State = "SystemSettings" Then
 $Array = Internal_ApplySystemKey($Array,"DepthOfField=","False")
 $Array = Internal_ApplySystemKey($Array,"DirectionalLightmaps=","True")
@@ -6843,7 +6538,6 @@ Local $UncompTextRead = Internal_CheckboxToStrBool($MainGUIHomeAdvancedCheckboxU
 $Array = Internal_ApplySystemKey($Array,"bAllowHighQualityMaterials=",$UncompTextRead)
 $Array = Internal_ApplySystemKey($Array,"bUseLowQualMaterials=",not $UncompTextRead)
 EndIf
-fSendMetric("event_applychanges_system_complete")
 ElseIf $State = "GameSettings" Then
 EndIf
 Return $Array
@@ -6865,7 +6559,6 @@ If $RRead < 32 or $RRead > 512 Then
 $RRead = 32
 EndIf
 $Array = Internal_ApplyKey($Array,"MaxChannels=",$RRead)
-fSendMetric("event_applyfixes_engine_complete")
 ElseIf $State = "SystemSettings" Then
 Local $FPSRead = GUICtrlRead($MainGUIFixesInputMaxFPS)
 If $FPSRead < 30 Then $FPSRead = 30
@@ -6886,7 +6579,6 @@ $Array = Internal_ApplySystemKey($Array,"FogVolumes=","True")
 $Array = Internal_ApplySystemKey($Array,"MobileFog=","True")
 $Array = Internal_ApplySystemKey($Array,"MobileHeightFog=","True")
 EndIf
-fSendMetric("event_applyfixes_system_complete")
 ElseIf $State = "GameSettings" Then
 Local $bJumpState = GUICtrlRead($MainGUIFixesCheckboxDisableJump)
 If $bJumpState = $GUI_CHECKED Then
@@ -6894,7 +6586,6 @@ $Array = Internal_ApplyKey($Array,"bJumpEnabled=","False")
 Else
 $Array = Internal_ApplyKey($Array,"bJumpEnabled=","True")
 EndIf
-fSendMetric("event_applyfixes_game_complete")
 EndIf
 Return $Array
 EndFunc
@@ -6907,12 +6598,10 @@ $ProcessingRequest = False
 EndFunc
 Func Internal_ProcessRequest($Bool = False,$FixesBool = False)
 If ProcessExists("smite.exe") Then
-fSendMetric("error_applywhen_smiterunning")
 DisplayErrorMessage("Cannot apply settings while SMITE is running!")
 Return
 EndIf
 If $SettingsPath = $sEmpty or $SystemSettingsPath = $sEmpty or $GameSettingsPath = $sEmpty Then
-fSendMetric("error_applywith_noconfigpaths")
 DisplayErrorMessage("Cannot apply settings; discover the configuration files first!")
 Return
 EndIf
@@ -6956,7 +6645,6 @@ Local $CursorInfo = GUIGetCursorInfo($ProcessUI)
 If $PState = 0 Then
 Local $Success = Internal_CreateConfigBackup()
 If not $Success Then
-fSendMetric("error_configbackup_code3")
 Internal_ProcessHandleError("There was an error creating the configuration backup! (Not successful) Code: 003")
 ExitLoop
 EndIf
@@ -7014,19 +6702,16 @@ FileDelete($SettingsPath)
 FileDelete($SystemSettingsPath)
 _FileWriteFromArray($SettingsPath,$EngineSF)
 If @Error <> 0 Then
-fSendMetric("error_writeconfig_code4")
 Internal_ProcessHandleError("There was an error when writing to the configuration files! (Engine) Code: 004"&@CRLF&"Make sure the configuration files can be written to (Check read only status)")
 ExitLoop
 EndIf
 _FileWriteFromArray($SystemSettingsPath,$SystemSF)
 If @Error <> 0 Then
-fSendMetric("error_writeconfig_code5")
 Internal_ProcessHandleError("There was an error when writing to the configuration files! (System) Code: 005"&@CRLF&"Make sure the configuration files can be written to (Check read only status)")
 ExitLoop
 EndIf
 _FileWriteFromArray($GameSettingsPath,$GameSF)
 If @Error <> 0 Then
-fSendMetric("error_writeconfig_code13")
 Internal_ProcessHandleError("There was an error when writing to the configuration files! (Game) Code: 013"&@CRLF&"Make sure the configuration files can be written to (Check read only status)")
 ExitLoop
 EndIf
@@ -7068,7 +6753,6 @@ GUISetState()
 Local $GameFile
 _FileReadToArray($GameSettingsPath,$GameFile,$FRTA_NOCOUNT)
 If not IsArray($GameFile) Then
-fSendMetric("error_exporthud1_code19")
 DisplayErrorMessage("Could not read EngineGame.ini Code: 19")
 Return
 EndIf
@@ -7094,7 +6778,6 @@ ExitLoop
 EndIf
 Next
 If $S_ExportData == $sEmpty Then
-fSendMetric("error_exporthud2_code19")
 DisplayErrorMessage("Could not read EngineGame.ini Code: 19")
 ExitLoop(1)
 EndIf
@@ -7119,7 +6802,6 @@ ExitLoop
 EndIf
 Next
 If $S_ExportData == $sEmpty or $S_ExportData_2 == $sEmpty or $S_ExportData_3 == $sEmpty Then
-fSendMetric("error_exporthud3_code19")
 DisplayErrorMessage("Could not read EngineGame.ini Code: 19")
 ExitLoop(1)
 EndIf
@@ -7140,17 +6822,14 @@ If not @Error and $ExportPath <> $sEmpty Then
 FileDelete($ExportPath & "/Export_NewHUD.ini")
 Sleep(100)
 If @Error Then
-fSendMetric("error_newexporthud_notsaved")
 DisplayErrorMessage("Something went wrong while saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
 Return
 EndIf
 FileWrite($ExportPath & "/Export_NewHUD.ini",$S_ExportData & @CRLF & $S_ExportData_2 & @CRLF & $S_ExportData_3)
 If @Error Then
-fSendMetric("error_newexporthud_notsaved")
 DisplayErrorMessage("Something went wrong while saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
 Return
 EndIf
-fSendMetric("event_newexporthud_success")
 MsgBox(0,"Success!","New HUD settings were exported to:" & @CRLF & $ExportPath)
 EndIf
 ElseIf $S_ExportData <> $sEmpty Then
@@ -7159,17 +6838,14 @@ If not @Error and $ExportPath <> $sEmpty Then
 FileDelete($ExportPath & "/Export_ClassicHUD.ini")
 Sleep(100)
 If @Error Then
-fSendMetric("error_classicexporthud_notsaved")
 DisplayErrorMessage("Something went wrong while saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
 Return
 EndIf
 FileWrite($ExportPath & "/Export_ClassicHUD.ini",$S_ExportData)
 If @Error Then
-fSendMetric("error_classicexporthud_notsaved")
 DisplayErrorMessage("Something went wrong while saving." & @CRLF & "If the file already exists, delete it, then try to create it again.")
 Return
 EndIf
-fSendMetric("event_classicexporthud_success")
 MsgBox(0,"Success!","Classic HUD settings were exported to:" & @CRLF & $ExportPath)
 EndIf
 EndIf
@@ -7180,7 +6856,6 @@ WinActivate($MainGUI)
 EndFunc
 Func Internal_ImportSettings()
 If ProcessExists("smite.exe") Then
-fSendMetric("error_hudimportwhen_smiterunning")
 DisplayErrorMessage("Cannot import HUD settings while SMITE is running!")
 Return
 EndIf
@@ -7209,7 +6884,6 @@ If $bFound Then
 Local $aExtracted[0]
 _FileReadToArray($FileSelected,$aExtracted,$FRTA_NOCOUNT)
 If not IsArray($aExtracted) Then
-fSendMetric("error_hudimport1_code20")
 DisplayErrorMessage("Could not read the supplied file! Code: 20")
 Return
 EndIf
@@ -7231,7 +6905,6 @@ Next
 If $bFoundClassic or($bFoundV2 and $bFoundKBM and $bFoundGMP) Then
 $bContentFine = True
 Else
-fSendMetric("error_hudimport2_code20")
 DisplayErrorMessage("Could not read the supplied file! Code: 20")
 Return
 EndIf
@@ -7241,7 +6914,6 @@ Internal_CreateConfigBackup()
 Local $GameFile
 _FileReadToArray($GameSettingsPath,$GameFile,$FRTA_NOCOUNT)
 If not IsArray($GameFile) Then
-fSendMetric("error_hudimport3_code20")
 DisplayErrorMessage("Could not read EngineGame.ini Code: 20")
 Return
 EndIf
@@ -7258,30 +6930,21 @@ EndIf
 Next
 _FileWriteFromArray($GameSettingsPath,$GameFile)
 If not @Error Then
-fSendMetric("event_importhud_success")
 MsgBox(0,"Success!","HUD Configuration imported and applied successfully!")
 EndIf
 EndIf
 EndIf
-EndFunc
-Func Internal_CreateQuicklaunchBypass()
-MsgBox(0,$ProgramName,'Patch 11.4 removed "-nosteam" and "-noepic" functionality which broke this feature.' & @CRLF & "It cannot be restored to a working state.")
-EndFunc
-Func Internal_InstallLegacyLauncher()
-MsgBox(0,$ProgramName,'Patch 11.4 removed "-nosteam" and "-noepic" functionality which broke this feature.' & @CRLF & "It cannot be restored to a working state.")
 EndFunc
 Func Internal_FixEAC()
 If @OSVersion <> "WIN_XP" and IsAdmin() == 0 Then
 MsgBox($MB_OK,"Information","SMITE Optimizer needs administrator privileges to repair EasyAntiCheat!")
 Return
 EndIf
-fSendMetric("action_fixes_eac")
 Local $aFileList = _FileListToArrayRec("C:\Users\" & @UserName & "\AppData\Roaming\EasyAntiCheat","*.eac",$FLTAR_FILES,$FLTAR_RECUR,Default,$FLTAR_FULLPATH)
 _ArrayDelete($aFileList,0)
 For $I = 0 To uBound($aFileList) - 1 Step 1
 Local $bSucc = FileDelete($aFileList[$I])
 If Not $bSucc Then
-fSendMetric("error_fixes_eac_filedel")
 DisplayErrorMessage("Error",$MainGUI,"Failed to delete: " & @CRLF & $aFileList[$I] & @CRLF & "Cannot continue.")
 Return
 EndIf
@@ -7309,17 +6972,14 @@ EndIf
 Next
 Next
 If not FileExists($sPath) Then
-fSendMetric("error_fixes_eac_nogame")
-DisplayErrorMessage("Error",$MainGUI,"Failed to retrieve game location!")
+DisplayErrorMessage("Failed to retrieve game location!",$MainGUI,"Error")
 Return
 EndIf
 EndIf
 $sPath = $sPath & "\EasyAntiCheat\EasyAntiCheat_EOS_Setup.exe"
 If not FileExists($sPath) Then
-fSendMetric("error_fixes_eac_nosetup_eos")
 $sPath = $sPath & "\EasyAntiCheat\EasyAntiCheat_Setup.exe"
 If not FileExists($sPath) Then
-fSendMetric("error_fixes_eac_nosetup_both")
 DisplayErrorMessage("Error",$MainGUI,"Failed to retrieve location of EasyAntiCheat installer!")
 Return
 EndIf
@@ -7327,7 +6987,6 @@ EndIf
 ShellExecuteWait($sPath,"uninstall f71b1231985f48d1af3de723e0a6acdd")
 ShellExecuteWait($sPath,"install f71b1231985f48d1af3de723e0a6acdd")
 RunWait(@ComSpec & " /c " & 'sc config "EasyAntiCheat" start= demand',$sEmpty,@SW_HIDE)
-fSendMetric("action_fixes_eac_success")
 MsgBox(0,"Information","Repaired EasyAntiCheat successfully.")
 EndFunc
 Func InRange2D($MousePos,$X_Start,$Y_Start,$X_End,$Y_End)
@@ -7501,18 +7160,6 @@ ElseIf $AutoItLicenseLabelHoverBool Then
 GUICtrlSetColor($MainGUICopyrightLabelAutoitLicenseLink,$cURLColor)
 GUICtrlSetFont($MainGUICopyrightLabelAutoitLicenseLink,15,500,Default,$MainFontName)
 $AutoItLicenseLabelHoverBool = False
-ElseIf $PrivacyPolicyLabelHoverBool Then
-GUICtrlSetColor($MainGUICopyrightLabelPrivacyPolicy,$cURLColor)
-GUICtrlSetFont($MainGUICopyrightLabelPrivacyPolicy,11,500,Default,$MenuFontName)
-$PrivacyPolicyLabelHoverBool = False
-ElseIf $GDPRLabelHoverBool Then
-GUICtrlSetColor($MainGUICopyrightLabelGDPR,$cURLColor)
-GUICtrlSetFont($MainGUICopyrightLabelGDPR,11,500,Default,$MenuFontName)
-$GDPRLabelHoverBool = False
-ElseIf $WebsiteMetricsLabelHoverBool Then
-GUICtrlSetColor($MainGUICopyrightLabelWebsiteMetrics,$cURLColor)
-GUICtrlSetFont($MainGUICopyrightLabelWebsiteMetrics,11,500,Default,$MenuFontName)
-$WebsiteMetricsLabelHoverBool = False
 ElseIf $MainGUIDebugLabelHoverBool Then
 GUICtrlSetColor($MainGUIDebugLabelReportABug,$cURLColor)
 GUICtrlSetFont($MainGUIDebugLabelReportABug,15,500,Default,$MainFontName)
@@ -7544,18 +7191,6 @@ MenuHoverState("DBan",138,300,0)
 EndIf
 EndIf
 EndIf
-If $UpdateAvailable Then
-If TimerDiff($UpdateTimer) > 750 Then
-$UpdateTimer = TimerInit()
-If $UpdateColorState Then
-GUICtrlSetColor($MainGUILabelVersion,0xFF0000)
-$UpdateColorState = False
-Else
-GUICtrlSetColor($MainGUILabelVersion,$cTextColor)
-$UpdateColorState = True
-EndIf
-EndIf
-Endif
 If $bShouldFlashDiscordIcon Then
 If TimerDiff($DiscordFlashTimer) > 750 Then
 $DiscordFlashTimer = TimerInit()
@@ -7903,24 +7538,6 @@ If $AutoItLicenseLabelHoverBool = False Then
 GUICtrlSetColor($MainGUICopyrightLabelAutoitLicenseLink,$cURLHoverColor)
 GUICtrlSetFont($MainGUICopyrightLabelAutoitLicenseLink,15,500,4,$MainFontName)
 $AutoItLicenseLabelHoverBool = True
-EndIf
-Case $MainGUICopyrightLabelPrivacyPolicy
-If $PrivacyPolicyLabelHoverBool = False Then
-GUICtrlSetColor($MainGUICopyrightLabelPrivacyPolicy,$cURLHoverColor)
-GUICtrlSetFont($MainGUICopyrightLabelPrivacyPolicy,11,500,4,$MenuFontName)
-$PrivacyPolicyLabelHoverBool = True
-EndIf
-Case $MainGUICopyrightLabelGDPR
-If $GDPRLabelHoverBool = False Then
-GUICtrlSetColor($MainGUICopyrightLabelGDPR,$cURLHoverColor)
-GUICtrlSetFont($MainGUICopyrightLabelGDPR,11,500,4,$MenuFontName)
-$GDPRLabelHoverBool = True
-EndIf
-Case $MainGUICopyrightLabelWebsiteMetrics
-If $WebsiteMetricsLabelHoverBool = False Then
-GUICtrlSetColor($MainGUICopyrightLabelWebsiteMetrics,$cURLHoverColor)
-GUICtrlSetFont($MainGUICopyrightLabelWebsiteMetrics,11,500,4,$MenuFontName)
-$WebsiteMetricsLabelHoverBool = True
 EndIf
 Case $MainGUIDebugLabelReportABug
 If $MainGUIDebugLabelHoverBool = False Then

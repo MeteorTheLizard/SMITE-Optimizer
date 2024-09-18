@@ -1,3 +1,23 @@
+SMITE Optimizer Version 1.3.8.0 - End of Life
+
+I am officially deprecating the SMITE Optimizer. Despite the thousands of dollars my passion project generated for Hi-Rez Studios, Inc. and Titan Forge Games, and the significant reduction in support tickets it provided, I have been treated with complete disregard and disrespect. My efforts were aimed at improving the community and enhancing the game, but their response has been nothing short of disheartening. As a result, I can no longer justify maintaining this tool. Thank you to everyone who supported my work.
+
+This will be the last official version of the SMITE Optimizer. This update prepares the program for the imminent shutdown of the update and metrics servers.
+You can continue using the program as normal. It can be acquired here: https://github.com/MeteorTheLizard/SMITE-Optimizer going forward, however no more updates will be released.
+
+- Updated discord button to redirect to the rebranded SMITE-Optimizer discord server.
+- Completely removed automatic update functionality.
+- Completely removed metrics functionality.
+- Updated copyright tab to reflect end of life changes.
+
+- Fixed incorrect use of the "DisplayErrorMessage" function when fixing EasyAntiCheat and no installation files could be found.
+- Removed buttons "Create quicklaunch bypass" and "Install legacy launcher" from the fixes tab.
+- Repositioned button "Repair EasyAntiCheat"
+
+
+
+
+
 SMITE Optimizer Version 1.3.7.9
 - Updated HelpText for DirectX 11. (Community Contribution)
 - Updated fix EasyAntiCheat now uninstalling it first before installing it. (Community Contribution)
